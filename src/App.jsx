@@ -1166,7 +1166,7 @@ export default function LocQarERP() {
   const filteredPackages = useMemo(() => {
     return packagesData.filter(pkg => {
       if (packageFilter !== 'all') {
-        const statusMap = { warehouse: 'at_warehouse', transit: ['in_transit_to_locker', 'in_transit_to_home'], locker: 'delivered_to_locker', delivered: ['delivered_to_locker', 'delivered_to_home', 'picked_up'], expired: 'expired' };
+        const statusMap = { warehouse: 'at_warehouse', transit: ['in_transit_to_locker', 'in_transit_to_home'], locker: 'delivered_to_locker', pending_pickup: 'delivered_to_locker', delivered: ['delivered_to_locker', 'delivered_to_home', 'picked_up'], expired: 'expired' };
         const match = statusMap[packageFilter];
         if (Array.isArray(match) ? !match.includes(pkg.status) : pkg.status !== match) return false;
       }
@@ -1186,6 +1186,14 @@ export default function LocQarERP() {
   const handleBulkAction = (action) => { addToast({ type: 'success', message: `${action} applied to ${selectedItems.length} packages` }); setSelectedItems([]); };
   const handleExport = (format) => { addToast({ type: 'success', message: `Exporting ${activeMenu} data as ${format.toUpperCase()}...` }); };
   const handleSearchNavigate = (menu, item) => { setActiveMenu(menu); if (menu === 'packages') setSelectedPackage(item); };
+
+  // Sync sidebar sub-menu clicks to package filter
+  useEffect(() => {
+    if (activeMenu === 'packages' && activeSubMenu) {
+      const subMenuToFilter = { 'All Packages': 'all', 'In Locker': 'locker', 'Pending Pickup': 'pending_pickup', 'Expired': 'expired' };
+      if (subMenuToFilter[activeSubMenu]) { setPackageFilter(subMenuToFilter[activeSubMenu]); setCurrentPage(1); }
+    }
+  }, [activeMenu, activeSubMenu]);
 
   const statusDistribution = useMemo(() => [
     { name: 'In Locker', value: packagesData.filter(p => p.status === 'delivered_to_locker').length },
@@ -1407,7 +1415,7 @@ export default function LocQarERP() {
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {[['all', 'All'], ['locker', 'In Locker'], ['transit', 'In Transit'], ['expired', 'Expired']].map(([k, l]) => (
+                  {[['all', 'All'], ['locker', 'In Locker'], ['pending_pickup', 'Pending Pickup'], ['transit', 'In Transit'], ['expired', 'Expired']].map(([k, l]) => (
                     <button key={k} onClick={() => { setPackageFilter(k); setCurrentPage(1); }} className="px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: packageFilter === k ? theme.accent.light : 'transparent', color: packageFilter === k ? theme.accent.primary : theme.text.muted, border: packageFilter === k ? `1px solid ${theme.accent.border}` : '1px solid transparent' }}>{l}</button>
                   ))}
                 </div>
