@@ -899,6 +899,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
       { icon: Briefcase, label: 'Business Portal', id: 'portal', permission: 'reports.view', subItems: ['Partner Dashboard', 'Bulk Shipments', 'Invoices & Billing', 'API Management', 'Partner Analytics'] },
       { icon: Smartphone, label: 'Partner Portal', id: 'selfservice', permission: 'dashboard.view', subItems: ['Portal Home', 'Ship Now', 'Track Packages', 'Locker Map', 'My Billing', 'API Console', 'Help Center'] },
       { icon: DollarSign, label: 'Accounting', id: 'accounting', permission: 'reports.view', subItems: ['Transactions', 'Invoices', 'Reports'] },
+      { icon: Receipt, label: 'Pricing Engine', id: 'pricing', permission: 'reports.view', subItems: ['Rate Card', 'Delivery Methods', 'SLA Tiers', 'Surcharges', 'Volume Discounts', 'Partner Overrides'] },
       { icon: TrendingUp, label: 'Analytics', id: 'analytics', permission: 'reports.view' },
       { icon: History, label: 'Audit Log', id: 'audit', permission: 'reports.view' },
     ]},
@@ -2657,32 +2658,262 @@ export default function LocQarERP() {
             {activeMenu === 'terminals' && (
               <div className="p-4 md:p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Terminals</h1>
+                  <div>
+                    <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Terminals</h1>
+                    <p style={{ color: theme.text.muted }}>{terminalsData.length} terminals &bull; {terminalsData.filter(t => t.status === 'online').length} online</p>
+                  </div>
                   {hasPermission(currentUser.role, 'terminals.manage') && (
                     <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={18} />Add Terminal</button>
                   )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {terminalsData.map(t => (
-                    <div key={t.id} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <Building2 size={24} style={{ color: theme.accent.primary }} />
-                          <div>
-                            <p className="font-semibold" style={{ color: theme.text.primary }}>{t.name}</p>
-                            <p className="text-sm" style={{ color: theme.text.muted }}>{t.location}</p>
-                          </div>
-                        </div>
-                        <StatusBadge status={t.status} />
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                  {[
+                    ['Total Lockers', terminalsData.reduce((s, t) => s + t.totalLockers, 0), Grid3X3, null],
+                    ['Available', terminalsData.reduce((s, t) => s + t.available, 0), Unlock, '#10b981'],
+                    ['Occupied', terminalsData.reduce((s, t) => s + t.occupied, 0), Package, '#3b82f6'],
+                    ['Maintenance', terminalsData.reduce((s, t) => s + t.maintenance, 0), Wrench, '#ef4444'],
+                    ['Utilization', `${Math.round(terminalsData.reduce((s, t) => s + t.occupied, 0) / terminalsData.reduce((s, t) => s + t.totalLockers, 0) * 100)}%`, TrendingUp, '#8b5cf6'],
+                  ].map(([l, v, I, c]) => (
+                    <div key={l} className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <I size={16} style={{ color: c || theme.accent.primary }} />
+                        <span className="text-xs" style={{ color: theme.text.muted }}>{l}</span>
                       </div>
-                      <div className="grid grid-cols-4 gap-2 text-center">
-                        {[['Total', t.totalLockers, null], ['Available', t.available, '#10b981'], ['Occupied', t.occupied, '#3b82f6'], ['Maint.', t.maintenance, '#ef4444']].map(([l, v, c]) => (
-                          <div key={l}><p className="text-xs" style={{ color: theme.text.muted }}>{l}</p><p className="text-lg font-bold" style={{ color: c || theme.text.primary }}>{v}</p></div>
-                        ))}
-                      </div>
+                      <p className="text-2xl font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
                     </div>
                   ))}
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {terminalsData.map(t => {
+                    const utilPct = Math.round(t.occupied / t.totalLockers * 100);
+                    return (
+                      <div key={t.id} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${theme.accent.primary}15` }}>
+                              <Building2 size={20} style={{ color: theme.accent.primary }} />
+                            </div>
+                            <div>
+                              <p className="font-semibold" style={{ color: theme.text.primary }}>{t.name}</p>
+                              <p className="text-xs flex items-center gap-1" style={{ color: theme.text.muted }}><MapPin size={12} />{t.location} &bull; {t.id}</p>
+                            </div>
+                          </div>
+                          <StatusBadge status={t.status} />
+                        </div>
+                        <div className="mb-3">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs" style={{ color: theme.text.muted }}>Utilization</span>
+                            <span className="text-xs font-medium" style={{ color: utilPct > 80 ? '#ef4444' : utilPct > 60 ? '#f59e0b' : '#10b981' }}>{utilPct}%</span>
+                          </div>
+                          <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
+                            <div className="h-full rounded-full transition-all" style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? '#ef4444' : utilPct > 60 ? '#f59e0b' : '#10b981' }} />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2 text-center">
+                          {[['Total', t.totalLockers, null], ['Open', t.available, '#10b981'], ['In Use', t.occupied, '#3b82f6'], ['Maint.', t.maintenance, '#ef4444']].map(([l, v, c]) => (
+                            <div key={l} className="p-2 rounded-lg" style={{ backgroundColor: c ? `${c}10` : theme.bg.tertiary }}>
+                              <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
+                              <p className="text-lg font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* SLA Monitor Page */}
+            {activeMenu === 'sla' && (
+              <div className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>SLA Monitor</h1>
+                    <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Live Monitor'}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={16} />Export</button>
+                  </div>
+                </div>
+
+                {(!activeSubMenu || activeSubMenu === 'Live Monitor') && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {Object.entries(SLA_SEVERITY).map(([key, sev]) => {
+                        const count = slaBreachData.filter(s => s.severity === key).length;
+                        return (
+                          <div key={key} className="p-4 rounded-xl border" style={{ backgroundColor: sev.bg, borderColor: theme.border.primary }}>
+                            <div className="flex items-center gap-2 mb-2">
+                              <sev.icon size={18} style={{ color: sev.color }} />
+                              <span className="text-sm font-medium" style={{ color: sev.color }}>{sev.label}</span>
+                            </div>
+                            <p className="text-3xl font-bold" style={{ color: sev.color }}>{count}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
+                        <h3 className="font-semibold" style={{ color: theme.text.primary }}>Active SLA Tracking</h3>
+                      </div>
+                      {loading ? <TableSkeleton rows={6} cols={7} theme={theme} /> : (
+                        <table className="w-full">
+                          <thead>
+                            <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                              <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Waybill</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Customer</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>SLA</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Terminal</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Progress</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Severity</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase hidden lg:table-cell" style={{ color: theme.text.muted }}>Deadline</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {slaBreachData.sort((a, b) => b.pctUsed - a.pctUsed).map(s => {
+                              const sev = SLA_SEVERITY[s.severity];
+                              return (
+                                <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: s.severity === 'breached' ? 'rgba(239,68,68,0.05)' : undefined }}>
+                                  <td className="p-3"><span className="font-mono text-sm" style={{ color: theme.accent.primary }}>{s.waybill}</span></td>
+                                  <td className="p-3">
+                                    <p className="text-sm" style={{ color: theme.text.primary }}>{s.customer}</p>
+                                    <p className="text-xs" style={{ color: theme.text.muted }}>{s.product}</p>
+                                  </td>
+                                  <td className="p-3 hidden md:table-cell">
+                                    <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ backgroundColor: `${SLA_TIERS.find(t => t.name === s.slaType)?.color || '#6b7280'}15`, color: SLA_TIERS.find(t => t.name === s.slaType)?.color || '#6b7280' }}>{s.slaType}</span>
+                                  </td>
+                                  <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{s.terminal}</span></td>
+                                  <td className="p-3">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-16 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
+                                        <div className="h-full rounded-full" style={{ width: `${Math.min(s.pctUsed, 100)}%`, backgroundColor: sev.color }} />
+                                      </div>
+                                      <span className="text-xs font-medium" style={{ color: sev.color }}>{Math.round(s.pctUsed)}%</span>
+                                    </div>
+                                  </td>
+                                  <td className="p-3">
+                                    <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ backgroundColor: sev.bg, color: sev.color }}>{sev.label}</span>
+                                  </td>
+                                  <td className="p-3 hidden lg:table-cell"><span className="text-xs font-mono" style={{ color: s.remainingMin < 0 ? '#ef4444' : theme.text.muted }}>{s.deadline}</span></td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {activeSubMenu === 'Escalation Rules' && (
+                  <div className="space-y-4">
+                    {ESCALATION_RULES.map(rule => (
+                      <div key={rule.level} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${rule.color}15` }}>
+                            <rule.icon size={20} style={{ color: rule.color }} />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold" style={{ color: theme.text.primary }}>Level {rule.level}: {rule.name}</p>
+                              <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: `${rule.color}15`, color: rule.color }}>{rule.role}</span>
+                            </div>
+                            <p className="text-sm" style={{ color: theme.text.muted }}>Triggers at {rule.triggerPct}% of SLA time</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-2xl font-bold" style={{ color: rule.color }}>{rule.triggerPct}%</p>
+                          </div>
+                        </div>
+                        <div className="pl-14 space-y-1">
+                          {rule.actions.map((action, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <CheckCircle2 size={14} style={{ color: rule.color }} />
+                              <span className="text-sm" style={{ color: theme.text.secondary }}>{action}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {activeSubMenu === 'Compliance' && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {(() => {
+                        const totals = slaComplianceTrend.reduce((acc, d) => ({ total: acc.total + d.total, onTime: acc.onTime + d.onTime, warning: acc.warning + d.warning, breached: acc.breached + d.breached }), { total: 0, onTime: 0, warning: 0, breached: 0 });
+                        return [
+                          ['Total Shipments', totals.total, Package, null],
+                          ['On Time', `${Math.round(totals.onTime / totals.total * 100)}%`, CheckCircle2, '#10b981'],
+                          ['Warnings', totals.warning, AlertTriangle, '#f59e0b'],
+                          ['Breached', totals.breached, XCircle, '#ef4444'],
+                        ].map(([l, v, I, c]) => (
+                          <div key={l} className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                            <div className="flex items-center gap-2 mb-1"><I size={16} style={{ color: c || theme.accent.primary }} /><span className="text-xs" style={{ color: theme.text.muted }}>{l}</span></div>
+                            <p className="text-2xl font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
+                          </div>
+                        ));
+                      })()}
+                    </div>
+                    <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Weekly SLA Compliance</h3>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={slaComplianceTrend}>
+                          <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
+                          <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+                          <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+                          <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
+                          <Bar dataKey="onTime" stackId="a" fill="#10b981" name="On Time" />
+                          <Bar dataKey="warning" stackId="a" fill="#f59e0b" name="Warning" />
+                          <Bar dataKey="breached" stackId="a" fill="#ef4444" radius={[4, 4, 0, 0]} name="Breached" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+
+                {activeSubMenu === 'Incident Log' && (
+                  <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
+                      <h3 className="font-semibold" style={{ color: theme.text.primary }}>Escalation History</h3>
+                    </div>
+                    <table className="w-full">
+                      <thead>
+                        <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Time</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Waybill</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Level</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Severity</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Action</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>By</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Acked</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {escalationLog.map(log => {
+                          const sev = SLA_SEVERITY[log.severity];
+                          return (
+                            <tr key={log.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                              <td className="p-3"><span className="text-xs font-mono" style={{ color: theme.text.muted }}>{log.timestamp}</span></td>
+                              <td className="p-3"><span className="font-mono text-sm" style={{ color: theme.accent.primary }}>{log.waybill}</span></td>
+                              <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.primary }}>L{log.level}</span></td>
+                              <td className="p-3"><span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: sev?.bg, color: sev?.color }}>{sev?.label}</span></td>
+                              <td className="p-3 hidden md:table-cell"><span className="text-xs" style={{ color: theme.text.secondary }}>{log.action.substring(0, 80)}{log.action.length > 80 ? '...' : ''}</span></td>
+                              <td className="p-3">
+                                <span className="text-xs" style={{ color: theme.text.primary }}>{log.by}</span>
+                                <p className="text-xs" style={{ color: theme.text.muted }}>{log.role}</p>
+                              </td>
+                              <td className="p-3">
+                                {log.acked ? <CheckCircle2 size={16} className="text-emerald-500" /> : <Circle size={16} style={{ color: theme.text.muted }} />}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             )}
 
@@ -2700,34 +2931,80 @@ export default function LocQarERP() {
                 {(!activeSubMenu || activeSubMenu === 'Outgoing') && (
                   <>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                      <MetricCard title="Pending" value="45" icon={Package} theme={theme} loading={loading} />
-                      <MetricCard title="In Transit" value="23" icon={Truck} theme={theme} loading={loading} />
-                      <MetricCard title="Delivered Today" value="89" icon={CheckCircle2} theme={theme} loading={loading} />
+                      <MetricCard title="Pending" value={packagesData.filter(p => ['pending', 'at_warehouse', 'at_dropbox'].includes(p.status)).length} icon={Package} theme={theme} loading={loading} />
+                      <MetricCard title="In Transit" value={packagesData.filter(p => p.status.startsWith('in_transit')).length} icon={Truck} theme={theme} loading={loading} />
+                      <MetricCard title="Delivered Today" value={packagesData.filter(p => p.status.startsWith('delivered')).length} icon={CheckCircle2} theme={theme} loading={loading} />
                       <MetricCard title="Active Drivers" value={driversData.filter(d => d.status !== 'offline').length} icon={Car} theme={theme} loading={loading} />
                     </div>
-                    <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Outgoing Packages</h3>
-                      <p className="text-sm" style={{ color: theme.text.muted }}>45 packages ready for dispatch. Select packages to create a dispatch batch.</p>
+                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+                        <h3 className="font-semibold" style={{ color: theme.text.primary }}>Outgoing Packages</h3>
+                        <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary }}>{packagesData.filter(p => ['pending', 'at_warehouse', 'at_dropbox'].includes(p.status)).length} ready</span>
+                      </div>
+                      {loading ? <TableSkeleton rows={5} cols={6} theme={theme} /> : (
+                        <table className="w-full">
+                          <thead>
+                            <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                              <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Waybill</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Customer</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Destination</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Size</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Status</th>
+                              <th className="text-left p-3 text-xs font-semibold uppercase hidden lg:table-cell" style={{ color: theme.text.muted }}>Method</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {packagesData.filter(p => ['pending', 'at_warehouse', 'at_dropbox', 'in_transit_to_locker', 'in_transit_to_home'].includes(p.status)).map(p => (
+                              <tr key={p.id} className="hover:bg-white/5 cursor-pointer" style={{ borderBottom: `1px solid ${theme.border.primary}` }} onClick={() => setSelectedPackage(p)}>
+                                <td className="p-3"><span className="font-mono text-sm" style={{ color: theme.accent.primary }}>{p.waybill}</span></td>
+                                <td className="p-3"><span className="text-sm" style={{ color: theme.text.primary }}>{p.customer}</span></td>
+                                <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{p.destination}</span></td>
+                                <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{p.size}</span></td>
+                                <td className="p-3"><StatusBadge status={p.status} /></td>
+                                <td className="p-3 hidden lg:table-cell"><span className="text-xs" style={{ color: theme.text.muted }}>{DELIVERY_METHODS[p.deliveryMethod]?.label}</span></td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
                     </div>
                   </>
                 )}
 
                 {activeSubMenu === 'Route Planning' && (
-                  <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                    <div className="flex items-center gap-4 mb-6">
-                      <Route size={32} style={{ color: theme.accent.primary }} />
-                      <div>
-                        <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Route Planning</h3>
-                        <p className="text-sm" style={{ color: theme.text.muted }}>Optimize delivery routes for efficiency</p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {['Accra Central', 'East Legon', 'Tema'].map(zone => (
-                        <div key={zone} className="p-4 rounded-xl border hover:border-accent cursor-pointer" style={{ borderColor: theme.border.primary }}>
-                          <p className="font-medium" style={{ color: theme.text.primary }}>{zone}</p>
-                          <p className="text-sm" style={{ color: theme.text.muted }}>12 stops • 2.5 hrs</p>
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <div className="flex items-center gap-4 mb-6">
+                        <Route size={32} style={{ color: theme.accent.primary }} />
+                        <div>
+                          <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Route Planning</h3>
+                          <p className="text-sm" style={{ color: theme.text.muted }}>Optimize delivery routes for efficiency</p>
                         </div>
-                      ))}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {[
+                          { zone: 'Accra Central', stops: 14, time: '2.5 hrs', distance: '28 km', driver: 'Kwesi Asante', packages: 14 },
+                          { zone: 'East Legon', stops: 8, time: '1.5 hrs', distance: '15 km', driver: 'Kofi Mensah', packages: 8 },
+                          { zone: 'Tema', stops: 11, time: '2 hrs', distance: '22 km', driver: 'Yaw Boateng', packages: 11 },
+                        ].map(r => (
+                          <div key={r.zone} className="p-4 rounded-xl border" style={{ borderColor: theme.border.primary }}>
+                            <div className="flex items-center justify-between mb-3">
+                              <p className="font-semibold" style={{ color: theme.text.primary }}>{r.zone}</p>
+                              <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: '#10b98115', color: '#10b981' }}>Active</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                              <div><span style={{ color: theme.text.muted }}>Stops:</span> <span style={{ color: theme.text.primary }}>{r.stops}</span></div>
+                              <div><span style={{ color: theme.text.muted }}>Time:</span> <span style={{ color: theme.text.primary }}>{r.time}</span></div>
+                              <div><span style={{ color: theme.text.muted }}>Distance:</span> <span style={{ color: theme.text.primary }}>{r.distance}</span></div>
+                              <div><span style={{ color: theme.text.muted }}>Packages:</span> <span style={{ color: theme.text.primary }}>{r.packages}</span></div>
+                            </div>
+                            <div className="flex items-center gap-2 pt-3 border-t" style={{ borderColor: theme.border.primary }}>
+                              <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: '#3b82f6' }}>{r.driver.charAt(0)}</div>
+                              <span className="text-sm" style={{ color: theme.text.secondary }}>{r.driver}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -3091,29 +3368,75 @@ export default function LocQarERP() {
                 )}
 
                 {activeSubMenu === 'Reports' && (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Revenue Overview</h3>
-                      <ResponsiveContainer width="100%" height={220}>
-                        <LineChart data={terminalData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
-                          <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
-                          <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
-                          <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-                          <Line type="monotone" dataKey="accra" stroke="#10b981" strokeWidth={2} />
-                          <Line type="monotone" dataKey="achimota" stroke="#3b82f6" strokeWidth={2} />
-                        </LineChart>
-                      </ResponsiveContainer>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                        <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Revenue by SLA Tier</h3>
+                        <ResponsiveContainer width="100%" height={250}>
+                          <BarChart data={pricingRevenueData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
+                            <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
+                            <Bar dataKey="standard" stackId="a" fill="#6b7280" radius={[0, 0, 0, 0]} name="Standard" />
+                            <Bar dataKey="express" stackId="a" fill="#f59e0b" name="Express" />
+                            <Bar dataKey="rush" stackId="a" fill="#ef4444" name="Rush" />
+                            <Bar dataKey="economy" stackId="a" fill="#10b981" radius={[4, 4, 0, 0]} name="Economy" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                        <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Revenue by Terminal</h3>
+                        <ResponsiveContainer width="100%" height={250}>
+                          <LineChart data={terminalData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+                            <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
+                            <Line type="monotone" dataKey="accra" stroke="#3b82f6" strokeWidth={2} name="Accra Mall" />
+                            <Line type="monotone" dataKey="achimota" stroke="#10b981" strokeWidth={2} name="Achimota Mall" />
+                            <Line type="monotone" dataKey="kotoka" stroke="#f59e0b" strokeWidth={2} name="Kotoka T3" />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
                     </div>
-                    <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Quick Reports</h3>
-                      <div className="space-y-2">
-                        {['Daily Revenue Report', 'Monthly Summary', 'COD Collection Report', 'Partner Billing'].map(report => (
-                          <div key={report} className="p-3 rounded-xl border flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
-                            <span style={{ color: theme.text.primary }}>{report}</span>
-                            <button onClick={() => addToast({ type: 'success', message: `Generating ${report}...` })} className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary }}>Generate</button>
-                          </div>
-                        ))}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                        <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Invoice Aging</h3>
+                        <div className="space-y-3">
+                          {[
+                            ['Current (0-30 days)', invoicesData.filter(i => i.status === 'paid').length, '#10b981'],
+                            ['Due (30-60 days)', invoicesData.filter(i => i.status === 'pending').length, '#f59e0b'],
+                            ['Overdue (60+ days)', invoicesData.filter(i => i.status === 'overdue').length, '#ef4444'],
+                          ].map(([label, count, color]) => (
+                            <div key={label} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: `${color}10` }}>
+                              <span className="text-sm" style={{ color: theme.text.primary }}>{label}</span>
+                              <span className="font-bold" style={{ color }}>{count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="lg:col-span-2 p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                        <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Quick Reports</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {[
+                            { name: 'Daily Revenue Report', icon: Calendar, desc: 'Today\'s revenue summary' },
+                            { name: 'Monthly Summary', icon: FileText, desc: 'Full month financial overview' },
+                            { name: 'COD Collection Report', icon: Banknote, desc: 'Cash on delivery reconciliation' },
+                            { name: 'Partner Billing', icon: Briefcase, desc: 'Partner invoice generation' },
+                            { name: 'Tax Report', icon: Receipt, desc: 'VAT and tax breakdown' },
+                            { name: 'Expense Report', icon: CreditCard, desc: 'Operational expenses' },
+                          ].map(report => (
+                            <div key={report.name} className="p-3 rounded-xl border flex items-center gap-3" style={{ borderColor: theme.border.primary }}>
+                              <div className="p-2 rounded-lg" style={{ backgroundColor: theme.accent.light }}><report.icon size={16} style={{ color: theme.accent.primary }} /></div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{report.name}</p>
+                                <p className="text-xs" style={{ color: theme.text.muted }}>{report.desc}</p>
+                              </div>
+                              <button onClick={() => addToast({ type: 'success', message: `Generating ${report.name}...` })} className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary }}>Generate</button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -4108,9 +4431,10 @@ export default function LocQarERP() {
                   <MetricCard title="Customer Satisfaction" value="94%" change="2.1%" changeType="up" icon={Award} theme={theme} loading={loading} />
                   <MetricCard title="Active Customers" value="3,456" change="12.8%" changeType="up" icon={Users} theme={theme} loading={loading} />
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                   <div className="lg:col-span-2 p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                    <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Delivery Trends</h3>
+                    <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Delivery Trends (Monthly)</h3>
                     <ResponsiveContainer width="100%" height={250}>
                       <AreaChart data={terminalData}>
                         <defs>
@@ -4123,27 +4447,343 @@ export default function LocQarERP() {
                         <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                         <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                         <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-                        <Area type="monotone" dataKey="accra" stroke={theme.accent.primary} fill="url(#gradAnalytics)" strokeWidth={2} />
-                        <Area type="monotone" dataKey="achimota" stroke="#3b82f6" fill="transparent" strokeWidth={2} />
-                        <Area type="monotone" dataKey="kotoka" stroke="#10b981" fill="transparent" strokeWidth={2} />
+                        <Area type="monotone" dataKey="accra" stroke={theme.accent.primary} fill="url(#gradAnalytics)" strokeWidth={2} name="Accra Mall" />
+                        <Area type="monotone" dataKey="achimota" stroke="#3b82f6" fill="transparent" strokeWidth={2} name="Achimota" />
+                        <Area type="monotone" dataKey="kotoka" stroke="#10b981" fill="transparent" strokeWidth={2} name="Kotoka T3" />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
                   <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Delivery Methods</h3>
+                    <ResponsiveContainer width="100%" height={180}>
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Warehouse→Locker', value: packagesData.filter(p => p.deliveryMethod === 'warehouse_to_locker').length },
+                            { name: 'Dropbox→Locker', value: packagesData.filter(p => p.deliveryMethod === 'dropbox_to_locker').length },
+                            { name: 'Locker→Home', value: packagesData.filter(p => p.deliveryMethod === 'locker_to_home').length },
+                          ]}
+                          cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} dataKey="value"
+                        >
+                          <Cell fill="#3b82f6" /><Cell fill="#8b5cf6" /><Cell fill="#10b981" />
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="space-y-2 mt-2">
+                      {[['Warehouse→Locker', '#3b82f6'], ['Dropbox→Locker', '#8b5cf6'], ['Locker→Home', '#10b981']].map(([l, c]) => (
+                        <div key={l} className="flex items-center gap-2 text-sm">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: c }} />
+                          <span style={{ color: theme.text.secondary }}>{l}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                  <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Hourly Volume</h3>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <BarChart data={hourlyData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
+                        <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 11 }} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+                        <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
+                        <Bar dataKey="packages" fill={theme.accent.primary} radius={[4, 4, 0, 0]} name="Packages" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>SLA Revenue Breakdown</h3>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <AreaChart data={pricingRevenueData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
+                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
+                        <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
+                        <Area type="monotone" dataKey="standard" stroke="#6b7280" fill="transparent" strokeWidth={2} name="Standard" />
+                        <Area type="monotone" dataKey="express" stroke="#f59e0b" fill="transparent" strokeWidth={2} name="Express" />
+                        <Area type="monotone" dataKey="rush" stroke="#ef4444" fill="transparent" strokeWidth={2} name="Rush" />
+                        <Area type="monotone" dataKey="economy" stroke="#10b981" fill="transparent" strokeWidth={2} name="Economy" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2 rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
+                      <h3 className="font-semibold" style={{ color: theme.text.primary }}>Terminal Performance</h3>
+                    </div>
+                    <table className="w-full">
+                      <thead>
+                        <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Terminal</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Lockers</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Utilization</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {terminalsData.map(t => {
+                          const util = Math.round(t.occupied / t.totalLockers * 100);
+                          return (
+                            <tr key={t.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                              <td className="p-3">
+                                <div><span className="text-sm font-medium" style={{ color: theme.text.primary }}>{t.name}</span></div>
+                                <span className="text-xs" style={{ color: theme.text.muted }}>{t.location}</span>
+                              </td>
+                              <td className="p-3"><span className="text-sm" style={{ color: theme.text.primary }}>{t.totalLockers}</span></td>
+                              <td className="p-3">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
+                                    <div className="h-full rounded-full" style={{ width: `${util}%`, backgroundColor: util > 80 ? '#ef4444' : util > 60 ? '#f59e0b' : '#10b981' }} />
+                                  </div>
+                                  <span className="text-xs font-medium" style={{ color: theme.text.secondary }}>{util}%</span>
+                                </div>
+                              </td>
+                              <td className="p-3 hidden md:table-cell"><StatusBadge status={t.status} /></td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                     <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Top Terminals</h3>
                     <div className="space-y-4">
-                      {terminalsData.slice(0, 4).map((t, i) => (
+                      {terminalsData.sort((a, b) => b.occupied - a.occupied).slice(0, 5).map((t, i) => (
                         <div key={t.id} className="flex items-center gap-3">
                           <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: i === 0 ? '#f59e0b' : i === 1 ? '#a3a3a3' : i === 2 ? '#cd7c32' : theme.border.secondary }}>{i + 1}</span>
                           <div className="flex-1">
                             <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{t.name}</p>
-                            <p className="text-xs" style={{ color: theme.text.muted }}>{t.occupied} deliveries</p>
+                            <p className="text-xs" style={{ color: theme.text.muted }}>{t.occupied} active &bull; {t.available} open</p>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Pricing Engine Page */}
+            {activeMenu === 'pricing' && (
+              <div className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Pricing Engine</h1>
+                    <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Rate Card'}</p>
+                  </div>
+                  <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={16} />Export</button>
+                </div>
+
+                {(!activeSubMenu || activeSubMenu === 'Rate Card') && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {BASE_RATE_CARD.map(r => (
+                        <div key={r.id} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                          <div className="text-2xl mb-2">{r.icon}</div>
+                          <p className="font-semibold" style={{ color: theme.text.primary }}>{r.size}</p>
+                          <p className="text-xs mb-2" style={{ color: theme.text.muted }}>{r.dimensions}</p>
+                          <p className="text-3xl font-bold" style={{ color: theme.accent.primary }}>GH₵ {r.basePrice}</p>
+                          <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Max {r.maxWeight} kg</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
+                        <h3 className="font-semibold" style={{ color: theme.text.primary }}>Base Rate Comparison</h3>
+                      </div>
+                      <table className="w-full">
+                        <thead>
+                          <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                            <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Size</th>
+                            <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Dimensions</th>
+                            <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Max Weight</th>
+                            <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Base Price</th>
+                            <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Express (1.5x)</th>
+                            <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Rush (2.2x)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {BASE_RATE_CARD.map(r => (
+                            <tr key={r.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                              <td className="p-3"><span className="font-medium" style={{ color: theme.text.primary }}>{r.size}</span></td>
+                              <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{r.dimensions}</span></td>
+                              <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{r.maxWeight} kg</span></td>
+                              <td className="p-3"><span className="font-medium" style={{ color: theme.accent.primary }}>GH₵ {r.basePrice.toFixed(2)}</span></td>
+                              <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: '#f59e0b' }}>GH₵ {(r.basePrice * 1.5).toFixed(2)}</span></td>
+                              <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: '#ef4444' }}>GH₵ {(r.basePrice * 2.2).toFixed(2)}</span></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {activeSubMenu === 'Delivery Methods' && (
+                  <div className="space-y-4">
+                    {DELIVERY_METHOD_PRICING.map(dm => (
+                      <div key={dm.id} className="p-5 rounded-2xl border flex flex-col md:flex-row md:items-center gap-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${dm.color}15` }}>
+                          <dm.icon size={24} style={{ color: dm.color }} />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold" style={{ color: theme.text.primary }}>{dm.label}</p>
+                          <p className="text-sm" style={{ color: theme.text.muted }}>{dm.description}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-2xl font-bold" style={{ color: dm.baseMarkup > 0 ? dm.color : '#10b981' }}>+{dm.baseMarkup}%</p>
+                          <p className="text-xs" style={{ color: theme.text.muted }}>markup on base</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {activeSubMenu === 'SLA Tiers' && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {SLA_TIERS.map(sla => (
+                        <div key={sla.id} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                          <div className="text-2xl mb-2">{sla.icon}</div>
+                          <p className="font-semibold" style={{ color: sla.color }}>{sla.name}</p>
+                          <p className="text-xs mb-3" style={{ color: theme.text.muted }}>{sla.description}</p>
+                          <div className="flex items-end gap-1">
+                            <span className="text-3xl font-bold" style={{ color: theme.text.primary }}>{sla.hours}</span>
+                            <span className="text-sm mb-1" style={{ color: theme.text.muted }}>hrs</span>
+                          </div>
+                          <p className="text-sm mt-2" style={{ color: sla.color }}>{sla.multiplier}x multiplier</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Revenue by SLA Tier</h3>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={pricingRevenueData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
+                          <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+                          <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
+                          <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
+                          <Bar dataKey="standard" fill="#6b7280" radius={[0, 0, 0, 0]} name="Standard" />
+                          <Bar dataKey="express" fill="#f59e0b" name="Express" />
+                          <Bar dataKey="rush" fill="#ef4444" name="Rush" />
+                          <Bar dataKey="economy" fill="#10b981" radius={[0, 0, 0, 0]} name="Economy" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+
+                {activeSubMenu === 'Surcharges' && (
+                  <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
+                      <h3 className="font-semibold" style={{ color: theme.text.primary }}>Surcharges & Fees</h3>
+                    </div>
+                    <table className="w-full">
+                      <thead>
+                        <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Surcharge</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase hidden md:table-cell" style={{ color: theme.text.muted }}>Category</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Type</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Value</th>
+                          <th className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {SURCHARGES.map(sc => (
+                          <tr key={sc.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+                            <td className="p-3">
+                              <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{sc.name}</p>
+                              <p className="text-xs" style={{ color: theme.text.muted }}>{sc.description}</p>
+                            </td>
+                            <td className="p-3 hidden md:table-cell"><span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.secondary }}>{sc.category}</span></td>
+                            <td className="p-3"><span className="text-sm capitalize" style={{ color: theme.text.secondary }}>{sc.type.replace('_', '/')}</span></td>
+                            <td className="p-3"><span className="font-medium" style={{ color: theme.accent.primary }}>{sc.type === 'percentage' ? `${sc.value}%` : sc.type === 'per_day' && sc.tiers ? 'Tiered' : `GH₵ ${sc.value}`}</span></td>
+                            <td className="p-3">
+                              <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: sc.active ? '#10b98115' : '#ef444415', color: sc.active ? '#10b981' : '#ef4444' }}>{sc.active ? 'Active' : 'Inactive'}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {activeSubMenu === 'Volume Discounts' && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      {VOLUME_DISCOUNT_TIERS.map((vt, i) => (
+                        <div key={vt.label} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                          <p className="font-semibold" style={{ color: theme.text.primary }}>{vt.label}</p>
+                          <p className="text-xs mb-2" style={{ color: theme.text.muted }}>{vt.min}–{vt.max === Infinity ? '∞' : vt.max} pkgs/mo</p>
+                          <p className="text-3xl font-bold" style={{ color: i === 0 ? theme.text.muted : '#10b981' }}>{vt.discount}%</p>
+                          <p className="text-xs" style={{ color: theme.text.muted }}>discount</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="rounded-2xl border p-5" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Free Storage Days by Tier</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        {Object.entries(STORAGE_FREE_DAYS).map(([tier, days]) => (
+                          <div key={tier} className="p-3 rounded-xl border text-center" style={{ borderColor: theme.border.primary }}>
+                            <p className="text-xs capitalize mb-1" style={{ color: theme.text.muted }}>{tier}</p>
+                            <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{days}</p>
+                            <p className="text-xs" style={{ color: theme.text.muted }}>days free</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeSubMenu === 'Partner Overrides' && (
+                  <div className="space-y-4">
+                    {PARTNER_PRICING_OVERRIDES.map(pp => (
+                      <div key={pp.partnerId} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                        <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+                          <div className="flex items-center gap-3">
+                            <span className="text-2xl">{pp.logo}</span>
+                            <div>
+                              <p className="font-semibold" style={{ color: theme.text.primary }}>{pp.partnerName}</p>
+                              <span className="text-xs px-2 py-0.5 rounded-full capitalize" style={{ backgroundColor: TIERS[pp.tier]?.bg, color: TIERS[pp.tier]?.color }}>{pp.tier}</span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm" style={{ color: theme.text.muted }}>Volume Discount</p>
+                            <p className="text-xl font-bold" style={{ color: '#10b981' }}>{pp.volumeDiscount}%</p>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 text-sm">
+                            {pp.customRates ? Object.entries(pp.customRates).map(([sz, price]) => (
+                              <div key={sz} className="p-2 rounded-lg text-center" style={{ backgroundColor: theme.bg.tertiary }}>
+                                <p className="text-xs" style={{ color: theme.text.muted }}>{sz}</p>
+                                <p className="font-bold" style={{ color: theme.accent.primary }}>GH₵ {price}</p>
+                              </div>
+                            )) : <span className="col-span-4 text-sm" style={{ color: theme.text.muted }}>Standard public pricing</span>}
+                            <div className="p-2 rounded-lg text-center" style={{ backgroundColor: theme.bg.tertiary }}>
+                              <p className="text-xs" style={{ color: theme.text.muted }}>COD Rate</p>
+                              <p className="font-bold" style={{ color: theme.text.primary }}>{pp.codRate}%</p>
+                            </div>
+                            <div className="p-2 rounded-lg text-center" style={{ backgroundColor: theme.bg.tertiary }}>
+                              <p className="text-xs" style={{ color: theme.text.muted }}>Free Storage</p>
+                              <p className="font-bold" style={{ color: theme.text.primary }}>{pp.freeStorageDays} days</p>
+                            </div>
+                            <div className="p-2 rounded-lg text-center" style={{ backgroundColor: theme.bg.tertiary }}>
+                              <p className="text-xs" style={{ color: theme.text.muted }}>Min/Month</p>
+                              <p className="font-bold" style={{ color: theme.text.primary }}>{pp.monthlyMinimum || '—'}</p>
+                            </div>
+                          </div>
+                          {pp.notes && <p className="text-xs mt-3 italic" style={{ color: theme.text.muted }}>{pp.notes}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -4188,7 +4828,10 @@ export default function LocQarERP() {
                 <h1 className="text-xl md:text-2xl font-bold mb-6" style={{ color: theme.text.primary }}>Settings</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
                   <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                    <h2 className="text-lg font-semibold mb-4" style={{ color: theme.text.primary }}>Theme</h2>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Sun size={20} style={{ color: theme.accent.primary }} />
+                      <h2 className="text-lg font-semibold" style={{ color: theme.text.primary }}>Theme</h2>
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                       <button onClick={() => setThemeName('light')} className="p-4 rounded-xl border-2" style={{ backgroundColor: '#fff', borderColor: themeName === 'light' ? theme.accent.primary : '#e5e5e5' }}>
                         <div className="flex items-center gap-2 mb-2"><Sun size={20} className="text-amber-500" /><span className="font-semibold text-gray-900">Light</span></div>
@@ -4201,7 +4844,10 @@ export default function LocQarERP() {
                     </div>
                   </div>
                   <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                    <h2 className="text-lg font-semibold mb-4" style={{ color: theme.text.primary }}>Switch User (Demo)</h2>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Users size={20} style={{ color: theme.accent.primary }} />
+                      <h2 className="text-lg font-semibold" style={{ color: theme.text.primary }}>Switch User (Demo)</h2>
+                    </div>
                     <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
                       {staffData.map(s => (
                         <button key={s.id} onClick={() => { setCurrentUser({ name: s.name, email: s.email, role: s.role }); addToast({ type: 'success', message: `Switched to ${s.name}` }); }} className="p-3 rounded-xl border text-left" style={{ backgroundColor: theme.bg.tertiary, borderColor: currentUser.email === s.email ? theme.accent.primary : theme.border.primary }}>
@@ -4212,22 +4858,94 @@ export default function LocQarERP() {
                     </div>
                   </div>
                   <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                    <h2 className="text-lg font-semibold mb-4" style={{ color: theme.text.primary }}>Keyboard Shortcuts</h2>
-                    <button onClick={() => setShowShortcuts(true)} className="w-full py-3 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
-                      <Keyboard size={16} className="inline mr-2" /> View All Shortcuts
-                    </button>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Bell size={20} style={{ color: theme.accent.primary }} />
+                      <h2 className="text-lg font-semibold" style={{ color: theme.text.primary }}>Notifications</h2>
+                    </div>
+                    <div className="space-y-3">
+                      {[
+                        ['Email Notifications', 'Receive email for critical alerts', true],
+                        ['SMS Alerts', 'SMS for SLA breaches and urgent events', true],
+                        ['Push Notifications', 'Browser push for real-time updates', false],
+                        ['Weekly Report', 'Summary email every Monday', true],
+                      ].map(([label, desc, enabled]) => (
+                        <div key={label} className="flex items-center justify-between py-2">
+                          <div>
+                            <p className="text-sm" style={{ color: theme.text.primary }}>{label}</p>
+                            <p className="text-xs" style={{ color: theme.text.muted }}>{desc}</p>
+                          </div>
+                          <div className="w-10 h-6 rounded-full cursor-pointer flex items-center px-0.5" style={{ backgroundColor: enabled ? '#10b981' : theme.border.primary }}>
+                            <div className="w-5 h-5 rounded-full bg-white transition-transform" style={{ transform: enabled ? 'translateX(16px)' : 'translateX(0)' }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                    <h2 className="text-lg font-semibold mb-4" style={{ color: theme.text.primary }}>Security</h2>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Shield size={20} style={{ color: theme.accent.primary }} />
+                      <h2 className="text-lg font-semibold" style={{ color: theme.text.primary }}>Security</h2>
+                    </div>
                     <div className="space-y-3">
                       <button className="w-full flex items-center justify-between py-3 px-4 rounded-xl border" style={{ borderColor: theme.border.primary }}>
-                        <span style={{ color: theme.text.primary }}>Two-Factor Authentication</span>
+                        <div className="flex items-center gap-3">
+                          <Lock size={16} style={{ color: theme.text.muted }} />
+                          <span style={{ color: theme.text.primary }}>Two-Factor Authentication</span>
+                        </div>
                         <span className="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-500">Not Set</span>
                       </button>
                       <button className="w-full flex items-center justify-between py-3 px-4 rounded-xl border" style={{ borderColor: theme.border.primary }}>
-                        <span style={{ color: theme.text.primary }}>Change Password</span>
+                        <div className="flex items-center gap-3">
+                          <Key size={16} style={{ color: theme.text.muted }} />
+                          <span style={{ color: theme.text.primary }}>Change Password</span>
+                        </div>
                         <ChevronRight size={16} style={{ color: theme.text.muted }} />
                       </button>
+                      <button className="w-full flex items-center justify-between py-3 px-4 rounded-xl border" style={{ borderColor: theme.border.primary }}>
+                        <div className="flex items-center gap-3">
+                          <History size={16} style={{ color: theme.text.muted }} />
+                          <span style={{ color: theme.text.primary }}>Active Sessions</span>
+                        </div>
+                        <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: '#10b98115', color: '#10b981' }}>1 active</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Keyboard size={20} style={{ color: theme.accent.primary }} />
+                      <h2 className="text-lg font-semibold" style={{ color: theme.text.primary }}>Keyboard Shortcuts</h2>
+                    </div>
+                    <button onClick={() => setShowShortcuts(true)} className="w-full py-3 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+                      <Keyboard size={16} className="inline mr-2" /> View All Shortcuts
+                    </button>
+                    <div className="mt-4 space-y-2">
+                      {[['Ctrl+K', 'Search'], ['Ctrl+/', 'Shortcuts'], ['Ctrl+E', 'Export']].map(([key, desc]) => (
+                        <div key={key} className="flex items-center justify-between">
+                          <span className="text-sm" style={{ color: theme.text.secondary }}>{desc}</span>
+                          <kbd className="px-2 py-1 text-xs rounded border font-mono" style={{ borderColor: theme.border.primary, color: theme.text.muted }}>{key}</kbd>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Info size={20} style={{ color: theme.accent.primary }} />
+                      <h2 className="text-lg font-semibold" style={{ color: theme.text.primary }}>About</h2>
+                    </div>
+                    <div className="space-y-3">
+                      {[
+                        ['Application', 'LocQar ERP Admin Portal'],
+                        ['Version', '2.1.0'],
+                        ['Environment', 'Production'],
+                        ['Last Updated', '2024-01-15'],
+                        ['Terminals', `${terminalsData.length} active`],
+                        ['Staff', `${staffData.length} users`],
+                      ].map(([label, value]) => (
+                        <div key={label} className="flex items-center justify-between">
+                          <span className="text-sm" style={{ color: theme.text.muted }}>{label}</span>
+                          <span className="text-sm font-medium" style={{ color: theme.text.primary }}>{value}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
