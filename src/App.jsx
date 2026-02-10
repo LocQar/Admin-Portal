@@ -142,11 +142,43 @@ const lockersData = [
 ];
 
 const terminalsData = [
-  { id: 'TRM-001', name: 'Achimota Mall', location: 'Achimota', totalLockers: 120, available: 45, occupied: 68, maintenance: 7, status: 'online', lat: 5.6145, lng: -0.2270 },
-  { id: 'TRM-002', name: 'Accra Mall', location: 'Tetteh Quarshie', totalLockers: 85, available: 32, occupied: 50, maintenance: 3, status: 'online', lat: 5.6280, lng: -0.1750 },
-  { id: 'TRM-003', name: 'Kotoka T3', location: 'Airport', totalLockers: 70, available: 28, occupied: 40, maintenance: 2, status: 'online', lat: 5.6052, lng: -0.1668 },
-  { id: 'TRM-004', name: 'West Hills Mall', location: 'Weija', totalLockers: 60, available: 20, occupied: 35, maintenance: 5, status: 'maintenance', lat: 5.5580, lng: -0.3150 },
-  { id: 'TRM-005', name: 'Junction Mall', location: 'Nungua', totalLockers: 50, available: 18, occupied: 30, maintenance: 2, status: 'online', lat: 5.5920, lng: -0.0780 },
+  { id: 'TRM-001', name: 'Achimota Mall', location: 'Achimota', region: 'Greater Accra', city: 'Achimota', totalLockers: 120, available: 45, occupied: 68, maintenance: 7, status: 'online', lat: 5.6145, lng: -0.2270 },
+  { id: 'TRM-002', name: 'Accra Mall', location: 'Tetteh Quarshie', region: 'Greater Accra', city: 'Accra', totalLockers: 85, available: 32, occupied: 50, maintenance: 3, status: 'online', lat: 5.6280, lng: -0.1750 },
+  { id: 'TRM-003', name: 'Kotoka T3', location: 'Airport', region: 'Greater Accra', city: 'Airport', totalLockers: 70, available: 28, occupied: 40, maintenance: 2, status: 'online', lat: 5.6052, lng: -0.1668 },
+  { id: 'TRM-004', name: 'West Hills Mall', location: 'Weija', region: 'Greater Accra', city: 'Weija', totalLockers: 60, available: 20, occupied: 35, maintenance: 5, status: 'maintenance', lat: 5.5580, lng: -0.3150 },
+  { id: 'TRM-005', name: 'Junction Mall', location: 'Nungua', region: 'Greater Accra', city: 'Nungua', totalLockers: 50, available: 18, occupied: 30, maintenance: 2, status: 'online', lat: 5.5920, lng: -0.0780 },
+];
+
+// LocQar Address System: GHA-GRT-ACC-LQ015
+// Format: [Country 3]-[Region 3]-[City 3]-[Locker ID]
+const getTerminalAddress = (terminal) => {
+  const country = 'GHA';
+  const region = (terminal.region || 'Greater Accra').substring(0, 3).toUpperCase();
+  const city = (terminal.city || terminal.location).substring(0, 3).toUpperCase();
+  const num = terminal.id.replace('TRM-', '');
+  return `${country}-${region}-${city}-LQ${num}`;
+};
+
+const getLockerAddress = (lockerId, terminalName) => {
+  const terminal = terminalsData.find(t => t.name === terminalName);
+  if (!terminal) return null;
+  const country = 'GHA';
+  const region = (terminal.region || 'Greater Accra').substring(0, 3).toUpperCase();
+  const city = (terminal.city || terminal.location).substring(0, 3).toUpperCase();
+  const num = lockerId.replace(/[A-Z]-/i, '').padStart(3, '0');
+  return `${country}-${region}-${city}-LQ${num}`;
+};
+
+// Phone-to-Locker Pinning: customers pin their phone to their preferred locker location
+const phonePinData = [
+  { phone: '+233551399333', customer: 'Joe Doe', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'GHA-GRT-ACH-LQ001', pinnedAt: '2024-01-10' },
+  { phone: '+233557821456', customer: 'Jane Doe', pinnedTerminal: 'Accra Mall', pinnedAddress: 'GHA-GRT-ACC-LQ002', pinnedAt: '2024-01-12' },
+  { phone: '+233549876321', customer: 'Michael Mensah', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'GHA-GRT-ACH-LQ001', pinnedAt: '2023-12-05' },
+  { phone: '+233551234567', customer: 'Sarah Asante', pinnedTerminal: 'Kotoka T3', pinnedAddress: 'GHA-GRT-AIR-LQ003', pinnedAt: '2024-01-08' },
+  { phone: '+233559876543', customer: 'Kwame Boateng', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'GHA-GRT-ACH-LQ001', pinnedAt: '2023-11-20' },
+  { phone: '+233542345678', customer: 'Ama Serwaa', pinnedTerminal: 'Accra Mall', pinnedAddress: 'GHA-GRT-ACC-LQ002', pinnedAt: '2024-01-14' },
+  { phone: '+233551112222', customer: 'Kofi Mensah', pinnedTerminal: 'West Hills Mall', pinnedAddress: 'GHA-GRT-WEI-LQ004', pinnedAt: '2024-01-03' },
+  { phone: '+233553334444', customer: 'Efua Owusu', pinnedTerminal: 'Junction Mall', pinnedAddress: 'GHA-GRT-NUN-LQ005', pinnedAt: '2023-12-18' },
 ];
 
 const customersData = [
@@ -642,9 +674,9 @@ const GlobalSearchModal = ({ isOpen, onClose, theme, onNavigate }) => {
     if (!query || query.length < 2) return { packages: [], customers: [], lockers: [] };
     const q = query.toLowerCase();
     return {
-      packages: packagesData.filter(p => p.waybill.toLowerCase().includes(q) || p.customer.toLowerCase().includes(q)).slice(0, 5),
-      customers: customersData.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)).slice(0, 3),
-      lockers: lockersData.filter(l => l.id.toLowerCase().includes(q) || l.terminal.toLowerCase().includes(q)).slice(0, 3),
+      packages: packagesData.filter(p => p.waybill.toLowerCase().includes(q) || p.customer.toLowerCase().includes(q) || p.phone.includes(q)).slice(0, 5),
+      customers: customersData.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.phone.includes(q)).slice(0, 3),
+      lockers: lockersData.filter(l => l.id.toLowerCase().includes(q) || l.terminal.toLowerCase().includes(q) || (getLockerAddress(l.id, l.terminal) || '').toLowerCase().includes(q)).slice(0, 3),
     };
   }, [query]);
 
@@ -662,7 +694,7 @@ const GlobalSearchModal = ({ isOpen, onClose, theme, onNavigate }) => {
       <div className="relative w-full max-w-2xl rounded-2xl border shadow-2xl" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center gap-3 p-4 border-b" style={{ borderColor: theme.border.primary }}>
           <Search size={20} style={{ color: theme.text.muted }} />
-          <input type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search packages, customers, lockers..." autoFocus className="flex-1 bg-transparent outline-none text-lg" style={{ color: theme.text.primary }} />
+          <input type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search by phone, waybill, address code, name..." autoFocus className="flex-1 bg-transparent outline-none text-lg" style={{ color: theme.text.primary }} />
           <kbd className="px-2 py-1 rounded text-xs" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted }}>ESC</kbd>
         </div>
         {query.length >= 2 && (
@@ -701,7 +733,7 @@ const GlobalSearchModal = ({ isOpen, onClose, theme, onNavigate }) => {
                     {results.lockers.map(l => (
                       <button key={l.id} onClick={() => { onNavigate('lockers', l); onClose(); }} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-left">
                         <Grid3X3 size={18} style={{ color: '#10b981' }} />
-                        <div className="flex-1"><p className="font-mono text-sm" style={{ color: theme.text.primary }}>{l.id}</p><p className="text-xs" style={{ color: theme.text.muted }}>{l.terminal}</p></div>
+                        <div className="flex-1"><p className="font-mono text-sm" style={{ color: theme.text.primary }}>{l.id}</p><p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{getLockerAddress(l.id, l.terminal)}</p><p className="text-xs" style={{ color: theme.text.muted }}>{l.terminal}</p></div>
                         <StatusBadge status={l.status} />
                       </button>
                     ))}
@@ -1023,7 +1055,7 @@ const PackageDetailDrawer = ({ pkg, onClose, theme, userRole, addToast }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Grid3X3 size={20} className="text-emerald-500" />
-              <div><p className="text-sm font-medium text-emerald-500">Locker {pkg.locker}</p><p className="text-xs" style={{ color: theme.text.muted }}>{pkg.destination}</p></div>
+              <div><p className="text-sm font-medium text-emerald-500">Locker {pkg.locker}</p><p className="text-xs" style={{ color: theme.text.muted }}>{pkg.destination}</p><p className="text-xs font-mono" style={{ color: '#10b981' }}>{getLockerAddress(pkg.locker, pkg.destination)}</p></div>
             </div>
             {pkg.daysInLocker > 0 && <div className="flex items-center gap-1"><Timer size={14} className={pkg.daysInLocker > 5 ? 'text-red-500' : 'text-amber-500'} /><span className={`text-sm ${pkg.daysInLocker > 5 ? 'text-red-500' : 'text-amber-500'}`}>{pkg.daysInLocker}d</span></div>}
           </div>
@@ -1048,8 +1080,8 @@ const PackageDetailDrawer = ({ pkg, onClose, theme, userRole, addToast }) => {
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
               <h3 className="text-xs font-semibold uppercase mb-3" style={{ color: theme.text.muted }}>Details</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                {[['Destination', pkg.destination], ['Service', pkg.product], ['Value', `GH₵ ${pkg.value}`], ['Weight', pkg.weight], ['Size', pkg.size], ['Method', DELIVERY_METHODS[pkg.deliveryMethod]?.label]].map(([l, v]) => (
-                  <div key={l}><p className="text-xs" style={{ color: theme.text.muted }}>{l}</p><p style={{ color: theme.text.primary }}>{v}</p></div>
+                {[['Destination', pkg.destination], ['Locker Address', (() => { const t = terminalsData.find(t => t.name === pkg.destination); return t ? (pkg.locker !== '-' ? getLockerAddress(pkg.locker, pkg.destination) : getTerminalAddress(t)) : '—'; })()], ['Service', pkg.product], ['Value', `GH₵ ${pkg.value}`], ['Weight', pkg.weight], ['Size', pkg.size], ['Method', DELIVERY_METHODS[pkg.deliveryMethod]?.label]].map(([l, v]) => (
+                  <div key={l}><p className="text-xs" style={{ color: theme.text.muted }}>{l}</p><p className={l === 'Locker Address' ? 'font-mono' : ''} style={{ color: l === 'Locker Address' ? theme.accent.primary : theme.text.primary }}>{v}</p></div>
                 ))}
               </div>
             </div>
@@ -1469,10 +1501,13 @@ export default function LocQarERP() {
                                 </td>
                                 <td className="p-4 hidden lg:table-cell" onClick={() => setSelectedPackage(pkg)}><DeliveryMethodBadge method={pkg.deliveryMethod} /></td>
                                 <td className="p-4 hidden md:table-cell" onClick={() => setSelectedPackage(pkg)}>
-                                  <div className="flex items-center gap-2">
-                                    <MapPin size={14} style={{ color: theme.text.muted }} />
-                                    <span className="text-sm" style={{ color: theme.text.secondary }}>{pkg.destination}</span>
-                                    {pkg.locker !== '-' && <span className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}>{pkg.locker}</span>}
+                                  <div>
+                                    <div className="flex items-center gap-2">
+                                      <MapPin size={14} style={{ color: theme.text.muted }} />
+                                      <span className="text-sm" style={{ color: theme.text.secondary }}>{pkg.destination}</span>
+                                      {pkg.locker !== '-' && <span className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}>{pkg.locker}</span>}
+                                    </div>
+                                    {(() => { const t = terminalsData.find(t => t.name === pkg.destination); return t ? <p className="text-xs font-mono mt-0.5" style={{ color: theme.accent.primary }}>{pkg.locker !== '-' ? getLockerAddress(pkg.locker, pkg.destination) : getTerminalAddress(t)}</p> : null; })()}
                                   </div>
                                 </td>
                                 <td className="p-4" onClick={() => setSelectedPackage(pkg)}><StatusBadge status={pkg.status} /></td>
@@ -2539,7 +2574,10 @@ export default function LocQarERP() {
                         <tbody>
                           {lockersData.map(l => (
                             <tr key={l.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
-                              <td className="p-3"><span className="font-mono font-bold" style={{ color: theme.text.primary }}>{l.id}</span></td>
+                              <td className="p-3">
+                                <span className="font-mono font-bold" style={{ color: theme.text.primary }}>{l.id}</span>
+                                <p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{getLockerAddress(l.id, l.terminal)}</p>
+                              </td>
                               <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{l.terminal}</span></td>
                               <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{l.size}</span></td>
                               <td className="p-3"><StatusBadge status={l.status} /></td>
@@ -2703,7 +2741,8 @@ export default function LocQarERP() {
                             </div>
                             <div>
                               <p className="font-semibold" style={{ color: theme.text.primary }}>{t.name}</p>
-                              <p className="text-xs flex items-center gap-1" style={{ color: theme.text.muted }}><MapPin size={12} />{t.location} &bull; {t.id}</p>
+                              <p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{getTerminalAddress(t)}</p>
+                              <p className="text-xs flex items-center gap-1" style={{ color: theme.text.muted }}><MapPin size={12} />{t.location} &bull; {phonePinData.filter(p => p.pinnedTerminal === t.name).length} pinned users</p>
                             </div>
                           </div>
                           <StatusBadge status={t.status} />
@@ -2966,7 +3005,10 @@ export default function LocQarERP() {
                               <tr key={p.id} className="hover:bg-white/5 cursor-pointer" style={{ borderBottom: `1px solid ${theme.border.primary}` }} onClick={() => setSelectedPackage(p)}>
                                 <td className="p-3"><span className="font-mono text-sm" style={{ color: theme.accent.primary }}>{p.waybill}</span></td>
                                 <td className="p-3"><span className="text-sm" style={{ color: theme.text.primary }}>{p.customer}</span></td>
-                                <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{p.destination}</span></td>
+                                <td className="p-3 hidden md:table-cell">
+                                  <span className="text-sm" style={{ color: theme.text.secondary }}>{p.destination}</span>
+                                  {(() => { const t = terminalsData.find(t => t.name === p.destination); return t ? <p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{getTerminalAddress(t)}</p> : null; })()}
+                                </td>
                                 <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{p.size}</span></td>
                                 <td className="p-3"><StatusBadge status={p.status} /></td>
                                 <td className="p-3 hidden lg:table-cell"><span className="text-xs" style={{ color: theme.text.muted }}>{DELIVERY_METHODS[p.deliveryMethod]?.label}</span></td>
@@ -3084,7 +3126,9 @@ export default function LocQarERP() {
                           </tr>
                         </thead>
                         <tbody>
-                          {customersData.map(c => (
+                          {customersData.map(c => {
+                            const pin = phonePinData.find(p => p.phone === c.phone);
+                            return (
                             <tr key={c.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                               <td className="p-4">
                                 <div className="flex items-center gap-3">
@@ -3092,6 +3136,7 @@ export default function LocQarERP() {
                                   <div>
                                     <p style={{ color: theme.text.primary }}>{c.name}</p>
                                     <p className="text-sm" style={{ color: theme.text.muted }}>{c.email}</p>
+                                    {pin && <p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{pin.pinnedAddress}</p>}
                                   </div>
                                 </div>
                               </td>
@@ -3100,7 +3145,7 @@ export default function LocQarERP() {
                               <td className="p-4 hidden md:table-cell"><span style={{ color: theme.text.primary }}>GH₵ {c.totalSpent.toLocaleString()}</span></td>
                               <td className="p-4"><StatusBadge status={c.status} /></td>
                             </tr>
-                          ))}
+                          ); })}
                         </tbody>
                       </table>
                     )}
@@ -3992,12 +4037,19 @@ export default function LocQarERP() {
                           </div>
                           <div className="grid grid-cols-2 gap-4">
                             <div><label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Customer Name *</label><input placeholder="Full name" className="w-full px-3 py-2.5 rounded-xl border text-sm bg-transparent" style={{ borderColor: theme.border.primary, color: theme.text.primary }} /></div>
-                            <div><label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Phone Number *</label><input placeholder="+233..." className="w-full px-3 py-2.5 rounded-xl border text-sm bg-transparent" style={{ borderColor: theme.border.primary, color: theme.text.primary }} /></div>
+                            <div>
+                              <label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Phone Number (Address) *</label>
+                              <input placeholder="+233..." className="w-full px-3 py-2.5 rounded-xl border text-sm bg-transparent" style={{ borderColor: theme.border.primary, color: theme.text.primary }} onChange={e => { const pin = phonePinData.find(p => p.phone === e.target.value); if (pin) addToast({ type: 'info', message: `${pin.customer} has pinned locker: ${pin.pinnedAddress} (${pin.pinnedTerminal})` }); }} />
+                              <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Phone resolves to pinned locker address</p>
+                            </div>
                           </div>
                           <div className="grid grid-cols-2 gap-4">
-                            <div><label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Destination Terminal *</label>
+                            <div>
+                              <label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Destination Terminal *</label>
                               <select className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary, color: theme.text.primary }}>
-                                <option value="">Select terminal</option>{terminalsData.filter(t => t.status === 'online').map(t => <option key={t.id} value={t.id}>{t.name} — {t.available} lockers free</option>)}</select></div>
+                                <option value="">Select terminal</option>{terminalsData.filter(t => t.status === 'online').map(t => <option key={t.id} value={t.id}>{t.name} — {getTerminalAddress(t)}</option>)}</select>
+                              <p className="text-xs mt-1 font-mono" style={{ color: theme.accent.primary }}>Address auto-fills from pinned phone</p>
+                            </div>
                             <div><label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Package Value (GH₵)</label><input type="number" placeholder="0.00" className="w-full px-3 py-2.5 rounded-xl border text-sm bg-transparent" style={{ borderColor: theme.border.primary, color: theme.text.primary }} /></div>
                           </div>
                           <div className="grid grid-cols-2 gap-4">
@@ -4089,7 +4141,7 @@ export default function LocQarERP() {
                     <div className="flex gap-3">
                       <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
                         <Search size={18} style={{ color: theme.text.muted }} />
-                        <input placeholder="Search by Order ID, Waybill, or Customer name..." className="flex-1 bg-transparent outline-none text-sm" style={{ color: theme.text.primary }} />
+                        <input placeholder="Search by Order ID, Waybill, Phone, or Locker Address..." className="flex-1 bg-transparent outline-none text-sm" style={{ color: theme.text.primary }} />
                       </div>
                       <button className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Filter size={16} />Filters</button>
                       <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={16} />Export</button>
@@ -4120,7 +4172,10 @@ export default function LocQarERP() {
                           <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: s.status === 'expired' ? 'rgba(239,68,68,0.03)' : s.daysInLocker >= 3 && s.status === 'delivered_to_locker' ? 'rgba(245,158,11,0.03)' : 'transparent' }}>
                             <td className="p-3"><span className="font-mono font-medium text-sm" style={{ color: theme.text.primary }}>{s.id}</span><br/><span className="text-xs font-mono" style={{ color: theme.text.muted }}>{s.waybill}</span></td>
                             <td className="p-3"><span className="text-sm" style={{ color: theme.text.primary }}>{s.customer}</span><br/><span className="text-xs" style={{ color: theme.text.muted }}>{s.phone}</span></td>
-                            <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{s.destination}</span></td>
+                            <td className="p-3 hidden md:table-cell">
+                              <span className="text-sm" style={{ color: theme.text.secondary }}>{s.destination}</span>
+                              {(() => { const t = terminalsData.find(t => t.name === s.destination); return t ? <p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{s.locker !== '-' ? getLockerAddress(s.locker, s.destination) : getTerminalAddress(t)}</p> : null; })()}
+                            </td>
                             <td className="p-3"><StatusBadge status={s.status} /></td>
                             <td className="p-3 hidden md:table-cell">{s.locker !== '-' ? <span className="font-mono text-sm px-2 py-0.5 rounded" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}>{s.locker}</span> : '—'}</td>
                             <td className="p-3 hidden lg:table-cell">{s.pickupCode ? <span className="font-mono font-bold tracking-wider" style={{ color: '#10b981' }}>{s.pickupCode}</span> : '—'}</td>
@@ -4152,7 +4207,7 @@ export default function LocQarERP() {
                           <div key={t.id} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                             <div className="p-5">
                               <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-3"><Building2 size={20} style={{ color: theme.accent.primary }} /><div><p className="font-semibold" style={{ color: theme.text.primary }}>{t.name}</p><p className="text-xs" style={{ color: theme.text.muted }}>{t.location}</p></div></div>
+                                <div className="flex items-center gap-3"><Building2 size={20} style={{ color: theme.accent.primary }} /><div><p className="font-semibold" style={{ color: theme.text.primary }}>{t.name}</p><p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{getTerminalAddress(t)}</p><p className="text-xs" style={{ color: theme.text.muted }}>{t.location}</p></div></div>
                                 <StatusBadge status={t.status} />
                               </div>
                               <div className="mb-4">
