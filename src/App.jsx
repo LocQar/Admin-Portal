@@ -152,33 +152,29 @@ const terminalsData = [
 // LocQar Address System: GHA-GRT-ACC-LQ015
 // Format: [Country 3]-[Region 3]-[City 3]-[Locker ID]
 const getTerminalAddress = (terminal) => {
-  const country = 'GHA';
-  const region = (terminal.region || 'Greater Accra').substring(0, 3).toUpperCase();
   const city = (terminal.city || terminal.location).substring(0, 3).toUpperCase();
   const num = terminal.id.replace('TRM-', '');
-  return `${country}-${region}-${city}-LQ${num}`;
+  return `${city}-LQ${num}`;
 };
 
 const getLockerAddress = (lockerId, terminalName) => {
   const terminal = terminalsData.find(t => t.name === terminalName);
   if (!terminal) return null;
-  const country = 'GHA';
-  const region = (terminal.region || 'Greater Accra').substring(0, 3).toUpperCase();
   const city = (terminal.city || terminal.location).substring(0, 3).toUpperCase();
   const num = lockerId.replace(/[A-Z]-/i, '').padStart(3, '0');
-  return `${country}-${region}-${city}-LQ${num}`;
+  return `${city}-LQ${num}`;
 };
 
 // Phone-to-Locker Pinning: customers pin their phone to their preferred locker location
 const phonePinData = [
-  { phone: '+233551399333', customer: 'Joe Doe', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'GHA-GRT-ACH-LQ001', pinnedAt: '2024-01-10' },
-  { phone: '+233557821456', customer: 'Jane Doe', pinnedTerminal: 'Accra Mall', pinnedAddress: 'GHA-GRT-ACC-LQ002', pinnedAt: '2024-01-12' },
-  { phone: '+233549876321', customer: 'Michael Mensah', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'GHA-GRT-ACH-LQ001', pinnedAt: '2023-12-05' },
-  { phone: '+233551234567', customer: 'Sarah Asante', pinnedTerminal: 'Kotoka T3', pinnedAddress: 'GHA-GRT-AIR-LQ003', pinnedAt: '2024-01-08' },
-  { phone: '+233559876543', customer: 'Kwame Boateng', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'GHA-GRT-ACH-LQ001', pinnedAt: '2023-11-20' },
-  { phone: '+233542345678', customer: 'Ama Serwaa', pinnedTerminal: 'Accra Mall', pinnedAddress: 'GHA-GRT-ACC-LQ002', pinnedAt: '2024-01-14' },
-  { phone: '+233551112222', customer: 'Kofi Mensah', pinnedTerminal: 'West Hills Mall', pinnedAddress: 'GHA-GRT-WEI-LQ004', pinnedAt: '2024-01-03' },
-  { phone: '+233553334444', customer: 'Efua Owusu', pinnedTerminal: 'Junction Mall', pinnedAddress: 'GHA-GRT-NUN-LQ005', pinnedAt: '2023-12-18' },
+  { phone: '+233551399333', customer: 'Joe Doe', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'ACH-LQ001', pinnedAt: '2024-01-10' },
+  { phone: '+233557821456', customer: 'Jane Doe', pinnedTerminal: 'Accra Mall', pinnedAddress: 'ACC-LQ002', pinnedAt: '2024-01-12' },
+  { phone: '+233549876321', customer: 'Michael Mensah', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'ACH-LQ001', pinnedAt: '2023-12-05' },
+  { phone: '+233551234567', customer: 'Sarah Asante', pinnedTerminal: 'Kotoka T3', pinnedAddress: 'AIR-LQ003', pinnedAt: '2024-01-08' },
+  { phone: '+233559876543', customer: 'Kwame Boateng', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'ACH-LQ001', pinnedAt: '2023-11-20' },
+  { phone: '+233542345678', customer: 'Ama Serwaa', pinnedTerminal: 'Accra Mall', pinnedAddress: 'ACC-LQ002', pinnedAt: '2024-01-14' },
+  { phone: '+233551112222', customer: 'Kofi Mensah', pinnedTerminal: 'West Hills Mall', pinnedAddress: 'WEI-LQ004', pinnedAt: '2024-01-03' },
+  { phone: '+233553334444', customer: 'Efua Owusu', pinnedTerminal: 'Junction Mall', pinnedAddress: 'NUN-LQ005', pinnedAt: '2023-12-18' },
 ];
 
 const customersData = [
