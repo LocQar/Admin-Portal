@@ -6,503 +6,38 @@ import { LayoutDashboard, Package, Users, Settings, ChevronDown, ChevronRight, S
 const ThemeContext = createContext();
 const ToastContext = createContext();
 
-// ============ DESIGN TOKENS ============
-
-// --- Core Palette ---
-const palette = {
-  // Neutrals
-  white: '#FFFFFF',
-  black: '#000000',
-  // Dark scale
-  navy900: '#0A1628',
-  navy800: '#152238',
-  navy700: '#1E3A5F',
-  navy600: '#2A4A73',
-  navy500: '#3D6098',
-  navy400: '#5E7290',
-  // Light scale
-  cream100: '#F5F1E8',
-  cream200: '#EDE9E0',
-  cream300: '#E2DED5',
-  cream400: '#D5D1C8',
-  // Gray scale
-  gray900: '#111827',
-  gray800: '#1F2937',
-  gray700: '#374151',
-  gray600: '#4B5563',
-  gray500: '#6b7280',
-  gray400: '#8B9AAF',
-  gray300: '#9CA3AF',
-  gray200: '#D1D5DB',
-  gray100: '#F3F4F6',
-  // Accent (LocQar Coral)
-  coral600: '#E5503E',
-  coral500: '#FF6B58',
-  coral400: '#FF8A7A',
-  coral300: '#FFB0A5',
-  coral200: '#FFD4CE',
-  coral100: '#FFF1EF',
-  // Semantic
-  emerald600: '#059669',
-  emerald500: '#10b981',
-  emerald400: '#34D399',
-  emerald300: '#6EE7B7',
-  amber600: '#D97706',
-  amber500: '#f59e0b',
-  amber400: '#FBBF24',
-  amber300: '#FCD34D',
-  red600: '#DC2626',
-  red500: '#ef4444',
-  red400: '#FF4D4D',
-  red300: '#FCA5A5',
-  blue600: '#2563EB',
-  blue500: '#3b82f6',
-  blue400: '#60A5FA',
-  blue300: '#93C5FD',
-  indigo500: '#6366f1',
-  violet500: '#8b5cf6',
-  cyan500: '#06b6d4',
-  orange500: '#f97316',
-  // Brand / platform
-  whatsapp: '#25D366',
-  // Member tiers
-  silver: '#a3a3a3',
-  bronze: '#cd7c32',
-  gold: '#f59e0b',
-};
-
-// --- Typography ---
-const typography = {
-  fonts: {
-    primary: "'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace",
-  },
-  fontSizes: {
-    xs: '0.75rem',     // 12px  — tw: text-xs
-    sm: '0.875rem',    // 14px  — tw: text-sm
-    base: '1rem',      // 16px  — tw: text-base
-    lg: '1.125rem',    // 18px  — tw: text-lg
-    xl: '1.25rem',     // 20px  — tw: text-xl
-    '2xl': '1.5rem',   // 24px  — tw: text-2xl
-    '3xl': '1.875rem', // 30px  — tw: text-3xl
-  },
-  fontWeights: {
-    normal: 400,     // tw: font-normal
-    medium: 500,     // tw: font-medium
-    semibold: 600,   // tw: font-semibold
-    bold: 700,       // tw: font-bold
-  },
-  letterSpacing: {
-    tight: '-0.025em',  // tw: tracking-tight
-    normal: '0em',      // tw: tracking-normal
-    wide: '0.025em',    // tw: tracking-wide
-    wider: '0.05em',    // tw: tracking-wider
-    widest: '0.1em',    // tw: tracking-widest (used for uppercase labels)
-  },
-  lineHeight: {
-    none: 1,        // tw: leading-none
-    tight: 1.25,    // tw: leading-tight
-    snug: 1.375,    // tw: leading-snug
-    normal: 1.5,    // tw: leading-normal
-    relaxed: 1.625, // tw: leading-relaxed
-  },
-};
-
-// --- Spacing (4px base grid) ---
-// tw: p-0..p-12 / gap-0..gap-12 / m-0..m-12
-const spacing = {
-  0: '0px',
-  px: '1px',
-  0.5: '0.125rem',  // 2px
-  1: '0.25rem',     // 4px
-  1.5: '0.375rem',  // 6px
-  2: '0.5rem',      // 8px
-  2.5: '0.625rem',  // 10px
-  3: '0.75rem',     // 12px
-  4: '1rem',        // 16px
-  5: '1.25rem',     // 20px
-  6: '1.5rem',      // 24px
-  8: '2rem',        // 32px
-  10: '2.5rem',     // 40px
-  12: '3rem',       // 48px
-};
-
-// --- Radii ---
-const radii = {
-  none: '0px',
-  sm: '4px',       // tw: rounded
-  md: '6px',       // tw: rounded-md
-  lg: '8px',       // tw: rounded-lg
-  xl: '12px',      // tw: rounded-xl
-  '2xl': '16px',   // tw: rounded-2xl
-  '3xl': '24px',   // tw: rounded-3xl
-  full: '9999px',  // tw: rounded-full
-};
-
-// --- Shadows ---
-const shadows = {
-  none: 'none',
-  sm: '0 1px 2px rgba(0,0,0,0.05)',                                         // tw: shadow-sm
-  md: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)',    // tw: shadow-md
-  lg: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',  // tw: shadow-lg
-  xl: '0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)', // tw: shadow-xl
-  '2xl': '0 25px 50px -12px rgba(0,0,0,0.25)',                              // tw: shadow-2xl
-  glow: (color) => `0 0 8px ${color}40`,       // Dynamic glow for progress bars, active states
-  accentGlow: `0 0 12px rgba(255,107,88,0.35)`, // LocQar coral glow
-  innerSm: 'inset 0 1px 2px rgba(0,0,0,0.06)',  // Subtle inset for inputs
-};
-
-// --- Borders (pre-composed strings) ---
-const borders = {
-  // Base
-  thin: (color) => `1px solid ${color}`,
-  medium: (color) => `2px solid ${color}`,
-  // Input states (composed at theme level)
-  inputDefault: (thm) => `1px solid ${thm.border.primary}`,
-  inputFocus: (thm) => `1px solid ${thm.accent.primary}`,
-  inputError: `1px solid ${palette.red500}`,
-  // Cards
-  card: (thm) => `1px solid ${thm.border.primary}`,
-  cardHover: (thm) => `1px solid ${thm.border.secondary}`,
-  cardAccent: (thm) => `1px solid ${thm.accent.border}`,
-  // Status variants
-  statusSuccess: `1px solid ${palette.emerald500}`,
-  statusWarning: `1px solid ${palette.amber500}`,
-  statusError: `1px solid ${palette.red500}`,
-  statusInfo: `1px solid ${palette.blue500}`,
-};
-
-// --- Overlays & Alpha helpers ---
-const alpha = (hex, opacity) => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r},${g},${b},${opacity})`;
-};
-
-const overlays = {
-  backdrop: 'rgba(0,0,0,0.5)',           // tw: bg-black/50 — modal/drawer backdrop
-  light5: 'rgba(255,255,255,0.05)',      // tw: bg-white/5  — subtle hover on dark
-  light10: 'rgba(255,255,255,0.1)',      // tw: bg-white/10 — hover on dark
-  dark5: 'rgba(0,0,0,0.05)',             // subtle hover on light
-  dark10: 'rgba(0,0,0,0.1)',             // hover on light
-  // Status backgrounds (10% opacity)
-  successBg: alpha(palette.emerald500, 0.1),
-  warningBg: alpha(palette.amber500, 0.1),
-  errorBg: alpha(palette.red500, 0.1),
-  infoBg: alpha(palette.blue500, 0.1),
-  // Subtle status backgrounds (3-5% opacity)
-  successSubtle: alpha(palette.emerald500, 0.05),
-  warningSubtle: alpha(palette.amber500, 0.05),
-  errorSubtle: alpha(palette.red500, 0.03),
-  infoSubtle: alpha(palette.blue500, 0.05),
-  // Emphasis status (15-20%)
-  successEmphasis: alpha(palette.emerald500, 0.2),
-  warningEmphasis: alpha(palette.amber500, 0.15),
-  errorEmphasis: alpha(palette.red500, 0.15),
-  infoEmphasis: alpha(palette.blue500, 0.15),
-  // Platform overlays
-  whatsappBg: alpha(palette.whatsapp, 0.1),
-  whatsappSubtle: alpha(palette.whatsapp, 0.05),
-  whatsappEmphasis: alpha(palette.whatsapp, 0.15),
-  // Tier overlays
-  silverBg: alpha(palette.silver, 0.1),
-  bronzeBg: alpha(palette.bronze, 0.1),
-  goldBg: alpha(palette.amber500, 0.1),
-  // Additional semantic
-  violetBg: alpha(palette.violet500, 0.1),
-  indigoBg: alpha(palette.indigo500, 0.1),
-  cyanBg: alpha(palette.cyan500, 0.1),
-  orangeBg: alpha(palette.orange500, 0.1),
-  grayBg: alpha(palette.gray500, 0.1),
-  grayEmphasis: alpha(palette.gray500, 0.2),
-};
-
-// --- Animations & Transitions ---
-const transitions = {
-  // Durations
-  fast: '100ms',      // tw: duration-100 — micro-interactions
-  normal: '150ms',    // tw: duration-150 — default Tailwind
-  moderate: '200ms',  // tw: duration-200 — buttons, toggles
-  slow: '300ms',      // tw: duration-300 — drawers, panels
-  slower: '500ms',    // tw: duration-500 — page transitions
-  // Easing curves
-  easeOut: 'cubic-bezier(0.16, 1, 0.3, 1)',     // Smooth decelerate — drawers, modals
-  easeIn: 'cubic-bezier(0.55, 0.055, 0.675, 0.19)',
-  easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',    // Default — general use
-  spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',  // Bouncy — tooltips, toasts
-  linear: 'linear',
-  // Pre-composed transitions (spread into style={})
-  all: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
-  colors: 'color 150ms, background-color 150ms, border-color 150ms',
-  transform: 'transform 200ms cubic-bezier(0.16, 1, 0.3, 1)',
-  opacity: 'opacity 150ms ease',
-  // Stagger delays (for lists / grid animations)
-  stagger: (index, base = 50) => `${index * base}ms`,
-};
-
-const keyframes = {
-  slideIn: `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`,
-  slideOut: `@keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }`,
-  fadeIn: `@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }`,
-  fadeOut: `@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }`,
-  scaleIn: `@keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }`,
-  pulse: `@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }`,
-  spin: `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`,
-  bounce: `@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }`,
-};
-
-// --- Z-Index Scale ---
-const zIndex = {
-  base: 0,
-  dropdown: 30,     // Menus, popovers
-  sticky: 35,       // Sticky headers, bars
-  actionBar: 40,    // Bulk-action floating bars
-  modal: 50,        // Modals, drawers, overlays
-  toast: 60,        // Toast notifications (above modals)
-};
-
-// ============ THEMES (dark & light, using tokens) ============
+// ============ THEMES ============
 const themes = {
   dark: {
     name: 'dark',
-    bg: { primary: palette.navy900, secondary: palette.navy800, tertiary: palette.navy700, card: palette.navy800, hover: palette.navy700 },
-    border: { primary: 'rgba(255,255,255,0.08)', secondary: 'rgba(255,255,255,0.15)', focus: palette.coral500 },
-    text: { primary: palette.white, secondary: palette.gray400, muted: palette.navy400 },
-    accent: { primary: palette.coral500, secondary: palette.coral400, light: alpha(palette.coral500, 0.12), border: alpha(palette.coral500, 0.3) },
-    font: typography.fonts,
-    status: { success: palette.emerald400, warning: palette.amber500, error: palette.red400, info: palette.blue500 },
-    // Extended: selection & buttons
-    selection: { bg: alpha(palette.coral500, 0.15), border: alpha(palette.coral500, 0.4), text: palette.coral400 },
-    button: {
-      primary: { bg: palette.coral500, text: palette.white, hoverBg: palette.coral600, activeBg: palette.coral600, disabledBg: palette.gray600, disabledText: palette.gray400 },
-      secondary: { bg: 'transparent', text: palette.gray400, border: 'rgba(255,255,255,0.15)', hoverBg: 'rgba(255,255,255,0.05)', activeBg: 'rgba(255,255,255,0.08)' },
-      ghost: { bg: 'transparent', text: palette.gray400, hoverBg: 'rgba(255,255,255,0.05)' },
-      danger: { bg: palette.red500, text: palette.white, hoverBg: palette.red600 },
-    },
-    input: { bg: 'transparent', border: 'rgba(255,255,255,0.08)', focusBorder: palette.coral500, placeholder: palette.navy400, text: palette.white },
-    overlay: { backdrop: overlays.backdrop, glass: 'rgba(21,34,56,0.85)' },
+    bg: { primary: '#0A1628', secondary: '#152238', tertiary: '#1E3A5F', card: '#152238', hover: '#1E3A5F' },
+    border: { primary: 'rgba(255,255,255,0.08)', secondary: 'rgba(255,255,255,0.15)', focus: '#FF6B58' },
+    text: { primary: '#FFFFFF', secondary: '#8B9AAF', muted: '#5E7290' },
+    accent: { primary: '#FF6B58', secondary: '#FF8A7A', light: 'rgba(255,107,88,0.12)', border: 'rgba(255,107,88,0.3)' },
+    font: { primary: "'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace" },
+    status: { success: '#34D399', warning: '#f59e0b', error: '#FF4D4D', info: '#3b82f6' }
   },
   light: {
     name: 'light',
-    bg: { primary: palette.cream100, secondary: palette.white, tertiary: palette.cream100, card: palette.white, hover: palette.cream200 },
-    border: { primary: 'rgba(0,0,0,0.08)', secondary: 'rgba(0,0,0,0.12)', focus: palette.coral500 },
-    text: { primary: palette.navy900, secondary: palette.navy700, muted: palette.gray400 },
-    accent: { primary: palette.coral500, secondary: palette.coral400, light: alpha(palette.coral500, 0.08), border: alpha(palette.coral500, 0.2) },
-    font: typography.fonts,
-    status: { success: palette.emerald400, warning: palette.amber500, error: palette.red400, info: palette.blue500 },
-    // Extended: selection & buttons
-    selection: { bg: alpha(palette.coral500, 0.1), border: alpha(palette.coral500, 0.3), text: palette.coral600 },
-    button: {
-      primary: { bg: palette.coral500, text: palette.white, hoverBg: palette.coral600, activeBg: palette.coral600, disabledBg: palette.gray200, disabledText: palette.gray400 },
-      secondary: { bg: 'transparent', text: palette.navy700, border: 'rgba(0,0,0,0.12)', hoverBg: 'rgba(0,0,0,0.04)', activeBg: 'rgba(0,0,0,0.06)' },
-      ghost: { bg: 'transparent', text: palette.navy700, hoverBg: 'rgba(0,0,0,0.04)' },
-      danger: { bg: palette.red500, text: palette.white, hoverBg: palette.red600 },
-    },
-    input: { bg: 'transparent', border: 'rgba(0,0,0,0.08)', focusBorder: palette.coral500, placeholder: palette.gray400, text: palette.navy900 },
-    overlay: { backdrop: overlays.backdrop, glass: 'rgba(255,255,255,0.85)' },
+    bg: { primary: '#F5F1E8', secondary: '#FFFFFF', tertiary: '#F5F1E8', card: '#FFFFFF', hover: '#EDE9E0' },
+    border: { primary: 'rgba(0,0,0,0.08)', secondary: 'rgba(0,0,0,0.12)', focus: '#FF6B58' },
+    text: { primary: '#0A1628', secondary: '#1E3A5F', muted: '#8B9AAF' },
+    accent: { primary: '#FF6B58', secondary: '#FF8A7A', light: 'rgba(255,107,88,0.08)', border: 'rgba(255,107,88,0.2)' },
+    font: { primary: "'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace" },
+    status: { success: '#34D399', warning: '#f59e0b', error: '#FF4D4D', info: '#3b82f6' }
   }
 };
-
-// ============ COMPONENT RECIPES ============
-// Spread into style={{}} — usage: style={{ ...recipes.card(theme) }}
-const recipes = {
-  // --- Cards ---
-  card: (thm) => ({
-    backgroundColor: thm.bg.card,
-    borderRadius: radii['2xl'],
-    border: `1px solid ${thm.border.primary}`,
-  }),
-  cardHover: (thm) => ({
-    backgroundColor: thm.bg.card,
-    borderRadius: radii['2xl'],
-    border: `1px solid ${thm.border.secondary}`,
-  }),
-  cardAccent: (thm) => ({
-    backgroundColor: thm.bg.card,
-    borderRadius: radii['2xl'],
-    border: `1px solid ${thm.accent.border}`,
-  }),
-
-  // --- Buttons ---
-  btnPrimary: (thm) => ({
-    backgroundColor: thm.button.primary.bg,
-    color: thm.button.primary.text,
-    borderRadius: radii.xl,
-    border: 'none',
-    cursor: 'pointer',
-    transition: transitions.all,
-    fontWeight: typography.fontWeights.medium,
-    fontSize: typography.fontSizes.sm,
-  }),
-  btnSecondary: (thm) => ({
-    backgroundColor: thm.button.secondary.bg,
-    color: thm.button.secondary.text,
-    borderRadius: radii.xl,
-    border: `1px solid ${thm.button.secondary.border || thm.border.primary}`,
-    cursor: 'pointer',
-    transition: transitions.all,
-    fontWeight: typography.fontWeights.medium,
-    fontSize: typography.fontSizes.sm,
-  }),
-  btnGhost: (thm) => ({
-    backgroundColor: 'transparent',
-    color: thm.button.ghost.text,
-    borderRadius: radii.lg,
-    border: 'none',
-    cursor: 'pointer',
-    transition: transitions.all,
-  }),
-  btnDanger: (thm) => ({
-    backgroundColor: thm.button.danger.bg,
-    color: thm.button.danger.text,
-    borderRadius: radii.xl,
-    border: 'none',
-    cursor: 'pointer',
-    transition: transitions.all,
-    fontWeight: typography.fontWeights.medium,
-    fontSize: typography.fontSizes.sm,
-  }),
-  btnIcon: (thm) => ({
-    backgroundColor: 'transparent',
-    color: thm.text.secondary,
-    borderRadius: radii.lg,
-    border: 'none',
-    cursor: 'pointer',
-    transition: transitions.all,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-
-  // --- Inputs ---
-  input: (thm) => ({
-    backgroundColor: thm.input.bg,
-    color: thm.input.text,
-    borderRadius: radii.xl,
-    border: `1px solid ${thm.input.border}`,
-    fontSize: typography.fontSizes.sm,
-    transition: transitions.colors,
-    outline: 'none',
-  }),
-  inputFocus: (thm) => ({
-    borderColor: thm.input.focusBorder,
-    boxShadow: `0 0 0 3px ${alpha(palette.coral500, 0.15)}`,
-  }),
-
-  // --- Badges / Chips ---
-  badge: (color, bg) => ({
-    backgroundColor: bg || alpha(color, 0.1),
-    color: color,
-    borderRadius: radii.full,
-    fontWeight: typography.fontWeights.medium,
-    fontSize: typography.fontSizes.xs,
-    lineHeight: typography.lineHeight.none,
-  }),
-  chip: (thm) => ({
-    backgroundColor: thm.bg.tertiary,
-    color: thm.text.secondary,
-    borderRadius: radii.full,
-    fontSize: typography.fontSizes.xs,
-    fontWeight: typography.fontWeights.medium,
-    border: `1px solid ${thm.border.primary}`,
-  }),
-
-  // --- Toast ---
-  toast: (thm, accentColor) => ({
-    backgroundColor: thm.bg.card,
-    borderRadius: radii.xl,
-    border: `1px solid ${accentColor}`,
-    boxShadow: shadows.lg,
-    animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-  }),
-
-  // --- Glass bar (frosted top/bottom bars) ---
-  glassBar: (thm) => ({
-    backgroundColor: thm.overlay.glass,
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    borderBottom: `1px solid ${thm.border.primary}`,
-  }),
-  glassBarBottom: (thm) => ({
-    backgroundColor: thm.overlay.glass,
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    borderTop: `1px solid ${thm.border.primary}`,
-  }),
-
-  // --- Modal / Drawer ---
-  modal: (thm) => ({
-    backgroundColor: thm.bg.card,
-    borderRadius: radii['2xl'],
-    border: `1px solid ${thm.border.primary}`,
-    boxShadow: shadows['2xl'],
-  }),
-  drawer: (thm) => ({
-    backgroundColor: thm.bg.secondary,
-    borderLeft: `1px solid ${thm.border.primary}`,
-    boxShadow: shadows['2xl'],
-  }),
-
-  // --- Progress Bar ---
-  progressTrack: (thm) => ({
-    backgroundColor: thm.border.primary,
-    borderRadius: radii.full,
-    overflow: 'hidden',
-  }),
-  progressFill: (color, pct) => ({
-    width: `${pct}%`,
-    backgroundColor: color,
-    borderRadius: radii.full,
-    transition: transitions.all,
-    boxShadow: pct >= 85 ? shadows.glow(color) : 'none',
-  }),
-
-  // --- Table row ---
-  tableRow: (thm, highlight = false, highlightColor = palette.red500) => ({
-    borderBottom: `1px solid ${thm.border.primary}`,
-    backgroundColor: highlight ? alpha(highlightColor, 0.03) : 'transparent',
-    transition: transitions.colors,
-  }),
-
-  // --- Stat card (dashboard numbers) ---
-  statCard: (thm, accentColor) => ({
-    backgroundColor: thm.bg.card,
-    borderRadius: radii['2xl'],
-    border: `1px solid ${thm.border.primary}`,
-    borderLeft: `4px solid ${accentColor || thm.accent.primary}`,
-  }),
-};
-
-// ============ TAILWIND CLASS MAP (Reference) ============
-// palette.coral500  → text-[#FF6B58]  bg-[#FF6B58]
-// palette.navy900   → bg-[#0A1628]
-// radii.xl          → rounded-xl    (12px)
-// radii['2xl']      → rounded-2xl   (16px)
-// radii.full        → rounded-full  (9999px)
-// shadows.lg        → shadow-lg
-// shadows['2xl']    → shadow-2xl
-// spacing[4]        → p-4 / m-4 / gap-4  (1rem)
-// typography.fontSizes.xs → text-xs (0.75rem)
-// typography.fontSizes.sm → text-sm (0.875rem)
-// transitions.fast  → duration-100
-// transitions.normal → duration-150
-// transitions.slow  → duration-300
-// zIndex.modal      → z-50
-// zIndex.actionBar  → z-40
-// zIndex.dropdown   → z-30
-// overlays.backdrop → bg-black/50
 
 
 // ============ ROLES & PERMISSIONS ============
 
 const ROLES = {
-  SUPER_ADMIN: { id: 'super_admin', name: 'Super Admin', level: 100, color: palette.coral500, permissions: ['*'] },
-  ADMIN: { id: 'admin', name: 'Administrator', level: 80, color: palette.amber500, permissions: ['dashboard.*', 'packages.*', 'lockers.*', 'dropbox.*', 'terminals.*', 'customers.*', 'staff.*', 'reports.*', 'dispatch.*', 'accounting.*'] },
-  MANAGER: { id: 'manager', name: 'Branch Manager', level: 60, color: palette.blue500, permissions: ['dashboard.view', 'packages.*', 'dropbox.*', 'lockers.*', 'terminals.view', 'customers.*', 'staff.view', 'reports.view', 'dispatch.*'] },
-  AGENT: { id: 'agent', name: 'Field Agent', level: 40, color: palette.emerald500, permissions: ['dashboard.view', 'packages.view', 'packages.scan', 'packages.receive', 'dropbox.view', 'dropbox.collect', 'lockers.view', 'lockers.open', 'dispatch.view'] },
-  SUPPORT: { id: 'support', name: 'Support', level: 30, color: palette.violet500, permissions: ['dashboard.view', 'packages.view', 'packages.track', 'customers.*', 'tickets.*'] },
-  VIEWER: { id: 'viewer', name: 'View Only', level: 10, color: palette.gray500, permissions: ['dashboard.view', 'packages.view', 'lockers.view'] },
+  SUPER_ADMIN: { id: 'super_admin', name: 'Super Admin', level: 100, color: '#FF6B58', permissions: ['*'] },
+  ADMIN: { id: 'admin', name: 'Administrator', level: 80, color: '#f59e0b', permissions: ['dashboard.*', 'packages.*', 'lockers.*', 'dropbox.*', 'terminals.*', 'customers.*', 'staff.*', 'reports.*', 'dispatch.*', 'accounting.*'] },
+  MANAGER: { id: 'manager', name: 'Branch Manager', level: 60, color: '#3b82f6', permissions: ['dashboard.view', 'packages.*', 'dropbox.*', 'lockers.*', 'terminals.view', 'customers.*', 'staff.view', 'reports.view', 'dispatch.*'] },
+  AGENT: { id: 'agent', name: 'Field Agent', level: 40, color: '#10b981', permissions: ['dashboard.view', 'packages.view', 'packages.scan', 'packages.receive', 'dropbox.view', 'dropbox.collect', 'lockers.view', 'lockers.open', 'dispatch.view'] },
+  SUPPORT: { id: 'support', name: 'Support', level: 30, color: '#8b5cf6', permissions: ['dashboard.view', 'packages.view', 'packages.track', 'customers.*', 'tickets.*'] },
+  VIEWER: { id: 'viewer', name: 'View Only', level: 10, color: '#6b7280', permissions: ['dashboard.view', 'packages.view', 'lockers.view'] },
 };
 
 const hasPermission = (userRole, permission) => {
@@ -525,45 +60,45 @@ const SHORTCUTS = [
 
 // ============ CONSTANTS ============
 const DELIVERY_METHODS = {
-  warehouse_to_locker: { id: 'warehouse_to_locker', label: 'Warehouse → Locker', icon: Warehouse, color: palette.blue500 },
-  dropbox_to_locker: { id: 'dropbox_to_locker', label: 'Dropbox → Locker', icon: Inbox, color: palette.violet500 },
-  locker_to_home: { id: 'locker_to_home', label: 'Locker → Home', icon: Home, color: palette.emerald500 },
+  warehouse_to_locker: { id: 'warehouse_to_locker', label: 'Warehouse → Locker', icon: Warehouse, color: '#3b82f6' },
+  dropbox_to_locker: { id: 'dropbox_to_locker', label: 'Dropbox → Locker', icon: Inbox, color: '#8b5cf6' },
+  locker_to_home: { id: 'locker_to_home', label: 'Locker → Home', icon: Home, color: '#10b981' },
 };
 
 const PACKAGE_STATUSES = {
-  pending: { label: 'Pending', color: palette.amber500, bg: overlays.warningBg },
-  at_warehouse: { label: 'At Warehouse', color: palette.indigo500, bg: overlays.indigoBg },
-  at_dropbox: { label: 'At Dropbox', color: palette.violet500, bg: overlays.violetBg },
-  in_transit_to_locker: { label: 'Transit → Locker', color: palette.blue500, bg: overlays.infoBg },
-  in_transit_to_home: { label: 'Transit → Home', color: palette.cyan500, bg: overlays.cyanBg },
-  delivered_to_locker: { label: 'In Locker', color: palette.emerald500, bg: overlays.successBg },
-  delivered_to_home: { label: 'Delivered', color: palette.emerald500, bg: overlays.successBg },
-  picked_up: { label: 'Picked Up', color: palette.gray500, bg: overlays.grayBg },
-  expired: { label: 'Expired', color: palette.red500, bg: overlays.errorBg },
+  pending: { label: 'Pending', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+  at_warehouse: { label: 'At Warehouse', color: '#6366f1', bg: 'rgba(99, 102, 241, 0.1)' },
+  at_dropbox: { label: 'At Dropbox', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
+  in_transit_to_locker: { label: 'Transit → Locker', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
+  in_transit_to_home: { label: 'Transit → Home', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)' },
+  delivered_to_locker: { label: 'In Locker', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  delivered_to_home: { label: 'Delivered', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  picked_up: { label: 'Picked Up', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
+  expired: { label: 'Expired', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
 };
 
 const ALL_STATUSES = {
   ...PACKAGE_STATUSES,
-  available: { label: 'Available', color: palette.emerald500, bg: overlays.successBg },
-  occupied: { label: 'Occupied', color: palette.blue500, bg: overlays.infoBg },
-  reserved: { label: 'Reserved', color: palette.amber500, bg: overlays.warningBg },
-  maintenance: { label: 'Maintenance', color: palette.red500, bg: overlays.errorBg },
-  active: { label: 'Active', color: palette.emerald500, bg: overlays.successBg },
-  inactive: { label: 'Inactive', color: palette.gray500, bg: overlays.grayBg },
-  offline: { label: 'Offline', color: palette.gray500, bg: overlays.grayBg },
-  online: { label: 'Online', color: palette.emerald500, bg: overlays.successBg },
-  on_delivery: { label: 'On Delivery', color: palette.blue500, bg: overlays.infoBg },
-  open: { label: 'Open', color: palette.red500, bg: overlays.errorBg },
-  in_progress: { label: 'In Progress', color: palette.amber500, bg: overlays.warningBg },
-  completed: { label: 'Completed', color: palette.emerald500, bg: overlays.successBg },
-  paid: { label: 'Paid', color: palette.emerald500, bg: overlays.successBg },
-  overdue: { label: 'Overdue', color: palette.red500, bg: overlays.errorBg },
-  full: { label: 'Full', color: palette.amber500, bg: overlays.warningBg },
-  individual: { label: 'Individual', color: palette.blue500, bg: overlays.infoBg },
-  b2b: { label: 'B2B Partner', color: palette.violet500, bg: overlays.violetBg },
-  high: { label: 'High', color: palette.red500, bg: overlays.errorBg },
-  medium: { label: 'Medium', color: palette.amber500, bg: overlays.warningBg },
-  low: { label: 'Low', color: palette.emerald500, bg: overlays.successBg },
+  available: { label: 'Available', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  occupied: { label: 'Occupied', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
+  reserved: { label: 'Reserved', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+  maintenance: { label: 'Maintenance', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  active: { label: 'Active', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  inactive: { label: 'Inactive', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
+  offline: { label: 'Offline', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
+  online: { label: 'Online', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  on_delivery: { label: 'On Delivery', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
+  open: { label: 'Open', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  in_progress: { label: 'In Progress', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+  completed: { label: 'Completed', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  paid: { label: 'Paid', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+  overdue: { label: 'Overdue', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  full: { label: 'Full', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+  individual: { label: 'Individual', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
+  b2b: { label: 'B2B Partner', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
+  high: { label: 'High', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  medium: { label: 'Medium', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+  low: { label: 'Low', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
 };
 
 // ============ SAMPLE DATA ============
@@ -710,9 +245,9 @@ const partnerMonthlyData = [
 ];
 
 const TIERS = {
-  gold: { label: 'Gold', color: palette.amber500, bg: overlays.warningBg, perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
-  silver: { label: 'Silver', color: palette.silver, bg: overlays.silverBg, perks: 'Standard SLA, Email Support, Standard API Limits' },
-  bronze: { label: 'Bronze', color: palette.bronze, bg: overlays.bronzeBg, perks: 'Basic SLA, Ticket Support, Basic API Limits' },
+  gold: { label: 'Gold', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
+  silver: { label: 'Silver', color: '#a3a3a3', bg: 'rgba(163,163,163,0.1)', perks: 'Standard SLA, Email Support, Standard API Limits' },
+  bronze: { label: 'Bronze', color: '#cd7c32', bg: 'rgba(205,124,50,0.1)', perks: 'Basic SLA, Ticket Support, Basic API Limits' },
 };
 
 const dropboxesData = [
@@ -808,17 +343,17 @@ const BASE_RATE_CARD = [
 ];
 
 const SLA_TIERS = [
-  { id: 'SLA-STD', name: 'Standard', description: 'Next-day delivery to locker', hours: 24, multiplier: 1.0, color: palette.gray500, icon: '🕐' },
-  { id: 'SLA-EXP', name: 'Express', description: 'Same-day delivery (before 6PM)', hours: 8, multiplier: 1.5, color: palette.amber500, icon: '⚡' },
-  { id: 'SLA-RUSH', name: 'Rush', description: 'Within 4 hours', hours: 4, multiplier: 2.2, color: palette.red500, icon: '🔥' },
-  { id: 'SLA-ECO', name: 'Economy', description: '2-3 business days', hours: 72, multiplier: 0.75, color: palette.emerald500, icon: '🌿' },
+  { id: 'SLA-STD', name: 'Standard', description: 'Next-day delivery to locker', hours: 24, multiplier: 1.0, color: '#6b7280', icon: '🕐' },
+  { id: 'SLA-EXP', name: 'Express', description: 'Same-day delivery (before 6PM)', hours: 8, multiplier: 1.5, color: '#f59e0b', icon: '⚡' },
+  { id: 'SLA-RUSH', name: 'Rush', description: 'Within 4 hours', hours: 4, multiplier: 2.2, color: '#ef4444', icon: '🔥' },
+  { id: 'SLA-ECO', name: 'Economy', description: '2-3 business days', hours: 72, multiplier: 0.75, color: '#10b981', icon: '🌿' },
 ];
 
 const DELIVERY_METHOD_PRICING = [
-  { id: 'DM-WL', method: 'warehouse_to_locker', label: 'Warehouse → Locker', baseMarkup: 0, description: 'Standard flow. Package from partner warehouse to locker terminal.', icon: Warehouse, color: palette.blue500 },
-  { id: 'DM-DL', method: 'dropbox_to_locker', label: 'Dropbox → Locker', baseMarkup: 3, description: 'Customer drops off at dropbox, collected and routed to locker.', icon: Inbox, color: palette.violet500 },
-  { id: 'DM-LH', method: 'locker_to_home', label: 'Locker → Home', baseMarkup: 8, description: 'Last-mile home delivery from locker terminal. Includes driver dispatch.', icon: Home, color: palette.emerald500 },
-  { id: 'DM-WH', method: 'warehouse_to_home', label: 'Warehouse → Home (Direct)', baseMarkup: 12, description: 'Direct home delivery bypassing locker network. Premium service.', icon: Truck, color: palette.amber500 },
+  { id: 'DM-WL', method: 'warehouse_to_locker', label: 'Warehouse → Locker', baseMarkup: 0, description: 'Standard flow. Package from partner warehouse to locker terminal.', icon: Warehouse, color: '#3b82f6' },
+  { id: 'DM-DL', method: 'dropbox_to_locker', label: 'Dropbox → Locker', baseMarkup: 3, description: 'Customer drops off at dropbox, collected and routed to locker.', icon: Inbox, color: '#8b5cf6' },
+  { id: 'DM-LH', method: 'locker_to_home', label: 'Locker → Home', baseMarkup: 8, description: 'Last-mile home delivery from locker terminal. Includes driver dispatch.', icon: Home, color: '#10b981' },
+  { id: 'DM-WH', method: 'warehouse_to_home', label: 'Warehouse → Home (Direct)', baseMarkup: 12, description: 'Direct home delivery bypassing locker network. Premium service.', icon: Truck, color: '#f59e0b' },
 ];
 
 const SURCHARGES = [
@@ -871,12 +406,12 @@ const portalTerminalAvailability = terminalsData.map(t => ({
 }));
 
 const DROPBOX_FLOW_STAGES = {
-  awaiting_collection: { label: 'In Dropbox', color: palette.amber500, bg: overlays.warningBg, step: 0 },
-  collection_overdue: { label: 'Collection Overdue', color: palette.red500, bg: overlays.errorBg, step: 0 },
-  collected: { label: 'Collected', color: palette.blue500, bg: overlays.infoBg, step: 1 },
-  in_transit: { label: 'In Transit to Terminal', color: palette.indigo500, bg: overlays.indigoBg, step: 2 },
-  at_terminal: { label: 'At Terminal', color: palette.violet500, bg: overlays.violetBg, step: 3 },
-  delivered_to_locker: { label: 'In Locker', color: palette.emerald500, bg: overlays.successBg, step: 4 },
+  awaiting_collection: { label: 'In Dropbox', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', step: 0 },
+  collection_overdue: { label: 'Collection Overdue', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', step: 0 },
+  collected: { label: 'Collected', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', step: 1 },
+  in_transit: { label: 'In Transit to Terminal', color: '#6366f1', bg: 'rgba(99,102,241,0.1)', step: 2 },
+  at_terminal: { label: 'At Terminal', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', step: 3 },
+  delivered_to_locker: { label: 'In Locker', color: '#10b981', bg: 'rgba(16,185,129,0.1)', step: 4 },
 };
 
 const dropboxFillHistory = [
@@ -898,9 +433,9 @@ const staffData = [
 
 const teamsData = [
   { id: 1, name: 'Management', members: 2, lead: 'John Doe', color: '#4E0F0F' },
-  { id: 2, name: 'Operations', members: 4, lead: 'Kofi Asante', color: palette.blue500 },
-  { id: 3, name: 'Field', members: 8, lead: 'Yaw Boateng', color: palette.emerald500 },
-  { id: 4, name: 'Support', members: 3, lead: 'Kweku Appiah', color: palette.violet500 },
+  { id: 2, name: 'Operations', members: 4, lead: 'Kofi Asante', color: '#3b82f6' },
+  { id: 3, name: 'Field', members: 8, lead: 'Yaw Boateng', color: '#10b981' },
+  { id: 4, name: 'Support', members: 3, lead: 'Kweku Appiah', color: '#8b5cf6' },
 ];
 
 const smsTemplatesData = [
@@ -956,11 +491,11 @@ const msgVolumeData = [
 ];
 
 const MSG_STATUSES = {
-  delivered: { label: 'Delivered', color: palette.emerald500, bg: overlays.successBg, icon: '✓✓' },
-  read: { label: 'Read', color: palette.blue500, bg: overlays.infoBg, icon: '✓✓' },
-  sent: { label: 'Sent', color: palette.amber500, bg: overlays.warningBg, icon: '✓' },
-  failed: { label: 'Failed', color: palette.red500, bg: overlays.errorBg, icon: '✕' },
-  pending: { label: 'Pending', color: palette.gray500, bg: overlays.grayBg, icon: '⏳' },
+  delivered: { label: 'Delivered', color: '#10b981', bg: 'rgba(16,185,129,0.1)', icon: '✓✓' },
+  read: { label: 'Read', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', icon: '✓✓' },
+  sent: { label: 'Sent', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: '✓' },
+  failed: { label: 'Failed', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', icon: '✕' },
+  pending: { label: 'Pending', color: '#6b7280', bg: 'rgba(107,114,128,0.1)', icon: '⏳' },
 };
 
 const auditLogData = [
@@ -973,17 +508,17 @@ const auditLogData = [
 
 // ============ SLA BREACH ALERTS DATA ============
 const SLA_SEVERITY = {
-  on_track: { label: 'On Track', color: palette.emerald500, bg: overlays.successBg, icon: CheckCircle2, pulse: false },
-  warning: { label: 'Warning', color: palette.amber500, bg: overlays.warningBg, icon: AlertTriangle, pulse: false },
-  critical: { label: 'Critical', color: palette.orange500, bg: overlays.orangeBg, icon: AlertOctagon, pulse: true },
-  breached: { label: 'BREACHED', color: palette.red500, bg: overlays.errorEmphasis, icon: XCircle, pulse: true },
+  on_track: { label: 'On Track', color: '#10b981', bg: 'rgba(16,185,129,0.1)', icon: CheckCircle2, pulse: false },
+  warning: { label: 'Warning', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: AlertTriangle, pulse: false },
+  critical: { label: 'Critical', color: '#f97316', bg: 'rgba(249,115,22,0.1)', icon: AlertOctagon, pulse: true },
+  breached: { label: 'BREACHED', color: '#ef4444', bg: 'rgba(239,68,68,0.15)', icon: XCircle, pulse: true },
 };
 
 const ESCALATION_RULES = [
-  { level: 0, name: 'Monitoring', triggerPct: 0, actions: ['Standard tracking active'], color: palette.emerald500, icon: Eye, role: 'System' },
-  { level: 1, name: 'Auto-Alert', triggerPct: 75, actions: ['SMS + WhatsApp to customer', 'Push notification to assigned agent', 'Flag in agent dashboard'], color: palette.amber500, icon: Bell, role: 'System' },
-  { level: 2, name: 'Manager Escalation', triggerPct: 90, actions: ['Urgent alert to branch manager', 'Auto-reassign to nearest available driver', 'Priority queue bump'], color: palette.orange500, icon: Users, role: 'Branch Manager' },
-  { level: 3, name: 'Executive Escalation', triggerPct: 100, actions: ['Alert operations director', 'Auto-generate incident report', 'Freeze new deliveries to terminal', 'Customer compensation workflow'], color: palette.red500, icon: AlertOctagon, role: 'Ops Director' },
+  { level: 0, name: 'Monitoring', triggerPct: 0, actions: ['Standard tracking active'], color: '#10b981', icon: Eye, role: 'System' },
+  { level: 1, name: 'Auto-Alert', triggerPct: 75, actions: ['SMS + WhatsApp to customer', 'Push notification to assigned agent', 'Flag in agent dashboard'], color: '#f59e0b', icon: Bell, role: 'System' },
+  { level: 2, name: 'Manager Escalation', triggerPct: 90, actions: ['Urgent alert to branch manager', 'Auto-reassign to nearest available driver', 'Priority queue bump'], color: '#f97316', icon: Users, role: 'Branch Manager' },
+  { level: 3, name: 'Executive Escalation', triggerPct: 100, actions: ['Alert operations director', 'Auto-generate incident report', 'Freeze new deliveries to terminal', 'Customer compensation workflow'], color: '#ef4444', icon: AlertOctagon, role: 'Ops Director' },
 ];
 
 const slaBreachData = [
@@ -1035,7 +570,7 @@ const Toast = ({ message, type = 'info', onClose }) => {
   const theme = useContext(ThemeContext);
   const icons = { success: CheckCircle, error: XCircle, warning: AlertTriangle, info: Info };
   const Icon = icons[type] || Info;
-  const colors = { success: palette.emerald500, error: palette.red500, warning: palette.amber500, info: palette.blue500 };
+  const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: '#3b82f6' };
   
   useEffect(() => {
     const timer = setTimeout(onClose, 4000);
@@ -1181,7 +716,7 @@ const GlobalSearchModal = ({ isOpen, onClose, theme, onNavigate }) => {
                     <p className="px-3 py-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Customers</p>
                     {results.customers.map(c => (
                       <button key={c.id} onClick={() => { onNavigate('customers', c); onClose(); }} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-left">
-                        <Users size={18} style={{ color: palette.blue500 }} />
+                        <Users size={18} style={{ color: '#3b82f6' }} />
                         <div className="flex-1"><p className="text-sm" style={{ color: theme.text.primary }}>{c.name}</p><p className="text-xs" style={{ color: theme.text.muted }}>{c.email}</p></div>
                         <StatusBadge status={c.type} />
                       </button>
@@ -1193,7 +728,7 @@ const GlobalSearchModal = ({ isOpen, onClose, theme, onNavigate }) => {
                     <p className="px-3 py-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Lockers</p>
                     {results.lockers.map(l => (
                       <button key={l.id} onClick={() => { onNavigate('lockers', l); onClose(); }} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-left">
-                        <Grid3X3 size={18} style={{ color: palette.emerald500 }} />
+                        <Grid3X3 size={18} style={{ color: '#10b981' }} />
                         <div className="flex-1"><p className="font-mono text-sm" style={{ color: theme.text.primary }}>{l.id}</p><p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{getLockerAddress(l.id, l.terminal)}</p><p className="text-xs" style={{ color: theme.text.muted }}>{l.terminal}</p></div>
                         <StatusBadge status={l.status} />
                       </button>
@@ -1245,7 +780,7 @@ const SessionTimeoutModal = ({ isOpen, onExtend, onLogout, remainingTime, theme 
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative w-full max-w-sm rounded-2xl border p-6 text-center" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: overlays.warningBg }}>
+        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
           <Clock size={32} className="text-amber-500" />
         </div>
         <h2 className="text-lg font-semibold mb-2" style={{ color: theme.text.primary }}>Session Expiring</h2>
@@ -1318,7 +853,7 @@ const ExportModal = ({ isOpen, onClose, onExport, dataType, theme }) => {
 // ============ UI COMPONENTS ============
 
 const StatusBadge = ({ status }) => {
-  const config = ALL_STATUSES[status] || { label: status, color: palette.gray500, bg: overlays.grayBg };
+  const config = ALL_STATUSES[status] || { label: status, color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' };
   return <span className="px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap" style={{ backgroundColor: config.bg, color: config.color }}>{config.label}</span>;
 };
 
@@ -1475,12 +1010,12 @@ const PackageStatusFlow = ({ status, deliveryMethod }) => {
       {steps.map((step, idx) => (
         <React.Fragment key={step}>
           <div className="flex flex-col items-center">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${idx === currentStep ? 'ring-2 ring-offset-1' : ''}`} style={{ backgroundColor: idx <= currentStep ? method.color : overlays.grayEmphasis, ringColor: method.color }}>
-              {idx < currentStep ? <CheckCircle size={14} className="text-white" /> : idx === currentStep ? <Circle size={8} className="text-white fill-white" /> : <Circle size={8} style={{ color: alpha(palette.gray500, 0.5) }} />}
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${idx === currentStep ? 'ring-2 ring-offset-1' : ''}`} style={{ backgroundColor: idx <= currentStep ? method.color : 'rgba(107, 114, 128, 0.2)', ringColor: method.color }}>
+              {idx < currentStep ? <CheckCircle size={14} className="text-white" /> : idx === currentStep ? <Circle size={8} className="text-white fill-white" /> : <Circle size={8} style={{ color: 'rgba(107, 114, 128, 0.5)' }} />}
             </div>
-            <span className={`text-xs mt-1 ${idx === currentStep ? 'font-medium' : ''}`} style={{ color: idx <= currentStep ? method.color : palette.gray500 }}>{step}</span>
+            <span className={`text-xs mt-1 ${idx === currentStep ? 'font-medium' : ''}`} style={{ color: idx <= currentStep ? method.color : '#6b7280' }}>{step}</span>
           </div>
-          {idx < steps.length - 1 && <div className="flex-1 h-0.5 -mt-4" style={{ backgroundColor: idx < currentStep ? method.color : overlays.grayEmphasis }} />}
+          {idx < steps.length - 1 && <div className="flex-1 h-0.5 -mt-4" style={{ backgroundColor: idx < currentStep ? method.color : 'rgba(107, 114, 128, 0.2)' }} />}
         </React.Fragment>
       ))}
     </div>
@@ -1512,11 +1047,11 @@ const PackageDetailDrawer = ({ pkg, onClose, theme, userRole, addToast }) => {
         <PackageStatusFlow status={pkg.status} deliveryMethod={pkg.deliveryMethod} />
       </div>
       {pkg.locker && pkg.locker !== '-' && (
-        <div className="mx-4 mt-4 p-4 rounded-xl" style={{ backgroundColor: overlays.successBg, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+        <div className="mx-4 mt-4 p-4 rounded-xl" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Grid3X3 size={20} className="text-emerald-500" />
-              <div><p className="text-sm font-medium text-emerald-500">Locker {pkg.locker}</p><p className="text-xs" style={{ color: theme.text.muted }}>{pkg.destination}</p><p className="text-xs font-mono" style={{ color: palette.emerald500 }}>{getLockerAddress(pkg.locker, pkg.destination)}</p></div>
+              <div><p className="text-sm font-medium text-emerald-500">Locker {pkg.locker}</p><p className="text-xs" style={{ color: theme.text.muted }}>{pkg.destination}</p><p className="text-xs font-mono" style={{ color: '#10b981' }}>{getLockerAddress(pkg.locker, pkg.destination)}</p></div>
             </div>
             {pkg.daysInLocker > 0 && <div className="flex items-center gap-1"><Timer size={14} className={pkg.daysInLocker > 5 ? 'text-red-500' : 'text-amber-500'} /><span className={`text-sm ${pkg.daysInLocker > 5 ? 'text-red-500' : 'text-amber-500'}`}>{pkg.daysInLocker}d</span></div>}
           </div>
@@ -1548,9 +1083,9 @@ const PackageDetailDrawer = ({ pkg, onClose, theme, userRole, addToast }) => {
             </div>
             {hasPermission(userRole, 'packages.update') && (
               <div className="grid grid-cols-3 gap-2">
-                <button onClick={() => handleAction('marked as delivered')} className="flex flex-col items-center gap-2 p-3 rounded-xl text-emerald-500" style={{ backgroundColor: overlays.successBg, border: '1px solid rgba(16, 185, 129, 0.2)' }}><CheckCircle2 size={20} /><span className="text-xs">Delivered</span></button>
-                <button onClick={() => handleAction('reassigned')} className="flex flex-col items-center gap-2 p-3 rounded-xl text-amber-500" style={{ backgroundColor: overlays.warningBg, border: '1px solid rgba(245, 158, 11, 0.2)' }}><RefreshCw size={20} /><span className="text-xs">Reassign</span></button>
-                <button onClick={() => handleAction('marked for return')} className="flex flex-col items-center gap-2 p-3 rounded-xl text-red-500" style={{ backgroundColor: overlays.errorBg, border: '1px solid rgba(239, 68, 68, 0.2)' }}><PackageX size={20} /><span className="text-xs">Return</span></button>
+                <button onClick={() => handleAction('marked as delivered')} className="flex flex-col items-center gap-2 p-3 rounded-xl text-emerald-500" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)' }}><CheckCircle2 size={20} /><span className="text-xs">Delivered</span></button>
+                <button onClick={() => handleAction('reassigned')} className="flex flex-col items-center gap-2 p-3 rounded-xl text-amber-500" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)' }}><RefreshCw size={20} /><span className="text-xs">Reassign</span></button>
+                <button onClick={() => handleAction('marked for return')} className="flex flex-col items-center gap-2 p-3 rounded-xl text-red-500" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}><PackageX size={20} /><span className="text-xs">Return</span></button>
               </div>
             )}
           </div>
@@ -1581,7 +1116,7 @@ const PackageDetailDrawer = ({ pkg, onClose, theme, userRole, addToast }) => {
 
 // ============ PIE CHART FOR STATUS DISTRIBUTION ============
 const StatusPieChart = ({ data, theme }) => {
-  const COLORS = [palette.emerald500, palette.blue500, palette.amber500, palette.red500, palette.gray500];
+  const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#6b7280'];
   return (
     <ResponsiveContainer width="100%" height={200}>
       <PieChart>
@@ -1808,7 +1343,7 @@ export default function LocQarERP() {
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold" style={{ color: theme.text.primary }}>Terminal Performance</h3>
                       <div className="flex gap-2">
-                        {[{ label: 'Accra', color: theme.accent.primary }, { label: 'Achimota', color: palette.blue500 }, { label: 'Kotoka', color: palette.emerald500 }].map(l => (
+                        {[{ label: 'Accra', color: theme.accent.primary }, { label: 'Achimota', color: '#3b82f6' }, { label: 'Kotoka', color: '#10b981' }].map(l => (
                           <span key={l.label} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}>
                             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: l.color }} />{l.label}
                           </span>
@@ -1844,7 +1379,7 @@ export default function LocQarERP() {
                           {statusDistribution.map((s, i) => (
                             <div key={s.name} className="flex items-center justify-between">
                               <span className="flex items-center gap-2 text-sm" style={{ color: theme.text.secondary }}>
-                                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: [palette.emerald500, palette.blue500, palette.amber500, palette.red500, palette.gray500][i] }} />
+                                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#6b7280'][i] }} />
                                 {s.name}
                               </span>
                               <span className="font-medium" style={{ color: theme.text.primary }}>{s.value}</span>
@@ -1997,14 +1532,14 @@ export default function LocQarERP() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                   <div>
                     <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-                      <Inbox size={28} style={{ color: palette.violet500 }} /> Dropbox Management
+                      <Inbox size={28} style={{ color: '#8b5cf6' }} /> Dropbox Management
                     </h1>
                     <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Overview'} • {dropboxesData.filter(d => d.status === 'active').length} active dropboxes</p>
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={16} />Export</button>
                     {hasPermission(currentUser.role, 'packages.receive') && (
-                      <button onClick={() => addToast({ type: 'info', message: 'New dropbox setup wizard' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: palette.violet500 }}><Plus size={18} />Add Dropbox</button>
+                      <button onClick={() => addToast({ type: 'info', message: 'New dropbox setup wizard' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}><Plus size={18} />Add Dropbox</button>
                     )}
                   </div>
                 </div>
@@ -2022,23 +1557,23 @@ export default function LocQarERP() {
 
                     {/* Alerts Banner */}
                     {dropboxesData.some(d => d.alerts.length > 0) && (
-                      <div className="p-4 rounded-2xl border flex items-start gap-4" style={{ backgroundColor: overlays.errorSubtle, borderColor: overlays.errorEmphasis }}>
+                      <div className="p-4 rounded-2xl border flex items-start gap-4" style={{ backgroundColor: 'rgba(239,68,68,0.05)', borderColor: 'rgba(239,68,68,0.2)' }}>
                         <AlertTriangle size={24} className="text-red-500 mt-0.5 shrink-0" />
                         <div className="flex-1">
                           <p className="font-semibold text-red-500 mb-1">Attention Required</p>
                           <div className="flex flex-wrap gap-2">
                             {dropboxesData.filter(d => d.status === 'full').map(d => (
-                              <span key={d.id} className="px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: overlays.errorBg, color: palette.red500 }}>🔴 {d.name} is FULL — collection overdue</span>
+                              <span key={d.id} className="px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: 'rgba(239,68,68,0.1)', color: '#ef4444' }}>🔴 {d.name} is FULL — collection overdue</span>
                             ))}
                             {dropboxesData.filter(d => d.alerts.includes('near_full') && d.status !== 'full').map(d => (
-                              <span key={d.id} className="px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: overlays.warningBg, color: palette.amber500 }}>🟡 {d.name} at {Math.round(d.currentFill / d.capacity * 100)}% — schedule collection</span>
+                              <span key={d.id} className="px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>🟡 {d.name} at {Math.round(d.currentFill / d.capacity * 100)}% — schedule collection</span>
                             ))}
                             {dropboxesData.filter(d => d.alerts.includes('collection_due')).map(d => (
-                              <span key={d.id} className="px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: overlays.infoBg, color: palette.blue500 }}>🔵 {d.name} collection due soon</span>
+                              <span key={d.id} className="px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}>🔵 {d.name} collection due soon</span>
                             ))}
                           </div>
                         </div>
-                        <button onClick={() => addToast({ type: 'info', message: 'Dispatching emergency collections...' })} className="px-4 py-2 rounded-xl text-white text-sm shrink-0" style={{ backgroundColor: palette.red500 }}>Dispatch Now</button>
+                        <button onClick={() => addToast({ type: 'info', message: 'Dispatching emergency collections...' })} className="px-4 py-2 rounded-xl text-white text-sm shrink-0" style={{ backgroundColor: '#ef4444' }}>Dispatch Now</button>
                       </div>
                     )}
 
@@ -2047,7 +1582,7 @@ export default function LocQarERP() {
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold" style={{ color: theme.text.primary }}>Fill Levels Today</h3>
                         <div className="flex gap-3">
-                          {[{ l: 'Achimota', c: theme.accent.primary }, { l: 'Osu', c: palette.violet500 }, { l: 'Tema', c: palette.red500 }].map(i => (
+                          {[{ l: 'Achimota', c: theme.accent.primary }, { l: 'Osu', c: '#8b5cf6' }, { l: 'Tema', c: '#ef4444' }].map(i => (
                             <span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>
                           ))}
                         </div>
@@ -2069,15 +1604,15 @@ export default function LocQarERP() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {dropboxesData.map(dbx => {
                         const fillPercent = Math.round((dbx.currentFill / dbx.capacity) * 100);
-                        const fillColor = fillPercent >= 95 ? palette.red500 : fillPercent >= 75 ? palette.amber500 : fillPercent >= 50 ? palette.blue500 : palette.emerald500;
+                        const fillColor = fillPercent >= 95 ? '#ef4444' : fillPercent >= 75 ? '#f59e0b' : fillPercent >= 50 ? '#3b82f6' : '#10b981';
                         const isUrgent = dbx.status === 'full' || dbx.alerts.includes('collection_overdue');
                         return (
-                          <div key={dbx.id} className="rounded-2xl border overflow-hidden transition-all hover:shadow-lg" style={{ backgroundColor: theme.bg.card, borderColor: isUrgent ? palette.red500 : theme.border.primary, borderWidth: isUrgent ? 2 : 1 }}>
+                          <div key={dbx.id} className="rounded-2xl border overflow-hidden transition-all hover:shadow-lg" style={{ backgroundColor: theme.bg.card, borderColor: isUrgent ? '#ef4444' : theme.border.primary, borderWidth: isUrgent ? 2 : 1 }}>
                             <div className="p-5">
                               <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: fillPercent >= 85 ? overlays.errorBg : overlays.violetBg }}>
-                                    <Inbox size={24} style={{ color: fillPercent >= 85 ? palette.red500 : palette.violet500 }} />
+                                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: fillPercent >= 85 ? 'rgba(239,68,68,0.1)' : 'rgba(139,92,246,0.1)' }}>
+                                    <Inbox size={24} style={{ color: fillPercent >= 85 ? '#ef4444' : '#8b5cf6' }} />
                                   </div>
                                   <div>
                                     <p className="font-semibold" style={{ color: theme.text.primary }}>{dbx.name}</p>
@@ -2116,22 +1651,22 @@ export default function LocQarERP() {
                                   <p className="text-xs" style={{ color: theme.text.muted }}>Last Collection</p>
                                   <p className="font-medium" style={{ color: theme.text.primary }}>{dbx.lastCollection?.split(' ')[1] || '—'}</p>
                                 </div>
-                                <div className="p-2 rounded-lg" style={{ backgroundColor: isUrgent ? overlays.errorBg : theme.bg.tertiary }}>
-                                  <p className="text-xs" style={{ color: isUrgent ? palette.red500 : theme.text.muted }}>Next Collection</p>
-                                  <p className="font-medium" style={{ color: isUrgent ? palette.red500 : theme.text.primary }}>{dbx.nextCollection?.split(' ')[1] || 'N/A'}</p>
+                                <div className="p-2 rounded-lg" style={{ backgroundColor: isUrgent ? 'rgba(239,68,68,0.1)' : theme.bg.tertiary }}>
+                                  <p className="text-xs" style={{ color: isUrgent ? '#ef4444' : theme.text.muted }}>Next Collection</p>
+                                  <p className="font-medium" style={{ color: isUrgent ? '#ef4444' : theme.text.primary }}>{dbx.nextCollection?.split(' ')[1] || 'N/A'}</p>
                                 </div>
                               </div>
 
                               <div className="flex items-center justify-between text-xs" style={{ color: theme.text.muted }}>
                                 <span>Avg. {dbx.avgDailyVolume}/day</span>
                                 <span>Total out: {dbx.packagesOut}</span>
-                                <span className="px-2 py-0.5 rounded-full" style={{ backgroundColor: dbx.type === 'premium' ? overlays.violetBg : theme.bg.tertiary, color: dbx.type === 'premium' ? palette.violet500 : theme.text.muted }}>{dbx.type}</span>
+                                <span className="px-2 py-0.5 rounded-full" style={{ backgroundColor: dbx.type === 'premium' ? 'rgba(139,92,246,0.1)' : theme.bg.tertiary, color: dbx.type === 'premium' ? '#8b5cf6' : theme.text.muted }}>{dbx.type}</span>
                               </div>
                             </div>
 
                             {/* Actions Footer */}
                             <div className="flex border-t" style={{ borderColor: theme.border.primary }}>
-                              <button onClick={() => addToast({ type: 'info', message: `Scheduling collection for ${dbx.name}` })} className="flex-1 flex items-center justify-center gap-2 py-3 text-sm hover:bg-white/5" style={{ color: palette.violet500 }}>
+                              <button onClick={() => addToast({ type: 'info', message: `Scheduling collection for ${dbx.name}` })} className="flex-1 flex items-center justify-center gap-2 py-3 text-sm hover:bg-white/5" style={{ color: '#8b5cf6' }}>
                                 <Truck size={14} />Collect
                               </button>
                               <div className="w-px" style={{ backgroundColor: theme.border.primary }} />
@@ -2161,13 +1696,13 @@ export default function LocQarERP() {
                     </div>
 
                     <div className="flex gap-2">
-                      <button onClick={() => addToast({ type: 'info', message: 'Schedule new collection' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: palette.violet500 }}><Plus size={16} />Schedule Collection</button>
+                      <button onClick={() => addToast({ type: 'info', message: 'Schedule new collection' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}><Plus size={16} />Schedule Collection</button>
                       <button onClick={() => addToast({ type: 'info', message: 'Auto-optimizing routes...' })} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Route size={16} />Optimize Routes</button>
                     </div>
 
                     {/* Priority Collections First */}
                     {collectionsData.filter(c => c.status === 'overdue').length > 0 && (
-                      <div className="p-4 rounded-2xl" style={{ backgroundColor: overlays.errorSubtle, border: '1px solid rgba(239,68,68,0.2)' }}>
+                      <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.2)' }}>
                         <p className="text-sm font-semibold text-red-500 mb-3 flex items-center gap-2"><AlertTriangle size={16} /> Overdue Collections</p>
                         <div className="space-y-2">
                           {collectionsData.filter(c => c.status === 'overdue').map(c => (
@@ -2180,8 +1715,8 @@ export default function LocQarERP() {
                                 </div>
                               </div>
                               <div className="flex gap-2">
-                                <button onClick={() => addToast({ type: 'info', message: `Calling ${c.agent}...` })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: overlays.infoBg, color: palette.blue500 }}><Phone size={12} className="inline mr-1" />Call Agent</button>
-                                <button onClick={() => addToast({ type: 'success', message: `Reassigning ${c.dropboxName} collection` })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: overlays.errorBg, color: palette.red500 }}><RefreshCw size={12} className="inline mr-1" />Reassign</button>
+                                <button onClick={() => addToast({ type: 'info', message: `Calling ${c.agent}...` })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}><Phone size={12} className="inline mr-1" />Call Agent</button>
+                                <button onClick={() => addToast({ type: 'success', message: `Reassigning ${c.dropboxName} collection` })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(239,68,68,0.1)', color: '#ef4444' }}><RefreshCw size={12} className="inline mr-1" />Reassign</button>
                               </div>
                             </div>
                           ))}
@@ -2210,12 +1745,12 @@ export default function LocQarERP() {
                         </thead>
                         <tbody>
                           {collectionsData.sort((a, b) => { const order = { overdue: 0, in_progress: 1, scheduled: 2, completed: 3 }; return (order[a.status] ?? 9) - (order[b.status] ?? 9); }).map(col => (
-                            <tr key={col.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: col.status === 'overdue' ? overlays.errorSubtle : 'transparent' }}>
+                            <tr key={col.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: col.status === 'overdue' ? 'rgba(239,68,68,0.03)' : 'transparent' }}>
                               <td className="p-4"><span className="font-mono text-sm" style={{ color: theme.text.primary }}>{col.id}</span><br/><span className="text-xs" style={{ color: theme.text.muted }}>{col.scheduled}</span></td>
                               <td className="p-4"><span className="text-sm" style={{ color: theme.text.primary }}>{col.dropboxName}</span><br/><span className="text-xs font-mono" style={{ color: theme.text.muted }}>{col.dropbox}</span></td>
                               <td className="p-4 hidden md:table-cell">
                                 <div className="flex items-center gap-2">
-                                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs" style={{ backgroundColor: overlays.violetBg }}>{col.agent.charAt(0)}</div>
+                                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs" style={{ backgroundColor: 'rgba(139,92,246,0.1)' }}>{col.agent.charAt(0)}</div>
                                   <span className="text-sm" style={{ color: theme.text.primary }}>{col.agent}</span>
                                 </div>
                               </td>
@@ -2223,7 +1758,7 @@ export default function LocQarERP() {
                               <td className="p-4"><span className="font-bold" style={{ color: theme.text.primary }}>{col.packages}</span></td>
                               <td className="p-4 hidden md:table-cell"><StatusBadge status={col.priority} /></td>
                               <td className="p-4"><StatusBadge status={col.status === 'overdue' ? 'expired' : col.status} /></td>
-                              <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: col.status === 'overdue' ? palette.red500 : theme.text.muted }}>{col.eta}</span></td>
+                              <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: col.status === 'overdue' ? '#ef4444' : theme.text.muted }}>{col.eta}</span></td>
                               <td className="p-4 text-right">
                                 {col.status === 'scheduled' && <button onClick={() => addToast({ type: 'success', message: `Collection ${col.id} started` })} className="p-2 rounded-lg hover:bg-white/5 text-emerald-500"><CheckCircle size={16} /></button>}
                                 {col.status !== 'completed' && <button onClick={() => addToast({ type: 'info', message: `Reassigning ${col.id}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><RefreshCw size={16} /></button>}
@@ -2247,7 +1782,7 @@ export default function LocQarERP() {
                     </div>
 
                     <div className="flex gap-2">
-                      <button onClick={() => addToast({ type: 'info', message: 'Assign agent form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: palette.violet500 }}><UserPlus size={16} />Assign Agent</button>
+                      <button onClick={() => addToast({ type: 'info', message: 'Assign agent form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}><UserPlus size={16} />Assign Agent</button>
                       <button onClick={() => addToast({ type: 'info', message: 'Auto-balancing agent workloads...' })} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><RefreshCw size={16} />Auto-Balance</button>
                     </div>
 
@@ -2257,7 +1792,7 @@ export default function LocQarERP() {
                           <div className="p-5">
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ backgroundColor: overlays.violetBg }}>{agent.photo}</div>
+                                <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ backgroundColor: 'rgba(139,92,246,0.1)' }}>{agent.photo}</div>
                                 <div>
                                   <p className="font-semibold text-lg" style={{ color: theme.text.primary }}>{agent.name}</p>
                                   <p className="text-sm" style={{ color: theme.text.muted }}>{agent.phone} • {agent.zone}</p>
@@ -2268,7 +1803,7 @@ export default function LocQarERP() {
                             </div>
 
                             <div className="grid grid-cols-4 gap-3 mb-4">
-                              {[['Today', agent.collectionsToday, palette.violet500], ['Collected', agent.totalCollected, palette.blue500], ['Rating', `★ ${agent.rating}`, palette.amber500], ['Avg Time', agent.avgCollectionTime, palette.emerald500]].map(([l, v, c]) => (
+                              {[['Today', agent.collectionsToday, '#8b5cf6'], ['Collected', agent.totalCollected, '#3b82f6'], ['Rating', `★ ${agent.rating}`, '#f59e0b'], ['Avg Time', agent.avgCollectionTime, '#10b981']].map(([l, v, c]) => (
                                 <div key={l} className="p-2 rounded-lg text-center" style={{ backgroundColor: theme.bg.tertiary }}>
                                   <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
                                   <p className="font-bold" style={{ color: c }}>{v}</p>
@@ -2283,11 +1818,11 @@ export default function LocQarERP() {
                                   const dbx = dropboxesData.find(d => d.id === dbxId);
                                   if (!dbx) return null;
                                   const fp = Math.round((dbx.currentFill / dbx.capacity) * 100);
-                                  const fc = fp >= 95 ? palette.red500 : fp >= 75 ? palette.amber500 : palette.emerald500;
+                                  const fc = fp >= 95 ? '#ef4444' : fp >= 75 ? '#f59e0b' : '#10b981';
                                   return (
                                     <div key={dbxId} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                                       <div className="flex items-center gap-3">
-                                        <Inbox size={16} style={{ color: palette.violet500 }} />
+                                        <Inbox size={16} style={{ color: '#8b5cf6' }} />
                                         <div>
                                           <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{dbx.name}</p>
                                           <p className="text-xs" style={{ color: theme.text.muted }}>{dbxId} • {dbx.location}</p>
@@ -2309,9 +1844,9 @@ export default function LocQarERP() {
                             </div>
                           </div>
                           <div className="flex border-t" style={{ borderColor: theme.border.primary }}>
-                            <button onClick={() => addToast({ type: 'info', message: `Calling ${agent.name}...` })} className="flex-1 flex items-center justify-center gap-2 py-3 text-sm hover:bg-white/5" style={{ color: palette.blue500 }}><Phone size={14} />Call</button>
+                            <button onClick={() => addToast({ type: 'info', message: `Calling ${agent.name}...` })} className="flex-1 flex items-center justify-center gap-2 py-3 text-sm hover:bg-white/5" style={{ color: '#3b82f6' }}><Phone size={14} />Call</button>
                             <div className="w-px" style={{ backgroundColor: theme.border.primary }} />
-                            <button onClick={() => addToast({ type: 'info', message: `Messaging ${agent.name}...` })} className="flex-1 flex items-center justify-center gap-2 py-3 text-sm hover:bg-white/5" style={{ color: palette.emerald500 }}><MessageSquare size={14} />Message</button>
+                            <button onClick={() => addToast({ type: 'info', message: `Messaging ${agent.name}...` })} className="flex-1 flex items-center justify-center gap-2 py-3 text-sm hover:bg-white/5" style={{ color: '#10b981' }}><MessageSquare size={14} />Message</button>
                             <div className="w-px" style={{ backgroundColor: theme.border.primary }} />
                             <button onClick={() => addToast({ type: 'info', message: `Editing ${agent.name} assignments` })} className="flex-1 flex items-center justify-center gap-2 py-3 text-sm hover:bg-white/5" style={{ color: theme.text.secondary }}><Edit size={14} />Edit</button>
                           </div>
@@ -2332,7 +1867,7 @@ export default function LocQarERP() {
                               <p className="text-sm" style={{ color: theme.text.muted }}>{agents.length} agent{agents.length !== 1 ? 's' : ''} • {dbxCount} dropbox{dbxCount !== 1 ? 'es' : ''}</p>
                               <div className="flex gap-1 mt-2">
                                 {agents.map(a => (
-                                  <div key={a.id} className="w-6 h-6 rounded-full flex items-center justify-center text-xs" style={{ backgroundColor: a.status === 'active' ? overlays.successEmphasis : a.status === 'on_delivery' ? overlays.infoEmphasis : overlays.grayEmphasis }}>{a.photo}</div>
+                                  <div key={a.id} className="w-6 h-6 rounded-full flex items-center justify-center text-xs" style={{ backgroundColor: a.status === 'active' ? 'rgba(16,185,129,0.2)' : a.status === 'on_delivery' ? 'rgba(59,130,246,0.2)' : 'rgba(107,114,128,0.2)' }}>{a.photo}</div>
                                 ))}
                               </div>
                             </div>
@@ -2351,12 +1886,12 @@ export default function LocQarERP() {
                       <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Dropbox → Locker Pipeline</h3>
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         {[
-                          { label: 'In Dropbox', count: dropboxFlowData.filter(f => f.stage === 'awaiting_collection').length, color: palette.amber500, icon: Inbox },
-                          { label: 'Overdue', count: dropboxFlowData.filter(f => f.stage === 'collection_overdue').length, color: palette.red500, icon: AlertTriangle },
-                          { label: 'Collected', count: dropboxFlowData.filter(f => f.stage === 'collected').length, color: palette.blue500, icon: CheckCircle },
-                          { label: 'In Transit', count: dropboxFlowData.filter(f => f.stage === 'in_transit').length, color: palette.indigo500, icon: Truck },
-                          { label: 'At Terminal', count: dropboxFlowData.filter(f => f.stage === 'at_terminal').length, color: palette.violet500, icon: Building2 },
-                          { label: 'In Locker', count: dropboxFlowData.filter(f => f.stage === 'delivered_to_locker').length, color: palette.emerald500, icon: Grid3X3 },
+                          { label: 'In Dropbox', count: dropboxFlowData.filter(f => f.stage === 'awaiting_collection').length, color: '#f59e0b', icon: Inbox },
+                          { label: 'Overdue', count: dropboxFlowData.filter(f => f.stage === 'collection_overdue').length, color: '#ef4444', icon: AlertTriangle },
+                          { label: 'Collected', count: dropboxFlowData.filter(f => f.stage === 'collected').length, color: '#3b82f6', icon: CheckCircle },
+                          { label: 'In Transit', count: dropboxFlowData.filter(f => f.stage === 'in_transit').length, color: '#6366f1', icon: Truck },
+                          { label: 'At Terminal', count: dropboxFlowData.filter(f => f.stage === 'at_terminal').length, color: '#8b5cf6', icon: Building2 },
+                          { label: 'In Locker', count: dropboxFlowData.filter(f => f.stage === 'delivered_to_locker').length, color: '#10b981', icon: Grid3X3 },
                         ].map((stage, idx, arr) => (
                           <React.Fragment key={stage.label}>
                             <div className="flex flex-col items-center p-3 rounded-xl min-w-[90px]" style={{ backgroundColor: `${stage.color}10` }}>
@@ -2397,7 +1932,7 @@ export default function LocQarERP() {
                               const steps = ['Dropbox', 'Collected', 'Transit', 'Terminal', 'Locker'];
                               const currentStep = stageInfo?.step ?? 0;
                               return (
-                                <tr key={flow.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: flow.stage === 'collection_overdue' ? overlays.errorSubtle : 'transparent' }}>
+                                <tr key={flow.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: flow.stage === 'collection_overdue' ? 'rgba(239,68,68,0.03)' : 'transparent' }}>
                                   <td className="p-4">
                                     <span className="font-mono font-medium text-sm" style={{ color: theme.text.primary }}>{flow.waybill}</span>
                                     <br/><span className="text-xs" style={{ color: theme.text.muted }}>{flow.depositTime}</span>
@@ -2414,10 +1949,10 @@ export default function LocQarERP() {
                                     <div className="flex items-center gap-0.5">
                                       {steps.map((step, idx) => (
                                         <React.Fragment key={step}>
-                                          <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: idx <= currentStep ? (stageInfo?.color || palette.gray500) : theme.border.primary }}>
+                                          <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: idx <= currentStep ? (stageInfo?.color || '#6b7280') : theme.border.primary }}>
                                             {idx < currentStep ? <Check size={10} className="text-white" /> : idx === currentStep ? <Circle size={6} className="text-white fill-white" /> : null}
                                           </div>
-                                          {idx < steps.length - 1 && <div className="w-3 h-0.5" style={{ backgroundColor: idx < currentStep ? (stageInfo?.color || palette.gray500) : theme.border.primary }} />}
+                                          {idx < steps.length - 1 && <div className="w-3 h-0.5" style={{ backgroundColor: idx < currentStep ? (stageInfo?.color || '#6b7280') : theme.border.primary }} />}
                                         </React.Fragment>
                                       ))}
                                     </div>
@@ -2430,7 +1965,7 @@ export default function LocQarERP() {
                                     <span className="text-xs" style={{ color: theme.text.muted }}>{flow.targetTerminal}</span>
                                   </td>
                                   <td className="p-4 hidden lg:table-cell">
-                                    <span className="text-sm" style={{ color: flow.stage === 'collection_overdue' ? palette.red500 : theme.text.muted }}>{flow.eta}</span>
+                                    <span className="text-sm" style={{ color: flow.stage === 'collection_overdue' ? '#ef4444' : theme.text.muted }}>{flow.eta}</span>
                                   </td>
                                 </tr>
                               );
@@ -2445,7 +1980,7 @@ export default function LocQarERP() {
                       <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                         <h3 className="font-semibold mb-3" style={{ color: theme.text.primary }}>Avg. Flow Time</h3>
                         <div className="space-y-3">
-                          {[['Dropbox → Collection', '2.4 hrs', palette.amber500], ['Collection → Terminal', '1.2 hrs', palette.indigo500], ['Terminal → Locker', '0.5 hrs', palette.emerald500], ['Total End-to-End', '4.1 hrs', palette.violet500]].map(([l, v, c]) => (
+                          {[['Dropbox → Collection', '2.4 hrs', '#f59e0b'], ['Collection → Terminal', '1.2 hrs', '#6366f1'], ['Terminal → Locker', '0.5 hrs', '#10b981'], ['Total End-to-End', '4.1 hrs', '#8b5cf6']].map(([l, v, c]) => (
                             <div key={l} className="flex items-center justify-between">
                               <span className="text-sm" style={{ color: theme.text.muted }}>{l}</span>
                               <span className="font-bold" style={{ color: c }}>{v}</span>
@@ -2458,11 +1993,11 @@ export default function LocQarERP() {
                         <div className="space-y-3">
                           {dropboxesData.filter(d => d.status !== 'maintenance').sort((a, b) => b.avgDailyVolume - a.avgDailyVolume).slice(0, 4).map((d, i) => (
                             <div key={d.id} className="flex items-center gap-3">
-                              <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: i === 0 ? palette.amber500 : i === 1 ? palette.silver : i === 2 ? palette.bronze : theme.border.secondary }}>{i + 1}</span>
+                              <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: i === 0 ? '#f59e0b' : i === 1 ? '#a3a3a3' : i === 2 ? '#cd7c32' : theme.border.secondary }}>{i + 1}</span>
                               <div className="flex-1">
                                 <p className="text-sm" style={{ color: theme.text.primary }}>{d.name}</p>
                               </div>
-                              <span className="text-sm font-bold" style={{ color: palette.violet500 }}>{d.avgDailyVolume}/day</span>
+                              <span className="text-sm font-bold" style={{ color: '#8b5cf6' }}>{d.avgDailyVolume}/day</span>
                             </div>
                           ))}
                         </div>
@@ -2472,7 +2007,7 @@ export default function LocQarERP() {
                         <div className="space-y-3">
                           {dropboxFlowData.filter(f => f.stage === 'collection_overdue').length > 0 ? (
                             dropboxFlowData.filter(f => f.stage === 'collection_overdue').map(f => (
-                              <div key={f.id} className="flex items-center gap-2 p-2 rounded-lg" style={{ backgroundColor: overlays.errorSubtle }}>
+                              <div key={f.id} className="flex items-center gap-2 p-2 rounded-lg" style={{ backgroundColor: 'rgba(239,68,68,0.05)' }}>
                                 <AlertTriangle size={14} className="text-red-500 shrink-0" />
                                 <div>
                                   <p className="text-sm font-medium text-red-500">{f.dropboxName}</p>
@@ -2500,13 +2035,13 @@ export default function LocQarERP() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                   <div>
                     <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-                      <MessageSquare size={28} style={{ color: palette.emerald500 }} /> SMS & WhatsApp Notifications
+                      <MessageSquare size={28} style={{ color: '#10b981' }} /> SMS & WhatsApp Notifications
                     </h1>
                     <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Message Center'} • Manage customer communications</p>
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={16} />Export</button>
-                    <button onClick={() => addToast({ type: 'info', message: 'Compose new message' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: palette.emerald500 }}><Send size={18} />Send Message</button>
+                    <button onClick={() => addToast({ type: 'info', message: 'Compose new message' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}><Send size={18} />Send Message</button>
                   </div>
                 </div>
 
@@ -2525,60 +2060,60 @@ export default function LocQarERP() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                         <div className="flex items-center gap-3 mb-4">
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: overlays.infoBg }}>
-                            <Smartphone size={24} style={{ color: palette.blue500 }} />
+                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(59,130,246,0.1)' }}>
+                            <Smartphone size={24} style={{ color: '#3b82f6' }} />
                           </div>
                           <div className="flex-1">
                             <p className="font-semibold" style={{ color: theme.text.primary }}>SMS Channel</p>
                             <p className="text-sm" style={{ color: theme.text.muted }}>Via Hubtel SMS Gateway</p>
                           </div>
-                          <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: overlays.successBg, color: palette.emerald500 }}>● Active</span>
+                          <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>● Active</span>
                         </div>
                         <div className="grid grid-cols-3 gap-3 text-center">
                           <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                             <p className="text-xs" style={{ color: theme.text.muted }}>Sent Today</p>
-                            <p className="text-xl font-bold" style={{ color: palette.blue500 }}>{notificationHistoryData.filter(n => n.channel === 'sms').length}</p>
+                            <p className="text-xl font-bold" style={{ color: '#3b82f6' }}>{notificationHistoryData.filter(n => n.channel === 'sms').length}</p>
                           </div>
                           <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                             <p className="text-xs" style={{ color: theme.text.muted }}>Delivery Rate</p>
-                            <p className="text-xl font-bold" style={{ color: palette.emerald500 }}>97.8%</p>
+                            <p className="text-xl font-bold" style={{ color: '#10b981' }}>97.8%</p>
                           </div>
                           <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                             <p className="text-xs" style={{ color: theme.text.muted }}>Templates</p>
                             <p className="text-xl font-bold" style={{ color: theme.text.primary }}>{smsTemplatesData.filter(t => t.channel === 'sms').length}</p>
                           </div>
                         </div>
-                        <div className="mt-4 p-3 rounded-xl text-sm" style={{ backgroundColor: overlays.infoSubtle, border: '1px solid rgba(59,130,246,0.15)' }}>
-                          <p style={{ color: palette.blue500 }}>Balance: <span className="font-bold">12,450 credits</span> (~GH₵ 622.50)</p>
+                        <div className="mt-4 p-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.15)' }}>
+                          <p style={{ color: '#3b82f6' }}>Balance: <span className="font-bold">12,450 credits</span> (~GH₵ 622.50)</p>
                         </div>
                       </div>
                       <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                         <div className="flex items-center gap-3 mb-4">
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: overlays.whatsappBg }}>
-                            <MessageSquare size={24} style={{ color: palette.whatsapp }} />
+                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(37,211,102,0.1)' }}>
+                            <MessageSquare size={24} style={{ color: '#25D366' }} />
                           </div>
                           <div className="flex-1">
                             <p className="font-semibold" style={{ color: theme.text.primary }}>WhatsApp Business</p>
                             <p className="text-sm" style={{ color: theme.text.muted }}>Via Meta Business API</p>
                           </div>
-                          <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: overlays.successBg, color: palette.emerald500 }}>● Active</span>
+                          <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>● Active</span>
                         </div>
                         <div className="grid grid-cols-3 gap-3 text-center">
                           <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                             <p className="text-xs" style={{ color: theme.text.muted }}>Sent Today</p>
-                            <p className="text-xl font-bold" style={{ color: palette.whatsapp }}>{notificationHistoryData.filter(n => n.channel === 'whatsapp').length}</p>
+                            <p className="text-xl font-bold" style={{ color: '#25D366' }}>{notificationHistoryData.filter(n => n.channel === 'whatsapp').length}</p>
                           </div>
                           <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                             <p className="text-xs" style={{ color: theme.text.muted }}>Read Rate</p>
-                            <p className="text-xl font-bold" style={{ color: palette.emerald500 }}>94.5%</p>
+                            <p className="text-xl font-bold" style={{ color: '#10b981' }}>94.5%</p>
                           </div>
                           <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                             <p className="text-xs" style={{ color: theme.text.muted }}>Templates</p>
                             <p className="text-xl font-bold" style={{ color: theme.text.primary }}>{smsTemplatesData.filter(t => t.channel === 'whatsapp').length}</p>
                           </div>
                         </div>
-                        <div className="mt-4 p-3 rounded-xl text-sm" style={{ backgroundColor: overlays.whatsappSubtle, border: '1px solid rgba(37,211,102,0.15)' }}>
-                          <p style={{ color: palette.whatsapp }}>Tier: <span className="font-bold">Standard (1,000/day)</span> • Used: 486 today</p>
+                        <div className="mt-4 p-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(37,211,102,0.05)', border: '1px solid rgba(37,211,102,0.15)' }}>
+                          <p style={{ color: '#25D366' }}>Tier: <span className="font-bold">Standard (1,000/day)</span> • Used: 486 today</p>
                         </div>
                       </div>
                     </div>
@@ -2588,8 +2123,8 @@ export default function LocQarERP() {
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold" style={{ color: theme.text.primary }}>Message Volume (This Week)</h3>
                         <div className="flex gap-3">
-                          <span className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: palette.blue500 }} />SMS</span>
-                          <span className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: palette.whatsapp }} />WhatsApp</span>
+                          <span className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#3b82f6' }} />SMS</span>
+                          <span className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#25D366' }} />WhatsApp</span>
                         </div>
                       </div>
                       <ResponsiveContainer width="100%" height={220}>
@@ -2606,12 +2141,12 @@ export default function LocQarERP() {
 
                     {/* Quick Send */}
                     <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Send size={18} style={{ color: palette.emerald500 }} />Quick Send</h3>
+                      <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Send size={18} style={{ color: '#10b981' }} />Quick Send</h3>
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                           <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Channel</label>
                           <div className="flex gap-2">
-                            <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: overlays.infoBg, color: palette.blue500, border: '1px solid rgba(59,130,246,0.3)' }}><Smartphone size={16} />SMS</button>
+                            <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)' }}><Smartphone size={16} />SMS</button>
                             <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><MessageSquare size={16} />WhatsApp</button>
                           </div>
                         </div>
@@ -2627,7 +2162,7 @@ export default function LocQarERP() {
                           </select>
                         </div>
                         <div className="flex items-end">
-                          <button onClick={() => addToast({ type: 'success', message: 'Message sent successfully!' })} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: palette.emerald500 }}><Send size={16} />Send Now</button>
+                          <button onClick={() => addToast({ type: 'success', message: 'Message sent successfully!' })} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}><Send size={16} />Send Now</button>
                         </div>
                       </div>
                       <div className="mt-4">
@@ -2666,11 +2201,11 @@ export default function LocQarERP() {
                                 <td className="p-3">
                                   <div className="flex items-center gap-2">
                                     {msg.channel === 'whatsapp' ? (
-                                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: overlays.whatsappBg }}><MessageSquare size={16} style={{ color: palette.whatsapp }} /></div>
+                                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(37,211,102,0.1)' }}><MessageSquare size={16} style={{ color: '#25D366' }} /></div>
                                     ) : (
-                                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: overlays.infoBg }}><Smartphone size={16} style={{ color: palette.blue500 }} /></div>
+                                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(59,130,246,0.1)' }}><Smartphone size={16} style={{ color: '#3b82f6' }} /></div>
                                     )}
-                                    <span className="text-xs uppercase font-medium" style={{ color: msg.channel === 'whatsapp' ? palette.whatsapp : palette.blue500 }}>{msg.channel}</span>
+                                    <span className="text-xs uppercase font-medium" style={{ color: msg.channel === 'whatsapp' ? '#25D366' : '#3b82f6' }}>{msg.channel}</span>
                                   </div>
                                 </td>
                                 <td className="p-3">
@@ -2699,10 +2234,10 @@ export default function LocQarERP() {
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <div className="flex gap-2">
-                        <span className="px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: overlays.infoBg, color: palette.blue500 }}>SMS: {smsTemplatesData.filter(t => t.channel === 'sms').length}</span>
-                        <span className="px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: overlays.whatsappBg, color: palette.whatsapp }}>WhatsApp: {smsTemplatesData.filter(t => t.channel === 'whatsapp').length}</span>
+                        <span className="px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}>SMS: {smsTemplatesData.filter(t => t.channel === 'sms').length}</span>
+                        <span className="px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: 'rgba(37,211,102,0.1)', color: '#25D366' }}>WhatsApp: {smsTemplatesData.filter(t => t.channel === 'whatsapp').length}</span>
                       </div>
-                      <button onClick={() => addToast({ type: 'info', message: 'New template editor opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: palette.emerald500 }}><Plus size={16} />New Template</button>
+                      <button onClick={() => addToast({ type: 'info', message: 'New template editor opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}><Plus size={16} />New Template</button>
                     </div>
                     <div className="space-y-4">
                       {smsTemplatesData.map(tpl => (
@@ -2711,33 +2246,33 @@ export default function LocQarERP() {
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-4">
                               <div className="flex items-start gap-3 flex-1">
                                 {tpl.channel === 'whatsapp' ? (
-                                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: overlays.whatsappBg }}><MessageSquare size={20} style={{ color: palette.whatsapp }} /></div>
+                                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(37,211,102,0.1)' }}><MessageSquare size={20} style={{ color: '#25D366' }} /></div>
                                 ) : (
-                                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: overlays.infoBg }}><Smartphone size={20} style={{ color: palette.blue500 }} /></div>
+                                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(59,130,246,0.1)' }}><Smartphone size={20} style={{ color: '#3b82f6' }} /></div>
                                 )}
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <p className="font-semibold" style={{ color: theme.text.primary }}>{tpl.name}</p>
-                                    <span className="px-2 py-0.5 rounded-full text-xs uppercase font-medium" style={{ backgroundColor: tpl.channel === 'whatsapp' ? overlays.whatsappBg : overlays.infoBg, color: tpl.channel === 'whatsapp' ? palette.whatsapp : palette.blue500 }}>{tpl.channel}</span>
+                                    <span className="px-2 py-0.5 rounded-full text-xs uppercase font-medium" style={{ backgroundColor: tpl.channel === 'whatsapp' ? 'rgba(37,211,102,0.1)' : 'rgba(59,130,246,0.1)', color: tpl.channel === 'whatsapp' ? '#25D366' : '#3b82f6' }}>{tpl.channel}</span>
                                     <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted }}>{tpl.event}</span>
-                                    {!tpl.active && <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: overlays.grayBg, color: palette.gray500 }}>Inactive</span>}
+                                    {!tpl.active && <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(107,114,128,0.1)', color: '#6b7280' }}>Inactive</span>}
                                   </div>
                                   <p className="text-sm font-mono mt-2" style={{ color: theme.text.muted }}>{tpl.id}</p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 shrink-0">
-                                <button onClick={() => addToast({ type: 'info', message: `Testing template ${tpl.id}` })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: overlays.successBg, color: palette.emerald500 }}>Test Send</button>
+                                <button onClick={() => addToast({ type: 'info', message: `Testing template ${tpl.id}` })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Test Send</button>
                                 <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Edit size={16} /></button>
                                 <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Trash2 size={16} /></button>
                               </div>
                             </div>
                             {/* Message Preview */}
-                            <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: tpl.channel === 'whatsapp' ? overlays.whatsappSubtle : theme.bg.tertiary, border: tpl.channel === 'whatsapp' ? '1px solid rgba(37,211,102,0.15)' : `1px solid ${theme.border.primary}` }}>
+                            <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: tpl.channel === 'whatsapp' ? 'rgba(37,211,102,0.03)' : theme.bg.tertiary, border: tpl.channel === 'whatsapp' ? '1px solid rgba(37,211,102,0.15)' : `1px solid ${theme.border.primary}` }}>
                               <pre className="text-sm whitespace-pre-wrap" style={{ color: theme.text.secondary, fontFamily: theme.font.primary }}>{tpl.message}</pre>
                             </div>
                             <div className="flex items-center gap-6 text-sm">
                               <span style={{ color: theme.text.muted }}>Sent: <span className="font-medium" style={{ color: theme.text.primary }}>{tpl.sentCount.toLocaleString()}</span></span>
-                              <span style={{ color: theme.text.muted }}>Delivery: <span className="font-medium" style={{ color: palette.emerald500 }}>{tpl.deliveryRate}%</span></span>
+                              <span style={{ color: theme.text.muted }}>Delivery: <span className="font-medium" style={{ color: '#10b981' }}>{tpl.deliveryRate}%</span></span>
                               <span style={{ color: theme.text.muted }}>Last: <span style={{ color: theme.text.secondary }}>{tpl.lastSent}</span></span>
                             </div>
                           </div>
@@ -2750,51 +2285,51 @@ export default function LocQarERP() {
                 {/* Auto-Rules */}
                 {activeSubMenu === 'Auto-Rules' && (
                   <div className="space-y-6">
-                    <div className="p-4 rounded-2xl" style={{ backgroundColor: overlays.successSubtle, border: '1px solid rgba(16,185,129,0.2)' }}>
+                    <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.2)' }}>
                       <div className="flex items-center gap-3">
-                        <Info size={20} style={{ color: palette.emerald500 }} />
+                        <Info size={20} style={{ color: '#10b981' }} />
                         <div>
-                          <p className="text-sm font-medium" style={{ color: palette.emerald500 }}>Automation Engine Active</p>
+                          <p className="text-sm font-medium" style={{ color: '#10b981' }}>Automation Engine Active</p>
                           <p className="text-xs" style={{ color: theme.text.muted }}>Auto-rules trigger notifications based on package events. {autoRulesData.filter(r => r.active).length} of {autoRulesData.length} rules are active.</p>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={() => addToast({ type: 'info', message: 'New automation rule editor' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: palette.emerald500 }}><Plus size={16} />New Rule</button>
+                      <button onClick={() => addToast({ type: 'info', message: 'New automation rule editor' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}><Plus size={16} />New Rule</button>
                       <button onClick={() => addToast({ type: 'info', message: 'Importing rule presets...' })} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><FileDown size={16} />Import Preset</button>
                     </div>
                     <div className="space-y-4">
                       {autoRulesData.map(rule => (
-                        <div key={rule.id} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: rule.active ? theme.border.primary : overlays.grayEmphasis, opacity: rule.active ? 1 : 0.7 }}>
+                        <div key={rule.id} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: rule.active ? theme.border.primary : 'rgba(107,114,128,0.2)', opacity: rule.active ? 1 : 0.7 }}>
                           <div className="p-5">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                               <div className="flex items-center gap-3 flex-1">
-                                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: rule.active ? overlays.successBg : overlays.grayBg }}>
-                                  {rule.active ? <Cog size={20} style={{ color: palette.emerald500 }} /> : <Cog size={20} style={{ color: palette.gray500 }} />}
+                                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: rule.active ? 'rgba(16,185,129,0.1)' : 'rgba(107,114,128,0.1)' }}>
+                                  {rule.active ? <Cog size={20} style={{ color: '#10b981' }} /> : <Cog size={20} style={{ color: '#6b7280' }} />}
                                 </div>
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <p className="font-semibold" style={{ color: theme.text.primary }}>{rule.name}</p>
-                                    {rule.active ? <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: overlays.successBg, color: palette.emerald500 }}>Active</span> : <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: overlays.grayBg, color: palette.gray500 }}>Disabled</span>}
+                                    {rule.active ? <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Active</span> : <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(107,114,128,0.1)', color: '#6b7280' }}>Disabled</span>}
                                   </div>
                                   <p className="text-sm mt-1" style={{ color: theme.text.muted }}>{rule.description}</p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2">
-                                <button onClick={() => addToast({ type: rule.active ? 'warning' : 'success', message: `Rule ${rule.active ? 'disabled' : 'enabled'}` })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: rule.active ? overlays.errorBg : overlays.successBg, color: rule.active ? palette.red500 : palette.emerald500 }}>{rule.active ? 'Disable' : 'Enable'}</button>
+                                <button onClick={() => addToast({ type: rule.active ? 'warning' : 'success', message: `Rule ${rule.active ? 'disabled' : 'enabled'}` })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: rule.active ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)', color: rule.active ? '#ef4444' : '#10b981' }}>{rule.active ? 'Disable' : 'Enable'}</button>
                                 <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Edit size={16} /></button>
                               </div>
                             </div>
                             <div className="flex flex-wrap gap-4 p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                               <div className="flex items-center gap-2">
                                 <span className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Trigger:</span>
-                                <span className="px-2 py-0.5 rounded text-xs font-mono" style={{ backgroundColor: overlays.warningBg, color: palette.amber500 }}>{rule.trigger}</span>
+                                <span className="px-2 py-0.5 rounded text-xs font-mono" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>{rule.trigger}</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <span className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Channels:</span>
                                 <div className="flex gap-1">
                                   {rule.channels.map(ch => (
-                                    <span key={ch} className="px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: ch === 'whatsapp' ? overlays.whatsappBg : overlays.infoBg, color: ch === 'whatsapp' ? palette.whatsapp : palette.blue500 }}>{ch.toUpperCase()}</span>
+                                    <span key={ch} className="px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: ch === 'whatsapp' ? 'rgba(37,211,102,0.1)' : 'rgba(59,130,246,0.1)', color: ch === 'whatsapp' ? '#25D366' : '#3b82f6' }}>{ch.toUpperCase()}</span>
                                   ))}
                                 </div>
                               </div>
@@ -2804,7 +2339,7 @@ export default function LocQarERP() {
                               </div>
                               <div className="flex items-center gap-2">
                                 <span className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Fired:</span>
-                                <span className="text-xs font-bold" style={{ color: palette.emerald500 }}>{rule.fired.toLocaleString()}×</span>
+                                <span className="text-xs font-bold" style={{ color: '#10b981' }}>{rule.fired.toLocaleString()}×</span>
                               </div>
                             </div>
                           </div>
@@ -2852,13 +2387,13 @@ export default function LocQarERP() {
                             {notificationHistoryData.map(msg => {
                               const st = MSG_STATUSES[msg.status] || MSG_STATUSES.pending;
                               return (
-                                <tr key={msg.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: msg.status === 'failed' ? overlays.errorSubtle : 'transparent' }}>
+                                <tr key={msg.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: msg.status === 'failed' ? 'rgba(239,68,68,0.03)' : 'transparent' }}>
                                   <td className="p-3"><span className="font-mono text-xs" style={{ color: theme.text.muted }}>{msg.id}</span></td>
                                   <td className="p-3">
                                     {msg.channel === 'whatsapp' ? (
-                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: overlays.whatsappBg, color: palette.whatsapp }}><MessageSquare size={10} />WA</span>
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: 'rgba(37,211,102,0.1)', color: '#25D366' }}><MessageSquare size={10} />WA</span>
                                     ) : (
-                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: overlays.infoBg, color: palette.blue500 }}><Smartphone size={10} />SMS</span>
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}><Smartphone size={10} />SMS</span>
                                     )}
                                   </td>
                                   <td className="p-3">
@@ -2876,7 +2411,7 @@ export default function LocQarERP() {
                                   <td className="p-3 hidden md:table-cell"><span className="text-sm font-mono" style={{ color: theme.text.muted }}>{msg.sentAt}</span></td>
                                   <td className="p-3 hidden lg:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>GH₵ {msg.cost.toFixed(2)}</span></td>
                                   <td className="p-3 text-right">
-                                    {msg.status === 'failed' && <button onClick={() => addToast({ type: 'info', message: `Retrying ${msg.id}...` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: palette.amber500 }}><RefreshCw size={14} /></button>}
+                                    {msg.status === 'failed' && <button onClick={() => addToast({ type: 'info', message: `Retrying ${msg.id}...` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#f59e0b' }}><RefreshCw size={14} /></button>}
                                     <button onClick={() => addToast({ type: 'info', message: `Resending to ${msg.recipient}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Send size={14} /></button>
                                   </td>
                                 </tr>
@@ -2895,12 +2430,12 @@ export default function LocQarERP() {
                     {/* SMS Provider */}
                     <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                       <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: overlays.infoBg }}><Smartphone size={20} style={{ color: palette.blue500 }} /></div>
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(59,130,246,0.1)' }}><Smartphone size={20} style={{ color: '#3b82f6' }} /></div>
                         <div>
                           <h3 className="font-semibold" style={{ color: theme.text.primary }}>SMS Gateway Configuration</h3>
                           <p className="text-sm" style={{ color: theme.text.muted }}>Configure your SMS provider settings</p>
                         </div>
-                        <span className="ml-auto px-3 py-1 rounded-full text-xs" style={{ backgroundColor: overlays.successBg, color: palette.emerald500 }}>● Connected</span>
+                        <span className="ml-auto px-3 py-1 rounded-full text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>● Connected</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -2930,12 +2465,12 @@ export default function LocQarERP() {
                     {/* WhatsApp Config */}
                     <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                       <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: overlays.whatsappBg }}><MessageSquare size={20} style={{ color: palette.whatsapp }} /></div>
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(37,211,102,0.1)' }}><MessageSquare size={20} style={{ color: '#25D366' }} /></div>
                         <div>
                           <h3 className="font-semibold" style={{ color: theme.text.primary }}>WhatsApp Business API</h3>
                           <p className="text-sm" style={{ color: theme.text.muted }}>Configure Meta WhatsApp Business settings</p>
                         </div>
-                        <span className="ml-auto px-3 py-1 rounded-full text-xs" style={{ backgroundColor: overlays.successBg, color: palette.emerald500 }}>● Connected</span>
+                        <span className="ml-auto px-3 py-1 rounded-full text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>● Connected</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -2967,7 +2502,7 @@ export default function LocQarERP() {
                               <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{label}</p>
                               <p className="text-xs" style={{ color: theme.text.muted }}>{desc}</p>
                             </div>
-                            <div onClick={() => addToast({ type: 'info', message: `Setting toggled` })} className="w-12 h-6 rounded-full cursor-pointer relative" style={{ backgroundColor: active ? palette.emerald500 : theme.border.secondary }}>
+                            <div onClick={() => addToast({ type: 'info', message: `Setting toggled` })} className="w-12 h-6 rounded-full cursor-pointer relative" style={{ backgroundColor: active ? '#10b981' : theme.border.secondary }}>
                               <div className="w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all" style={{ left: active ? '26px' : '2px' }} />
                             </div>
                           </div>
@@ -2976,7 +2511,7 @@ export default function LocQarERP() {
                     </div>
 
                     <div className="flex gap-3">
-                      <button onClick={() => addToast({ type: 'success', message: 'Settings saved successfully' })} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: palette.emerald500 }}>Save Settings</button>
+                      <button onClick={() => addToast({ type: 'success', message: 'Settings saved successfully' })} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}>Save Settings</button>
                       <button onClick={() => addToast({ type: 'info', message: 'Sending test message...' })} className="px-6 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Send Test Message</button>
                     </div>
                   </div>
@@ -3000,9 +2535,9 @@ export default function LocQarERP() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   {[
                     ['Total', lockersData.length, Grid3X3, null],
-                    ['Available', lockersData.filter(l => l.status === 'available').length, Unlock, palette.emerald500],
-                    ['Occupied', lockersData.filter(l => l.status === 'occupied').length, Package, palette.blue500],
-                    ['Maintenance', lockersData.filter(l => l.status === 'maintenance').length, AlertTriangle, palette.red500]
+                    ['Available', lockersData.filter(l => l.status === 'available').length, Unlock, '#10b981'],
+                    ['Occupied', lockersData.filter(l => l.status === 'occupied').length, Package, '#3b82f6'],
+                    ['Maintenance', lockersData.filter(l => l.status === 'maintenance').length, AlertTriangle, '#ef4444']
                   ].map(([l, v, I, c]) => (
                     <div key={l} className="p-5 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                       <div className="flex justify-between">
@@ -3176,10 +2711,10 @@ export default function LocQarERP() {
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                   {[
                     ['Total Lockers', terminalsData.reduce((s, t) => s + t.totalLockers, 0), Grid3X3, null],
-                    ['Available', terminalsData.reduce((s, t) => s + t.available, 0), Unlock, palette.emerald500],
-                    ['Occupied', terminalsData.reduce((s, t) => s + t.occupied, 0), Package, palette.blue500],
-                    ['Maintenance', terminalsData.reduce((s, t) => s + t.maintenance, 0), Wrench, palette.red500],
-                    ['Utilization', `${Math.round(terminalsData.reduce((s, t) => s + t.occupied, 0) / terminalsData.reduce((s, t) => s + t.totalLockers, 0) * 100)}%`, TrendingUp, palette.violet500],
+                    ['Available', terminalsData.reduce((s, t) => s + t.available, 0), Unlock, '#10b981'],
+                    ['Occupied', terminalsData.reduce((s, t) => s + t.occupied, 0), Package, '#3b82f6'],
+                    ['Maintenance', terminalsData.reduce((s, t) => s + t.maintenance, 0), Wrench, '#ef4444'],
+                    ['Utilization', `${Math.round(terminalsData.reduce((s, t) => s + t.occupied, 0) / terminalsData.reduce((s, t) => s + t.totalLockers, 0) * 100)}%`, TrendingUp, '#8b5cf6'],
                   ].map(([l, v, I, c]) => (
                     <div key={l} className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                       <div className="flex items-center gap-2 mb-1">
@@ -3211,14 +2746,14 @@ export default function LocQarERP() {
                         <div className="mb-3">
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-xs" style={{ color: theme.text.muted }}>Utilization</span>
-                            <span className="text-xs font-medium" style={{ color: utilPct > 80 ? palette.red500 : utilPct > 60 ? palette.amber500 : palette.emerald500 }}>{utilPct}%</span>
+                            <span className="text-xs font-medium" style={{ color: utilPct > 80 ? '#ef4444' : utilPct > 60 ? '#f59e0b' : '#10b981' }}>{utilPct}%</span>
                           </div>
                           <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                            <div className="h-full rounded-full transition-all" style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? palette.red500 : utilPct > 60 ? palette.amber500 : palette.emerald500 }} />
+                            <div className="h-full rounded-full transition-all" style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? '#ef4444' : utilPct > 60 ? '#f59e0b' : '#10b981' }} />
                           </div>
                         </div>
                         <div className="grid grid-cols-4 gap-2 text-center">
-                          {[['Total', t.totalLockers, null], ['Open', t.available, palette.emerald500], ['In Use', t.occupied, palette.blue500], ['Maint.', t.maintenance, palette.red500]].map(([l, v, c]) => (
+                          {[['Total', t.totalLockers, null], ['Open', t.available, '#10b981'], ['In Use', t.occupied, '#3b82f6'], ['Maint.', t.maintenance, '#ef4444']].map(([l, v, c]) => (
                             <div key={l} className="p-2 rounded-lg" style={{ backgroundColor: c ? `${c}10` : theme.bg.tertiary }}>
                               <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
                               <p className="text-lg font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
@@ -3282,14 +2817,14 @@ export default function LocQarERP() {
                             {slaBreachData.sort((a, b) => b.pctUsed - a.pctUsed).map(s => {
                               const sev = SLA_SEVERITY[s.severity];
                               return (
-                                <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: s.severity === 'breached' ? overlays.errorSubtle : undefined }}>
+                                <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: s.severity === 'breached' ? 'rgba(239,68,68,0.05)' : undefined }}>
                                   <td className="p-3"><span className="font-mono text-sm" style={{ color: theme.accent.primary }}>{s.waybill}</span></td>
                                   <td className="p-3">
                                     <p className="text-sm" style={{ color: theme.text.primary }}>{s.customer}</p>
                                     <p className="text-xs" style={{ color: theme.text.muted }}>{s.product}</p>
                                   </td>
                                   <td className="p-3 hidden md:table-cell">
-                                    <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ backgroundColor: `${SLA_TIERS.find(t => t.name === s.slaType)?.color || palette.gray500}15`, color: SLA_TIERS.find(t => t.name === s.slaType)?.color || palette.gray500 }}>{s.slaType}</span>
+                                    <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ backgroundColor: `${SLA_TIERS.find(t => t.name === s.slaType)?.color || '#6b7280'}15`, color: SLA_TIERS.find(t => t.name === s.slaType)?.color || '#6b7280' }}>{s.slaType}</span>
                                   </td>
                                   <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{s.terminal}</span></td>
                                   <td className="p-3">
@@ -3303,7 +2838,7 @@ export default function LocQarERP() {
                                   <td className="p-3">
                                     <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ backgroundColor: sev.bg, color: sev.color }}>{sev.label}</span>
                                   </td>
-                                  <td className="p-3 hidden lg:table-cell"><span className="text-xs font-mono" style={{ color: s.remainingMin < 0 ? palette.red500 : theme.text.muted }}>{s.deadline}</span></td>
+                                  <td className="p-3 hidden lg:table-cell"><span className="text-xs font-mono" style={{ color: s.remainingMin < 0 ? '#ef4444' : theme.text.muted }}>{s.deadline}</span></td>
                                 </tr>
                               );
                             })}
@@ -3353,9 +2888,9 @@ export default function LocQarERP() {
                         const totals = slaComplianceTrend.reduce((acc, d) => ({ total: acc.total + d.total, onTime: acc.onTime + d.onTime, warning: acc.warning + d.warning, breached: acc.breached + d.breached }), { total: 0, onTime: 0, warning: 0, breached: 0 });
                         return [
                           ['Total Shipments', totals.total, Package, null],
-                          ['On Time', `${Math.round(totals.onTime / totals.total * 100)}%`, CheckCircle2, palette.emerald500],
-                          ['Warnings', totals.warning, AlertTriangle, palette.amber500],
-                          ['Breached', totals.breached, XCircle, palette.red500],
+                          ['On Time', `${Math.round(totals.onTime / totals.total * 100)}%`, CheckCircle2, '#10b981'],
+                          ['Warnings', totals.warning, AlertTriangle, '#f59e0b'],
+                          ['Breached', totals.breached, XCircle, '#ef4444'],
                         ].map(([l, v, I, c]) => (
                           <div key={l} className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                             <div className="flex items-center gap-2 mb-1"><I size={16} style={{ color: c || theme.accent.primary }} /><span className="text-xs" style={{ color: theme.text.muted }}>{l}</span></div>
@@ -3501,7 +3036,7 @@ export default function LocQarERP() {
                           <div key={r.zone} className="p-4 rounded-xl border" style={{ borderColor: theme.border.primary }}>
                             <div className="flex items-center justify-between mb-3">
                               <p className="font-semibold" style={{ color: theme.text.primary }}>{r.zone}</p>
-                              <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: '#10b98115', color: palette.emerald500 }}>Active</span>
+                              <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: '#10b98115', color: '#10b981' }}>Active</span>
                             </div>
                             <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                               <div><span style={{ color: theme.text.muted }}>Stops:</span> <span style={{ color: theme.text.primary }}>{r.stops}</span></div>
@@ -3510,7 +3045,7 @@ export default function LocQarERP() {
                               <div><span style={{ color: theme.text.muted }}>Packages:</span> <span style={{ color: theme.text.primary }}>{r.packages}</span></div>
                             </div>
                             <div className="flex items-center gap-2 pt-3 border-t" style={{ borderColor: theme.border.primary }}>
-                              <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: palette.blue500 }}>{r.driver.charAt(0)}</div>
+                              <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: '#3b82f6' }}>{r.driver.charAt(0)}</div>
                               <span className="text-sm" style={{ color: theme.text.secondary }}>{r.driver}</span>
                             </div>
                           </div>
@@ -3539,7 +3074,7 @@ export default function LocQarERP() {
                           <tr key={d.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                             <td className="p-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: palette.emerald500 }}>{d.name.charAt(0)}</div>
+                                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: '#10b981' }}>{d.name.charAt(0)}</div>
                                 <div>
                                   <p className="text-sm" style={{ color: theme.text.primary }}>{d.name}</p>
                                   <p className="text-xs" style={{ color: theme.text.muted }}>{d.phone}</p>
@@ -3550,7 +3085,7 @@ export default function LocQarERP() {
                             <td className="p-4 hidden lg:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{d.zone}</span></td>
                             <td className="p-4"><StatusBadge status={d.status} /></td>
                             <td className="p-4"><span className="text-sm font-medium" style={{ color: theme.text.primary }}>{d.deliveriesToday}</span></td>
-                            <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: palette.amber500 }}>★ {d.rating}</span></td>
+                            <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: '#f59e0b' }}>★ {d.rating}</span></td>
                           </tr>
                         ))}
                       </tbody>
@@ -3593,7 +3128,7 @@ export default function LocQarERP() {
                             <tr key={c.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                               <td className="p-4">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold" style={{ backgroundColor: c.type === 'b2b' ? palette.violet500 : theme.accent.primary }}>{c.name.charAt(0)}</div>
+                                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold" style={{ backgroundColor: c.type === 'b2b' ? '#8b5cf6' : theme.accent.primary }}>{c.name.charAt(0)}</div>
                                   <div>
                                     <p style={{ color: theme.text.primary }}>{c.name}</p>
                                     <p className="text-sm" style={{ color: theme.text.muted }}>{c.email}</p>
@@ -3618,7 +3153,7 @@ export default function LocQarERP() {
                     {customersData.filter(c => c.type === 'b2b').map(c => (
                       <div key={c.id} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: overlays.violetBg }}>
+                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(139, 92, 246, 0.1)' }}>
                             <Briefcase size={24} className="text-violet-500" />
                           </div>
                           <div className="flex-1">
@@ -3781,7 +3316,7 @@ export default function LocQarERP() {
                             <td className="p-4">
                               <div className="flex items-center gap-2">
                                 <div className="w-24 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                                  <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? palette.emerald500 : s.performance > 75 ? palette.amber500 : palette.red500 }} />
+                                  <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? '#10b981' : s.performance > 75 ? '#f59e0b' : '#ef4444' }} />
                                 </div>
                                 <span className="text-sm" style={{ color: theme.text.secondary }}>{s.performance}%</span>
                               </div>
@@ -3919,9 +3454,9 @@ export default function LocQarERP() {
                         <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Invoice Aging</h3>
                         <div className="space-y-3">
                           {[
-                            ['Current (0-30 days)', invoicesData.filter(i => i.status === 'paid').length, palette.emerald500],
-                            ['Due (30-60 days)', invoicesData.filter(i => i.status === 'pending').length, palette.amber500],
-                            ['Overdue (60+ days)', invoicesData.filter(i => i.status === 'overdue').length, palette.red500],
+                            ['Current (0-30 days)', invoicesData.filter(i => i.status === 'paid').length, '#10b981'],
+                            ['Due (30-60 days)', invoicesData.filter(i => i.status === 'pending').length, '#f59e0b'],
+                            ['Overdue (60+ days)', invoicesData.filter(i => i.status === 'overdue').length, '#ef4444'],
                           ].map(([label, count, color]) => (
                             <div key={label} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: `${color}10` }}>
                               <span className="text-sm" style={{ color: theme.text.primary }}>{label}</span>
@@ -4015,9 +3550,9 @@ export default function LocQarERP() {
                             </div>
                             <div className="grid grid-cols-4 gap-6 text-center">
                               <div><p className="text-xs" style={{ color: theme.text.muted }}>Monthly Vol.</p><p className="text-lg font-bold" style={{ color: theme.text.primary }}>{p.monthlyVolume}</p></div>
-                              <div><p className="text-xs" style={{ color: theme.text.muted }}>Revenue</p><p className="text-lg font-bold" style={{ color: palette.emerald500 }}>GH₵ {(p.revenue / 1000).toFixed(1)}K</p></div>
-                              <div><p className="text-xs" style={{ color: theme.text.muted }}>Delivery</p><p className="text-lg font-bold" style={{ color: p.deliveryRate > 95 ? palette.emerald500 : p.deliveryRate > 90 ? palette.amber500 : palette.red500 }}>{p.deliveryRate}%</p></div>
-                              <div><p className="text-xs" style={{ color: theme.text.muted }}>API Calls</p><p className="text-lg font-bold" style={{ color: palette.blue500 }}>{(p.apiCalls / 1000).toFixed(1)}K</p></div>
+                              <div><p className="text-xs" style={{ color: theme.text.muted }}>Revenue</p><p className="text-lg font-bold" style={{ color: '#10b981' }}>GH₵ {(p.revenue / 1000).toFixed(1)}K</p></div>
+                              <div><p className="text-xs" style={{ color: theme.text.muted }}>Delivery</p><p className="text-lg font-bold" style={{ color: p.deliveryRate > 95 ? '#10b981' : p.deliveryRate > 90 ? '#f59e0b' : '#ef4444' }}>{p.deliveryRate}%</p></div>
+                              <div><p className="text-xs" style={{ color: theme.text.muted }}>API Calls</p><p className="text-lg font-bold" style={{ color: '#3b82f6' }}>{(p.apiCalls / 1000).toFixed(1)}K</p></div>
                             </div>
                             <div className="flex gap-2">
                               <button onClick={() => addToast({ type: 'info', message: `Viewing ${p.name} portal` })} className="px-3 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary, border: `1px solid ${theme.accent.border}` }}><Eye size={14} className="inline mr-1" />View Portal</button>
@@ -4071,7 +3606,7 @@ export default function LocQarERP() {
                               <td className="p-4">
                                 <div className="flex items-center gap-2">
                                   <div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                                    <div className="h-full rounded-full" style={{ width: `${(b.delivered / b.packages) * 100}%`, backgroundColor: b.delivered === b.packages ? palette.emerald500 : palette.blue500 }} />
+                                    <div className="h-full rounded-full" style={{ width: `${(b.delivered / b.packages) * 100}%`, backgroundColor: b.delivered === b.packages ? '#10b981' : '#3b82f6' }} />
                                   </div>
                                   <span className="text-xs font-mono" style={{ color: theme.text.secondary }}>{b.delivered}/{b.packages}</span>
                                 </div>
@@ -4127,7 +3662,7 @@ export default function LocQarERP() {
                               <td className="p-4"><span className="font-mono font-medium" style={{ color: theme.text.primary }}>{inv.id}</span></td>
                               <td className="p-4"><span style={{ color: theme.text.primary }}>{inv.partner}</span></td>
                               <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.muted }}>{inv.period}</span></td>
-                              <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: inv.status === 'overdue' ? palette.red500 : theme.text.muted }}>{inv.due}</span></td>
+                              <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: inv.status === 'overdue' ? '#ef4444' : theme.text.muted }}>{inv.due}</span></td>
                               <td className="p-4"><span className="font-medium" style={{ color: theme.text.primary }}>GH₵ {inv.amount.toLocaleString()}</span></td>
                               <td className="p-4"><StatusBadge status={inv.status} /></td>
                               <td className="p-4 text-right">
@@ -4161,9 +3696,9 @@ export default function LocQarERP() {
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {[{ label: 'REST API', desc: 'Package CRUD, tracking, locker management', version: 'v2.1', color: palette.blue500 },
-                          { label: 'Webhooks', desc: 'Real-time status updates, delivery events', version: '12 events', color: palette.emerald500 },
-                          { label: 'Bulk Upload', desc: 'CSV/JSON batch import, up to 500 packages', version: 'v1.3', color: palette.violet500 }
+                        {[{ label: 'REST API', desc: 'Package CRUD, tracking, locker management', version: 'v2.1', color: '#3b82f6' },
+                          { label: 'Webhooks', desc: 'Real-time status updates, delivery events', version: '12 events', color: '#10b981' },
+                          { label: 'Bulk Upload', desc: 'CSV/JSON batch import, up to 500 packages', version: 'v1.3', color: '#8b5cf6' }
                         ].map(api => (
                           <div key={api.label} className="p-4 rounded-xl border" style={{ borderColor: theme.border.primary }}>
                             <div className="flex items-center gap-2 mb-2">
@@ -4202,12 +3737,12 @@ export default function LocQarERP() {
                                 </div>
                               </td>
                               <td className="p-4 hidden md:table-cell">
-                                <span className="px-2 py-1 rounded-full text-xs" style={{ backgroundColor: k.env === 'production' ? overlays.successBg : overlays.warningBg, color: k.env === 'production' ? palette.emerald500 : palette.amber500 }}>{k.env}</span>
+                                <span className="px-2 py-1 rounded-full text-xs" style={{ backgroundColor: k.env === 'production' ? 'rgba(16,185,129,0.1)' : 'rgba(245,158,11,0.1)', color: k.env === 'production' ? '#10b981' : '#f59e0b' }}>{k.env}</span>
                               </td>
                               <td className="p-4">
                                 <div className="flex items-center gap-2">
                                   <div className="w-16 h-1.5 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                                    <div className="h-full rounded-full" style={{ width: `${(k.callsToday / k.rateLimit) * 100}%`, backgroundColor: k.callsToday / k.rateLimit > 0.8 ? palette.red500 : k.callsToday / k.rateLimit > 0.5 ? palette.amber500 : palette.emerald500 }} />
+                                    <div className="h-full rounded-full" style={{ width: `${(k.callsToday / k.rateLimit) * 100}%`, backgroundColor: k.callsToday / k.rateLimit > 0.8 ? '#ef4444' : k.callsToday / k.rateLimit > 0.5 ? '#f59e0b' : '#10b981' }} />
                                   </div>
                                   <span className="text-xs font-mono" style={{ color: theme.text.secondary }}>{k.callsToday}/{k.rateLimit}</span>
                                 </div>
@@ -4237,7 +3772,7 @@ export default function LocQarERP() {
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="font-semibold" style={{ color: theme.text.primary }}>Monthly Volume by Partner</h3>
                           <div className="flex gap-3">
-                            {[{ l: 'Jumia', c: theme.accent.primary }, { l: 'Melcom', c: palette.blue500 }, { l: 'Telecel', c: palette.emerald500 }, { l: 'Hubtel', c: palette.amber500 }].map(i => (
+                            {[{ l: 'Jumia', c: theme.accent.primary }, { l: 'Melcom', c: '#3b82f6' }, { l: 'Telecel', c: '#10b981' }, { l: 'Hubtel', c: '#f59e0b' }].map(i => (
                               <span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>
                             ))}
                           </div>
@@ -4260,7 +3795,7 @@ export default function LocQarERP() {
                         <div className="space-y-4">
                           {partnersData.filter(p => p.status === 'active').sort((a, b) => b.monthlyVolume - a.monthlyVolume).map((p, i) => (
                             <div key={p.id} className="flex items-center gap-3">
-                              <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: i === 0 ? palette.amber500 : i === 1 ? palette.silver : i === 2 ? palette.bronze : theme.border.secondary }}>{i + 1}</span>
+                              <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: i === 0 ? '#f59e0b' : i === 1 ? '#a3a3a3' : i === 2 ? '#cd7c32' : theme.border.secondary }}>{i + 1}</span>
                               <div className="flex-1">
                                 <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{p.name}</p>
                                 <div className="w-full h-1.5 rounded-full mt-1" style={{ backgroundColor: theme.border.primary }}>
@@ -4288,9 +3823,9 @@ export default function LocQarERP() {
                               </div>
                               <div className="flex items-center gap-2">
                                 <div className="w-24 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                                  <div className="h-full rounded-full" style={{ width: `${p.deliveryRate}%`, backgroundColor: p.deliveryRate > 95 ? palette.emerald500 : p.deliveryRate > 90 ? palette.amber500 : palette.red500 }} />
+                                  <div className="h-full rounded-full" style={{ width: `${p.deliveryRate}%`, backgroundColor: p.deliveryRate > 95 ? '#10b981' : p.deliveryRate > 90 ? '#f59e0b' : '#ef4444' }} />
                                 </div>
-                                <span className="text-sm font-bold w-14 text-right" style={{ color: p.deliveryRate > 95 ? palette.emerald500 : p.deliveryRate > 90 ? palette.amber500 : palette.red500 }}>{p.deliveryRate}%</span>
+                                <span className="text-sm font-bold w-14 text-right" style={{ color: p.deliveryRate > 95 ? '#10b981' : p.deliveryRate > 90 ? '#f59e0b' : '#ef4444' }}>{p.deliveryRate}%</span>
                               </div>
                             </div>
                           ))}
@@ -4306,7 +3841,7 @@ export default function LocQarERP() {
                                 <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{p.name}</p>
                               </div>
                               <div className="text-right">
-                                <p className="font-bold" style={{ color: palette.emerald500 }}>GH₵ {(p.revenue / 1000).toFixed(1)}K</p>
+                                <p className="font-bold" style={{ color: '#10b981' }}>GH₵ {(p.revenue / 1000).toFixed(1)}K</p>
                                 <p className="text-xs" style={{ color: theme.text.muted }}>{((p.revenue / partnersData.reduce((s, x) => s + x.revenue, 0)) * 100).toFixed(1)}% share</p>
                               </div>
                             </div>
@@ -4354,14 +3889,14 @@ export default function LocQarERP() {
 
                     {/* Alerts */}
                     {portalShipmentsData.some(p => p.status === 'expired' || p.daysInLocker >= 3) && (
-                      <div className="p-4 rounded-2xl" style={{ backgroundColor: overlays.warningSubtle, border: '1px solid rgba(245,158,11,0.2)' }}>
-                        <p className="text-sm font-semibold mb-2" style={{ color: palette.amber500 }}>⚠️ Attention Required</p>
+                      <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                        <p className="text-sm font-semibold mb-2" style={{ color: '#f59e0b' }}>⚠️ Attention Required</p>
                         <div className="flex flex-wrap gap-2">
                           {portalShipmentsData.filter(p => p.status === 'expired').length > 0 && (
-                            <span className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: overlays.errorBg, color: palette.red500 }}>🔴 {portalShipmentsData.filter(p => p.status === 'expired').length} expired package(s) — will be returned</span>
+                            <span className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: 'rgba(239,68,68,0.1)', color: '#ef4444' }}>🔴 {portalShipmentsData.filter(p => p.status === 'expired').length} expired package(s) — will be returned</span>
                           )}
                           {portalShipmentsData.filter(p => p.daysInLocker >= 3 && p.status === 'delivered_to_locker').length > 0 && (
-                            <span className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: overlays.warningBg, color: palette.amber500 }}>🟡 {portalShipmentsData.filter(p => p.daysInLocker >= 3 && p.status === 'delivered_to_locker').length} package(s) nearing expiry (3+ days)</span>
+                            <span className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>🟡 {portalShipmentsData.filter(p => p.daysInLocker >= 3 && p.status === 'delivered_to_locker').length} package(s) nearing expiry (3+ days)</span>
                           )}
                         </div>
                       </div>
@@ -4372,7 +3907,7 @@ export default function LocQarERP() {
                       <div className="lg:col-span-2 p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="font-semibold" style={{ color: theme.text.primary }}>Shipment Trend</h3>
-                          <div className="flex gap-3">{[{ l: 'Shipped', c: theme.accent.primary }, { l: 'Delivered', c: palette.emerald500 }, { l: 'Returned', c: palette.red500 }].map(i => (<span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>))}</div>
+                          <div className="flex gap-3">{[{ l: 'Shipped', c: theme.accent.primary }, { l: 'Delivered', c: '#10b981' }, { l: 'Returned', c: '#ef4444' }].map(i => (<span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>))}</div>
                         </div>
                         <ResponsiveContainer width="100%" height={220}>
                           <AreaChart data={portalShipmentTrend}>
@@ -4390,12 +3925,12 @@ export default function LocQarERP() {
                         <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Current Status</h3>
                         <div className="space-y-3">
                           {[
-                            { label: 'In Locker', count: portalShipmentsData.filter(p => p.status === 'delivered_to_locker').length, color: palette.emerald500 },
-                            { label: 'In Transit', count: portalShipmentsData.filter(p => p.status.includes('transit')).length, color: palette.blue500 },
-                            { label: 'At Warehouse', count: portalShipmentsData.filter(p => p.status === 'at_warehouse').length, color: palette.indigo500 },
-                            { label: 'Pending', count: portalShipmentsData.filter(p => p.status === 'pending').length, color: palette.amber500 },
-                            { label: 'Picked Up', count: portalShipmentsData.filter(p => p.status === 'picked_up').length, color: palette.gray500 },
-                            { label: 'Expired', count: portalShipmentsData.filter(p => p.status === 'expired').length, color: palette.red500 },
+                            { label: 'In Locker', count: portalShipmentsData.filter(p => p.status === 'delivered_to_locker').length, color: '#10b981' },
+                            { label: 'In Transit', count: portalShipmentsData.filter(p => p.status.includes('transit')).length, color: '#3b82f6' },
+                            { label: 'At Warehouse', count: portalShipmentsData.filter(p => p.status === 'at_warehouse').length, color: '#6366f1' },
+                            { label: 'Pending', count: portalShipmentsData.filter(p => p.status === 'pending').length, color: '#f59e0b' },
+                            { label: 'Picked Up', count: portalShipmentsData.filter(p => p.status === 'picked_up').length, color: '#6b7280' },
+                            { label: 'Expired', count: portalShipmentsData.filter(p => p.status === 'expired').length, color: '#ef4444' },
                           ].map(s => (
                             <div key={s.label} className="flex items-center justify-between">
                               <span className="flex items-center gap-2 text-sm" style={{ color: theme.text.secondary }}><span className="w-3 h-3 rounded-full" style={{ backgroundColor: s.color }} />{s.label}</span>
@@ -4465,7 +4000,7 @@ export default function LocQarERP() {
                         <h4 className="text-sm font-semibold mb-3" style={{ color: theme.text.muted }}>API Usage Today</h4>
                         <div className="mb-3">
                           <div className="flex justify-between mb-1"><span className="text-sm" style={{ color: theme.text.muted }}>Calls</span><span className="text-sm font-mono" style={{ color: theme.text.primary }}>342 / 1,000</span></div>
-                          <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: '34.2%', backgroundColor: palette.blue500 }} /></div>
+                          <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: '34.2%', backgroundColor: '#3b82f6' }} /></div>
                         </div>
                         <div className="space-y-2 text-sm">{[['Rate Limit', '1,000/day'], ['Last Call', '2 min ago'], ['Avg Response', '120ms'], ['Error Rate', '0.2%']].map(([l, v]) => (
                           <div key={l} className="flex justify-between"><span style={{ color: theme.text.muted }}>{l}</span><span className="font-medium" style={{ color: theme.text.primary }}>{v}</span></div>
@@ -4531,23 +4066,23 @@ export default function LocQarERP() {
                       {/* Bulk Upload */}
                       <div className="space-y-6">
                         <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                          <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}><FileDown size={20} style={{ color: palette.violet500 }} />Bulk Upload</h3>
+                          <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}><FileDown size={20} style={{ color: '#8b5cf6' }} />Bulk Upload</h3>
                           <p className="text-sm mb-6" style={{ color: theme.text.muted }}>Upload a CSV file to create multiple shipments at once</p>
                           <div className="border-2 border-dashed rounded-2xl p-8 text-center" style={{ borderColor: theme.border.secondary }}>
                             <FileDown size={40} style={{ color: theme.text.muted }} className="mx-auto mb-3" />
                             <p className="font-medium mb-1" style={{ color: theme.text.primary }}>Drop CSV file here or click to browse</p>
                             <p className="text-sm mb-4" style={{ color: theme.text.muted }}>Max 500 packages per upload • CSV or XLSX format</p>
-                            <button onClick={() => addToast({ type: 'info', message: 'File browser opened' })} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: palette.violet500 }}>Choose File</button>
+                            <button onClick={() => addToast({ type: 'info', message: 'File browser opened' })} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}>Choose File</button>
                           </div>
                           <div className="flex items-center gap-4 mt-4">
                             <button onClick={() => addToast({ type: 'info', message: 'Downloading template...' })} className="text-sm flex items-center gap-1" style={{ color: theme.accent.primary }}><Download size={14} />Download CSV Template</button>
-                            <button onClick={() => addToast({ type: 'info', message: 'Opening field mapping guide' })} className="text-sm flex items-center gap-1" style={{ color: palette.blue500 }}><Info size={14} />Field Guide</button>
+                            <button onClick={() => addToast({ type: 'info', message: 'Opening field mapping guide' })} className="text-sm flex items-center gap-1" style={{ color: '#3b82f6' }}><Info size={14} />Field Guide</button>
                           </div>
                         </div>
 
                         {/* Rate Card */}
                         <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                          <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><CreditCard size={20} style={{ color: palette.amber500 }} />Your Rate Card</h3>
+                          <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><CreditCard size={20} style={{ color: '#f59e0b' }} />Your Rate Card</h3>
                           <table className="w-full">
                             <thead><tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                               <th className="text-left p-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Size</th>
@@ -4586,7 +4121,7 @@ export default function LocQarERP() {
                             <td className="p-3"><span className="font-mono font-bold" style={{ color: theme.text.primary }}>{b.id}</span><br/><span className="text-xs" style={{ color: theme.text.muted }}>{b.packages} packages</span></td>
                             <td className="p-3 hidden md:table-cell" style={{ color: theme.text.secondary }}>{b.terminal}</td>
                             <td className="p-3"><StatusBadge status={b.status} /></td>
-                            <td className="p-3"><div className="flex items-center gap-2"><div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: `${(b.delivered / b.packages) * 100}%`, backgroundColor: palette.emerald500 }} /></div><span className="text-xs font-mono" style={{ color: theme.text.secondary }}>{b.delivered}/{b.packages}</span></div></td>
+                            <td className="p-3"><div className="flex items-center gap-2"><div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: `${(b.delivered / b.packages) * 100}%`, backgroundColor: '#10b981' }} /></div><span className="text-xs font-mono" style={{ color: theme.text.secondary }}>{b.delivered}/{b.packages}</span></div></td>
                             <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.muted }}>{b.eta}</span></td>
                           </tr>
                         ))}
@@ -4630,7 +4165,7 @@ export default function LocQarERP() {
                           <th className="text-right p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Actions</th>
                         </tr></thead>
                         <tbody>{portalShipmentsData.map(s => (
-                          <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: s.status === 'expired' ? overlays.errorSubtle : s.daysInLocker >= 3 && s.status === 'delivered_to_locker' ? overlays.warningSubtle : 'transparent' }}>
+                          <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: s.status === 'expired' ? 'rgba(239,68,68,0.03)' : s.daysInLocker >= 3 && s.status === 'delivered_to_locker' ? 'rgba(245,158,11,0.03)' : 'transparent' }}>
                             <td className="p-3"><span className="font-mono font-medium text-sm" style={{ color: theme.text.primary }}>{s.id}</span><br/><span className="text-xs font-mono" style={{ color: theme.text.muted }}>{s.waybill}</span></td>
                             <td className="p-3"><span className="text-sm" style={{ color: theme.text.primary }}>{s.customer}</span><br/><span className="text-xs" style={{ color: theme.text.muted }}>{s.phone}</span></td>
                             <td className="p-3 hidden md:table-cell">
@@ -4639,12 +4174,12 @@ export default function LocQarERP() {
                             </td>
                             <td className="p-3"><StatusBadge status={s.status} /></td>
                             <td className="p-3 hidden md:table-cell">{s.locker !== '-' ? <span className="font-mono text-sm px-2 py-0.5 rounded" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}>{s.locker}</span> : '—'}</td>
-                            <td className="p-3 hidden lg:table-cell">{s.pickupCode ? <span className="font-mono font-bold tracking-wider" style={{ color: palette.emerald500 }}>{s.pickupCode}</span> : '—'}</td>
+                            <td className="p-3 hidden lg:table-cell">{s.pickupCode ? <span className="font-mono font-bold tracking-wider" style={{ color: '#10b981' }}>{s.pickupCode}</span> : '—'}</td>
                             <td className="p-3 hidden lg:table-cell">{s.daysInLocker > 0 ? <span className={`text-sm font-medium ${s.daysInLocker >= 5 ? 'text-red-500' : s.daysInLocker >= 3 ? 'text-amber-500' : ''}`} style={{ color: s.daysInLocker < 3 ? theme.text.secondary : undefined }}>{s.daysInLocker}d</span> : '—'}</td>
                             <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.primary }}>GH₵ {s.value}</span></td>
                             <td className="p-3 text-right">
                               <button onClick={() => addToast({ type: 'info', message: `Tracking ${s.waybill}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Eye size={14} /></button>
-                              {s.status === 'delivered_to_locker' && <button onClick={() => addToast({ type: 'info', message: `Sending reminder to ${s.customer}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: palette.amber500 }}><Bell size={14} /></button>}
+                              {s.status === 'delivered_to_locker' && <button onClick={() => addToast({ type: 'info', message: `Sending reminder to ${s.customer}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#f59e0b' }}><Bell size={14} /></button>}
                               <button onClick={() => addToast({ type: 'info', message: 'Printing label...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Printer size={14} /></button>
                             </td>
                           </tr>
@@ -4657,13 +4192,13 @@ export default function LocQarERP() {
                 {/* ========== LOCKER MAP ========== */}
                 {activeSubMenu === 'Locker Map' && (
                   <div className="space-y-6">
-                    <div className="p-4 rounded-2xl" style={{ backgroundColor: overlays.infoSubtle, border: '1px solid rgba(59,130,246,0.2)' }}>
-                      <div className="flex items-center gap-2"><Info size={18} style={{ color: palette.blue500 }} /><p className="text-sm" style={{ color: palette.blue500 }}>Real-time locker availability across all terminals. Data refreshes every 5 minutes.</p></div>
+                    <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                      <div className="flex items-center gap-2"><Info size={18} style={{ color: '#3b82f6' }} /><p className="text-sm" style={{ color: '#3b82f6' }}>Real-time locker availability across all terminals. Data refreshes every 5 minutes.</p></div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {portalTerminalAvailability.map(t => {
                         const utilizationPct = Math.round(((t.totalLockers - t.available) / t.totalLockers) * 100);
-                        const utilizationColor = utilizationPct > 85 ? palette.red500 : utilizationPct > 60 ? palette.amber500 : palette.emerald500;
+                        const utilizationColor = utilizationPct > 85 ? '#ef4444' : utilizationPct > 60 ? '#f59e0b' : '#10b981';
                         return (
                           <div key={t.id} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                             <div className="p-5">
@@ -4677,12 +4212,12 @@ export default function LocQarERP() {
                                 <div className="flex justify-between mt-1 text-xs" style={{ color: theme.text.muted }}><span>{t.available} available</span><span>{t.totalLockers} total</span></div>
                               </div>
                               <div className="space-y-2">
-                                {[{ label: 'Small', ...t.small, color: palette.emerald500 }, { label: 'Medium', ...t.medium, color: palette.blue500 }, { label: 'Large', ...t.large, color: palette.violet500 }, { label: 'XLarge', ...t.xlarge, color: palette.amber500 }].map(s => (
+                                {[{ label: 'Small', ...t.small, color: '#10b981' }, { label: 'Medium', ...t.medium, color: '#3b82f6' }, { label: 'Large', ...t.large, color: '#8b5cf6' }, { label: 'XLarge', ...t.xlarge, color: '#f59e0b' }].map(s => (
                                   <div key={s.label} className="flex items-center justify-between p-2 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
                                     <span className="text-sm flex items-center gap-2" style={{ color: theme.text.secondary }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />{s.label}</span>
                                     <div className="flex items-center gap-3">
                                       <div className="w-12 h-1.5 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: `${s.total > 0 ? ((s.total - s.available) / s.total) * 100 : 0}%`, backgroundColor: s.color }} /></div>
-                                      <span className="font-mono text-sm w-12 text-right" style={{ color: s.available > 0 ? palette.emerald500 : palette.red500 }}>{s.available}/{s.total}</span>
+                                      <span className="font-mono text-sm w-12 text-right" style={{ color: s.available > 0 ? '#10b981' : '#ef4444' }}>{s.available}/{s.total}</span>
                                     </div>
                                   </div>
                                 ))}
@@ -4710,10 +4245,10 @@ export default function LocQarERP() {
 
                     {/* Pending Invoice Alert */}
                     {portalInvoicesData.some(i => i.status === 'pending') && (
-                      <div className="p-5 rounded-2xl flex flex-col md:flex-row md:items-center gap-4" style={{ backgroundColor: overlays.warningSubtle, border: '1px solid rgba(245,158,11,0.2)' }}>
-                        <div className="flex items-center gap-3 flex-1"><AlertTriangle size={24} style={{ color: palette.amber500 }} /><div><p className="font-semibold" style={{ color: palette.amber500 }}>Invoice Due</p><p className="text-sm" style={{ color: theme.text.muted }}>{portalInvoicesData.find(i => i.status === 'pending')?.id} — GH₵ {portalInvoicesData.find(i => i.status === 'pending')?.total.toLocaleString()} due by {portalInvoicesData.find(i => i.status === 'pending')?.dueDate}</p></div></div>
+                      <div className="p-5 rounded-2xl flex flex-col md:flex-row md:items-center gap-4" style={{ backgroundColor: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                        <div className="flex items-center gap-3 flex-1"><AlertTriangle size={24} style={{ color: '#f59e0b' }} /><div><p className="font-semibold" style={{ color: '#f59e0b' }}>Invoice Due</p><p className="text-sm" style={{ color: theme.text.muted }}>{portalInvoicesData.find(i => i.status === 'pending')?.id} — GH₵ {portalInvoicesData.find(i => i.status === 'pending')?.total.toLocaleString()} due by {portalInvoicesData.find(i => i.status === 'pending')?.dueDate}</p></div></div>
                         <div className="flex gap-2">
-                          <button onClick={() => addToast({ type: 'info', message: 'Opening payment portal...' })} className="px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: palette.amber500 }}>Pay Now</button>
+                          <button onClick={() => addToast({ type: 'info', message: 'Opening payment portal...' })} className="px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#f59e0b' }}>Pay Now</button>
                           <button onClick={() => addToast({ type: 'info', message: 'Downloading invoice PDF...' })} className="px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={14} className="inline mr-1" />Download</button>
                         </div>
                       </div>
@@ -4746,7 +4281,7 @@ export default function LocQarERP() {
                             <td className="p-4 text-right">
                               <button onClick={() => addToast({ type: 'info', message: `Downloading ${inv.id}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Download size={14} /></button>
                               <button onClick={() => addToast({ type: 'info', message: `Viewing ${inv.id}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Eye size={14} /></button>
-                              {inv.status === 'pending' && <button onClick={() => addToast({ type: 'info', message: 'Opening payment...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: palette.amber500 }}><CreditCard size={14} /></button>}
+                              {inv.status === 'pending' && <button onClick={() => addToast({ type: 'info', message: 'Opening payment...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#f59e0b' }}><CreditCard size={14} /></button>}
                             </td>
                           </tr>
                         ))}
@@ -4767,18 +4302,18 @@ export default function LocQarERP() {
 
                     {/* API Key */}
                     <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Key size={20} style={{ color: palette.amber500 }} />Your API Keys</h3>
+                      <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Key size={20} style={{ color: '#f59e0b' }} />Your API Keys</h3>
                       <div className="space-y-3">
                         {apiKeysData.filter(k => k.partner === 'Jumia Ghana').map(k => (
                           <div key={k.id} className="flex flex-col md:flex-row md:items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                             <div className="flex-1">
-                              <div className="flex items-center gap-2"><span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: k.env === 'production' ? overlays.successBg : overlays.warningBg, color: k.env === 'production' ? palette.emerald500 : palette.amber500 }}>{k.env}</span><StatusBadge status={k.status === 'revoked' ? 'expired' : k.status} /></div>
+                              <div className="flex items-center gap-2"><span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: k.env === 'production' ? 'rgba(16,185,129,0.1)' : 'rgba(245,158,11,0.1)', color: k.env === 'production' ? '#10b981' : '#f59e0b' }}>{k.env}</span><StatusBadge status={k.status === 'revoked' ? 'expired' : k.status} /></div>
                               <code className="text-sm mt-1 block font-mono" style={{ color: theme.text.primary }}>{k.key}</code>
                               <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Created: {k.created} • Last used: {k.lastUsed} • Calls today: {k.callsToday}/{k.rateLimit}</p>
                             </div>
                             <div className="flex gap-2">
-                              <button onClick={() => addToast({ type: 'success', message: 'Key copied to clipboard' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: overlays.infoBg, color: palette.blue500 }}>Copy Key</button>
-                              <button onClick={() => addToast({ type: 'warning', message: 'Are you sure? This will invalidate the current key.' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: overlays.warningBg, color: palette.amber500 }}>Regenerate</button>
+                              <button onClick={() => addToast({ type: 'success', message: 'Key copied to clipboard' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}>Copy Key</button>
+                              <button onClick={() => addToast({ type: 'warning', message: 'Are you sure? This will invalidate the current key.' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>Regenerate</button>
                             </div>
                           </div>
                         ))}
@@ -4787,7 +4322,7 @@ export default function LocQarERP() {
 
                     {/* API Playground */}
                     <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Command size={20} style={{ color: palette.violet500 }} />API Playground</h3>
+                      <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Command size={20} style={{ color: '#8b5cf6' }} />API Playground</h3>
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div>
                           <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Endpoint</label>
@@ -4801,7 +4336,7 @@ export default function LocQarERP() {
                             <option>GET /v2/invoices — List Invoices</option>
                           </select>
                           <label className="text-xs font-semibold uppercase block mt-4 mb-2" style={{ color: theme.text.muted }}>Request Body</label>
-                          <pre className="p-4 rounded-xl text-sm overflow-x-auto" style={{ backgroundColor: theme.bg.primary, color: palette.emerald500, fontFamily: theme.font.mono, border: `1px solid ${theme.border.primary}` }}>{`{
+                          <pre className="p-4 rounded-xl text-sm overflow-x-auto" style={{ backgroundColor: theme.bg.primary, color: '#10b981', fontFamily: theme.font.mono, border: `1px solid ${theme.border.primary}` }}>{`{
   "order_id": "JUM-2024-0461",
   "customer_name": "Kwame Mensah",
   "customer_phone": "+233551234567",
@@ -4811,11 +4346,11 @@ export default function LocQarERP() {
   "cod": false,
   "notify": true
 }`}</pre>
-                          <button onClick={() => addToast({ type: 'success', message: 'API call successful! Status: 201 Created' })} className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm" style={{ backgroundColor: palette.violet500 }}><Send size={16} />Send Request</button>
+                          <button onClick={() => addToast({ type: 'success', message: 'API call successful! Status: 201 Created' })} className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}><Send size={16} />Send Request</button>
                         </div>
                         <div>
                           <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Response</label>
-                          <pre className="p-4 rounded-xl text-sm overflow-x-auto h-full min-h-[280px]" style={{ backgroundColor: theme.bg.primary, color: palette.blue500, fontFamily: theme.font.mono, border: `1px solid ${theme.border.primary}` }}>{`// 201 Created — 120ms
+                          <pre className="p-4 rounded-xl text-sm overflow-x-auto h-full min-h-[280px]" style={{ backgroundColor: theme.bg.primary, color: '#3b82f6', fontFamily: theme.font.mono, border: `1px solid ${theme.border.primary}` }}>{`// 201 Created — 120ms
 {
   "success": true,
   "data": {
@@ -4838,7 +4373,7 @@ export default function LocQarERP() {
                         <h3 className="font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}><Send size={18} />Webhook Delivery Log</h3>
                         <div className="flex gap-2">
                           <button onClick={() => addToast({ type: 'info', message: 'Opening webhook settings' })} className="px-3 py-1.5 rounded-lg text-xs border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Cog size={12} className="inline mr-1" />Configure</button>
-                          <button onClick={() => addToast({ type: 'info', message: 'Testing webhook endpoint...' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: overlays.successBg, color: palette.emerald500 }}>Test Webhook</button>
+                          <button onClick={() => addToast({ type: 'info', message: 'Testing webhook endpoint...' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Test Webhook</button>
                         </div>
                       </div>
                       <table className="w-full"><thead><tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
@@ -4850,15 +4385,15 @@ export default function LocQarERP() {
                         <th className="text-right p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Actions</th>
                       </tr></thead><tbody>
                         {portalWebhookLogsData.map(w => (
-                          <tr key={w.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: w.status !== 200 ? overlays.errorSubtle : 'transparent' }}>
+                          <tr key={w.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: w.status !== 200 ? 'rgba(239,68,68,0.03)' : 'transparent' }}>
                             <td className="p-3"><span className="font-mono text-sm" style={{ color: theme.text.primary }}>{w.event}</span></td>
-                            <td className="p-3"><span className={`px-2 py-0.5 rounded-full text-xs font-mono ${w.status === 200 ? 'text-emerald-500' : 'text-red-500'}`} style={{ backgroundColor: w.status === 200 ? overlays.successBg : overlays.errorBg }}>{w.status}</span>{w.error && <span className="text-xs text-red-500 ml-1">{w.error}</span>}</td>
+                            <td className="p-3"><span className={`px-2 py-0.5 rounded-full text-xs font-mono ${w.status === 200 ? 'text-emerald-500' : 'text-red-500'}`} style={{ backgroundColor: w.status === 200 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)' }}>{w.status}</span>{w.error && <span className="text-xs text-red-500 ml-1">{w.error}</span>}</td>
                             <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{w.responseTime}</span></td>
                             <td className="p-3 hidden md:table-cell"><span className="text-xs font-mono" style={{ color: theme.text.muted }}>{w.timestamp.split(' ')[1]}</span></td>
                             <td className="p-3 hidden lg:table-cell"><span className="text-xs" style={{ color: theme.text.muted }}>{w.timestamp}</span></td>
                             <td className="p-3 text-right">
                               <button onClick={() => addToast({ type: 'info', message: `Payload: ${w.payload}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Eye size={14} /></button>
-                              {w.status !== 200 && <button onClick={() => addToast({ type: 'info', message: 'Retrying webhook...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: palette.amber500 }}><RefreshCw size={14} /></button>}
+                              {w.status !== 200 && <button onClick={() => addToast({ type: 'info', message: 'Retrying webhook...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#f59e0b' }}><RefreshCw size={14} /></button>}
                             </td>
                           </tr>
                         ))}
@@ -4872,7 +4407,7 @@ export default function LocQarERP() {
                   <div className="space-y-6 max-w-4xl">
                     {/* Contact Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {[{ icon: Phone, label: 'Call Support', desc: '+233 55 139 9333', action: 'Call Now', color: palette.blue500 }, { icon: MessageSquare, label: 'WhatsApp', desc: 'Chat with support team', action: 'Open Chat', color: palette.whatsapp }, { icon: Send, label: 'Email', desc: 'partners@locqar.com', action: 'Send Email', color: theme.accent.primary }].map(c => (
+                      {[{ icon: Phone, label: 'Call Support', desc: '+233 55 139 9333', action: 'Call Now', color: '#3b82f6' }, { icon: MessageSquare, label: 'WhatsApp', desc: 'Chat with support team', action: 'Open Chat', color: '#25D366' }, { icon: Send, label: 'Email', desc: 'partners@locqar.com', action: 'Send Email', color: theme.accent.primary }].map(c => (
                         <div key={c.label} className="p-5 rounded-2xl border text-center" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                           <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: `${c.color}15` }}><c.icon size={24} style={{ color: c.color }} /></div>
                           <p className="font-semibold" style={{ color: theme.text.primary }}>{c.label}</p>
@@ -4928,7 +4463,7 @@ export default function LocQarERP() {
                     <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                       <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Resources & Documentation</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {[{ icon: FileText, label: 'API Documentation', desc: 'Complete REST API reference', color: palette.blue500 }, { icon: FileDown, label: 'CSV Template', desc: 'Bulk upload spreadsheet template', color: palette.emerald500 }, { icon: Cog, label: 'Webhook Guide', desc: 'Set up real-time event notifications', color: palette.violet500 }, { icon: CreditCard, label: 'Billing FAQ', desc: 'Payment methods, invoicing, refunds', color: palette.amber500 }].map(r => (
+                        {[{ icon: FileText, label: 'API Documentation', desc: 'Complete REST API reference', color: '#3b82f6' }, { icon: FileDown, label: 'CSV Template', desc: 'Bulk upload spreadsheet template', color: '#10b981' }, { icon: Cog, label: 'Webhook Guide', desc: 'Set up real-time event notifications', color: '#8b5cf6' }, { icon: CreditCard, label: 'Billing FAQ', desc: 'Payment methods, invoicing, refunds', color: '#f59e0b' }].map(r => (
                           <button key={r.label} onClick={() => addToast({ type: 'info', message: `Opening ${r.label}` })} className="flex items-center gap-4 p-4 rounded-xl border text-left hover:bg-white/5" style={{ borderColor: theme.border.primary }}>
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${r.color}15` }}><r.icon size={20} style={{ color: r.color }} /></div>
                             <div><p className="font-medium text-sm" style={{ color: theme.text.primary }}>{r.label}</p><p className="text-xs" style={{ color: theme.text.muted }}>{r.desc}</p></div>
@@ -4995,7 +4530,7 @@ export default function LocQarERP() {
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="space-y-2 mt-2">
-                      {[['Warehouse→Locker', palette.blue500], ['Dropbox→Locker', palette.violet500], ['Locker→Home', palette.emerald500]].map(([l, c]) => (
+                      {[['Warehouse→Locker', '#3b82f6'], ['Dropbox→Locker', '#8b5cf6'], ['Locker→Home', '#10b981']].map(([l, c]) => (
                         <div key={l} className="flex items-center gap-2 text-sm">
                           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: c }} />
                           <span style={{ color: theme.text.secondary }}>{l}</span>
@@ -5062,7 +4597,7 @@ export default function LocQarERP() {
                               <td className="p-3">
                                 <div className="flex items-center gap-2">
                                   <div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                                    <div className="h-full rounded-full" style={{ width: `${util}%`, backgroundColor: util > 80 ? palette.red500 : util > 60 ? palette.amber500 : palette.emerald500 }} />
+                                    <div className="h-full rounded-full" style={{ width: `${util}%`, backgroundColor: util > 80 ? '#ef4444' : util > 60 ? '#f59e0b' : '#10b981' }} />
                                   </div>
                                   <span className="text-xs font-medium" style={{ color: theme.text.secondary }}>{util}%</span>
                                 </div>
@@ -5079,7 +4614,7 @@ export default function LocQarERP() {
                     <div className="space-y-4">
                       {terminalsData.sort((a, b) => b.occupied - a.occupied).slice(0, 5).map((t, i) => (
                         <div key={t.id} className="flex items-center gap-3">
-                          <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: i === 0 ? palette.amber500 : i === 1 ? palette.silver : i === 2 ? palette.bronze : theme.border.secondary }}>{i + 1}</span>
+                          <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: i === 0 ? '#f59e0b' : i === 1 ? '#a3a3a3' : i === 2 ? '#cd7c32' : theme.border.secondary }}>{i + 1}</span>
                           <div className="flex-1">
                             <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{t.name}</p>
                             <p className="text-xs" style={{ color: theme.text.muted }}>{t.occupied} active &bull; {t.available} open</p>
@@ -5138,8 +4673,8 @@ export default function LocQarERP() {
                               <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{r.dimensions}</span></td>
                               <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{r.maxWeight} kg</span></td>
                               <td className="p-3"><span className="font-medium" style={{ color: theme.accent.primary }}>GH₵ {r.basePrice.toFixed(2)}</span></td>
-                              <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: palette.amber500 }}>GH₵ {(r.basePrice * 1.5).toFixed(2)}</span></td>
-                              <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: palette.red500 }}>GH₵ {(r.basePrice * 2.2).toFixed(2)}</span></td>
+                              <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: '#f59e0b' }}>GH₵ {(r.basePrice * 1.5).toFixed(2)}</span></td>
+                              <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: '#ef4444' }}>GH₵ {(r.basePrice * 2.2).toFixed(2)}</span></td>
                             </tr>
                           ))}
                         </tbody>
@@ -5160,7 +4695,7 @@ export default function LocQarERP() {
                           <p className="text-sm" style={{ color: theme.text.muted }}>{dm.description}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-2xl font-bold" style={{ color: dm.baseMarkup > 0 ? dm.color : palette.emerald500 }}>+{dm.baseMarkup}%</p>
+                          <p className="text-2xl font-bold" style={{ color: dm.baseMarkup > 0 ? dm.color : '#10b981' }}>+{dm.baseMarkup}%</p>
                           <p className="text-xs" style={{ color: theme.text.muted }}>markup on base</p>
                         </div>
                       </div>
@@ -5228,7 +4763,7 @@ export default function LocQarERP() {
                             <td className="p-3"><span className="text-sm capitalize" style={{ color: theme.text.secondary }}>{sc.type.replace('_', '/')}</span></td>
                             <td className="p-3"><span className="font-medium" style={{ color: theme.accent.primary }}>{sc.type === 'percentage' ? `${sc.value}%` : sc.type === 'per_day' && sc.tiers ? 'Tiered' : `GH₵ ${sc.value}`}</span></td>
                             <td className="p-3">
-                              <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: sc.active ? '#10b98115' : '#ef444415', color: sc.active ? palette.emerald500 : palette.red500 }}>{sc.active ? 'Active' : 'Inactive'}</span>
+                              <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: sc.active ? '#10b98115' : '#ef444415', color: sc.active ? '#10b981' : '#ef4444' }}>{sc.active ? 'Active' : 'Inactive'}</span>
                             </td>
                           </tr>
                         ))}
@@ -5244,7 +4779,7 @@ export default function LocQarERP() {
                         <div key={vt.label} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                           <p className="font-semibold" style={{ color: theme.text.primary }}>{vt.label}</p>
                           <p className="text-xs mb-2" style={{ color: theme.text.muted }}>{vt.min}–{vt.max === Infinity ? '∞' : vt.max} pkgs/mo</p>
-                          <p className="text-3xl font-bold" style={{ color: i === 0 ? theme.text.muted : palette.emerald500 }}>{vt.discount}%</p>
+                          <p className="text-3xl font-bold" style={{ color: i === 0 ? theme.text.muted : '#10b981' }}>{vt.discount}%</p>
                           <p className="text-xs" style={{ color: theme.text.muted }}>discount</p>
                         </div>
                       ))}
@@ -5278,7 +4813,7 @@ export default function LocQarERP() {
                           </div>
                           <div className="text-right">
                             <p className="text-sm" style={{ color: theme.text.muted }}>Volume Discount</p>
-                            <p className="text-xl font-bold" style={{ color: palette.emerald500 }}>{pp.volumeDiscount}%</p>
+                            <p className="text-xl font-bold" style={{ color: '#10b981' }}>{pp.volumeDiscount}%</p>
                           </div>
                         </div>
                         <div className="p-4">
@@ -5398,7 +4933,7 @@ export default function LocQarERP() {
                             <p className="text-sm" style={{ color: theme.text.primary }}>{label}</p>
                             <p className="text-xs" style={{ color: theme.text.muted }}>{desc}</p>
                           </div>
-                          <div className="w-10 h-6 rounded-full cursor-pointer flex items-center px-0.5" style={{ backgroundColor: enabled ? palette.emerald500 : theme.border.primary }}>
+                          <div className="w-10 h-6 rounded-full cursor-pointer flex items-center px-0.5" style={{ backgroundColor: enabled ? '#10b981' : theme.border.primary }}>
                             <div className="w-5 h-5 rounded-full bg-white transition-transform" style={{ transform: enabled ? 'translateX(16px)' : 'translateX(0)' }} />
                           </div>
                         </div>
@@ -5430,7 +4965,7 @@ export default function LocQarERP() {
                           <History size={16} style={{ color: theme.text.muted }} />
                           <span style={{ color: theme.text.primary }}>Active Sessions</span>
                         </div>
-                        <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: '#10b98115', color: palette.emerald500 }}>1 active</span>
+                        <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: '#10b98115', color: '#10b981' }}>1 active</span>
                       </button>
                     </div>
                   </div>
@@ -5496,9 +5031,9 @@ export default function LocQarERP() {
           onClear={() => setSelectedItems([])}
           onAction={handleBulkAction}
           actions={[
-            { id: 'dispatch', label: 'Dispatch', icon: Truck, color: palette.blue500 },
-            { id: 'print', label: 'Print Labels', icon: Printer, color: palette.emerald500 },
-            { id: 'delete', label: 'Delete', icon: Trash2, color: palette.red500 },
+            { id: 'dispatch', label: 'Dispatch', icon: Truck, color: '#3b82f6' },
+            { id: 'print', label: 'Print Labels', icon: Printer, color: '#10b981' },
+            { id: 'delete', label: 'Delete', icon: Trash2, color: '#ef4444' },
           ]}
           theme={theme}
         />
