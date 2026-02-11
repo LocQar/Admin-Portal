@@ -26,7 +26,13 @@
       "Bash(done)",
       "Bash(grep:*)",
       "Bash(for item in dropboxAgentsData dropboxFillHistory dropboxFlowData DROPBOX_FLOW_STAGES bulkShipmentsData apiKeysData portalShipmentsData portalShipmentTrend portalRateCard portalTerminalAvailability portalInvoicesData portalWebhookLogsData)",
-      "Bash(do echo \"=== $item ===\")"
+      "Bash(do echo \"=== $item ===\")",
+      "Bash(timeout:*)",
+      "Bash(findstr:*)",
+      "Bash(move:*)",
+      "Bash(git mv:*)",
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }

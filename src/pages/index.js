@@ -11,7 +11,7 @@ export * from './StaffPage';
 export * from './AccountingPage';
 export * from './BusinessPortalPage';
 export * from './PartnerPortalPage';
-// Additional pages will be exported here as they are extracted
 export * from './NotificationsPage';
 export * from './SLAMonitorPage';
 export * from './CustomersPage';
+export * from './PricingEnginePage';
