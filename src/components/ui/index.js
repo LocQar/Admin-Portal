@@ -6,3 +6,4 @@ export * from './EmptyState';
 export * from './Pagination';
 export * from './Toast';
 export * from './PackageStatusFlow';
+export * from './BulkActionsBar';
