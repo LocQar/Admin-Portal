@@ -41,30 +41,8 @@ import {
 } from './constants/mockData';
 
 // ============ CONTEXT ============
-const ThemeContext = createContext();
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 const ToastContext = createContext();
-
-// ============ THEMES ============
-const themes = {
-  dark: {
-    name: 'dark',
-    bg: { primary: '#0A1628', secondary: '#152238', tertiary: '#1E3A5F', card: '#152238', hover: '#1E3A5F' },
-    border: { primary: 'rgba(255,255,255,0.08)', secondary: 'rgba(255,255,255,0.15)', focus: '#FF6B58' },
-    text: { primary: '#FFFFFF', secondary: '#8B9AAF', muted: '#5E7290' },
-    accent: { primary: '#FF6B58', secondary: '#FF8A7A', light: 'rgba(255,107,88,0.12)', border: 'rgba(255,107,88,0.3)' },
-    font: { primary: "'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace" },
-    status: { success: '#34D399', warning: '#f59e0b', error: '#FF4D4D', info: '#3b82f6' }
-  },
-  light: {
-    name: 'light',
-    bg: { primary: '#FFFFFF', secondary: '#FFFFFF', tertiary: '#F3F4F6', card: '#FFFFFF', hover: '#E5E7EB' },
-    border: { primary: 'rgba(0,0,0,0.08)', secondary: 'rgba(0,0,0,0.12)', focus: '#FF6B58' },
-    text: { primary: '#0A1628', secondary: '#1E3A5F', muted: '#8B9AAF' },
-    accent: { primary: '#FF6B58', secondary: '#FF8A7A', light: 'rgba(255,107,88,0.08)', border: 'rgba(255,107,88,0.2)' },
-    font: { primary: "'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace" },
-    status: { success: '#34D399', warning: '#f59e0b', error: '#FF4D4D', info: '#3b82f6' }
-  }
-};
 
 
 // ============ ROLES & PERMISSIONS ============
@@ -2206,8 +2184,8 @@ const StatusPieChart = ({ data, theme }) => {
 };
 
 // ============ MAIN APP COMPONENT ============
-export default function LocQarERP() {
-  const [themeName, setThemeName] = useState('dark');
+function LocQarERPInner() {
+  const { theme, themeName, setThemeName, toggleTheme } = useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('dashboard');
@@ -2326,8 +2304,6 @@ export default function LocQarERP() {
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [metrics, setMetrics] = useState({ totalPackages: 1847, inLockers: 892, inTransit: 234, pendingPickup: 156, revenue: 48200 });
-
-  const theme = themes[themeName];
 
   const addToast = useCallback((toast) => {
     const id = Date.now();
@@ -2784,8 +2760,7 @@ export default function LocQarERP() {
   ], []);
 
   return (
-    <ThemeContext.Provider value={theme}>
-      <div className="min-h-screen flex" style={{ backgroundColor: theme.bg.primary, fontFamily: theme.font.primary }}>
+    <div className="min-h-screen flex" style={{ backgroundColor: theme.bg.primary, fontFamily: theme.font.primary }}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap'); * { font-family: 'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: ${theme.border.secondary}; border-radius: 3px; } .font-mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace !important; } @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } .animate-slide-in { animation: slide-in 0.3s ease-out; }`}</style>
 
         {(!isMobile || mobileSidebarOpen) && (
@@ -3878,6 +3853,14 @@ export default function LocQarERP() {
 
         <ToastContainer toasts={toasts} removeToast={removeToast} />
       </div>
-    </ThemeContext.Provider>
+  );
+}
+
+// Wrap with ThemeProvider
+export default function LocQarERP() {
+  return (
+    <ThemeProvider>
+      <LocQarERPInner />
+    </ThemeProvider>
   );
 }
