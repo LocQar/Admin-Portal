@@ -2898,6 +2898,17 @@ function LocQarERPInner() {
                 loading={loading}
                 activeSubMenu={activeSubMenu}
                 setShowExport={setShowExport}
+                lockerSearch={lockerSearch}
+                setLockerSearch={setLockerSearch}
+                lockerStatusFilter={lockerStatusFilter}
+                setLockerStatusFilter={setLockerStatusFilter}
+                lockerTerminalFilter={lockerTerminalFilter}
+                setLockerTerminalFilter={setLockerTerminalFilter}
+                lockerSizeFilter={lockerSizeFilter}
+                setLockerSizeFilter={setLockerSizeFilter}
+                lockerSort={lockerSort}
+                setLockerSort={setLockerSort}
+                filteredLockers={filteredLockers}
                 addToast={addToast}
               />
             )}
@@ -2910,6 +2921,11 @@ function LocQarERPInner() {
                 loading={loading}
                 activeSubMenu={activeSubMenu}
                 setShowExport={setShowExport}
+                terminalSearch={terminalSearch}
+                setTerminalSearch={setTerminalSearch}
+                terminalStatusFilter={terminalStatusFilter}
+                setTerminalStatusFilter={setTerminalStatusFilter}
+                filteredTerminals={filteredTerminals}
                 addToast={addToast}
               />
             )}
@@ -2920,7 +2936,10 @@ function LocQarERPInner() {
                 currentUser={currentUser}
                 loading={loading}
                 activeSubMenu={activeSubMenu}
+                setShowExport={setShowExport}
                 addToast={addToast}
+                slaBreachData={slaBreachData}
+                escalationLog={escalationLog}
               />
             )}
 
