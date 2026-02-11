@@ -23,7 +23,10 @@
       "Bash(gh repo set-default:*)",
       "Bash(for page in \"portal\" \"selfservice\" \"analytics\" \"audit\" \"settings\")",
       "Bash(do echo \"=== $page ===\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(grep:*)",
+      "Bash(for item in dropboxAgentsData dropboxFillHistory dropboxFlowData DROPBOX_FLOW_STAGES bulkShipmentsData apiKeysData portalShipmentsData portalShipmentTrend portalRateCard portalTerminalAvailability portalInvoicesData portalWebhookLogsData)",
+      "Bash(do echo \"=== $item ===\")"
     ]
   }
 }

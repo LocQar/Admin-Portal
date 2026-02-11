@@ -108,6 +108,22 @@ export const TIERS = {
   bronze: { label: 'Bronze', color: '#cd7c32', bg: 'rgba(205,124,50,0.1)', perks: 'Basic SLA, Ticket Support, Basic API Limits' },
 };
 
+export const apiKeysData = [
+  { id: 1, partner: 'Jumia Ghana', key: 'lq_live_jum_****a8f2', env: 'production', created: '2023-01-15', lastUsed: '2 min ago', status: 'active', callsToday: 342, rateLimit: 1000, callsMonth: 12450 },
+  { id: 2, partner: 'Jumia Ghana', key: 'lq_test_jum_****b3c1', env: 'sandbox', created: '2023-01-10', lastUsed: '1 day ago', status: 'active', callsToday: 12, rateLimit: 500, callsMonth: 890 },
+  { id: 3, partner: 'Melcom Ltd', key: 'lq_live_mel_****d4e5', env: 'production', created: '2023-02-20', lastUsed: '15 min ago', status: 'active', callsToday: 187, rateLimit: 500, callsMonth: 8200 },
+  { id: 4, partner: 'Telecel Ghana', key: 'lq_live_tel_****f6g7', env: 'production', created: '2023-05-25', lastUsed: '1 hour ago', status: 'active', callsToday: 95, rateLimit: 500, callsMonth: 5600 },
+  { id: 5, partner: 'CompuGhana', key: 'lq_live_cmp_****h8i9', env: 'production', created: '2023-11-15', lastUsed: '2 weeks ago', status: 'revoked', callsToday: 0, rateLimit: 200, callsMonth: 0 },
+];
+
+export const bulkShipmentsData = [
+  { id: 'BSH-001', partner: 'Jumia Ghana', packages: 45, status: 'in_transit_to_locker', created: '2024-01-15 08:00', eta: '14:00 today', delivered: 12, pending: 33, terminal: 'Achimota Mall' },
+  { id: 'BSH-002', partner: 'Melcom Ltd', packages: 28, status: 'delivered_to_locker', created: '2024-01-14 10:00', eta: 'Completed', delivered: 28, pending: 0, terminal: 'Accra Mall' },
+  { id: 'BSH-003', partner: 'Telecel Ghana', packages: 15, status: 'pending', created: '2024-01-15 12:00', eta: '10:00 tomorrow', delivered: 0, pending: 15, terminal: 'Kotoka T3' },
+  { id: 'BSH-004', partner: 'Jumia Ghana', packages: 62, status: 'in_transit_to_locker', created: '2024-01-15 06:00', eta: '18:00 today', delivered: 38, pending: 24, terminal: 'Junction Mall' },
+  { id: 'BSH-005', partner: 'Hubtel', packages: 20, status: 'at_warehouse', created: '2024-01-15 11:00', eta: '16:00 today', delivered: 0, pending: 20, terminal: 'West Hills Mall' },
+];
+
 // ============ DROPBOXES ============
 export const dropboxesData = [
   { id: 'DBX-001', name: 'Achimota Overpass', location: 'Achimota', address: 'Near Achimota Interchange', capacity: 50, currentFill: 42, status: 'active', lastCollection: '2024-01-15 10:30', nextCollection: '2024-01-15 16:00', assignedAgent: 'Yaw Boateng', agentPhone: '+233542345678', terminal: 'Achimota Mall', packagesIn: 42, packagesOut: 485, avgDailyVolume: 35, installDate: '2023-03-15', type: 'standard', alerts: ['near_full'] },
@@ -117,6 +133,39 @@ export const dropboxesData = [
 export const collectionsData = [
   { id: 'COL-001', dropbox: 'DBX-001', dropboxName: 'Achimota Overpass', agent: 'Yaw Boateng', scheduled: '2024-01-15 16:00', status: 'scheduled', packages: 42, terminal: 'Achimota Mall', priority: 'high', eta: '45 min', vehicle: 'Motorbike' },
   { id: 'COL-002', dropbox: 'DBX-003', dropboxName: 'Osu Oxford Street', agent: 'Kwame Asiedu', scheduled: '2024-01-15 14:00', status: 'overdue', packages: 31, terminal: 'Accra Mall', priority: 'high', eta: 'Overdue', vehicle: 'Van' },
+];
+
+export const dropboxAgentsData = [
+  { id: 1, name: 'Yaw Boateng', phone: '+233542345678', vehicle: 'Honda CG125 Motorbike', assignedDropboxes: ['DBX-001', 'DBX-005'], zone: 'North Accra', status: 'active', collectionsToday: 3, totalCollected: 56, rating: 4.9, avgCollectionTime: '22 min', photo: '🧑🏾' },
+  { id: 2, name: 'Kwesi Asante', phone: '+233551234567', vehicle: 'Toyota Hiace Van - GR-1234-20', assignedDropboxes: ['DBX-002', 'DBX-006'], zone: 'East Accra', status: 'on_delivery', collectionsToday: 2, totalCollected: 37, rating: 4.8, avgCollectionTime: '28 min', photo: '👨🏾' },
+  { id: 3, name: 'Kwame Asiedu', phone: '+233553456789', vehicle: 'Toyota Hiace Van - GR-3456-21', assignedDropboxes: ['DBX-003', 'DBX-008'], zone: 'South Accra', status: 'active', collectionsToday: 1, totalCollected: 31, rating: 4.7, avgCollectionTime: '25 min', photo: '👨🏿' },
+  { id: 4, name: 'Kofi Mensah', phone: '+233559876543', vehicle: 'Nissan Urvan Van - GW-5678-21', assignedDropboxes: ['DBX-004'], zone: 'Tema', status: 'offline', collectionsToday: 0, totalCollected: 0, rating: 4.6, avgCollectionTime: '30 min', photo: '🧔🏾' },
+];
+
+export const dropboxFlowData = [
+  { id: 'DFL-001', waybill: 'LQ-2024-00009', customer: 'Yaw Asiedu', dropbox: 'DBX-001', dropboxName: 'Achimota Overpass', depositTime: '2024-01-15 13:45', collectionId: 'COL-001', targetLocker: 'A-12', targetTerminal: 'Achimota Mall', stage: 'awaiting_collection', eta: '16:00' },
+  { id: 'DFL-002', waybill: 'LQ-2024-00011', customer: 'Ama Darko', dropbox: 'DBX-003', dropboxName: 'Osu Oxford Street', depositTime: '2024-01-15 08:20', collectionId: 'COL-002', targetLocker: 'B-14', targetTerminal: 'Accra Mall', stage: 'collection_overdue', eta: 'Overdue' },
+  { id: 'DFL-003', waybill: 'LQ-2024-00012', customer: 'Kofi Appiah', dropbox: 'DBX-006', dropboxName: 'Spintex Baatsona', depositTime: '2024-01-15 11:10', collectionId: 'COL-004', targetLocker: 'J-08', targetTerminal: 'Junction Mall', stage: 'awaiting_collection', eta: '15:00' },
+  { id: 'DFL-004', waybill: 'LQ-2024-00013', customer: 'Efua Mensah', dropbox: 'DBX-001', dropboxName: 'Achimota Overpass', depositTime: '2024-01-15 09:00', collectionId: 'COL-008', targetLocker: 'A-07', targetTerminal: 'Achimota Mall', stage: 'in_transit', eta: '14:30' },
+  { id: 'DFL-005', waybill: 'LQ-2024-00014', customer: 'Kweku Duah', dropbox: 'DBX-002', dropboxName: 'Madina Market', depositTime: '2024-01-15 10:15', collectionId: 'COL-009', targetLocker: 'A-19', targetTerminal: 'Achimota Mall', stage: 'delivered_to_locker', eta: 'Done' },
+  { id: 'DFL-006', waybill: 'LQ-2024-00015', customer: 'Adwoa Sika', dropbox: 'DBX-004', dropboxName: 'Tema Community 1', depositTime: '2024-01-14 15:30', collectionId: 'COL-003', targetLocker: 'J-02', targetTerminal: 'Junction Mall', stage: 'collection_overdue', eta: 'Overdue' },
+];
+
+export const DROPBOX_FLOW_STAGES = {
+  awaiting_collection: { label: 'In Dropbox', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', step: 0 },
+  collection_overdue: { label: 'Collection Overdue', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', step: 0 },
+  collected: { label: 'Collected', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', step: 1 },
+  in_transit: { label: 'In Transit to Terminal', color: '#6366f1', bg: 'rgba(99,102,241,0.1)', step: 2 },
+  at_terminal: { label: 'At Terminal', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', step: 3 },
+  delivered_to_locker: { label: 'In Locker', color: '#10b981', bg: 'rgba(16,185,129,0.1)', step: 4 },
+};
+
+export const dropboxFillHistory = [
+  { time: '6AM', dbx001: 5, dbx003: 8, dbx004: 22 },
+  { time: '8AM', dbx001: 12, dbx003: 15, dbx004: 25 },
+  { time: '10AM', dbx001: 25, dbx003: 22, dbx004: 28 },
+  { time: '12PM', dbx001: 35, dbx003: 28, dbx004: 30 },
+  { time: '2PM', dbx001: 42, dbx003: 31, dbx004: 30 },
 ];
 
 // ============ NOTIFICATION DATA ============
@@ -143,3 +192,59 @@ export const MSG_STATUSES = {
   bounced: { label: 'Bounced', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', icon: '↩' },
   pending: { label: 'Pending', color: '#6b7280', bg: 'rgba(107,114,128,0.1)', icon: '⏳' },
 };
+
+// ============ PARTNER SELF-SERVICE PORTAL DATA ============
+export const portalShipmentsData = [
+  { id: 'JUM-2024-0451', waybill: 'LQ-2024-01201', customer: 'Kofi Asante', phone: '+233551234567', destination: 'Achimota Mall', locker: 'A-12', size: 'Medium', status: 'delivered_to_locker', pickupCode: '8472', daysInLocker: 1, value: 85, weight: '1.8kg', createdAt: '2024-01-15 08:00', deliveredAt: '2024-01-15 10:30', batchId: 'BSH-001' },
+  { id: 'JUM-2024-0452', waybill: 'LQ-2024-01202', customer: 'Ama Darko', phone: '+233559876543', destination: 'Accra Mall', locker: 'B-03', size: 'Small', status: 'delivered_to_locker', pickupCode: '5139', daysInLocker: 0, value: 45, weight: '0.5kg', createdAt: '2024-01-15 08:00', deliveredAt: '2024-01-15 11:00', batchId: 'BSH-001' },
+  { id: 'JUM-2024-0453', waybill: 'LQ-2024-01203', customer: 'Efua Mensah', phone: '+233542345678', destination: 'Achimota Mall', locker: '-', size: 'Large', status: 'in_transit_to_locker', pickupCode: null, daysInLocker: 0, value: 320, weight: '4.2kg', createdAt: '2024-01-15 08:00', deliveredAt: null, batchId: 'BSH-001' },
+  { id: 'JUM-2024-0454', waybill: 'LQ-2024-01204', customer: 'Kweku Duah', phone: '+233553456789', destination: 'Kotoka T3', locker: '-', size: 'Medium', status: 'in_transit_to_locker', pickupCode: null, daysInLocker: 0, value: 150, weight: '2.1kg', createdAt: '2024-01-15 08:00', deliveredAt: null, batchId: 'BSH-001' },
+  { id: 'JUM-2024-0455', waybill: 'LQ-2024-01205', customer: 'Adwoa Sika', phone: '+233557778888', destination: 'Junction Mall', locker: 'J-09', size: 'Small', status: 'picked_up', pickupCode: '2951', daysInLocker: 0, value: 65, weight: '0.3kg', createdAt: '2024-01-14 10:00', deliveredAt: '2024-01-14 14:00', batchId: 'BSH-004' },
+  { id: 'JUM-2024-0456', waybill: 'LQ-2024-01206', customer: 'Yaw Mensah', phone: '+233551112233', destination: 'Achimota Mall', locker: 'A-07', size: 'Medium', status: 'delivered_to_locker', pickupCode: '6284', daysInLocker: 3, value: 210, weight: '3.0kg', createdAt: '2024-01-12 09:00', deliveredAt: '2024-01-12 13:00', batchId: null },
+  { id: 'JUM-2024-0457', waybill: 'LQ-2024-01207', customer: 'Akua Boateng', phone: '+233554445566', destination: 'West Hills Mall', locker: '-', size: 'XLarge', status: 'at_warehouse', pickupCode: null, daysInLocker: 0, value: 890, weight: '12.5kg', createdAt: '2024-01-15 12:00', deliveredAt: null, batchId: null },
+  { id: 'JUM-2024-0458', waybill: 'LQ-2024-01208', customer: 'Kofi Appiah', phone: '+233556667788', destination: 'Accra Mall', locker: 'B-11', size: 'Medium', status: 'expired', pickupCode: '1739', daysInLocker: 7, value: 175, weight: '2.2kg', createdAt: '2024-01-08 08:00', deliveredAt: '2024-01-08 12:00', batchId: null },
+  { id: 'JUM-2024-0459', waybill: 'LQ-2024-01209', customer: 'Efua Owusu', phone: '+233558899001', destination: 'Achimota Mall', locker: '-', size: 'Small', status: 'pending', pickupCode: null, daysInLocker: 0, value: 55, weight: '0.4kg', createdAt: '2024-01-15 14:00', deliveredAt: null, batchId: null },
+  { id: 'JUM-2024-0460', waybill: 'LQ-2024-01210', customer: 'Kwame Asiedu', phone: '+233551122334', destination: 'Junction Mall', locker: 'J-02', size: 'Large', status: 'delivered_to_locker', pickupCode: '4067', daysInLocker: 2, value: 420, weight: '5.8kg', createdAt: '2024-01-13 07:00', deliveredAt: '2024-01-13 11:00', batchId: 'BSH-004' },
+];
+
+export const portalInvoicesData = [
+  { id: 'INV-P001', period: 'January 2024', issueDate: '2024-02-01', dueDate: '2024-02-15', packages: 130, amount: 15600, tax: 1872, total: 17472, status: 'pending', pdfUrl: '#' },
+  { id: 'INV-P002', period: 'December 2023', issueDate: '2024-01-01', dueDate: '2024-01-15', packages: 115, amount: 13800, tax: 1656, total: 15456, status: 'paid', paidDate: '2024-01-12', pdfUrl: '#' },
+  { id: 'INV-P003', period: 'November 2023', issueDate: '2023-12-01', dueDate: '2023-12-15', packages: 98, amount: 11760, tax: 1411, total: 13171, status: 'paid', paidDate: '2023-12-10', pdfUrl: '#' },
+  { id: 'INV-P004', period: 'October 2023', issueDate: '2023-11-01', dueDate: '2023-11-15', packages: 105, amount: 12600, tax: 1512, total: 14112, status: 'paid', paidDate: '2023-11-14', pdfUrl: '#' },
+];
+
+export const portalWebhookLogsData = [
+  { id: 'WH-001', event: 'package.delivered_to_locker', url: 'https://api.jumia.com.gh/webhooks/locqar', status: 200, timestamp: '2024-01-15 14:32:15', responseTime: '120ms', payload: '{"waybill":"LQ-2024-01201","status":"delivered_to_locker","locker":"A-12"}' },
+  { id: 'WH-002', event: 'package.picked_up', url: 'https://api.jumia.com.gh/webhooks/locqar', status: 200, timestamp: '2024-01-15 14:28:00', responseTime: '85ms', payload: '{"waybill":"LQ-2024-01205","status":"picked_up"}' },
+  { id: 'WH-003', event: 'package.in_transit', url: 'https://api.jumia.com.gh/webhooks/locqar', status: 200, timestamp: '2024-01-15 14:15:30', responseTime: '95ms', payload: '{"waybill":"LQ-2024-01203","status":"in_transit_to_locker"}' },
+  { id: 'WH-004', event: 'package.expired', url: 'https://api.jumia.com.gh/webhooks/locqar', status: 500, timestamp: '2024-01-15 12:00:00', responseTime: '5002ms', payload: '{"waybill":"LQ-2024-01208","status":"expired"}', error: 'Timeout' },
+  { id: 'WH-005', event: 'batch.processing', url: 'https://api.jumia.com.gh/webhooks/locqar', status: 200, timestamp: '2024-01-15 08:05:00', responseTime: '110ms', payload: '{"batchId":"BSH-001","packages":45,"status":"processing"}' },
+];
+
+export const portalRateCard = [
+  { size: 'Small', dimensions: '30×20×15 cm', maxWeight: '2 kg', pricePerDay: 8, storageFree: 3, storagePerDay: 2 },
+  { size: 'Medium', dimensions: '45×35×25 cm', maxWeight: '5 kg', pricePerDay: 12, storageFree: 3, storagePerDay: 3 },
+  { size: 'Large', dimensions: '60×45×35 cm', maxWeight: '10 kg', pricePerDay: 18, storageFree: 3, storagePerDay: 5 },
+  { size: 'XLarge', dimensions: '80×60×45 cm', maxWeight: '20 kg', pricePerDay: 25, storageFree: 3, storagePerDay: 8 },
+];
+
+export const portalShipmentTrend = [
+  { month: 'Aug', shipped: 95, delivered: 92, returned: 3 },
+  { month: 'Sep', shipped: 110, delivered: 106, returned: 4 },
+  { month: 'Oct', shipped: 105, delivered: 101, returned: 4 },
+  { month: 'Nov', shipped: 120, delivered: 117, returned: 3 },
+  { month: 'Dec', shipped: 150, delivered: 144, returned: 6 },
+  { month: 'Jan', shipped: 130, delivered: 125, returned: 5 },
+];
+
+// This needs to be imported from mockData.js to compute portalTerminalAvailability
+import { terminalsData } from './mockData';
+
+export const portalTerminalAvailability = terminalsData.map(t => ({
+  ...t,
+  small: { total: Math.floor(t.totalLockers * 0.3), available: Math.floor(t.available * 0.35) },
+  medium: { total: Math.floor(t.totalLockers * 0.35), available: Math.floor(t.available * 0.3) },
+  large: { total: Math.floor(t.totalLockers * 0.25), available: Math.floor(t.available * 0.25) },
+  xlarge: { total: Math.floor(t.totalLockers * 0.1), available: Math.floor(t.available * 0.1) },
+}));

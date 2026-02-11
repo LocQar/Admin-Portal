@@ -1,3 +1,12 @@
+// ============ NOTIFICATIONS ============
+export const notifications = [
+  { id: 1, title: 'Locker A-20 needs maintenance', type: 'warning', time: '5 min ago', read: false },
+  { id: 2, title: 'Dropbox DBX-004 is full', type: 'warning', time: '10 min ago', read: false },
+  { id: 3, title: 'New shipment from Jumia (45 packages)', type: 'info', time: '15 min ago', read: false },
+  { id: 4, title: 'Package LQ-2024-00005 expired', type: 'error', time: '1 hour ago', read: true },
+  { id: 5, title: 'Driver Kwesi completed 12 deliveries', type: 'success', time: '2 hours ago', read: true },
+];
+
 // ============ CHART DATA ============
 export const terminalData = [
   { month: 'Jan', accra: 600, achimota: 450, kotoka: 300 },
@@ -12,6 +21,15 @@ export const hourlyData = [
   { hour: '6AM', packages: 12 }, { hour: '8AM', packages: 45 }, { hour: '10AM', packages: 78 },
   { hour: '12PM', packages: 92 }, { hour: '2PM', packages: 85 }, { hour: '4PM', packages: 110 },
   { hour: '6PM', packages: 95 }, { hour: '8PM', packages: 42 }, { hour: '10PM', packages: 18 },
+];
+
+export const pricingRevenueData = [
+  { month: 'Aug', standard: 8200, express: 3400, rush: 1200, economy: 2100 },
+  { month: 'Sep', standard: 9100, express: 3800, rush: 1500, economy: 2300 },
+  { month: 'Oct', standard: 8800, express: 4200, rush: 1800, economy: 2000 },
+  { month: 'Nov', standard: 10500, express: 4800, rush: 2200, economy: 2500 },
+  { month: 'Dec', standard: 12800, express: 5600, rush: 3100, economy: 2800 },
+  { month: 'Jan', standard: 11200, express: 5100, rush: 2600, economy: 2400 },
 ];
 
 export const msgVolumeData = [
