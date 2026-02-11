@@ -22,6 +22,14 @@ import {
   CustomersPage,
 } from './pages';
 
+// ============ MODAL COMPONENTS ============
+import {
+  GlobalSearchModal,
+  ShortcutsModal,
+  SessionTimeoutModal,
+  ExportModal,
+} from './components/modals';
+
 // ============ MOCK DATA ============
 import {
   notifications,
@@ -810,138 +818,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange, pageSize, onPageSiz
   );
 };
 
-// Global Search Modal
-const GlobalSearchModal = ({ isOpen, onClose, theme, onNavigate }) => {
-  const [query, setQuery] = useState('');
-  
-  const results = useMemo(() => {
-    if (!query || query.length < 2) return { packages: [], customers: [], lockers: [] };
-    const q = query.toLowerCase();
-    return {
-      packages: packagesData.filter(p => p.waybill.toLowerCase().includes(q) || p.customer.toLowerCase().includes(q) || p.phone.includes(q)).slice(0, 5),
-      customers: customersData.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.phone.includes(q)).slice(0, 3),
-      lockers: lockersData.filter(l => l.id.toLowerCase().includes(q) || l.terminal.toLowerCase().includes(q) || (getLockerAddress(l.id, l.terminal) || '').toLowerCase().includes(q)).slice(0, 3),
-    };
-  }, [query]);
-
-  const hasResults = results.packages.length > 0 || results.customers.length > 0 || results.lockers.length > 0;
-
-  useEffect(() => {
-    if (isOpen) setQuery('');
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-2xl rounded-2xl border shadow-2xl" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
-        <div className="flex items-center gap-3 p-4 border-b" style={{ borderColor: theme.border.primary }}>
-          <Search size={20} style={{ color: theme.text.muted }} />
-          <input type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search by phone, waybill, address code, name..." autoFocus className="flex-1 bg-transparent outline-none text-lg" style={{ color: theme.text.primary }} />
-          <kbd className="px-2 py-1 rounded text-xs" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted }}>ESC</kbd>
-        </div>
-        {query.length >= 2 && (
-          <div className="max-h-96 overflow-y-auto p-2">
-            {!hasResults ? (
-              <p className="p-4 text-center" style={{ color: theme.text.muted }}>No results found for "{query}"</p>
-            ) : (
-              <>
-                {results.packages.length > 0 && (
-                  <div className="mb-4">
-                    <p className="px-3 py-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Packages</p>
-                    {results.packages.map(pkg => (
-                      <button key={pkg.id} onClick={() => { onNavigate('packages', pkg); onClose(); }} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-left">
-                        <Package size={18} style={{ color: theme.accent.primary }} />
-                        <div className="flex-1"><p className="font-mono text-sm" style={{ color: theme.text.primary }}>{pkg.waybill}</p><p className="text-xs" style={{ color: theme.text.muted }}>{pkg.customer} • {pkg.destination}</p></div>
-                        <StatusBadge status={pkg.status} />
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {results.customers.length > 0 && (
-                  <div className="mb-4">
-                    <p className="px-3 py-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Customers</p>
-                    {results.customers.map(c => (
-                      <button key={c.id} onClick={() => { onNavigate('customers', c); onClose(); }} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-left">
-                        <Users size={18} style={{ color: '#3b82f6' }} />
-                        <div className="flex-1"><p className="text-sm" style={{ color: theme.text.primary }}>{c.name}</p><p className="text-xs" style={{ color: theme.text.muted }}>{c.email}</p></div>
-                        <StatusBadge status={c.type} />
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {results.lockers.length > 0 && (
-                  <div>
-                    <p className="px-3 py-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Lockers</p>
-                    {results.lockers.map(l => (
-                      <button key={l.id} onClick={() => { onNavigate('lockers', l); onClose(); }} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-left">
-                        <Grid3X3 size={18} style={{ color: '#10b981' }} />
-                        <div className="flex-1"><p className="font-mono text-sm" style={{ color: theme.text.primary }}>{l.id}</p><p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{getLockerAddress(l.id, l.terminal)}</p><p className="text-xs" style={{ color: theme.text.muted }}>{l.terminal}</p></div>
-                        <StatusBadge status={l.status} />
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        )}
-        <div className="flex items-center gap-4 p-3 border-t text-xs" style={{ borderColor: theme.border.primary, color: theme.text.muted }}>
-          <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded" style={{ backgroundColor: theme.bg.tertiary }}>↑↓</kbd> Navigate</span>
-          <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded" style={{ backgroundColor: theme.bg.tertiary }}>↵</kbd> Select</span>
-          <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded" style={{ backgroundColor: theme.bg.tertiary }}>ESC</kbd> Close</span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Keyboard Shortcuts Modal
-const ShortcutsModal = ({ isOpen, onClose, theme }) => {
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-md rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}><Keyboard size={20} /> Keyboard Shortcuts</h2>
-          <button onClick={onClose} className="p-2 rounded-lg" style={{ color: theme.text.muted }}><X size={18} /></button>
-        </div>
-        <div className="space-y-3">
-          {SHORTCUTS.map(s => (
-            <div key={s.action} className="flex items-center justify-between py-2">
-              <span style={{ color: theme.text.secondary }}>{s.label}</span>
-              <div className="flex gap-1">{s.keys.map(k => <kbd key={k} className="px-2 py-1 rounded text-xs" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}>{k}</kbd>)}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Session Timeout Warning
-const SessionTimeoutModal = ({ isOpen, onExtend, onLogout, remainingTime, theme }) => {
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-sm rounded-2xl border p-6 text-center" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
-          <Clock size={32} className="text-amber-500" />
-        </div>
-        <h2 className="text-lg font-semibold mb-2" style={{ color: theme.text.primary }}>Session Expiring</h2>
-        <p className="text-sm mb-4" style={{ color: theme.text.muted }}>Your session will expire in <span className="font-bold text-amber-500">{remainingTime}s</span>. Would you like to continue?</p>
-        <div className="flex gap-3">
-          <button onClick={onLogout} className="flex-1 py-2 rounded-xl border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Logout</button>
-          <button onClick={onExtend} className="flex-1 py-2 rounded-xl text-white" style={{ backgroundColor: theme.accent.primary }}>Continue Session</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // Bulk Actions Bar
 const BulkActionsBar = ({ selectedCount, onClear, onAction, actions, theme }) => {
   if (selectedCount === 0) return null;
@@ -955,44 +831,6 @@ const BulkActionsBar = ({ selectedCount, onClear, onAction, actions, theme }) =>
         </button>
       ))}
       <button onClick={onClear} className="p-1.5 rounded-lg" style={{ color: theme.text.muted }}><X size={18} /></button>
-    </div>
-  );
-};
-
-// Export Modal
-const ExportModal = ({ isOpen, onClose, onExport, dataType, theme }) => {
-  const [format, setFormat] = useState('csv');
-  const [dateRange, setDateRange] = useState('all');
-
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-md rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
-        <h2 className="text-lg font-semibold mb-6 flex items-center gap-2" style={{ color: theme.text.primary }}><FileDown size={20} /> Export {dataType}</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm mb-2 block" style={{ color: theme.text.muted }}>Format</label>
-            <div className="flex gap-2">{['csv', 'xlsx', 'pdf'].map(f => (
-              <button key={f} onClick={() => setFormat(f)} className="flex-1 py-2 rounded-xl text-sm uppercase" style={{ backgroundColor: format === f ? theme.accent.light : theme.bg.tertiary, color: format === f ? theme.accent.primary : theme.text.secondary, border: format === f ? `1px solid ${theme.accent.border}` : `1px solid ${theme.border.primary}` }}>{f}</button>
-            ))}</div>
-          </div>
-          <div>
-            <label className="text-sm mb-2 block" style={{ color: theme.text.muted }}>Date Range</label>
-            <select value={dateRange} onChange={e => setDateRange(e.target.value)} className="w-full px-3 py-2 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary, color: theme.text.primary }}>
-              <option value="all">All Time</option>
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="custom">Custom Range</option>
-            </select>
-          </div>
-        </div>
-        <div className="flex gap-3 mt-6">
-          <button onClick={onClose} className="flex-1 py-2 rounded-xl border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={() => { onExport(format, dateRange); onClose(); }} className="flex-1 py-2 rounded-xl text-white flex items-center justify-center gap-2" style={{ backgroundColor: theme.accent.primary }}><Download size={16} /> Export</button>
-        </div>
-      </div>
     </div>
   );
 };
@@ -3328,9 +3166,9 @@ function LocQarERPInner() {
           </>
         )}
 
-        <GlobalSearchModal isOpen={showSearch} onClose={() => setShowSearch(false)} theme={theme} onNavigate={handleSearchNavigate} />
-        <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} theme={theme} />
-        <ExportModal isOpen={showExport} onClose={() => setShowExport(false)} onExport={handleExport} dataType={activeMenu} theme={theme} />
+        <GlobalSearchModal isOpen={showSearch} onClose={() => setShowSearch(false)} onNavigate={handleSearchNavigate} />
+        <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
+        <ExportModal isOpen={showExport} onClose={() => setShowExport(false)} onExport={handleExport} dataType={activeMenu} />
         <ScanModal isOpen={showScanModal} onClose={() => setShowScanModal(false)} theme={theme} userRole={currentUser.role} addToast={addToast} onViewPackage={(pkg) => { setSelectedPackage(pkg); setActiveMenu('packages'); }} onReassign={setReassignPackage} onReturn={setReturnPackage} />
         <NewPackageDrawer isOpen={showNewPackage} onClose={() => setShowNewPackage(false)} theme={theme} addToast={addToast} />
         <DispatchDrawer isOpen={showDispatchDrawer} onClose={() => setShowDispatchDrawer(false)} theme={theme} addToast={addToast} onViewFull={() => setActiveMenu('dispatch')} />
@@ -3870,7 +3708,7 @@ function LocQarERPInner() {
           </div>
         )}
 
-        <SessionTimeoutModal isOpen={showSessionWarning} onExtend={() => { setShowSessionWarning(false); setSessionTimeout(60); }} onLogout={() => addToast({ type: 'info', message: 'Logging out...' })} remainingTime={sessionTimeout} theme={theme} />
+        <SessionTimeoutModal isOpen={showSessionWarning} onExtend={() => { setShowSessionWarning(false); setSessionTimeout(60); }} onLogout={() => addToast({ type: 'info', message: 'Logging out...' })} remainingTime={sessionTimeout} />
         
         {!(activeMenu === 'customers' && activeSubMenu === 'Subscribers') && (
           <BulkActionsBar
