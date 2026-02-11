@@ -237,14 +237,3 @@ export const portalShipmentTrend = [
   { month: 'Dec', shipped: 150, delivered: 144, returned: 6 },
   { month: 'Jan', shipped: 130, delivered: 125, returned: 5 },
 ];
-
-// This needs to be imported from mockData.js to compute portalTerminalAvailability
-import { terminalsData } from './mockData';
-
-export const portalTerminalAvailability = terminalsData.map(t => ({
-  ...t,
-  small: { total: Math.floor(t.totalLockers * 0.3), available: Math.floor(t.available * 0.35) },
-  medium: { total: Math.floor(t.totalLockers * 0.35), available: Math.floor(t.available * 0.3) },
-  large: { total: Math.floor(t.totalLockers * 0.25), available: Math.floor(t.available * 0.25) },
-  xlarge: { total: Math.floor(t.totalLockers * 0.1), available: Math.floor(t.available * 0.1) },
-}));

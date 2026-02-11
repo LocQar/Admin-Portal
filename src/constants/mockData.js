@@ -102,6 +102,15 @@ export const terminalsData = [
   { id: 'TRM-005', name: 'Junction Mall', location: 'Nungua', region: 'Greater Accra', city: 'Nungua', totalLockers: 50, available: 18, occupied: 30, maintenance: 2, status: 'online', lat: 5.5920, lng: -0.0780 },
 ];
 
+// Portal terminal availability (computed from terminalsData)
+export const portalTerminalAvailability = terminalsData.map(t => ({
+  ...t,
+  small: { total: Math.floor(t.totalLockers * 0.3), available: Math.floor(t.available * 0.35) },
+  medium: { total: Math.floor(t.totalLockers * 0.35), available: Math.floor(t.available * 0.3) },
+  large: { total: Math.floor(t.totalLockers * 0.25), available: Math.floor(t.available * 0.25) },
+  xlarge: { total: Math.floor(t.totalLockers * 0.1), available: Math.floor(t.available * 0.1) },
+}));
+
 // Utility functions for address system
 export const getTerminalAddress = (terminal) => {
   const city = (terminal.city || terminal.location).substring(0, 3).toUpperCase();
