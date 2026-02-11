@@ -16,7 +16,14 @@
       "Bash(npm run dev:*)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(gh repo set-default:*)",
+      "Bash(for page in \"portal\" \"selfservice\" \"analytics\" \"audit\" \"settings\")",
+      "Bash(do echo \"=== $page ===\")",
+      "Bash(done)"
     ]
   }
 }
