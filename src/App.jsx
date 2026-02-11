@@ -2931,6 +2931,34 @@ function LocQarERPInner() {
                 loading={loading}
                 activeSubMenu={activeSubMenu}
                 setShowExport={setShowExport}
+                setShowDispatchDrawer={setShowDispatchDrawer}
+                filteredDispatchPackages={filteredDispatchPackages}
+                dispatchSearch={dispatchSearch}
+                setDispatchSearch={setDispatchSearch}
+                setDispatchPage={setDispatchPage}
+                dispatchFilter={dispatchFilter}
+                setDispatchFilter={setDispatchFilter}
+                selectedDispatchItems={selectedDispatchItems}
+                paginatedDispatchPackages={paginatedDispatchPackages}
+                toggleDispatchSelectAll={toggleDispatchSelectAll}
+                toggleDispatchSelectItem={toggleDispatchSelectItem}
+                dispatchSort={dispatchSort}
+                setDispatchSort={setDispatchSort}
+                setSelectedPackage={setSelectedPackage}
+                dispatchTotalPages={dispatchTotalPages}
+                dispatchPage={dispatchPage}
+                dispatchPageSize={dispatchPageSize}
+                setDispatchPageSize={setDispatchPageSize}
+                selectedRoute={selectedRoute}
+                setSelectedRoute={setSelectedRoute}
+                routeTab={routeTab}
+                setRouteTab={setRouteTab}
+                expandedStops={expandedStops}
+                setExpandedStops={setExpandedStops}
+                driverSearch={driverSearch}
+                setDriverSearch={setDriverSearch}
+                driverSort={driverSort}
+                setDriverSort={setDriverSort}
                 addToast={addToast}
               />
             )}
