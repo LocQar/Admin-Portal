@@ -1501,6 +1501,8 @@ function LocQarERPInner() {
                 currentUser={currentUser}
                 loading={loading}
                 activeSubMenu={activeSubMenu}
+                setShowExport={setShowExport}
+                setComposeOpen={setComposeOpen}
                 addToast={addToast}
               />
             )}
