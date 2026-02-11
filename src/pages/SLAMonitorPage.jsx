@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Download, CheckCircle2, AlertOctagon, AlertTriangle, XCircle, Eye, Users, Bell, Clock, Package, TrendingUp, Play, Pause, Edit, Trash2, Plus, Search, Filter, ChevronDown } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { MetricCard, TableSkeleton, Badge, EmptyState, Pagination } from '../components/ui';
+import { MetricCard, TableSkeleton, EmptyState, Pagination } from '../components/ui';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast }) => {

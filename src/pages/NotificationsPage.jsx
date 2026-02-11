@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Send, MessageSquare, CheckCircle2, Eye, AlertTriangle, Banknote, Smartphone, Mail, Bell, Search, Plus, Edit, Trash2, Power, PowerOff, Copy, Play, Pause, X, Filter, Calendar, TrendingUp, BarChart3 } from 'lucide-react';
+import { Download, Send, MessageSquare, CheckCircle2, Eye, AlertTriangle, Banknote, Smartphone, Mail, Bell, Search, Plus, Edit, Trash2, Power, PowerOff, Copy, Play, Pause, X, Filter, Calendar, TrendingUp, BarChart3, Package, Clock, RefreshCw, Layers } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
 import { MetricCard, TableSkeleton, Pagination, EmptyState, StatusBadge } from '../components/ui';
@@ -28,16 +28,66 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
 
   // Settings state
   const [notificationSettings, setNotificationSettings] = React.useState({
+    // Channel toggles
     smsEnabled: true,
     whatsappEnabled: true,
     emailEnabled: false,
     pushEnabled: true,
+    // Rate limits
     rateLimitSMS: 100,
     rateLimitWA: 200,
     rateLimitEmail: 50,
+    // Sender config
     defaultSender: 'LocQar',
     replyTo: 'support@locqar.com',
+    // Event preferences
+    notifyOnPickup: true,
+    notifyOnInTransit: true,
+    notifyOnDelivered: true,
+    notifyOnDelay: true,
+    notifyOnStorageFull: true,
+    notifyOnSLABreach: true,
+    notifyOnPaymentDue: false,
+    notifyOnPackageExpiry: true,
+    // Retry policies
+    retryEnabled: true,
+    maxRetries: 3,
+    retryDelay: 5, // minutes
+    // Quiet hours
+    quietHoursEnabled: false,
+    quietHoursStart: '22:00',
+    quietHoursEnd: '08:00',
+    // Priority settings
+    highPrioritySLA: true,
+    highPriorityPayments: false,
+    // Batch settings
+    batchEnabled: true,
+    batchSize: 50,
+    batchInterval: 2, // minutes
+    // SMS Gateway config
+    smsProvider: 'africas_talking',
+    smsApiKey: '',
+    smsApiSecret: '',
+    smsUsername: '',
+    smsWebhookUrl: 'https://api.locqar.com/webhooks/sms',
+    // WhatsApp Business API config
+    waBusinessAccountId: '',
+    waPhoneNumberId: '',
+    waAccessToken: '',
+    waWebhookVerifyToken: '',
+    waWebhookUrl: 'https://api.locqar.com/webhooks/whatsapp',
+    // Email SMTP config
+    emailSmtpHost: 'smtp.gmail.com',
+    emailSmtpPort: 587,
+    emailSmtpUsername: '',
+    emailSmtpPassword: '',
+    emailSmtpEncryption: 'tls',
+    emailFromName: 'LocQar',
+    emailFromAddress: 'noreply@locqar.com',
   });
+
+  // Settings sub-tab
+  const [settingsTab, setSettingsTab] = React.useState('channels');
 
   // Filtered messages
   const filteredMessages = React.useMemo(() => {
@@ -436,10 +486,38 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
       {/* Settings */}
       {activeSubMenu === 'Settings' && (
         <div className="space-y-6">
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
-              <Bell size={20} />Channel Settings
-            </h3>
+          {/* Settings Tabs */}
+          <div className="flex gap-2 border-b" style={{ borderColor: theme.border.primary }}>
+            <button
+              onClick={() => setSettingsTab('channels')}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'channels' ? 'border-blue-500' : 'border-transparent'}`}
+              style={{ color: settingsTab === 'channels' ? '#3b82f6' : theme.text.secondary }}
+            >
+              Channels & APIs
+            </button>
+            <button
+              onClick={() => setSettingsTab('preferences')}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'preferences' ? 'border-blue-500' : 'border-transparent'}`}
+              style={{ color: settingsTab === 'preferences' ? '#3b82f6' : theme.text.secondary }}
+            >
+              Preferences
+            </button>
+            <button
+              onClick={() => setSettingsTab('advanced')}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'advanced' ? 'border-blue-500' : 'border-transparent'}`}
+              style={{ color: settingsTab === 'advanced' ? '#3b82f6' : theme.text.secondary }}
+            >
+              Advanced
+            </button>
+          </div>
+
+          {/* Channels & APIs Tab */}
+          {settingsTab === 'channels' && (
+            <div className="space-y-6">
+              <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+                  <Bell size={20} />Channel Settings
+                </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
                 <div>
@@ -519,11 +597,493 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
             </div>
           </div>
 
+          {/* SMS Gateway Configuration */}
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <Smartphone size={20} />SMS Gateway Configuration
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>SMS Provider</label>
+                <select
+                  value={notificationSettings.smsProvider}
+                  onChange={(e) => setNotificationSettings(prev => ({ ...prev, smsProvider: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg outline-none"
+                  style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                >
+                  <option value="africas_talking">Africa's Talking</option>
+                  <option value="twilio">Twilio</option>
+                  <option value="nexmo">Nexmo (Vonage)</option>
+                  <option value="messagebird">MessageBird</option>
+                  <option value="custom">Custom Gateway</option>
+                </select>
+                <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Select your SMS gateway provider</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>API Key</label>
+                  <input
+                    type="password"
+                    value={notificationSettings.smsApiKey}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, smsApiKey: e.target.value }))}
+                    placeholder="Enter API Key"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>API Secret</label>
+                  <input
+                    type="password"
+                    value={notificationSettings.smsApiSecret}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, smsApiSecret: e.target.value }))}
+                    placeholder="Enter API Secret"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Username / Account SID</label>
+                <input
+                  type="text"
+                  value={notificationSettings.smsUsername}
+                  onChange={(e) => setNotificationSettings(prev => ({ ...prev, smsUsername: e.target.value }))}
+                  placeholder="Enter username or account SID"
+                  className="w-full px-3 py-2 rounded-lg outline-none"
+                  style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Webhook URL (Delivery Reports)</label>
+                <input
+                  type="url"
+                  value={notificationSettings.smsWebhookUrl}
+                  onChange={(e) => setNotificationSettings(prev => ({ ...prev, smsWebhookUrl: e.target.value }))}
+                  placeholder="https://api.locqar.com/webhooks/sms"
+                  className="w-full px-3 py-2 rounded-lg outline-none"
+                  style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                />
+                <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Configure this URL in your SMS provider dashboard</p>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <CheckCircle2 size={16} style={{ color: '#10b981' }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#10b981' }}>Connected</span></span>
+                <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
+              </div>
+            </div>
+          </div>
+
+          {/* WhatsApp Business API Configuration */}
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <MessageSquare size={20} />WhatsApp Business API Configuration
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Business Account ID</label>
+                <input
+                  type="text"
+                  value={notificationSettings.waBusinessAccountId}
+                  onChange={(e) => setNotificationSettings(prev => ({ ...prev, waBusinessAccountId: e.target.value }))}
+                  placeholder="Enter WhatsApp Business Account ID"
+                  className="w-full px-3 py-2 rounded-lg outline-none"
+                  style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                />
+                <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Found in WhatsApp Business Manager</p>
+              </div>
+
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Phone Number ID</label>
+                <input
+                  type="text"
+                  value={notificationSettings.waPhoneNumberId}
+                  onChange={(e) => setNotificationSettings(prev => ({ ...prev, waPhoneNumberId: e.target.value }))}
+                  placeholder="Enter Phone Number ID"
+                  className="w-full px-3 py-2 rounded-lg outline-none"
+                  style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                />
+                <p className="text-xs mt-1" style={{ color: theme.text.muted }}>The phone number ID for sending messages</p>
+              </div>
+
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Access Token</label>
+                <input
+                  type="password"
+                  value={notificationSettings.waAccessToken}
+                  onChange={(e) => setNotificationSettings(prev => ({ ...prev, waAccessToken: e.target.value }))}
+                  placeholder="Enter permanent access token"
+                  className="w-full px-3 py-2 rounded-lg outline-none"
+                  style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                />
+                <p className="text-xs mt-1" style={{ color: theme.text.muted }}>System user access token from Meta Business</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Webhook Verify Token</label>
+                  <input
+                    type="text"
+                    value={notificationSettings.waWebhookVerifyToken}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, waWebhookVerifyToken: e.target.value }))}
+                    placeholder="Enter verify token"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Webhook URL</label>
+                  <input
+                    type="url"
+                    value={notificationSettings.waWebhookUrl}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, waWebhookUrl: e.target.value }))}
+                    placeholder="https://api.locqar.com/webhooks/whatsapp"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <CheckCircle2 size={16} style={{ color: '#10b981' }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#10b981' }}>Connected</span></span>
+                <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
+              </div>
+
+              <div className="p-4 rounded-lg border-l-4" style={{ backgroundColor: theme.bg.tertiary, borderColor: '#3b82f6' }}>
+                <p className="text-sm font-medium mb-1" style={{ color: theme.text.primary }}>Message Templates</p>
+                <p className="text-xs" style={{ color: theme.text.muted }}>
+                  WhatsApp requires pre-approved templates for business-initiated messages.
+                  <a href="#" className="ml-1" style={{ color: '#3b82f6' }}>Manage templates →</a>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Email SMTP Configuration */}
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <Mail size={20} />Email SMTP Configuration
+            </h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>SMTP Host</label>
+                  <input
+                    type="text"
+                    value={notificationSettings.emailSmtpHost}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, emailSmtpHost: e.target.value }))}
+                    placeholder="smtp.gmail.com"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>SMTP Port</label>
+                  <input
+                    type="number"
+                    value={notificationSettings.emailSmtpPort}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, emailSmtpPort: Number(e.target.value) }))}
+                    placeholder="587"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>SMTP Username</label>
+                  <input
+                    type="text"
+                    value={notificationSettings.emailSmtpUsername}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, emailSmtpUsername: e.target.value }))}
+                    placeholder="your-email@gmail.com"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>SMTP Password</label>
+                  <input
+                    type="password"
+                    value={notificationSettings.emailSmtpPassword}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, emailSmtpPassword: e.target.value }))}
+                    placeholder="Enter password or app password"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Encryption</label>
+                <select
+                  value={notificationSettings.emailSmtpEncryption}
+                  onChange={(e) => setNotificationSettings(prev => ({ ...prev, emailSmtpEncryption: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg outline-none"
+                  style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                >
+                  <option value="tls">TLS (Port 587)</option>
+                  <option value="ssl">SSL (Port 465)</option>
+                  <option value="none">None (Port 25 - Not Recommended)</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>From Name</label>
+                  <input
+                    type="text"
+                    value={notificationSettings.emailFromName}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, emailFromName: e.target.value }))}
+                    placeholder="LocQar"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>From Address</label>
+                  <input
+                    type="email"
+                    value={notificationSettings.emailFromAddress}
+                    onChange={(e) => setNotificationSettings(prev => ({ ...prev, emailFromAddress: e.target.value }))}
+                    placeholder="noreply@locqar.com"
+                    className="w-full px-3 py-2 rounded-lg outline-none"
+                    style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <CheckCircle2 size={16} style={{ color: '#10b981' }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#10b981' }}>Connected</span></span>
+                <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-end">
             <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl text-white font-medium" style={{ backgroundColor: '#10b981' }}>
-              Save Settings
+              Save Channel Settings
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Preferences Tab */}
+      {settingsTab === 'preferences' && (
+        <div className="space-y-6">
+          {/* Event Preferences */}
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <Package size={20} />Event Notification Preferences
+            </h3>
+            <p className="text-sm mb-4" style={{ color: theme.text.muted }}>Choose which events trigger customer notifications</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>Package Pickup</span>
+                <input type="checkbox" checked={notificationSettings.notifyOnPickup} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnPickup: e.target.checked }))} className="w-4 h-4" />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>In Transit Updates</span>
+                <input type="checkbox" checked={notificationSettings.notifyOnInTransit} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnInTransit: e.target.checked }))} className="w-4 h-4" />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>Delivery Confirmation</span>
+                <input type="checkbox" checked={notificationSettings.notifyOnDelivered} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnDelivered: e.target.checked }))} className="w-4 h-4" />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>Delivery Delays</span>
+                <input type="checkbox" checked={notificationSettings.notifyOnDelay} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnDelay: e.target.checked }))} className="w-4 h-4" />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>Storage Full Alerts</span>
+                <input type="checkbox" checked={notificationSettings.notifyOnStorageFull} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnStorageFull: e.target.checked }))} className="w-4 h-4" />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>SLA Breaches</span>
+                <input type="checkbox" checked={notificationSettings.notifyOnSLABreach} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnSLABreach: e.target.checked }))} className="w-4 h-4" />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>Payment Due</span>
+                <input type="checkbox" checked={notificationSettings.notifyOnPaymentDue} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnPaymentDue: e.target.checked }))} className="w-4 h-4" />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>Package Expiry</span>
+                <input type="checkbox" checked={notificationSettings.notifyOnPackageExpiry} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnPackageExpiry: e.target.checked }))} className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+
+          {/* Retry Policies */}
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <RefreshCw size={20} />Retry Policies
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <div>
+                  <p className="font-medium" style={{ color: theme.text.primary }}>Enable Automatic Retries</p>
+                  <p className="text-sm" style={{ color: theme.text.muted }}>Retry failed notifications automatically</p>
+                </div>
+                <button onClick={() => setNotificationSettings(prev => ({ ...prev, retryEnabled: !prev.retryEnabled }))} className={`w-12 h-6 rounded-full transition-colors ${notificationSettings.retryEnabled ? 'bg-green-500' : 'bg-gray-400'}`}>
+                  <div className={`w-5 h-5 bg-white rounded-full transition-transform ${notificationSettings.retryEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                </button>
+              </div>
+              {notificationSettings.retryEnabled && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
+                  <div>
+                    <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Maximum Retries</label>
+                    <input type="number" min="1" max="10" value={notificationSettings.maxRetries} onChange={(e) => setNotificationSettings(prev => ({ ...prev, maxRetries: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+                  </div>
+                  <div>
+                    <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Retry Delay (minutes)</label>
+                    <input type="number" min="1" max="60" value={notificationSettings.retryDelay} onChange={(e) => setNotificationSettings(prev => ({ ...prev, retryDelay: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Quiet Hours */}
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <Clock size={20} />Quiet Hours (Do Not Disturb)
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <div>
+                  <p className="font-medium" style={{ color: theme.text.primary }}>Enable Quiet Hours</p>
+                  <p className="text-sm" style={{ color: theme.text.muted }}>Pause non-urgent notifications during specified hours</p>
+                </div>
+                <button onClick={() => setNotificationSettings(prev => ({ ...prev, quietHoursEnabled: !prev.quietHoursEnabled }))} className={`w-12 h-6 rounded-full transition-colors ${notificationSettings.quietHoursEnabled ? 'bg-green-500' : 'bg-gray-400'}`}>
+                  <div className={`w-5 h-5 bg-white rounded-full transition-transform ${notificationSettings.quietHoursEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                </button>
+              </div>
+              {notificationSettings.quietHoursEnabled && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
+                  <div>
+                    <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Start Time</label>
+                    <input type="time" value={notificationSettings.quietHoursStart} onChange={(e) => setNotificationSettings(prev => ({ ...prev, quietHoursStart: e.target.value }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+                  </div>
+                  <div>
+                    <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>End Time</label>
+                    <input type="time" value={notificationSettings.quietHoursEnd} onChange={(e) => setNotificationSettings(prev => ({ ...prev, quietHoursEnd: e.target.value }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Priority Settings */}
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <AlertTriangle size={20} />Priority Settings
+            </h3>
+            <p className="text-sm mb-4" style={{ color: theme.text.muted }}>Mark certain notification types as high priority to bypass quiet hours</p>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>SLA Breach Alerts (Always send)</span>
+                <input type="checkbox" checked={notificationSettings.highPrioritySLA} onChange={(e) => setNotificationSettings(prev => ({ ...prev, highPrioritySLA: e.target.checked }))} className="w-4 h-4" />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <span className="text-sm" style={{ color: theme.text.primary }}>Payment Reminders (Always send)</span>
+                <input type="checkbox" checked={notificationSettings.highPriorityPayments} onChange={(e) => setNotificationSettings(prev => ({ ...prev, highPriorityPayments: e.target.checked }))} className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+
+          {/* Batch Settings */}
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <Layers size={20} />Batch Processing
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                <div>
+                  <p className="font-medium" style={{ color: theme.text.primary }}>Enable Batch Processing</p>
+                  <p className="text-sm" style={{ color: theme.text.muted }}>Group notifications for efficient sending</p>
+                </div>
+                <button onClick={() => setNotificationSettings(prev => ({ ...prev, batchEnabled: !prev.batchEnabled }))} className={`w-12 h-6 rounded-full transition-colors ${notificationSettings.batchEnabled ? 'bg-green-500' : 'bg-gray-400'}`}>
+                  <div className={`w-5 h-5 bg-white rounded-full transition-transform ${notificationSettings.batchEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                </button>
+              </div>
+              {notificationSettings.batchEnabled && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4">
+                  <div>
+                    <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Batch Size</label>
+                    <input type="number" min="10" max="500" value={notificationSettings.batchSize} onChange={(e) => setNotificationSettings(prev => ({ ...prev, batchSize: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+                    <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Number of notifications per batch</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Batch Interval (minutes)</label>
+                    <input type="number" min="1" max="60" value={notificationSettings.batchInterval} onChange={(e) => setNotificationSettings(prev => ({ ...prev, batchInterval: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+                    <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Time between batch sends</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl text-white font-medium" style={{ backgroundColor: '#10b981' }}>
+              Save Preferences
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Advanced Tab */}
+      {settingsTab === 'advanced' && (
+        <div className="space-y-6">
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <TrendingUp size={20} />Rate Limits
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>SMS per hour</label>
+                <input type="number" value={notificationSettings.rateLimitSMS} onChange={(e) => setNotificationSettings(prev => ({ ...prev, rateLimitSMS: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>WhatsApp per hour</label>
+                <input type="number" value={notificationSettings.rateLimitWA} onChange={(e) => setNotificationSettings(prev => ({ ...prev, rateLimitWA: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Email per hour</label>
+                <input type="number" value={notificationSettings.rateLimitEmail} onChange={(e) => setNotificationSettings(prev => ({ ...prev, rateLimitEmail: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
+              <Mail size={20} />Sender Configuration
+            </h3>
+            <div className="grid gap-4">
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Default SMS Sender</label>
+                <input type="text" value={notificationSettings.defaultSender} onChange={(e) => setNotificationSettings(prev => ({ ...prev, defaultSender: e.target.value }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+              </div>
+              <div>
+                <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Email Reply-To Address</label>
+                <input type="email" value={notificationSettings.replyTo} onChange={(e) => setNotificationSettings(prev => ({ ...prev, replyTo: e.target.value }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl text-white font-medium" style={{ backgroundColor: '#10b981' }}>
+              Save Advanced Settings
+            </button>
+          </div>
+        </div>
+      )}
         </div>
       )}
     </div>
