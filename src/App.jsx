@@ -40,6 +40,23 @@ import {
   PackageDetailDrawer,
 } from './components/drawers';
 
+// ============ UI COMPONENTS ============
+import {
+  StatusBadge,
+  DeliveryMethodBadge,
+  Checkbox,
+  Skeleton,
+  TableSkeleton,
+  EmptyState,
+  Pagination,
+  Toast,
+  ToastContainer,
+  PackageStatusFlow,
+  MetricCard,
+  QuickAction,
+  RoleBadge,
+} from './components/ui';
+
 // ============ MOCK DATA ============
 import {
   notifications,
@@ -731,176 +748,6 @@ const slaBreachCauses = [
 
 // ============ UTILITY COMPONENTS ============
 
-// Toast Notification System
-const Toast = ({ message, type = 'info', onClose }) => {
-  const theme = useContext(ThemeContext);
-  const icons = { success: CheckCircle, error: XCircle, warning: AlertTriangle, info: Info };
-  const Icon = icons[type] || Info;
-  const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: '#3b82f6' };
-  
-  useEffect(() => {
-    const timer = setTimeout(onClose, 4000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
-  return (
-    <div className="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border animate-slide-in" style={{ backgroundColor: theme.bg.card, borderColor: colors[type] }}>
-      <Icon size={20} style={{ color: colors[type] }} />
-      <span className="text-sm flex-1" style={{ color: theme.text.primary }}>{message}</span>
-      <button onClick={onClose} className="p-1 rounded hover:bg-white/10"><X size={16} style={{ color: theme.text.muted }} /></button>
-    </div>
-  );
-};
-
-const ToastContainer = ({ toasts, removeToast }) => (
-  <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
-    {toasts.map(toast => <Toast key={toast.id} {...toast} onClose={() => removeToast(toast.id)} />)}
-  </div>
-);
-
-// Loading Skeleton
-const Skeleton = ({ className = '', variant = 'text' }) => {
-  const theme = useContext(ThemeContext);
-  const baseClass = "animate-pulse rounded";
-  const variants = {
-    text: "h-4 w-full",
-    title: "h-6 w-3/4",
-    avatar: "h-10 w-10 rounded-full",
-    button: "h-10 w-24",
-    card: "h-32 w-full rounded-xl",
-  };
-  return <div className={`${baseClass} ${variants[variant]} ${className}`} style={{ backgroundColor: theme.border.primary }} />;
-};
-
-const TableSkeleton = ({ rows = 5, cols = 6, theme }) => (
-  <div className="animate-pulse">
-    {[...Array(rows)].map((_, i) => (
-      <div key={i} className="flex gap-4 p-4" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
-        {[...Array(cols)].map((_, j) => (
-          <div key={j} className="h-4 rounded flex-1" style={{ backgroundColor: theme.border.primary, width: j === 0 ? '20%' : 'auto' }} />
-        ))}
-      </div>
-    ))}
-  </div>
-);
-
-// Empty State
-const EmptyState = ({ icon: Icon = Package, title, description, action, theme }) => (
-  <div className="flex flex-col items-center justify-center py-16 px-4">
-    <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: theme.accent.light }}>
-      <Icon size={40} style={{ color: theme.accent.primary }} />
-    </div>
-    <h3 className="text-lg font-semibold mb-2" style={{ color: theme.text.primary }}>{title}</h3>
-    <p className="text-sm text-center max-w-md mb-6" style={{ color: theme.text.muted }}>{description}</p>
-    {action && <button className="px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}>{action}</button>}
-  </div>
-);
-
-// Pagination Component
-const Pagination = ({ currentPage, totalPages, onPageChange, pageSize, onPageSizeChange, totalItems, theme }) => {
-  const pages = [];
-  const maxVisible = 5;
-  let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-  let end = Math.min(totalPages, start + maxVisible - 1);
-  if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
-  
-  for (let i = start; i <= end; i++) pages.push(i);
-
-  return (
-    <div className="flex items-center justify-between px-4 py-3 border-t" style={{ borderColor: theme.border.primary }}>
-      <div className="flex items-center gap-2">
-        <span className="text-sm" style={{ color: theme.text.muted }}>Show</span>
-        <select value={pageSize} onChange={(e) => onPageSizeChange(Number(e.target.value))} className="px-2 py-1 rounded-lg text-sm border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary, color: theme.text.primary }}>
-          {[10, 25, 50, 100].map(size => <option key={size} value={size}>{size}</option>)}
-        </select>
-        <span className="text-sm" style={{ color: theme.text.muted }}>of {totalItems} items</span>
-      </div>
-      <div className="flex items-center gap-1">
-        <button onClick={() => onPageChange(1)} disabled={currentPage === 1} className="p-2 rounded-lg disabled:opacity-50" style={{ color: theme.text.secondary }}><ChevronFirst size={16} /></button>
-        <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1} className="p-2 rounded-lg disabled:opacity-50" style={{ color: theme.text.secondary }}><ChevronLeft size={16} /></button>
-        {pages.map(page => (
-          <button key={page} onClick={() => onPageChange(page)} className="w-8 h-8 rounded-lg text-sm" style={{ backgroundColor: currentPage === page ? theme.accent.primary : 'transparent', color: currentPage === page ? '#fff' : theme.text.secondary }}>{page}</button>
-        ))}
-        <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages} className="p-2 rounded-lg disabled:opacity-50" style={{ color: theme.text.secondary }}><ChevronRight size={16} /></button>
-        <button onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages} className="p-2 rounded-lg disabled:opacity-50" style={{ color: theme.text.secondary }}><ChevronLast size={16} /></button>
-      </div>
-    </div>
-  );
-};
-
-// Bulk Actions Bar
-const BulkActionsBar = ({ selectedCount, onClear, onAction, actions, theme }) => {
-  if (selectedCount === 0) return null;
-  return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 px-6 py-3 rounded-2xl shadow-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.accent.border }}>
-      <span className="text-sm" style={{ color: theme.text.primary }}><span className="font-bold">{selectedCount}</span> selected</span>
-      <div className="h-6 w-px" style={{ backgroundColor: theme.border.primary }} />
-      {actions.map(a => (
-        <button key={a.id} onClick={() => onAction(a.id)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: a.color + '15', color: a.color }}>
-          <a.icon size={16} />{a.label}
-        </button>
-      ))}
-      <button onClick={onClear} className="p-1.5 rounded-lg" style={{ color: theme.text.muted }}><X size={18} /></button>
-    </div>
-  );
-};
-
-
-
-// ============ UI COMPONENTS ============
-
-const StatusBadge = ({ status }) => {
-  const config = ALL_STATUSES[status] || { label: status, color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' };
-  return <span className="px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap" style={{ backgroundColor: config.bg, color: config.color }}>{config.label}</span>;
-};
-
-const DeliveryMethodBadge = ({ method }) => {
-  const config = DELIVERY_METHODS[method] || DELIVERY_METHODS.warehouse_to_locker;
-  const Icon = config.icon;
-  return <div className="flex items-center gap-1.5"><Icon size={14} style={{ color: config.color }} /><span className="text-xs font-medium" style={{ color: config.color }}>{config.label}</span></div>;
-};
-
-const RoleBadge = ({ role }) => {
-  const r = ROLES[role];
-  if (!r) return null;
-  return <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: `${r.color}15`, color: r.color }}><Shield size={10} />{r.name}</span>;
-};
-
-const MetricCard = ({ title, value, change, changeType, icon: Icon, subtitle, theme, loading }) => (
-  <div className="rounded-2xl p-5 border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-    {loading ? (
-      <div className="animate-pulse">
-        <div className="h-4 w-20 rounded mb-2" style={{ backgroundColor: theme.border.primary }} />
-        <div className="h-8 w-24 rounded mb-1" style={{ backgroundColor: theme.border.primary }} />
-        <div className="h-3 w-16 rounded" style={{ backgroundColor: theme.border.primary }} />
-      </div>
-    ) : (
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm" style={{ color: theme.text.secondary }}>{title}</p>
-          <p className="text-3xl font-bold mt-1" style={{ color: theme.text.primary }}>{value}</p>
-          {change && <p className={`text-sm mt-1 flex items-center ${changeType === 'up' ? 'text-emerald-500' : 'text-red-500'}`}>{changeType === 'up' ? <ArrowUpRight size={14}/> : <ArrowDownRight size={14}/>}{change}</p>}
-          {subtitle && <p className="text-xs mt-1" style={{ color: theme.text.muted }}>{subtitle}</p>}
-        </div>
-        <div className="p-3 rounded-xl" style={{ backgroundColor: theme.accent.light }}><Icon size={24} style={{ color: theme.accent.primary }} /></div>
-      </div>
-    )}
-  </div>
-);
-
-const QuickAction = ({ icon: Icon, label, theme, disabled, onClick, badge }) => (
-  <button disabled={disabled} onClick={onClick} className={`flex flex-col items-center gap-2 p-4 rounded-xl border relative ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 cursor-pointer'} transition-all`} style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
-    {badge && <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs text-white flex items-center justify-center" style={{ backgroundColor: theme.accent.primary }}>{badge}</span>}
-    <div className="p-3 rounded-lg" style={{ backgroundColor: theme.accent.light }}><Icon size={20} style={{ color: theme.accent.primary }} /></div>
-    <span className="text-xs" style={{ color: theme.text.secondary }}>{label}</span>
-  </button>
-);
-
-const Checkbox = ({ checked, onChange, theme }) => (
-  <button onClick={onChange} className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors" style={{ backgroundColor: checked ? theme.accent.primary : 'transparent', borderColor: checked ? theme.accent.primary : theme.border.secondary }}>
-    {checked && <Check size={12} className="text-white" />}
-  </button>
-);
 
 // ============ SIDEBAR ============
 const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activeSubMenu, setActiveSubMenu, theme, userRole, isMobile, onCloseMobile }) => {
@@ -988,34 +835,6 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
         </div>
       </aside>
     </>
-  );
-};
-
-// ============ PACKAGE STATUS FLOW ============
-const PackageStatusFlow = ({ status, deliveryMethod }) => {
-  const method = DELIVERY_METHODS[deliveryMethod] || DELIVERY_METHODS.warehouse_to_locker;
-  let steps = deliveryMethod === 'dropbox_to_locker' 
-    ? ['Pending', 'At Dropbox', 'In Transit', 'In Locker', 'Picked Up']
-    : deliveryMethod === 'locker_to_home'
-    ? ['Pending', 'At Warehouse', 'In Transit', 'Delivered']
-    : ['Pending', 'At Warehouse', 'In Transit', 'In Locker', 'Picked Up'];
-  const statusMap = { pending: 0, at_warehouse: 1, at_dropbox: 1, in_transit_to_locker: 2, in_transit_to_home: 2, delivered_to_locker: 3, delivered_to_home: 3, picked_up: 4 };
-  const currentStep = statusMap[status] ?? 0;
-  
-  return (
-    <div className="flex items-center gap-1 w-full">
-      {steps.map((step, idx) => (
-        <React.Fragment key={step}>
-          <div className="flex flex-col items-center">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${idx === currentStep ? 'ring-2 ring-offset-1' : ''}`} style={{ backgroundColor: idx <= currentStep ? method.color : 'rgba(107, 114, 128, 0.2)', ringColor: method.color }}>
-              {idx < currentStep ? <CheckCircle size={14} className="text-white" /> : idx === currentStep ? <Circle size={8} className="text-white fill-white" /> : <Circle size={8} style={{ color: 'rgba(107, 114, 128, 0.5)' }} />}
-            </div>
-            <span className={`text-xs mt-1 ${idx === currentStep ? 'font-medium' : ''}`} style={{ color: idx <= currentStep ? method.color : '#6b7280' }}>{step}</span>
-          </div>
-          {idx < steps.length - 1 && <div className="flex-1 h-0.5 -mt-4" style={{ backgroundColor: idx < currentStep ? method.color : 'rgba(107, 114, 128, 0.2)' }} />}
-        </React.Fragment>
-      ))}
-    </div>
   );
 };
 
