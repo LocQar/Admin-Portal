@@ -5,7 +5,7 @@ import { StatusBadge, DeliveryMethodBadge, PackageStatusFlow } from '../ui';
 import { packagesData, getLockerAddress } from '../../constants/mockData';
 import { hasPermission } from '../../constants';
 
-export const ScanModal = ({ isOpen, onClose, userRole, onViewPackage, onReassign, onReturn }) => {
+export const ScanModal = ({ isOpen, onClose, userRole, addToast, onViewPackage, onReassign, onReturn }) => {
   const { theme } = useTheme();
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
@@ -39,7 +39,7 @@ export const ScanModal = ({ isOpen, onClose, userRole, onViewPackage, onReassign
       const filtered = prev.filter(h => h.id !== result.id);
       return [{ ...result, scannedAt: new Date().toLocaleTimeString() }, ...filtered].slice(0, 5);
     });
-    // addToast({ type: 'success', message: `Package ${result.waybill} scanned successfully` });
+    addToast({ type: 'success', message: `Package ${result.waybill} scanned successfully` });
   };
 
   const handleAction = (action) => {
@@ -54,7 +54,7 @@ export const ScanModal = ({ isOpen, onClose, userRole, onViewPackage, onReassign
       onClose();
       return;
     }
-    // addToast({ type: 'success', message: `Package ${result.waybill} ${action}` });
+    addToast({ type: 'success', message: `Package ${result.waybill} ${action}` });
   };
 
   if (!isOpen) return null;
