@@ -32,7 +32,8 @@
       "Bash(move:*)",
       "Bash(git mv:*)",
       "Bash(git stash:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git remote set-url:*)"
     ]
   }
 }
