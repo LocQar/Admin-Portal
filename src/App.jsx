@@ -2959,6 +2959,7 @@ function LocQarERPInner() {
                 setDriverSearch={setDriverSearch}
                 driverSort={driverSort}
                 setDriverSort={setDriverSort}
+                filteredDrivers={filteredDrivers}
                 addToast={addToast}
               />
             )}
