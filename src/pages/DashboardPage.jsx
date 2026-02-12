@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Download,
   RefreshCw,
@@ -13,6 +13,8 @@ import {
   Home,
   AlertTriangle,
   Users,
+  MapPin,
+  LayoutDashboard
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -36,6 +38,8 @@ import {
   notifications,
 } from "../constants/mockData";
 
+import { OperationsMap } from "../components/operations/OperationsMap";
+
 export const DashboardPage = ({
   currentUser,
   metrics,
@@ -50,6 +54,7 @@ export const DashboardPage = ({
   addToast,
 }) => {
   const { theme } = useTheme();
+  const [showMap, setShowMap] = React.useState(false);
 
   const statusDistribution = useMemo(
     () => [
@@ -98,6 +103,18 @@ export const DashboardPage = ({
         </div>
         <div className="flex gap-2">
           <button
+            onClick={() => setShowMap(!showMap)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+            style={{
+              backgroundColor: showMap ? theme.accent.primary : 'transparent',
+              color: showMap ? '#fff' : theme.text.secondary,
+              border: `1px solid ${showMap ? theme.accent.primary : theme.border.primary} `
+            }}
+          >
+            {showMap ? <LayoutDashboard size={16} /> : <MapPin size={16} />}
+            {showMap ? 'List View' : 'Live Map'}
+          </button>
+          <button
             onClick={() => setShowExport(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm"
             style={{
@@ -122,6 +139,12 @@ export const DashboardPage = ({
           </button>
         </div>
       </div>
+
+      {showMap && (
+        <div className="animate-in fade-in zoom-in duration-300">
+          <OperationsMap />
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <MetricCard
@@ -161,7 +184,7 @@ export const DashboardPage = ({
         />
         <MetricCard
           title="Revenue"
-          value={`GH₵ ${(metrics.revenue / 1000).toFixed(1)}K`}
+          value={`GH₵ ${(metrics.revenue / 1000).toFixed(1)} K`}
           change="18.7%"
           changeType="up"
           icon={DollarSign}
@@ -264,7 +287,7 @@ export const DashboardPage = ({
             >
               <div
                 className="p-3 rounded-xl"
-                style={{ backgroundColor: `${m.color}15` }}
+                style={{ backgroundColor: `${m.color} 15` }}
               >
                 <m.icon size={24} style={{ color: m.color }} />
               </div>
@@ -354,7 +377,7 @@ export const DashboardPage = ({
                 <Tooltip
                   contentStyle={{
                     backgroundColor: theme.bg.card,
-                    border: `1px solid ${theme.border.primary}`,
+                    border: `1px solid ${theme.border.primary} `,
                     borderRadius: 12,
                   }}
                 />
@@ -474,7 +497,7 @@ export const DashboardPage = ({
               <Tooltip
                 contentStyle={{
                   backgroundColor: theme.bg.card,
-                  border: `1px solid ${theme.border.primary}`,
+                  border: `1px solid ${theme.border.primary} `,
                   borderRadius: 12,
                 }}
               />
@@ -503,7 +526,7 @@ export const DashboardPage = ({
             {notifications.slice(0, 5).map((n) => (
               <div key={n.id} className="flex gap-3">
                 <div
-                  className={`w-2 h-2 rounded-full mt-2 ${n.type === "error" ? "bg-red-500" : n.type === "warning" ? "bg-amber-500" : n.type === "success" ? "bg-emerald-500" : "bg-blue-500"}`}
+                  className={`w - 2 h - 2 rounded - full mt - 2 ${n.type === "error" ? "bg-red-500" : n.type === "warning" ? "bg-amber-500" : n.type === "success" ? "bg-emerald-500" : "bg-blue-500"} `}
                 />
                 <div>
                   <p className="text-sm" style={{ color: theme.text.primary }}>

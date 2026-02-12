@@ -15,3 +15,4 @@ export * from './NotificationsPage';
 export * from './SLAMonitorPage';
 export * from './CustomersPage';
 export * from './PricingEnginePage';
+export * from './FleetPage';

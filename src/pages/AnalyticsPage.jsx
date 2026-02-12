@@ -1,49 +1,47 @@
 import React from 'react';
-import { Download, Package, Clock, Award, Users } from 'lucide-react';
+import { Download, Package, Clock, Award, Users, TrendingUp, AlertTriangle, Zap } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
 import { MetricCard } from '../components/ui';
 import { StatusBadge } from '../components/ui/Badge';
 import { terminalData, hourlyData, packagesData, terminalsData, pricingRevenueData } from '../constants/mockData';
+import { PredictiveRevenueChart, ChurnRiskHeatmap } from '../components/analytics/PredictiveCharts';
 
 export const AnalyticsPage = ({ loading, setShowExport }) => {
   const { theme } = useTheme();
 
   return (
-    <div className="p-4 md:p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Analytics</h1>
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Analytics & AI Insights</h1>
         <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={16} />Export</button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <MetricCard title="Total Deliveries" value="12,847" change="15.2%" changeType="up" icon={Package} theme={theme} loading={loading} />
         <MetricCard title="Avg. Delivery Time" value="2.4 hrs" change="8.5%" changeType="down" icon={Clock} theme={theme} loading={loading} />
         <MetricCard title="Customer Satisfaction" value="94%" change="2.1%" changeType="up" icon={Award} theme={theme} loading={loading} />
         <MetricCard title="Active Customers" value="3,456" change="12.8%" changeType="up" icon={Users} theme={theme} loading={loading} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      {/* --- REVENUE & DELIVERY TRENDS --- */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* AI Revenue Forecast */}
         <div className="lg:col-span-2 p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Delivery Trends (Monthly)</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={terminalData}>
-              <defs>
-                <linearGradient id="gradAnalytics" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={theme.accent.primary} stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor={theme.accent.primary} stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
-              <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-              <Area type="monotone" dataKey="accra" stroke={theme.accent.primary} fill="url(#gradAnalytics)" strokeWidth={2} name="Accra Mall" />
-              <Area type="monotone" dataKey="achimota" stroke="#3b82f6" fill="transparent" strokeWidth={2} name="Achimota" />
-              <Area type="monotone" dataKey="kotoka" stroke="#10b981" fill="transparent" strokeWidth={2} name="Kotoka T3" />
-            </AreaChart>
-          </ResponsiveContainer>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}><TrendingUp size={18} className="text-purple-500" /> Revenue Forecast (AI Model)</h3>
+              <p className="text-xs text-muted-foreground">Projected revenue based on current growth trajectory.</p>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.accent.primary }}></div> Actual</span>
+              <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-purple-500"></div> Projected</span>
+            </div>
+          </div>
+          <PredictiveRevenueChart />
         </div>
+
+        {/* Delivery Methods Donut */}
         <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Delivery Methods</h3>
           <ResponsiveContainer width="100%" height={180}>
@@ -72,40 +70,52 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      {/* --- RISK & PREDICTIONS ROW --- */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Churn Risk Heatmap */}
         <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Hourly Volume</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={hourlyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
-              <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 11 }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
-              <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-              <Bar dataKey="packages" fill={theme.accent.primary} radius={[4, 4, 0, 0]} name="Packages" />
-            </BarChart>
-          </ResponsiveContainer>
+          <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}>
+            <AlertTriangle size={18} className="text-orange-500" /> Subscriber Churn Risk
+          </h3>
+          <p className="text-xs text-muted-foreground mb-4">AI analysis of user engagement vs ticket volume.</p>
+          <ChurnRiskHeatmap />
         </div>
+
+        {/* SLA Breach Prediction */}
         <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>SLA Revenue Breakdown</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={pricingRevenueData}>
-              <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
-              <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
-              <Area type="monotone" dataKey="standard" stroke="#6b7280" fill="transparent" strokeWidth={2} name="Standard" />
-              <Area type="monotone" dataKey="express" stroke="#f59e0b" fill="transparent" strokeWidth={2} name="Express" />
-              <Area type="monotone" dataKey="rush" stroke="#ef4444" fill="transparent" strokeWidth={2} name="Rush" />
-              <Area type="monotone" dataKey="economy" stroke="#10b981" fill="transparent" strokeWidth={2} name="Economy" />
-            </AreaChart>
+          <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}>
+            <Zap size={18} className="text-red-500" /> SLA Breach Forecast (24h)
+          </h3>
+          <p className="text-xs text-muted-foreground mb-4">Terminals predicted to overflow based on incoming volume.</p>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={[
+              { terminal: 'Achimota', probability: 85 },
+              { terminal: 'Accra Mall', probability: 45 },
+              { terminal: 'Kotoka', probability: 30 },
+              { terminal: 'Junction', probability: 15 },
+              { terminal: 'West Hills', probability: 10 },
+            ]} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} horizontal={false} />
+              <XAxis type="number" hide />
+              <YAxis dataKey="terminal" type="category" width={100} tick={{ fill: theme.text.muted, fontSize: 12 }} axisLine={false} tickLine={false} />
+              <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: theme.bg.card, borderRadius: 12, border: `1px solid ${theme.border.primary}` }} />
+              <Bar dataKey="probability" radius={[0, 4, 4, 0]} barSize={20}>
+                {
+                  [85, 45, 30, 15, 10].map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry > 80 ? '#ef4444' : entry > 40 ? '#f59e0b' : '#10b981'} />
+                  ))
+                }
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
+      {/* --- BOTTOM ROW: HOURLY & TERMINALS --- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
-            <h3 className="font-semibold" style={{ color: theme.text.primary }}>Terminal Performance</h3>
+            <h3 className="font-semibold" style={{ color: theme.text.primary }}>Terminal Utilization Live</h3>
           </div>
           <table className="w-full">
             <thead>
@@ -142,18 +152,16 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
           </table>
         </div>
         <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Top Terminals</h3>
-          <div className="space-y-4">
-            {terminalsData.sort((a, b) => b.occupied - a.occupied).slice(0, 5).map((t, i) => (
-              <div key={t.id} className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: i === 0 ? '#f59e0b' : i === 1 ? '#a3a3a3' : i === 2 ? '#cd7c32' : theme.border.secondary }}>{i + 1}</span>
-                <div className="flex-1">
-                  <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{t.name}</p>
-                  <p className="text-xs" style={{ color: theme.text.muted }}>{t.occupied} active &bull; {t.available} open</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Hourly Volume</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={hourlyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
+              <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 11 }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
+              <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
+              <Bar dataKey="packages" fill={theme.accent.primary} radius={[4, 4, 0, 0]} name="Packages" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>

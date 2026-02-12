@@ -28,19 +28,28 @@ export const subscribersData = [
 
 // ============ STAFF & TEAMS ============
 export const staffData = [
-  { id: 1, name: 'John Doe', email: 'john@locqar.com', role: 'SUPER_ADMIN', terminal: 'All', team: 'Management', status: 'active', lastActive: '2 min ago', performance: 98 },
-  { id: 2, name: 'Akua Mansa', email: 'akua@locqar.com', role: 'ADMIN', terminal: 'All', team: 'Management', status: 'active', lastActive: '15 min ago', performance: 95 },
-  { id: 3, name: 'Kofi Asante', email: 'kofi@locqar.com', role: 'MANAGER', terminal: 'Achimota Mall', team: 'Operations', status: 'active', lastActive: '1 hour ago', performance: 92 },
-  { id: 4, name: 'Yaw Boateng', email: 'yaw@locqar.com', role: 'AGENT', terminal: 'Achimota Mall', team: 'Field', status: 'active', lastActive: '5 min ago', performance: 88 },
-  { id: 5, name: 'Kweku Appiah', email: 'kweku@locqar.com', role: 'SUPPORT', terminal: 'All', team: 'Support', status: 'active', lastActive: '10 min ago', performance: 90 },
-  { id: 6, name: 'Adjoa Frimpong', email: 'adjoa@locqar.com', role: 'VIEWER', terminal: 'Accra Mall', team: 'Operations', status: 'inactive', lastActive: '3 days ago', performance: 75 },
+  { id: 1, name: 'John Doe', email: 'john@locqar.com', phone: '+233551000001', role: 'SUPER_ADMIN', terminal: 'All', team: 'Management', status: 'active', lastActive: '2 min ago', performance: 98, joinDate: '2023-01-15', packagesHandled: 1250, tasksCompleted: 340, shift: 'flexible', avatar: 'J', avgResponseTime: '2.1 min', totalLogins: 520, ticketsResolved: 0 },
+  { id: 2, name: 'Akua Mansa', email: 'akua@locqar.com', phone: '+233551000002', role: 'ADMIN', terminal: 'All', team: 'Management', status: 'active', lastActive: '15 min ago', performance: 95, joinDate: '2023-02-20', packagesHandled: 980, tasksCompleted: 280, shift: 'flexible', avatar: 'A', avgResponseTime: '3.5 min', totalLogins: 410, ticketsResolved: 0 },
+  { id: 3, name: 'Kofi Asante', email: 'kofi@locqar.com', phone: '+233551000003', role: 'MANAGER', terminal: 'Achimota Mall', team: 'Operations', status: 'active', lastActive: '1 hour ago', performance: 92, joinDate: '2023-03-10', packagesHandled: 2100, tasksCompleted: 520, shift: 'morning', avatar: 'K', avgResponseTime: '4.2 min', totalLogins: 380, ticketsResolved: 0 },
+  { id: 4, name: 'Yaw Boateng', email: 'yaw@locqar.com', phone: '+233551000004', role: 'AGENT', terminal: 'Achimota Mall', team: 'Field', status: 'active', lastActive: '5 min ago', performance: 88, joinDate: '2023-04-05', packagesHandled: 3200, tasksCompleted: 890, shift: 'morning', avatar: 'Y', avgResponseTime: '5.8 min', totalLogins: 290, ticketsResolved: 0 },
+  { id: 5, name: 'Kweku Appiah', email: 'kweku@locqar.com', phone: '+233551000005', role: 'SUPPORT', terminal: 'All', team: 'Support', status: 'active', lastActive: '10 min ago', performance: 90, joinDate: '2023-05-18', packagesHandled: 450, tasksCompleted: 620, shift: 'afternoon', avatar: 'K', avgResponseTime: '3.8 min', totalLogins: 350, ticketsResolved: 185 },
+  { id: 6, name: 'Adjoa Frimpong', email: 'adjoa@locqar.com', phone: '+233551000006', role: 'VIEWER', terminal: 'Accra Mall', team: 'Operations', status: 'inactive', lastActive: '3 days ago', performance: 75, joinDate: '2023-06-22', packagesHandled: 120, tasksCompleted: 45, shift: 'morning', avatar: 'A', avgResponseTime: '8.5 min', totalLogins: 85, ticketsResolved: 0 },
+  { id: 7, name: 'Esi Mensah', email: 'esi@locqar.com', phone: '+233551000007', role: 'AGENT', terminal: 'Accra Mall', team: 'Field', status: 'active', lastActive: '20 min ago', performance: 91, joinDate: '2023-07-15', packagesHandled: 2800, tasksCompleted: 780, shift: 'morning', avatar: 'E', avgResponseTime: '5.1 min', totalLogins: 260, ticketsResolved: 0 },
+  { id: 8, name: 'Kwame Mensah', email: 'kwame@locqar.com', phone: '+233551000008', role: 'AGENT', terminal: 'Kotoka T3', team: 'Field', status: 'active', lastActive: '8 min ago', performance: 85, joinDate: '2023-08-01', packagesHandled: 2400, tasksCompleted: 650, shift: 'afternoon', avatar: 'K', avgResponseTime: '6.2 min', totalLogins: 240, ticketsResolved: 0 },
+  { id: 9, name: 'Abena Owusu', email: 'abena@locqar.com', phone: '+233551000009', role: 'SUPPORT', terminal: 'All', team: 'Support', status: 'active', lastActive: '3 min ago', performance: 93, joinDate: '2023-09-12', packagesHandled: 320, tasksCompleted: 540, shift: 'morning', avatar: 'A', avgResponseTime: '3.2 min', totalLogins: 310, ticketsResolved: 210 },
+  { id: 10, name: 'Nana Adu', email: 'nana@locqar.com', phone: '+233551000010', role: 'MANAGER', terminal: 'Accra Mall', team: 'Operations', status: 'active', lastActive: '30 min ago', performance: 89, joinDate: '2023-10-05', packagesHandled: 1800, tasksCompleted: 410, shift: 'morning', avatar: 'N', avgResponseTime: '4.8 min', totalLogins: 220, ticketsResolved: 0 },
+  { id: 11, name: 'Fiifi Atta', email: 'fiifi@locqar.com', phone: '+233551000011', role: 'AGENT', terminal: 'Junction Mall', team: 'Field', status: 'active', lastActive: '12 min ago', performance: 82, joinDate: '2023-11-18', packagesHandled: 1900, tasksCompleted: 510, shift: 'afternoon', avatar: 'F', avgResponseTime: '6.8 min', totalLogins: 180, ticketsResolved: 0 },
+  { id: 12, name: 'Akosua Darko', email: 'akosua@locqar.com', phone: '+233551000012', role: 'SUPPORT', terminal: 'All', team: 'Support', status: 'active', lastActive: '45 min ago', performance: 87, joinDate: '2023-12-01', packagesHandled: 280, tasksCompleted: 380, shift: 'afternoon', avatar: 'A', avgResponseTime: '4.0 min', totalLogins: 150, ticketsResolved: 145 },
+  { id: 13, name: 'Kofi Mensah', email: 'kofim@locqar.com', phone: '+233551000013', role: 'AGENT', terminal: 'West Hills Mall', team: 'Field', status: 'inactive', lastActive: '1 week ago', performance: 72, joinDate: '2024-01-10', packagesHandled: 800, tasksCompleted: 220, shift: 'morning', avatar: 'K', avgResponseTime: '7.5 min', totalLogins: 95, ticketsResolved: 0 },
+  { id: 14, name: 'Ama Serwaa', email: 'ama@locqar.com', phone: '+233551000014', role: 'AGENT', terminal: 'Achimota Mall', team: 'Field', status: 'active', lastActive: '1 min ago', performance: 94, joinDate: '2024-02-15', packagesHandled: 2600, tasksCompleted: 720, shift: 'morning', avatar: 'A', avgResponseTime: '4.5 min', totalLogins: 200, ticketsResolved: 0 },
+  { id: 15, name: 'Yaw Mensah', email: 'yawm@locqar.com', phone: '+233551000015', role: 'VIEWER', terminal: 'Kotoka T3', team: 'Operations', status: 'active', lastActive: '2 hours ago', performance: 78, joinDate: '2024-03-01', packagesHandled: 50, tasksCompleted: 20, shift: 'flexible', avatar: 'Y', avgResponseTime: '10.0 min', totalLogins: 60, ticketsResolved: 0 },
 ];
 
 export const teamsData = [
-  { id: 1, name: 'Management', members: 2, lead: 'John Doe', color: '#4E0F0F' },
-  { id: 2, name: 'Operations', members: 4, lead: 'Kofi Asante', color: '#3b82f6' },
-  { id: 3, name: 'Field', members: 8, lead: 'Yaw Boateng', color: '#10b981' },
-  { id: 4, name: 'Support', members: 3, lead: 'Kweku Appiah', color: '#8b5cf6' },
+  { id: 1, name: 'Management', members: 2, lead: 'John Doe', color: '#4E0F0F', description: 'Executive leadership and strategic oversight', terminals: ['All'], avgPerformance: 96.5, activeProjects: 3, createdAt: '2023-01-15' },
+  { id: 2, name: 'Operations', members: 4, lead: 'Kofi Asante', color: '#3b82f6', description: 'Terminal management and daily operations', terminals: ['Achimota Mall', 'Accra Mall', 'Kotoka T3'], avgPerformance: 83.5, activeProjects: 5, createdAt: '2023-02-01' },
+  { id: 3, name: 'Field', members: 6, lead: 'Yaw Boateng', color: '#10b981', description: 'Package handling, deliveries, and field operations', terminals: ['Achimota Mall', 'Accra Mall', 'Kotoka T3', 'Junction Mall', 'West Hills Mall'], avgPerformance: 85.3, activeProjects: 8, createdAt: '2023-03-01' },
+  { id: 4, name: 'Support', members: 3, lead: 'Kweku Appiah', color: '#8b5cf6', description: 'Customer support and ticket resolution', terminals: ['All'], avgPerformance: 90.0, activeProjects: 4, createdAt: '2023-04-15' },
 ];
 
 // ============ DRIVERS & ROUTES ============
@@ -236,4 +245,25 @@ export const portalShipmentTrend = [
   { month: 'Nov', shipped: 120, delivered: 117, returned: 3 },
   { month: 'Dec', shipped: 150, delivered: 144, returned: 6 },
   { month: 'Jan', shipped: 130, delivered: 125, returned: 5 },
+];
+
+// ============ FLEET & VEHICLES ============
+export const vehiclesData = [
+  { id: 'V-001', plate: 'GR-1234-20', model: 'Toyota Hiace', type: 'Van', status: 'active', driver: 'Kwesi Asante', fuelLevel: 65, mileage: 45200, nextService: '2024-03-01', insuranceExpiry: '2024-06-15', health: 92, lastService: '2023-12-01', location: 'Accra Central' },
+  { id: 'V-002', plate: 'GW-5678-21', model: 'Nissan Urvan', type: 'Van', status: 'maintenance', driver: 'Kofi Mensah', fuelLevel: 40, mileage: 68100, nextService: '2024-01-14', insuranceExpiry: '2024-05-20', health: 78, lastService: '2023-10-15', location: 'Workshop' },
+  { id: 'V-003', plate: 'GN-9012-22', model: 'Kia Bongo', type: 'Truck', status: 'active', driver: 'Yaw Boateng', fuelLevel: 88, mileage: 22400, nextService: '2024-04-10', insuranceExpiry: '2024-08-01', health: 98, lastService: '2024-01-05', location: 'Tema' },
+  { id: 'V-004', plate: 'GR-3456-21', model: 'Toyota Hiace', type: 'Van', status: 'active', driver: 'Kwame Asiedu', fuelLevel: 25, mileage: 51300, nextService: '2024-02-20', insuranceExpiry: '2024-07-10', health: 85, lastService: '2023-11-20', location: 'Achimota' },
+  { id: 'V-005', plate: 'GT-7890-23', model: 'Honda CG125', type: 'Bike', status: 'active', driver: 'Unassigned', fuelLevel: 90, mileage: 5600, nextService: '2024-03-15', insuranceExpiry: '2024-11-30', health: 96, lastService: '2024-01-10', location: 'Accra Mall' },
+];
+
+export const maintenanceLogsData = [
+  { id: 'M-001', vehicleId: 'V-002', vehiclePlate: 'GW-5678-21', type: 'Routine Service', date: '2024-01-15', cost: 450, mechanic: 'AutoFix Ghana', description: 'Oil change, filter replacement, brake check', status: 'in_progress' },
+  { id: 'M-002', vehicleId: 'V-001', vehiclePlate: 'GR-1234-20', type: 'Repair', date: '2023-12-01', cost: 1200, mechanic: 'Toyota Ghana', description: 'Replace worn brake pads and rotors', status: 'completed' },
+  { id: 'M-003', vehicleId: 'V-004', vehiclePlate: 'GR-3456-21', type: 'Inspection', date: '2023-11-20', cost: 150, mechanic: 'Internal', description: 'Annual roadworthiness inspection', status: 'completed' },
+];
+
+export const fuelLogsData = [
+  { id: 'F-001', vehicleId: 'V-001', date: '2024-01-14', gallons: 15, cost: 900, mileage: 45150, driver: 'Kwesi Asante', station: 'Shell Achimota' },
+  { id: 'F-002', vehicleId: 'V-003', date: '2024-01-13', gallons: 12, cost: 720, mileage: 22300, driver: 'Yaw Boateng', station: 'Total Tema' },
+  { id: 'F-003', vehicleId: 'V-004', date: '2024-01-12', gallons: 14, cost: 840, mileage: 51100, driver: 'Kwame Asiedu', station: 'Goil Circle' },
 ];

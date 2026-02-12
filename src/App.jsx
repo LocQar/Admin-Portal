@@ -21,6 +21,7 @@ import {
   SLAMonitorPage,
   CustomersPage,
   PricingEnginePage,
+  FleetPage,
 } from './pages';
 
 // ============ MODAL COMPONENTS ============
@@ -75,6 +76,8 @@ import {
   portalRateCard,
   portalShipmentTrend,
   portalTerminalAvailability,
+  staffData,
+  teamsData,
 } from './constants/mockData';
 
 // ============ CONTEXT ============
@@ -249,7 +252,8 @@ const SUBSCRIPTION_PLANS = [
 ];
 
 const subscribersData = [
-  { id: 'SUB-001', name: 'Kwame Asante', email: 'kwame.asante@ug.edu.gh', phone: '+233551234001', university: 'University of Ghana', campus: 'Legon', studentId: 'UG-10458723', plan: 'PLAN-STD', status: 'active', startDate: '2024-09-01', renewalDate: '2025-03-01', deliveriesUsed: 12, terminal: 'Achimota Mall', lastDelivery: '2025-01-10', verified: true, autoRenew: true, notes: 'Regular user, prefers Achimota Mall terminal.',
+  {
+    id: 'SUB-001', name: 'Kwame Asante', email: 'kwame.asante@ug.edu.gh', phone: '+233551234001', university: 'University of Ghana', campus: 'Legon', studentId: 'UG-10458723', plan: 'PLAN-STD', status: 'active', startDate: '2024-09-01', renewalDate: '2025-03-01', deliveriesUsed: 12, terminal: 'Achimota Mall', lastDelivery: '2025-01-10', verified: true, autoRenew: true, notes: 'Regular user, prefers Achimota Mall terminal.',
     paymentHistory: [
       { date: '2025-01-01', amount: 45, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S001-01' },
       { date: '2024-12-01', amount: 45, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S001-02' },
@@ -263,7 +267,8 @@ const subscribersData = [
       { date: '2024-12-20', waybill: 'LQ-2024-00945', terminal: 'Achimota Mall', status: 'expired', lockerSize: 'Small' },
     ],
   },
-  { id: 'SUB-002', name: 'Ama Serwaa', email: 'ama.serwaa@knust.edu.gh', phone: '+233557891002', university: 'KNUST', campus: 'Main Campus', studentId: 'KN-20234891', plan: 'PLAN-PREM', status: 'active', startDate: '2024-08-15', renewalDate: '2025-02-15', deliveriesUsed: 34, terminal: 'Kotoka T3', lastDelivery: '2025-01-14', verified: true, autoRenew: true, notes: 'High-volume user. Contacts support frequently about locker sizes.',
+  {
+    id: 'SUB-002', name: 'Ama Serwaa', email: 'ama.serwaa@knust.edu.gh', phone: '+233557891002', university: 'KNUST', campus: 'Main Campus', studentId: 'KN-20234891', plan: 'PLAN-PREM', status: 'active', startDate: '2024-08-15', renewalDate: '2025-02-15', deliveriesUsed: 34, terminal: 'Kotoka T3', lastDelivery: '2025-01-14', verified: true, autoRenew: true, notes: 'High-volume user. Contacts support frequently about locker sizes.',
     paymentHistory: [
       { date: '2025-01-15', amount: 75, method: 'Card', status: 'completed', invoiceId: 'INV-S002-01' },
       { date: '2024-12-15', amount: 75, method: 'Card', status: 'completed', invoiceId: 'INV-S002-02' },
@@ -279,7 +284,8 @@ const subscribersData = [
       { date: '2024-12-10', waybill: 'LQ-2024-00890', terminal: 'Accra Mall', status: 'picked_up', lockerSize: 'Large' },
     ],
   },
-  { id: 'SUB-003', name: 'Yaw Mensah', email: 'yaw.mensah@ucc.edu.gh', phone: '+233549876003', university: 'University of Cape Coast', campus: 'North Campus', studentId: 'UCC-30127845', plan: 'PLAN-BASIC', status: 'active', startDate: '2024-10-01', renewalDate: '2025-04-01', deliveriesUsed: 3, terminal: 'West Hills Mall', lastDelivery: '2024-12-20', verified: true, autoRenew: true, notes: 'Low usage. Consider outreach for engagement.',
+  {
+    id: 'SUB-003', name: 'Yaw Mensah', email: 'yaw.mensah@ucc.edu.gh', phone: '+233549876003', university: 'University of Cape Coast', campus: 'North Campus', studentId: 'UCC-30127845', plan: 'PLAN-BASIC', status: 'active', startDate: '2024-10-01', renewalDate: '2025-04-01', deliveriesUsed: 3, terminal: 'West Hills Mall', lastDelivery: '2024-12-20', verified: true, autoRenew: true, notes: 'Low usage. Consider outreach for engagement.',
     paymentHistory: [
       { date: '2025-01-01', amount: 25, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S003-01' },
       { date: '2024-12-01', amount: 25, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S003-02' },
@@ -291,7 +297,8 @@ const subscribersData = [
       { date: '2024-10-28', waybill: 'LQ-2024-00723', terminal: 'West Hills Mall', status: 'picked_up', lockerSize: 'Medium' },
     ],
   },
-  { id: 'SUB-004', name: 'Efua Owusu', email: 'efua.owusu@ug.edu.gh', phone: '+233558234004', university: 'University of Ghana', campus: 'City Campus', studentId: 'UG-10567234', plan: 'PLAN-UNLIM', status: 'active', startDate: '2024-07-01', renewalDate: '2025-01-01', deliveriesUsed: 67, terminal: 'Accra Mall', lastDelivery: '2025-01-15', verified: true, autoRenew: true, notes: 'Power user. Unlimited plan since July. Excellent retention.',
+  {
+    id: 'SUB-004', name: 'Efua Owusu', email: 'efua.owusu@ug.edu.gh', phone: '+233558234004', university: 'University of Ghana', campus: 'City Campus', studentId: 'UG-10567234', plan: 'PLAN-UNLIM', status: 'active', startDate: '2024-07-01', renewalDate: '2025-01-01', deliveriesUsed: 67, terminal: 'Accra Mall', lastDelivery: '2025-01-15', verified: true, autoRenew: true, notes: 'Power user. Unlimited plan since July. Excellent retention.',
     paymentHistory: [
       { date: '2025-01-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S004-01' },
       { date: '2024-12-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S004-02' },
@@ -306,7 +313,8 @@ const subscribersData = [
       { date: '2025-01-02', waybill: 'LQ-2025-00034', terminal: 'Accra Mall', status: 'picked_up', lockerSize: 'XLarge' },
     ],
   },
-  { id: 'SUB-005', name: 'Kofi Appiah', email: 'kofi.appiah@ashesi.edu.gh', phone: '+233542345005', university: 'Ashesi University', campus: 'Berekuso', studentId: 'ASH-40289156', plan: 'PLAN-STD', status: 'expired', startDate: '2024-06-01', renewalDate: '2024-12-01', deliveriesUsed: 15, terminal: 'Junction Mall', lastDelivery: '2024-11-28', verified: true, autoRenew: false, notes: 'Subscription expired Dec 2024. Last payment failed. Needs follow-up.',
+  {
+    id: 'SUB-005', name: 'Kofi Appiah', email: 'kofi.appiah@ashesi.edu.gh', phone: '+233542345005', university: 'Ashesi University', campus: 'Berekuso', studentId: 'ASH-40289156', plan: 'PLAN-STD', status: 'expired', startDate: '2024-06-01', renewalDate: '2024-12-01', deliveriesUsed: 15, terminal: 'Junction Mall', lastDelivery: '2024-11-28', verified: true, autoRenew: false, notes: 'Subscription expired Dec 2024. Last payment failed. Needs follow-up.',
     paymentHistory: [
       { date: '2024-12-01', amount: 45, method: 'Card', status: 'failed', invoiceId: 'INV-S005-01' },
       { date: '2024-11-01', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S005-02' },
@@ -319,7 +327,8 @@ const subscribersData = [
       { date: '2024-10-20', waybill: 'LQ-2024-00678', terminal: 'Junction Mall', status: 'expired', lockerSize: 'Medium' },
     ],
   },
-  { id: 'SUB-006', name: 'Abena Darkwa', email: 'abena.darkwa@gimpa.edu.gh', phone: '+233551678006', university: 'GIMPA', campus: 'Greenhill', studentId: 'GIM-50345672', plan: 'PLAN-PREM', status: 'active', startDate: '2024-09-15', renewalDate: '2025-03-15', deliveriesUsed: 28, terminal: 'Achimota Mall', lastDelivery: '2025-01-12', verified: true, autoRenew: true, notes: 'GIMPA business student. Often receives textbooks.',
+  {
+    id: 'SUB-006', name: 'Abena Darkwa', email: 'abena.darkwa@gimpa.edu.gh', phone: '+233551678006', university: 'GIMPA', campus: 'Greenhill', studentId: 'GIM-50345672', plan: 'PLAN-PREM', status: 'active', startDate: '2024-09-15', renewalDate: '2025-03-15', deliveriesUsed: 28, terminal: 'Achimota Mall', lastDelivery: '2025-01-12', verified: true, autoRenew: true, notes: 'GIMPA business student. Often receives textbooks.',
     paymentHistory: [
       { date: '2025-01-15', amount: 75, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S006-01' },
       { date: '2024-12-15', amount: 75, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S006-02' },
@@ -332,7 +341,8 @@ const subscribersData = [
       { date: '2024-12-18', waybill: 'LQ-2024-00912', terminal: 'Achimota Mall', status: 'picked_up', lockerSize: 'Large' },
     ],
   },
-  { id: 'SUB-007', name: 'Kweku Boateng', email: 'kweku.b@uew.edu.gh', phone: '+233549012007', university: 'University of Education, Winneba', campus: 'North Campus', studentId: 'UEW-60478923', plan: 'PLAN-BASIC', status: 'suspended', startDate: '2024-08-01', renewalDate: '2025-02-01', deliveriesUsed: 5, terminal: 'Tema', lastDelivery: '2024-10-15', verified: false, autoRenew: false, notes: 'Suspended due to disputed payment. Student ID unverified. Awaiting documents.',
+  {
+    id: 'SUB-007', name: 'Kweku Boateng', email: 'kweku.b@uew.edu.gh', phone: '+233549012007', university: 'University of Education, Winneba', campus: 'North Campus', studentId: 'UEW-60478923', plan: 'PLAN-BASIC', status: 'suspended', startDate: '2024-08-01', renewalDate: '2025-02-01', deliveriesUsed: 5, terminal: 'Tema', lastDelivery: '2024-10-15', verified: false, autoRenew: false, notes: 'Suspended due to disputed payment. Student ID unverified. Awaiting documents.',
     paymentHistory: [
       { date: '2024-11-01', amount: 25, method: 'Mobile Money', status: 'refunded', invoiceId: 'INV-S007-01' },
       { date: '2024-10-01', amount: 25, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S007-02' },
@@ -343,7 +353,8 @@ const subscribersData = [
       { date: '2024-09-20', waybill: 'LQ-2024-00578', terminal: 'Tema', status: 'picked_up', lockerSize: 'Small' },
     ],
   },
-  { id: 'SUB-008', name: 'Adwoa Frimpong', email: 'adwoa.f@knust.edu.gh', phone: '+233557345008', university: 'KNUST', campus: 'Main Campus', studentId: 'KN-20567834', plan: 'PLAN-STD', status: 'active', startDate: '2024-10-15', renewalDate: '2025-04-15', deliveriesUsed: 9, terminal: 'Kotoka T3', lastDelivery: '2025-01-08', verified: true, autoRenew: true, notes: 'Roommate of Ama Serwaa. Referred by SUB-002.',
+  {
+    id: 'SUB-008', name: 'Adwoa Frimpong', email: 'adwoa.f@knust.edu.gh', phone: '+233557345008', university: 'KNUST', campus: 'Main Campus', studentId: 'KN-20567834', plan: 'PLAN-STD', status: 'active', startDate: '2024-10-15', renewalDate: '2025-04-15', deliveriesUsed: 9, terminal: 'Kotoka T3', lastDelivery: '2025-01-08', verified: true, autoRenew: true, notes: 'Roommate of Ama Serwaa. Referred by SUB-002.',
     paymentHistory: [
       { date: '2025-01-15', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S008-01' },
       { date: '2024-12-15', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S008-02' },
@@ -355,13 +366,15 @@ const subscribersData = [
       { date: '2024-11-22', waybill: 'LQ-2024-00801', terminal: 'Kotoka T3', status: 'picked_up', lockerSize: 'Medium' },
     ],
   },
-  { id: 'SUB-009', name: 'Nana Agyei', email: 'nana.agyei@ug.edu.gh', phone: '+233553456009', university: 'University of Ghana', campus: 'Legon', studentId: 'UG-10623478', plan: 'PLAN-PREM', status: 'pending', startDate: '2025-02-01', renewalDate: '2025-08-01', deliveriesUsed: 0, terminal: 'Accra Mall', lastDelivery: null, verified: false, autoRenew: true, notes: 'New application. Awaiting student ID verification.',
+  {
+    id: 'SUB-009', name: 'Nana Agyei', email: 'nana.agyei@ug.edu.gh', phone: '+233553456009', university: 'University of Ghana', campus: 'Legon', studentId: 'UG-10623478', plan: 'PLAN-PREM', status: 'pending', startDate: '2025-02-01', renewalDate: '2025-08-01', deliveriesUsed: 0, terminal: 'Accra Mall', lastDelivery: null, verified: false, autoRenew: true, notes: 'New application. Awaiting student ID verification.',
     paymentHistory: [
       { date: '2025-01-28', amount: 75, method: 'Mobile Money', status: 'pending', invoiceId: 'INV-S009-01' },
     ],
     deliveryLog: [],
   },
-  { id: 'SUB-010', name: 'Akua Mensah', email: 'akua.m@ucc.edu.gh', phone: '+233548901010', university: 'University of Cape Coast', campus: 'South Campus', studentId: 'UCC-30234567', plan: 'PLAN-UNLIM', status: 'active', startDate: '2024-09-01', renewalDate: '2025-03-01', deliveriesUsed: 52, terminal: 'West Hills Mall', lastDelivery: '2025-01-13', verified: true, autoRenew: true, notes: 'Active Unlimited subscriber. Uses multiple terminals.',
+  {
+    id: 'SUB-010', name: 'Akua Mensah', email: 'akua.m@ucc.edu.gh', phone: '+233548901010', university: 'University of Cape Coast', campus: 'South Campus', studentId: 'UCC-30234567', plan: 'PLAN-UNLIM', status: 'active', startDate: '2024-09-01', renewalDate: '2025-03-01', deliveriesUsed: 52, terminal: 'West Hills Mall', lastDelivery: '2025-01-13', verified: true, autoRenew: true, notes: 'Active Unlimited subscriber. Uses multiple terminals.',
     paymentHistory: [
       { date: '2025-01-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S010-01' },
       { date: '2024-12-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S010-02' },
@@ -516,22 +529,6 @@ const collectionsData = [
   { id: 'COL-009', dropbox: 'DBX-002', dropboxName: 'Madina Market', agent: 'Kwesi Asante', scheduled: '2024-01-15 11:00', status: 'completed', packages: 25, terminal: 'Achimota Mall', priority: 'low', eta: 'Done', vehicle: 'Van' },
 ];
 
-
-const staffData = [
-  { id: 1, name: 'John Doe', email: 'john@locqar.com', role: 'SUPER_ADMIN', terminal: 'All', team: 'Management', status: 'active', lastActive: '2 min ago', performance: 98 },
-  { id: 2, name: 'Akua Mansa', email: 'akua@locqar.com', role: 'ADMIN', terminal: 'All', team: 'Management', status: 'active', lastActive: '15 min ago', performance: 95 },
-  { id: 3, name: 'Kofi Asante', email: 'kofi@locqar.com', role: 'MANAGER', terminal: 'Achimota Mall', team: 'Operations', status: 'active', lastActive: '1 hour ago', performance: 92 },
-  { id: 4, name: 'Yaw Boateng', email: 'yaw@locqar.com', role: 'AGENT', terminal: 'Achimota Mall', team: 'Field', status: 'active', lastActive: '5 min ago', performance: 88 },
-  { id: 5, name: 'Kweku Appiah', email: 'kweku@locqar.com', role: 'SUPPORT', terminal: 'All', team: 'Support', status: 'active', lastActive: '10 min ago', performance: 90 },
-  { id: 6, name: 'Adjoa Frimpong', email: 'adjoa@locqar.com', role: 'VIEWER', terminal: 'Accra Mall', team: 'Operations', status: 'inactive', lastActive: '3 days ago', performance: 75 },
-];
-
-const teamsData = [
-  { id: 1, name: 'Management', members: 2, lead: 'John Doe', color: '#4E0F0F' },
-  { id: 2, name: 'Operations', members: 4, lead: 'Kofi Asante', color: '#3b82f6' },
-  { id: 3, name: 'Field', members: 8, lead: 'Yaw Boateng', color: '#10b981' },
-  { id: 4, name: 'Support', members: 3, lead: 'Kweku Appiah', color: '#8b5cf6' },
-];
 
 const smsTemplatesData = [
   { id: 'TPL-001', name: 'Package Ready for Pickup', channel: 'sms', event: 'delivered_to_locker', message: 'Hi {customer}, your package {waybill} is ready at {terminal}, Locker {locker}. Pickup code: {code}. Valid for 5 days.', active: true, sentCount: 4820, deliveryRate: 98.2, lastSent: '2 min ago' },
@@ -697,27 +694,33 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
   const [expandedMenus, setExpandedMenus] = useState(['packages']);
   const menuGroups = [
     { label: 'Overview', items: [{ icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard', permission: 'dashboard.view' }] },
-    { label: 'Operations', items: [
-      { icon: Package, label: 'Packages', id: 'packages', permission: 'packages.view', subItems: ['All Packages', 'In Locker', 'Pending Pickup', 'Expired'] },
-      { icon: Truck, label: 'Dispatch', id: 'dispatch', permission: 'packages.dispatch', subItems: ['Outgoing', 'Route Planning', 'Driver Assignment'] },
-      { icon: MessageSquare, label: 'Notifications', id: 'notifications', permission: 'packages.view', subItems: ['Message Center', 'Templates', 'Auto-Rules', 'History', 'Settings'] },
-      { icon: AlertOctagon, label: 'SLA Monitor', id: 'sla', permission: 'packages.view', subItems: ['Live Monitor', 'Escalation Rules', 'Compliance', 'Incident Log'] },
-    ]},
-    { label: 'Management', items: [
-      { icon: Grid3X3, label: 'Lockers', id: 'lockers', permission: 'lockers.view', subItems: ['All Lockers', 'Maintenance', 'Configuration'] },
-      { icon: Inbox, label: 'Dropboxes', id: 'dropboxes', permission: 'packages.view', subItems: ['Overview', 'Collections', 'Agents', 'Package Flow'] },
-      { icon: Building2, label: 'Terminals', id: 'terminals', permission: 'terminals.view' },
-      { icon: Users, label: 'Customers', id: 'customers', permission: 'customers.view', subItems: ['All Customers', 'Subscribers', 'B2B Partners', 'Support Tickets'] },
-      { icon: UserCheck, label: 'Staff', id: 'staff', permission: 'staff.view', subItems: ['Agents', 'Teams', 'Performance'] },
-    ]},
-    { label: 'Business', items: [
-      { icon: Briefcase, label: 'Business Portal', id: 'portal', permission: 'reports.view', subItems: ['Partner Dashboard', 'Bulk Shipments', 'Invoices & Billing', 'API Management', 'Partner Analytics'] },
-      { icon: Smartphone, label: 'Partner Portal', id: 'selfservice', permission: 'dashboard.view', subItems: ['Portal Home', 'Ship Now', 'Track Packages', 'Locker Map', 'My Billing', 'API Console', 'Help Center'] },
-      { icon: DollarSign, label: 'Accounting', id: 'accounting', permission: 'reports.view', subItems: ['Transactions', 'Invoices', 'Reports'] },
-      { icon: Receipt, label: 'Pricing Engine', id: 'pricing', permission: 'reports.view', subItems: ['Rate Card', 'Delivery Methods', 'SLA Tiers', 'Surcharges', 'Volume Discounts', 'Partner Overrides'] },
-      { icon: TrendingUp, label: 'Analytics', id: 'analytics', permission: 'reports.view' },
-      { icon: History, label: 'Audit Log', id: 'audit', permission: 'reports.view' },
-    ]},
+    {
+      label: 'Operations', items: [
+        { icon: Package, label: 'Packages', id: 'packages', permission: 'packages.view', subItems: ['All Packages', 'In Locker', 'Pending Pickup', 'Expired'] },
+        { icon: Truck, label: 'Dispatch', id: 'dispatch', permission: 'packages.dispatch', subItems: ['Outgoing', 'Route Planning', 'Driver Assignment'] },
+        { icon: MessageSquare, label: 'Notifications', id: 'notifications', permission: 'packages.view', subItems: ['Message Center', 'Templates', 'Auto-Rules', 'History', 'Settings'] },
+        { icon: AlertOctagon, label: 'SLA Monitor', id: 'sla', permission: 'packages.view', subItems: ['Live Monitor', 'Escalation Rules', 'Compliance', 'Incident Log'] },
+      ]
+    },
+    {
+      label: 'Management', items: [
+        { icon: Grid3X3, label: 'Lockers', id: 'lockers', permission: 'lockers.view', subItems: ['All Lockers', 'Maintenance', 'Configuration'] },
+        { icon: Inbox, label: 'Dropboxes', id: 'dropboxes', permission: 'packages.view', subItems: ['Overview', 'Collections', 'Agents', 'Package Flow'] },
+        { icon: Building2, label: 'Terminals', id: 'terminals', permission: 'terminals.view' },
+        { icon: Users, label: 'Customers', id: 'customers', permission: 'customers.view', subItems: ['All Customers', 'Subscribers', 'B2B Partners', 'Support Tickets'] },
+        { icon: UserCheck, label: 'Staff', id: 'staff', permission: 'staff.view', subItems: ['Agents', 'Teams', 'Performance'] },
+      ]
+    },
+    {
+      label: 'Business', items: [
+        { icon: Briefcase, label: 'Business Portal', id: 'portal', permission: 'reports.view', subItems: ['Partner Dashboard', 'Bulk Shipments', 'Invoices & Billing', 'API Management', 'Partner Analytics'] },
+        { icon: Smartphone, label: 'Partner Portal', id: 'selfservice', permission: 'dashboard.view', subItems: ['Portal Home', 'Ship Now', 'Track Packages', 'Locker Map', 'My Billing', 'API Console', 'Help Center'] },
+        { icon: DollarSign, label: 'Accounting', id: 'accounting', permission: 'reports.view', subItems: ['Transactions', 'Invoices', 'Reports'] },
+        { icon: Receipt, label: 'Pricing Engine', id: 'pricing', permission: 'reports.view', subItems: ['Rate Card', 'Delivery Methods', 'SLA Tiers', 'Surcharges', 'Volume Discounts', 'Partner Overrides'] },
+        { icon: TrendingUp, label: 'Analytics', id: 'analytics', permission: 'reports.view' },
+        { icon: History, label: 'Audit Log', id: 'audit', permission: 'reports.view' },
+      ]
+    },
   ];
   const toggleMenu = (id) => setExpandedMenus(p => p.includes(id) ? p.filter(m => m !== id) : [...p, id]);
 
@@ -741,7 +744,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
         <div className="h-16 flex items-center justify-between px-4 border-b" style={{ borderColor: theme.border.primary }}>
           {(!isCollapsed || isMobile) && <span className="font-bold text-lg" style={{ color: theme.text.primary }}>LocQar</span>}
           {isCollapsed && !isMobile && <span className="font-bold text-sm" style={{ color: theme.text.primary }}>LQ</span>}
-          {!isMobile && <button onClick={() => setIsCollapsed(!isCollapsed)} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.hover }}>{isCollapsed ? <ChevronRight size={18} style={{ color: theme.text.secondary }}/> : <ChevronLeft size={18} style={{ color: theme.text.secondary }}/>}</button>}
+          {!isMobile && <button onClick={() => setIsCollapsed(!isCollapsed)} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.hover }}>{isCollapsed ? <ChevronRight size={18} style={{ color: theme.text.secondary }} /> : <ChevronLeft size={18} style={{ color: theme.text.secondary }} />}</button>}
           {isMobile && <button onClick={onCloseMobile} className="p-2 rounded-lg" style={{ color: theme.text.secondary }}><X size={18} /></button>}
         </div>
         <nav className="flex-1 overflow-y-auto py-4 px-3">
@@ -930,7 +933,7 @@ function LocQarERPInner() {
 
   useEffect(() => { const timer = setTimeout(() => setLoading(false), 1000); return () => clearTimeout(timer); }, []);
   useEffect(() => { const checkMobile = () => setIsMobile(window.innerWidth < 768); checkMobile(); window.addEventListener('resize', checkMobile); return () => window.removeEventListener('resize', checkMobile); }, []);
-  
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.ctrlKey || e.metaKey) {
@@ -1290,7 +1293,7 @@ function LocQarERPInner() {
     let result = [...staffData];
     if (staffSearch) {
       const q = staffSearch.toLowerCase();
-      result = result.filter(s => s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) || s.terminal.toLowerCase().includes(q));
+      result = result.filter(s => s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q) || s.terminal.toLowerCase().includes(q) || s.phone.includes(q) || s.team.toLowerCase().includes(q));
     }
     if (staffRoleFilter !== 'all') result = result.filter(s => s.role === staffRoleFilter);
     result.sort((a, b) => {
@@ -1375,935 +1378,974 @@ function LocQarERPInner() {
 
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: theme.bg.primary, fontFamily: theme.font.primary }}>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap'); * { font-family: 'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: ${theme.border.secondary}; border-radius: 3px; } .font-mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace !important; } @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } .animate-slide-in { animation: slide-in 0.3s ease-out; }`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap'); * { font-family: 'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: ${theme.border.secondary}; border-radius: 3px; } .font-mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace !important; } @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } .animate-slide-in { animation: slide-in 0.3s ease-out; }`}</style>
 
-        {(!isMobile || mobileSidebarOpen) && (
-          <Sidebar isCollapsed={sidebarCollapsed} setIsCollapsed={setSidebarCollapsed} activeMenu={activeMenu} setActiveMenu={setActiveMenu} activeSubMenu={activeSubMenu} setActiveSubMenu={setActiveSubMenu} theme={theme} userRole={currentUser.role} isMobile={isMobile} onCloseMobile={() => setMobileSidebarOpen(false)} />
-        )}
+      {(!isMobile || mobileSidebarOpen) && (
+        <Sidebar isCollapsed={sidebarCollapsed} setIsCollapsed={setSidebarCollapsed} activeMenu={activeMenu} setActiveMenu={setActiveMenu} activeSubMenu={activeSubMenu} setActiveSubMenu={setActiveSubMenu} theme={theme} userRole={currentUser.role} isMobile={isMobile} onCloseMobile={() => setMobileSidebarOpen(false)} />
+      )}
 
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="h-16 border-b px-4 md:px-6 flex items-center justify-between sticky top-0 z-30" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary }}>
-            <div className="flex items-center gap-3">
-              {isMobile && <button onClick={() => setMobileSidebarOpen(true)} className="p-2 rounded-lg" style={{ color: theme.text.secondary }}><Menu size={20} /></button>}
-              <button onClick={() => setShowSearch(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border w-48 md:w-96" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
-                <Search size={16} style={{ color: theme.text.muted }} />
-                <span className="text-sm hidden md:inline" style={{ color: theme.text.muted }}>Search...</span>
-                <kbd className="ml-auto px-1.5 py-0.5 rounded text-xs hidden md:inline" style={{ backgroundColor: theme.bg.secondary, color: theme.text.muted }}>⌘K</kbd>
-              </button>
-            </div>
-            <div className="flex items-center gap-2 md:gap-3">
-              <button onClick={() => setShowShortcuts(true)} className="p-2.5 rounded-xl border hidden md:flex" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}><Keyboard size={18} style={{ color: theme.text.secondary }} /></button>
-              <button onClick={() => setThemeName(t => t === 'dark' ? 'light' : 'dark')} className="p-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>{themeName === 'dark' ? <Sun size={18} style={{ color: theme.text.secondary }} /> : <Moon size={18} style={{ color: theme.text.secondary }} />}</button>
-              {hasPermission(currentUser.role, 'packages.scan') && <button onClick={() => setShowScanModal(true)} className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><QrCode size={18} />Scan</button>}
-              <div className="relative">
-                <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}><Bell size={18} style={{ color: theme.text.secondary }} /><span className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs text-white flex items-center justify-center" style={{ backgroundColor: theme.accent.primary }}>{notifications.filter(n => !n.read).length}</span></button>
-                {showNotifications && (
-                  <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border shadow-xl z-50" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                    <div className="p-3 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
-                      <span className="font-semibold" style={{ color: theme.text.primary }}>Notifications</span>
-                      <button onClick={() => setShowNotifications(false)} className="text-xs" style={{ color: theme.accent.primary }}>Mark all read</button>
-                    </div>
-                    <div className="max-h-80 overflow-y-auto">
-                      {notifications.map(n => (
-                        <div key={n.id} className="p-3 border-b flex gap-3" style={{ backgroundColor: n.read ? 'transparent' : theme.accent.light, borderColor: theme.border.primary }}>
-                          <div className={`w-2 h-2 rounded-full mt-2 ${n.type === 'error' ? 'bg-red-500' : n.type === 'warning' ? 'bg-amber-500' : n.type === 'success' ? 'bg-emerald-500' : 'bg-blue-500'}`} />
-                          <div><p className="text-sm" style={{ color: theme.text.primary }}>{n.title}</p><p className="text-xs" style={{ color: theme.text.muted }}>{n.time}</p></div>
-                        </div>
-                      ))}
-                    </div>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="h-16 border-b px-4 md:px-6 flex items-center justify-between sticky top-0 z-30" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary }}>
+          <div className="flex items-center gap-3">
+            {isMobile && <button onClick={() => setMobileSidebarOpen(true)} className="p-2 rounded-lg" style={{ color: theme.text.secondary }}><Menu size={20} /></button>}
+            <button onClick={() => setShowSearch(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border w-48 md:w-96" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
+              <Search size={16} style={{ color: theme.text.muted }} />
+              <span className="text-sm hidden md:inline" style={{ color: theme.text.muted }}>Search...</span>
+              <kbd className="ml-auto px-1.5 py-0.5 rounded text-xs hidden md:inline" style={{ backgroundColor: theme.bg.secondary, color: theme.text.muted }}>⌘K</kbd>
+            </button>
+          </div>
+          <div className="flex items-center gap-2 md:gap-3">
+            <button onClick={() => setShowShortcuts(true)} className="p-2.5 rounded-xl border hidden md:flex" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}><Keyboard size={18} style={{ color: theme.text.secondary }} /></button>
+            <button onClick={() => setThemeName(t => t === 'dark' ? 'light' : 'dark')} className="p-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>{themeName === 'dark' ? <Sun size={18} style={{ color: theme.text.secondary }} /> : <Moon size={18} style={{ color: theme.text.secondary }} />}</button>
+            {hasPermission(currentUser.role, 'packages.scan') && <button onClick={() => setShowScanModal(true)} className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><QrCode size={18} />Scan</button>}
+            <div className="relative">
+              <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}><Bell size={18} style={{ color: theme.text.secondary }} /><span className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs text-white flex items-center justify-center" style={{ backgroundColor: theme.accent.primary }}>{notifications.filter(n => !n.read).length}</span></button>
+              {showNotifications && (
+                <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border shadow-xl z-50" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  <div className="p-3 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+                    <span className="font-semibold" style={{ color: theme.text.primary }}>Notifications</span>
+                    <button onClick={() => setShowNotifications(false)} className="text-xs" style={{ color: theme.accent.primary }}>Mark all read</button>
                   </div>
-                )}
+                  <div className="max-h-80 overflow-y-auto">
+                    {notifications.map(n => (
+                      <div key={n.id} className="p-3 border-b flex gap-3" style={{ backgroundColor: n.read ? 'transparent' : theme.accent.light, borderColor: theme.border.primary }}>
+                        <div className={`w-2 h-2 rounded-full mt-2 ${n.type === 'error' ? 'bg-red-500' : n.type === 'warning' ? 'bg-amber-500' : n.type === 'success' ? 'bg-emerald-500' : 'bg-blue-500'}`} />
+                        <div><p className="text-sm" style={{ color: theme.text.primary }}>{n.title}</p><p className="text-xs" style={{ color: theme.text.muted }}>{n.time}</p></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="hidden md:flex items-center gap-3 pl-3 border-l" style={{ borderColor: theme.border.primary }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-semibold" style={{ backgroundColor: ROLES[currentUser.role]?.color }}>{currentUser.name.charAt(0)}</div>
+              <div className="text-right">
+                <p className="text-sm" style={{ color: theme.text.primary }}>{currentUser.name}</p>
+                <p className="text-xs" style={{ color: theme.text.muted }}>{ROLES[currentUser.role]?.name}</p>
               </div>
-              <div className="hidden md:flex items-center gap-3 pl-3 border-l" style={{ borderColor: theme.border.primary }}>
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-semibold" style={{ backgroundColor: ROLES[currentUser.role]?.color }}>{currentUser.name.charAt(0)}</div>
-                <div className="text-right">
-                  <p className="text-sm" style={{ color: theme.text.primary }}>{currentUser.name}</p>
-                  <p className="text-xs" style={{ color: theme.text.muted }}>{ROLES[currentUser.role]?.name}</p>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-auto">
+          {/* Dashboard */}
+          {activeMenu === 'dashboard' && (
+            <DashboardPage
+              currentUser={currentUser}
+              metrics={metrics}
+              loading={loading}
+              setLoading={setLoading}
+              setShowExport={setShowExport}
+              setShowScanModal={setShowScanModal}
+              setShowNewPackage={setShowNewPackage}
+              setShowDispatchDrawer={setShowDispatchDrawer}
+              setActiveMenu={setActiveMenu}
+              setActiveSubMenu={setActiveSubMenu}
+              addToast={addToast}
+            />
+          )}
+
+          {/* Packages Page */}
+          {activeMenu === 'packages' && (
+            <PackagesPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              filteredPackages={filteredPackages}
+              paginatedPackages={paginatedPackages}
+              packageSearch={packageSearch}
+              setPackageSearch={setPackageSearch}
+              packageFilter={packageFilter}
+              setPackageFilter={setPackageFilter}
+              methodFilter={methodFilter}
+              setMethodFilter={setMethodFilter}
+              packageSort={packageSort}
+              setPackageSort={setPackageSort}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              totalPages={totalPages}
+              selectedItems={selectedItems}
+              toggleSelectAll={toggleSelectAll}
+              toggleSelectItem={toggleSelectItem}
+              setShowExport={setShowExport}
+              setShowNewPackage={setShowNewPackage}
+              setSelectedPackage={setSelectedPackage}
+              setReassignPackage={setReassignPackage}
+              addToast={addToast}
+            />
+          )}
+
+          {/* Dropbox Management */}
+          {activeMenu === 'dropboxes' && (
+            <DropboxesPage
+              currentUser={currentUser}
+              loading={loading}
+              setLoading={setLoading}
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+              addToast={addToast}
+              collectionSearch={collectionSearch}
+              setCollectionSearch={setCollectionSearch}
+              collectionStatusFilter={collectionStatusFilter}
+              setCollectionStatusFilter={setCollectionStatusFilter}
+              collectionSort={collectionSort}
+              setCollectionSort={setCollectionSort}
+              filteredCollections={filteredCollections}
+            />
+          )}
+
+
+          {/* Notifications Page */}
+          {activeMenu === 'notifications' && (
+            <NotificationsPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+              setComposeOpen={setComposeOpen}
+              addToast={addToast}
+            />
+          )}
+
+          {/* Lockers Page */}
+          {activeMenu === 'lockers' && (
+            <LockersPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+              lockerSearch={lockerSearch}
+              setLockerSearch={setLockerSearch}
+              lockerStatusFilter={lockerStatusFilter}
+              setLockerStatusFilter={setLockerStatusFilter}
+              lockerTerminalFilter={lockerTerminalFilter}
+              setLockerTerminalFilter={setLockerTerminalFilter}
+              lockerSizeFilter={lockerSizeFilter}
+              setLockerSizeFilter={setLockerSizeFilter}
+              lockerSort={lockerSort}
+              setLockerSort={setLockerSort}
+              filteredLockers={filteredLockers}
+              addToast={addToast}
+            />
+          )}
+
+
+          {/* Terminals Page */}
+          {activeMenu === 'terminals' && (
+            <TerminalsPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+              terminalSearch={terminalSearch}
+              setTerminalSearch={setTerminalSearch}
+              terminalStatusFilter={terminalStatusFilter}
+              setTerminalStatusFilter={setTerminalStatusFilter}
+              filteredTerminals={filteredTerminals}
+              addToast={addToast}
+            />
+          )}
+
+          {/* SLA Monitor Page */}
+          {activeMenu === 'sla' && (
+            <SLAMonitorPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+              addToast={addToast}
+              slaBreachData={slaBreachData}
+              escalationLog={escalationLog}
+            />
+          )}
+
+          {/* Dispatch Page */}
+          {activeMenu === 'dispatch' && (
+            <DispatchPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+              setShowDispatchDrawer={setShowDispatchDrawer}
+              filteredDispatchPackages={filteredDispatchPackages}
+              dispatchSearch={dispatchSearch}
+              setDispatchSearch={setDispatchSearch}
+              setDispatchPage={setDispatchPage}
+              dispatchFilter={dispatchFilter}
+              setDispatchFilter={setDispatchFilter}
+              selectedDispatchItems={selectedDispatchItems}
+              paginatedDispatchPackages={paginatedDispatchPackages}
+              toggleDispatchSelectAll={toggleDispatchSelectAll}
+              toggleDispatchSelectItem={toggleDispatchSelectItem}
+              dispatchSort={dispatchSort}
+              setDispatchSort={setDispatchSort}
+              setSelectedPackage={setSelectedPackage}
+              dispatchTotalPages={dispatchTotalPages}
+              dispatchPage={dispatchPage}
+              dispatchPageSize={dispatchPageSize}
+              setDispatchPageSize={setDispatchPageSize}
+              selectedRoute={selectedRoute}
+              setSelectedRoute={setSelectedRoute}
+              routeTab={routeTab}
+              setRouteTab={setRouteTab}
+              expandedStops={expandedStops}
+              setExpandedStops={setExpandedStops}
+              driverSearch={driverSearch}
+              setDriverSearch={setDriverSearch}
+              driverSort={driverSort}
+              setDriverSort={setDriverSort}
+              filteredDrivers={filteredDrivers}
+              addToast={addToast}
+            />
+          )}
+
+          {/* Fleet Page */}
+          {activeMenu === 'fleet' && (
+            <FleetPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+              addToast={addToast}
+            />
+          )}
+
+
+          {/* Customers Page */}
+          {activeMenu === 'customers' && (
+            <CustomersPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              customerSearch={customerSearch}
+              setCustomerSearch={setCustomerSearch}
+              customerTypeFilter={customerTypeFilter}
+              setCustomerTypeFilter={setCustomerTypeFilter}
+              customerSort={customerSort}
+              setCustomerSort={setCustomerSort}
+              filteredCustomers={filteredCustomers}
+              filteredSubscribers={filteredSubscribers}
+              subscriberSearch={subscriberSearch}
+              setSubscriberSearch={setSubscriberSearch}
+              subscriberPlanFilter={subscriberPlanFilter}
+              setSubscriberPlanFilter={setSubscriberPlanFilter}
+              subscriberStatusFilter={subscriberStatusFilter}
+              setSubscriberStatusFilter={setSubscriberStatusFilter}
+              subscriberUniversityFilter={subscriberUniversityFilter}
+              setSubscriberUniversityFilter={setSubscriberUniversityFilter}
+              subscriberSort={subscriberSort}
+              setSubscriberSort={setSubscriberSort}
+              subscriberUniversities={subscriberUniversities}
+              selectedSubscribers={selectedSubscribers}
+              toggleSubscriberSelectAll={toggleSubscriberSelectAll}
+              toggleSubscriberSelect={toggleSubscriberSelect}
+              subscriberDetailItem={subscriberDetailItem}
+              setSubscriberDetailItem={setSubscriberDetailItem}
+              filteredTickets={filteredTickets}
+              ticketSearch={ticketSearch}
+              setTicketSearch={setTicketSearch}
+              ticketPriorityFilter={ticketPriorityFilter}
+              setTicketPriorityFilter={setTicketPriorityFilter}
+              ticketStatusFilter={ticketStatusFilter}
+              setTicketStatusFilter={setTicketStatusFilter}
+              addToast={addToast}
+              setShowExport={setShowExport}
+            />
+          )}
+
+
+          {/* Staff Page */}
+          {activeMenu === 'staff' && (
+            <StaffPage
+              currentUser={currentUser}
+              activeSubMenu={activeSubMenu}
+              loading={loading}
+              staffSearch={staffSearch}
+              setStaffSearch={setStaffSearch}
+              staffRoleFilter={staffRoleFilter}
+              setStaffRoleFilter={setStaffRoleFilter}
+              staffSort={staffSort}
+              setStaffSort={setStaffSort}
+              filteredStaff={filteredStaff}
+              addToast={addToast}
+              setShowExport={setShowExport}
+            />
+          )}
+
+
+          {/* Accounting Page */}
+          {activeMenu === 'accounting' && (
+            <AccountingPage
+              activeSubMenu={activeSubMenu}
+              loading={loading}
+              setShowExport={setShowExport}
+              txnSearch={txnSearch}
+              setTxnSearch={setTxnSearch}
+              txnStatusFilter={txnStatusFilter}
+              setTxnStatusFilter={setTxnStatusFilter}
+              txnSort={txnSort}
+              setTxnSort={setTxnSort}
+              filteredTransactions={filteredTransactions}
+              invSearch={invSearch}
+              setInvSearch={setInvSearch}
+              invStatusFilter={invStatusFilter}
+              setInvStatusFilter={setInvStatusFilter}
+              filteredInvoices={filteredInvoices}
+              addToast={addToast}
+            />
+          )}
+
+
+          {/* Business Portal */}
+          {activeMenu === 'portal' && (
+            <BusinessPortalPage
+              activeSubMenu={activeSubMenu}
+              loading={loading}
+              setShowExport={setShowExport}
+              addToast={addToast}
+            />
+          )}
+
+
+          {/* ============ PARTNER SELF-SERVICE PORTAL ============ */}
+          {activeMenu === 'selfservice' && (
+            <PartnerPortalPage
+              activeSubMenu={activeSubMenu}
+              setActiveSubMenu={setActiveSubMenu}
+              loading={loading}
+              setShowExport={setShowExport}
+              addToast={addToast}
+            />
+          )}
+
+
+          {/* Analytics Page */}
+          {activeMenu === 'analytics' && (
+            <AnalyticsPage
+              currentUser={currentUser}
+              loading={loading}
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+            />
+          )}
+
+          {/* Pricing Engine Page */}
+          {activeMenu === 'pricing' && (
+            <PricingEnginePage
+              activeSubMenu={activeSubMenu}
+              setShowExport={setShowExport}
+            />
+          )}
+
+          {/* Audit Log Page */}
+          {activeMenu === 'audit' && (
+            <AuditLogPage
+              currentUser={currentUser}
+              loading={loading}
+              auditSearch={auditSearch}
+              setAuditSearch={setAuditSearch}
+              auditTypeFilter={auditTypeFilter}
+              setAuditTypeFilter={setAuditTypeFilter}
+              auditSort={auditSort}
+              setAuditSort={setAuditSort}
+              filteredAudit={filteredAudit}
+            />
+          )}
+
+          {/* Settings Page */}
+          {activeMenu === 'settings' && (
+            <SettingsPage
+              currentUser={currentUser}
+              themeName={themeName}
+              setThemeName={setThemeName}
+              addToast={addToast}
+            />
+          )}
+        </main>
+      </div>
+
+      {/* Modals & Overlays */}
+      {selectedPackage && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setSelectedPackage(null)} />
+          <PackageDetailDrawer pkg={selectedPackage} onClose={() => setSelectedPackage(null)} userRole={currentUser.role} addToast={addToast} onReassign={(p) => { setSelectedPackage(null); setReassignPackage(p); }} onReturn={(p) => { setSelectedPackage(null); setReturnPackage(p); }} />
+        </>
+      )}
+
+      <GlobalSearchModal isOpen={showSearch} onClose={() => setShowSearch(false)} onNavigate={handleSearchNavigate} />
+      <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
+      <ExportModal isOpen={showExport} onClose={() => setShowExport(false)} onExport={handleExport} dataType={activeMenu} />
+      <ScanModal isOpen={showScanModal} onClose={() => setShowScanModal(false)} userRole={currentUser.role} addToast={addToast} onViewPackage={(pkg) => { setSelectedPackage(pkg); setActiveMenu('packages'); }} onReassign={setReassignPackage} onReturn={setReturnPackage} />
+      <NewPackageDrawer isOpen={showNewPackage} onClose={() => setShowNewPackage(false)} addToast={addToast} />
+      <DispatchDrawer isOpen={showDispatchDrawer} onClose={() => setShowDispatchDrawer(false)} addToast={addToast} onViewFull={() => setActiveMenu('dispatch')} />
+      <ReassignModal isOpen={!!reassignPackage} onClose={() => setReassignPackage(null)} pkg={reassignPackage} addToast={addToast} />
+      <ReturnModal isOpen={!!returnPackage} onClose={() => setReturnPackage(null)} pkg={returnPackage} addToast={addToast} />
+
+      {/* Compose Message Modal */}
+      {composeOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setComposeOpen(false)}>
+          <div className="w-full max-w-2xl rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(16,185,129,0.1)' }}><Send size={20} style={{ color: '#10b981' }} /></div>
+                <div>
+                  <h2 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Compose Message</h2>
+                  <p className="text-sm" style={{ color: theme.text.muted }}>Send a custom or template-based notification</p>
+                </div>
+              </div>
+              <button onClick={() => setComposeOpen(false)} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={20} /></button>
+            </div>
+            <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Channel</label>
+                <div className="grid grid-cols-4 gap-2">
+                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)' }}><Smartphone size={18} />SMS</button>
+                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><MessageSquare size={18} />WhatsApp</button>
+                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Mail size={18} />Email</button>
+                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Users size={18} />All</button>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Recipients</label>
+                <div className="flex gap-2">
+                  <input placeholder="Enter phone numbers, customer names, or select a group..." className="flex-1 px-4 py-2.5 rounded-xl border text-sm bg-transparent" style={{ borderColor: theme.border.primary, color: theme.text.primary }} />
+                  <button className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Browse</button>
+                </div>
+                <div className="flex gap-2 mt-2">
+                  {['All Customers', 'Pending Pickups', 'Expiring Today', 'COD Pending'].map(grp => (
+                    <button key={grp} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted }}>{grp}</button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Template (optional)</label>
+                <select className="w-full px-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary, color: theme.text.primary }}>
+                  <option value="">Custom message (no template)</option>
+                  {smsTemplatesData.map(t => <option key={t.id} value={t.id}>[{t.channel.toUpperCase()}] {t.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Message</label>
+                <textarea rows={5} placeholder="Type your message here... Use {customer}, {waybill}, {terminal}, {locker}, {code}, {eta} as variables." className="w-full px-4 py-3 rounded-xl border text-sm bg-transparent resize-none" style={{ borderColor: theme.border.primary, color: theme.text.primary }} />
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-xs" style={{ color: theme.text.muted }}>0 / 160 characters (1 SMS segment)</span>
+                  <span className="text-xs" style={{ color: theme.text.muted }}>Est. cost: GH₵ 0.00</span>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Schedule</label>
+                <div className="flex gap-2">
+                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)' }}><Send size={16} />Send Now</button>
+                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Clock size={16} />Schedule Later</button>
                 </div>
               </div>
             </div>
-          </header>
-
-          {/* Main Content Area */}
-          <main className="flex-1 overflow-auto">
-            {/* Dashboard */}
-            {activeMenu === 'dashboard' && (
-              <DashboardPage
-                currentUser={currentUser}
-                metrics={metrics}
-                loading={loading}
-                setLoading={setLoading}
-                setShowExport={setShowExport}
-                setShowScanModal={setShowScanModal}
-                setShowNewPackage={setShowNewPackage}
-                setShowDispatchDrawer={setShowDispatchDrawer}
-                setActiveMenu={setActiveMenu}
-                setActiveSubMenu={setActiveSubMenu}
-                addToast={addToast}
-              />
-            )}
-
-            {/* Packages Page */}
-            {activeMenu === 'packages' && (
-              <PackagesPage
-                currentUser={currentUser}
-                loading={loading}
-                activeSubMenu={activeSubMenu}
-                filteredPackages={filteredPackages}
-                paginatedPackages={paginatedPackages}
-                packageSearch={packageSearch}
-                setPackageSearch={setPackageSearch}
-                packageFilter={packageFilter}
-                setPackageFilter={setPackageFilter}
-                methodFilter={methodFilter}
-                setMethodFilter={setMethodFilter}
-                packageSort={packageSort}
-                setPackageSort={setPackageSort}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                pageSize={pageSize}
-                setPageSize={setPageSize}
-                totalPages={totalPages}
-                selectedItems={selectedItems}
-                toggleSelectAll={toggleSelectAll}
-                toggleSelectItem={toggleSelectItem}
-                setShowExport={setShowExport}
-                setShowNewPackage={setShowNewPackage}
-                setSelectedPackage={setSelectedPackage}
-                setReassignPackage={setReassignPackage}
-                addToast={addToast}
-              />
-            )}
-
-            {/* Dropbox Management */}
-            {activeMenu === 'dropboxes' && (
-              <DropboxesPage
-                currentUser={currentUser}
-                loading={loading}
-                setLoading={setLoading}
-                activeSubMenu={activeSubMenu}
-                setShowExport={setShowExport}
-                addToast={addToast}
-                collectionSearch={collectionSearch}
-                setCollectionSearch={setCollectionSearch}
-                collectionStatusFilter={collectionStatusFilter}
-                setCollectionStatusFilter={setCollectionStatusFilter}
-                collectionSort={collectionSort}
-                setCollectionSort={setCollectionSort}
-                filteredCollections={filteredCollections}
-              />
-            )}
-
-
-            {/* Notifications Page */}
-            {activeMenu === 'notifications' && (
-              <NotificationsPage
-                currentUser={currentUser}
-                loading={loading}
-                activeSubMenu={activeSubMenu}
-                setShowExport={setShowExport}
-                setComposeOpen={setComposeOpen}
-                addToast={addToast}
-              />
-            )}
-
-            {/* Lockers Page */}
-            {activeMenu === 'lockers' && (
-              <LockersPage
-                currentUser={currentUser}
-                loading={loading}
-                activeSubMenu={activeSubMenu}
-                setShowExport={setShowExport}
-                lockerSearch={lockerSearch}
-                setLockerSearch={setLockerSearch}
-                lockerStatusFilter={lockerStatusFilter}
-                setLockerStatusFilter={setLockerStatusFilter}
-                lockerTerminalFilter={lockerTerminalFilter}
-                setLockerTerminalFilter={setLockerTerminalFilter}
-                lockerSizeFilter={lockerSizeFilter}
-                setLockerSizeFilter={setLockerSizeFilter}
-                lockerSort={lockerSort}
-                setLockerSort={setLockerSort}
-                filteredLockers={filteredLockers}
-                addToast={addToast}
-              />
-            )}
-
-
-            {/* Terminals Page */}
-            {activeMenu === 'terminals' && (
-              <TerminalsPage
-                currentUser={currentUser}
-                loading={loading}
-                activeSubMenu={activeSubMenu}
-                setShowExport={setShowExport}
-                terminalSearch={terminalSearch}
-                setTerminalSearch={setTerminalSearch}
-                terminalStatusFilter={terminalStatusFilter}
-                setTerminalStatusFilter={setTerminalStatusFilter}
-                filteredTerminals={filteredTerminals}
-                addToast={addToast}
-              />
-            )}
-
-            {/* SLA Monitor Page */}
-            {activeMenu === 'sla' && (
-              <SLAMonitorPage
-                currentUser={currentUser}
-                loading={loading}
-                activeSubMenu={activeSubMenu}
-                setShowExport={setShowExport}
-                addToast={addToast}
-                slaBreachData={slaBreachData}
-                escalationLog={escalationLog}
-              />
-            )}
-
-            {/* Dispatch Page */}
-            {activeMenu === 'dispatch' && (
-              <DispatchPage
-                currentUser={currentUser}
-                loading={loading}
-                activeSubMenu={activeSubMenu}
-                setShowExport={setShowExport}
-                setShowDispatchDrawer={setShowDispatchDrawer}
-                filteredDispatchPackages={filteredDispatchPackages}
-                dispatchSearch={dispatchSearch}
-                setDispatchSearch={setDispatchSearch}
-                setDispatchPage={setDispatchPage}
-                dispatchFilter={dispatchFilter}
-                setDispatchFilter={setDispatchFilter}
-                selectedDispatchItems={selectedDispatchItems}
-                paginatedDispatchPackages={paginatedDispatchPackages}
-                toggleDispatchSelectAll={toggleDispatchSelectAll}
-                toggleDispatchSelectItem={toggleDispatchSelectItem}
-                dispatchSort={dispatchSort}
-                setDispatchSort={setDispatchSort}
-                setSelectedPackage={setSelectedPackage}
-                dispatchTotalPages={dispatchTotalPages}
-                dispatchPage={dispatchPage}
-                dispatchPageSize={dispatchPageSize}
-                setDispatchPageSize={setDispatchPageSize}
-                selectedRoute={selectedRoute}
-                setSelectedRoute={setSelectedRoute}
-                routeTab={routeTab}
-                setRouteTab={setRouteTab}
-                expandedStops={expandedStops}
-                setExpandedStops={setExpandedStops}
-                driverSearch={driverSearch}
-                setDriverSearch={setDriverSearch}
-                driverSort={driverSort}
-                setDriverSort={setDriverSort}
-                filteredDrivers={filteredDrivers}
-                addToast={addToast}
-              />
-            )}
-
-
-            {/* Customers Page */}
-            {activeMenu === 'customers' && (
-              <CustomersPage
-                currentUser={currentUser}
-                loading={loading}
-                customerSearch={customerSearch}
-                setCustomerSearch={setCustomerSearch}
-                customerTypeFilter={customerTypeFilter}
-                setCustomerTypeFilter={setCustomerTypeFilter}
-                customerSort={customerSort}
-                setCustomerSort={setCustomerSort}
-                filteredCustomers={filteredCustomers}
-                addToast={addToast}
-              />
-            )}
-
-
-            {/* Staff Page */}
-            {activeMenu === 'staff' && (
-              <StaffPage
-                currentUser={currentUser}
-                activeSubMenu={activeSubMenu}
-                loading={loading}
-                staffSearch={staffSearch}
-                setStaffSearch={setStaffSearch}
-                staffRoleFilter={staffRoleFilter}
-                setStaffRoleFilter={setStaffRoleFilter}
-                staffSort={staffSort}
-                setStaffSort={setStaffSort}
-                filteredStaff={filteredStaff}
-              />
-            )}
-
-
-            {/* Accounting Page */}
-            {activeMenu === 'accounting' && (
-              <AccountingPage
-                activeSubMenu={activeSubMenu}
-                loading={loading}
-                setShowExport={setShowExport}
-                txnSearch={txnSearch}
-                setTxnSearch={setTxnSearch}
-                txnStatusFilter={txnStatusFilter}
-                setTxnStatusFilter={setTxnStatusFilter}
-                txnSort={txnSort}
-                setTxnSort={setTxnSort}
-                filteredTransactions={filteredTransactions}
-                invSearch={invSearch}
-                setInvSearch={setInvSearch}
-                invStatusFilter={invStatusFilter}
-                setInvStatusFilter={setInvStatusFilter}
-                filteredInvoices={filteredInvoices}
-                addToast={addToast}
-              />
-            )}
-
-
-            {/* Business Portal */}
-            {activeMenu === 'portal' && (
-              <BusinessPortalPage
-                activeSubMenu={activeSubMenu}
-                loading={loading}
-                setShowExport={setShowExport}
-                addToast={addToast}
-              />
-            )}
-
-
-            {/* ============ PARTNER SELF-SERVICE PORTAL ============ */}
-            {activeMenu === 'selfservice' && (
-              <PartnerPortalPage
-                activeSubMenu={activeSubMenu}
-                setActiveSubMenu={setActiveSubMenu}
-                loading={loading}
-                setShowExport={setShowExport}
-                addToast={addToast}
-              />
-            )}
-
-
-            {/* Analytics Page */}
-            {activeMenu === 'analytics' && (
-              <AnalyticsPage
-                currentUser={currentUser}
-                loading={loading}
-                activeSubMenu={activeSubMenu}
-                setShowExport={setShowExport}
-              />
-            )}
-
-            {/* Pricing Engine Page */}
-            {activeMenu === 'pricing' && (
-              <PricingEnginePage
-                activeSubMenu={activeSubMenu}
-                setShowExport={setShowExport}
-              />
-            )}
-
-            {/* Audit Log Page */}
-            {activeMenu === 'audit' && (
-              <AuditLogPage
-                currentUser={currentUser}
-                loading={loading}
-                auditSearch={auditSearch}
-                setAuditSearch={setAuditSearch}
-                auditTypeFilter={auditTypeFilter}
-                setAuditTypeFilter={setAuditTypeFilter}
-                auditSort={auditSort}
-                setAuditSort={setAuditSort}
-                filteredAudit={filteredAudit}
-              />
-            )}
-
-            {/* Settings Page */}
-            {activeMenu === 'settings' && (
-              <SettingsPage
-                currentUser={currentUser}
-                themeName={themeName}
-                setThemeName={setThemeName}
-                addToast={addToast}
-              />
-            )}
-          </main>
+            <div className="p-5 border-t flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+              <button onClick={() => setComposeOpen(false)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <div className="flex gap-2">
+                <button onClick={() => addToast({ type: 'info', message: 'Test message sent to your phone' })} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Send Test</button>
+                <button onClick={() => { addToast({ type: 'success', message: 'Message sent successfully!' }); setComposeOpen(false); }} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}>Send Message</button>
+              </div>
+            </div>
+          </div>
         </div>
+      )}
 
-        {/* Modals & Overlays */}
-        {selectedPackage && (
-          <>
-            <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setSelectedPackage(null)} />
-            <PackageDetailDrawer pkg={selectedPackage} onClose={() => setSelectedPackage(null)} userRole={currentUser.role} addToast={addToast} onReassign={(p) => { setSelectedPackage(null); setReassignPackage(p); }} onReturn={(p) => { setSelectedPackage(null); setReturnPackage(p); }} />
-          </>
-        )}
-
-        <GlobalSearchModal isOpen={showSearch} onClose={() => setShowSearch(false)} onNavigate={handleSearchNavigate} />
-        <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
-        <ExportModal isOpen={showExport} onClose={() => setShowExport(false)} onExport={handleExport} dataType={activeMenu} />
-        <ScanModal isOpen={showScanModal} onClose={() => setShowScanModal(false)} userRole={currentUser.role} addToast={addToast} onViewPackage={(pkg) => { setSelectedPackage(pkg); setActiveMenu('packages'); }} onReassign={setReassignPackage} onReturn={setReturnPackage} />
-        <NewPackageDrawer isOpen={showNewPackage} onClose={() => setShowNewPackage(false)} addToast={addToast} />
-        <DispatchDrawer isOpen={showDispatchDrawer} onClose={() => setShowDispatchDrawer(false)} addToast={addToast} onViewFull={() => setActiveMenu('dispatch')} />
-        <ReassignModal isOpen={!!reassignPackage} onClose={() => setReassignPackage(null)} pkg={reassignPackage} addToast={addToast} />
-        <ReturnModal isOpen={!!returnPackage} onClose={() => setReturnPackage(null)} pkg={returnPackage} addToast={addToast} />
-
-        {/* Compose Message Modal */}
-        {composeOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setComposeOpen(false)}>
-            <div className="w-full max-w-2xl rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
-              <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(16,185,129,0.1)' }}><Send size={20} style={{ color: '#10b981' }} /></div>
-                  <div>
-                    <h2 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Compose Message</h2>
-                    <p className="text-sm" style={{ color: theme.text.muted }}>Send a custom or template-based notification</p>
-                  </div>
-                </div>
-                <button onClick={() => setComposeOpen(false)} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={20} /></button>
-              </div>
-              <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+      {/* Template Preview Modal */}
+      {selectedTemplate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setSelectedTemplate(null)}>
+          <div className="w-full max-w-xl rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+              <div className="flex items-center gap-3">
+                {selectedTemplate.channel === 'whatsapp' ? (
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(37,211,102,0.1)' }}><MessageSquare size={20} style={{ color: '#25D366' }} /></div>
+                ) : selectedTemplate.channel === 'email' ? (
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(139,92,246,0.1)' }}><Mail size={20} style={{ color: '#8b5cf6' }} /></div>
+                ) : (
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(59,130,246,0.1)' }}><Smartphone size={20} style={{ color: '#3b82f6' }} /></div>
+                )}
                 <div>
-                  <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Channel</label>
-                  <div className="grid grid-cols-4 gap-2">
-                    <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)' }}><Smartphone size={18} />SMS</button>
-                    <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><MessageSquare size={18} />WhatsApp</button>
-                    <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Mail size={18} />Email</button>
-                    <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Users size={18} />All</button>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Recipients</label>
-                  <div className="flex gap-2">
-                    <input placeholder="Enter phone numbers, customer names, or select a group..." className="flex-1 px-4 py-2.5 rounded-xl border text-sm bg-transparent" style={{ borderColor: theme.border.primary, color: theme.text.primary }} />
-                    <button className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Browse</button>
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    {['All Customers', 'Pending Pickups', 'Expiring Today', 'COD Pending'].map(grp => (
-                      <button key={grp} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted }}>{grp}</button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Template (optional)</label>
-                  <select className="w-full px-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary, color: theme.text.primary }}>
-                    <option value="">Custom message (no template)</option>
-                    {smsTemplatesData.map(t => <option key={t.id} value={t.id}>[{t.channel.toUpperCase()}] {t.name}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Message</label>
-                  <textarea rows={5} placeholder="Type your message here... Use {customer}, {waybill}, {terminal}, {locker}, {code}, {eta} as variables." className="w-full px-4 py-3 rounded-xl border text-sm bg-transparent resize-none" style={{ borderColor: theme.border.primary, color: theme.text.primary }} />
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs" style={{ color: theme.text.muted }}>0 / 160 characters (1 SMS segment)</span>
-                    <span className="text-xs" style={{ color: theme.text.muted }}>Est. cost: GH₵ 0.00</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Schedule</label>
-                  <div className="flex gap-2">
-                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)' }}><Send size={16} />Send Now</button>
-                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Clock size={16} />Schedule Later</button>
+                  <h2 className="font-semibold" style={{ color: theme.text.primary }}>{selectedTemplate.name}</h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="px-2 py-0.5 rounded-full text-xs uppercase font-medium" style={{ backgroundColor: selectedTemplate.channel === 'whatsapp' ? 'rgba(37,211,102,0.1)' : selectedTemplate.channel === 'email' ? 'rgba(139,92,246,0.1)' : 'rgba(59,130,246,0.1)', color: selectedTemplate.channel === 'whatsapp' ? '#25D366' : selectedTemplate.channel === 'email' ? '#8b5cf6' : '#3b82f6' }}>{selectedTemplate.channel}</span>
+                    <span className="text-xs font-mono" style={{ color: theme.text.muted }}>{selectedTemplate.id}</span>
+                    {selectedTemplate.active ? <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Active</span> : <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(107,114,128,0.1)', color: '#6b7280' }}>Inactive</span>}
                   </div>
                 </div>
               </div>
-              <div className="p-5 border-t flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
-                <button onClick={() => setComposeOpen(false)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-                <div className="flex gap-2">
-                  <button onClick={() => addToast({ type: 'info', message: 'Test message sent to your phone' })} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Send Test</button>
-                  <button onClick={() => { addToast({ type: 'success', message: 'Message sent successfully!' }); setComposeOpen(false); }} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}>Send Message</button>
-                </div>
-              </div>
+              <button onClick={() => setSelectedTemplate(null)} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={20} /></button>
             </div>
-          </div>
-        )}
-
-        {/* Template Preview Modal */}
-        {selectedTemplate && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setSelectedTemplate(null)}>
-            <div className="w-full max-w-xl rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
-              <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
-                <div className="flex items-center gap-3">
-                  {selectedTemplate.channel === 'whatsapp' ? (
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(37,211,102,0.1)' }}><MessageSquare size={20} style={{ color: '#25D366' }} /></div>
-                  ) : selectedTemplate.channel === 'email' ? (
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(139,92,246,0.1)' }}><Mail size={20} style={{ color: '#8b5cf6' }} /></div>
-                  ) : (
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(59,130,246,0.1)' }}><Smartphone size={20} style={{ color: '#3b82f6' }} /></div>
-                  )}
-                  <div>
-                    <h2 className="font-semibold" style={{ color: theme.text.primary }}>{selectedTemplate.name}</h2>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="px-2 py-0.5 rounded-full text-xs uppercase font-medium" style={{ backgroundColor: selectedTemplate.channel === 'whatsapp' ? 'rgba(37,211,102,0.1)' : selectedTemplate.channel === 'email' ? 'rgba(139,92,246,0.1)' : 'rgba(59,130,246,0.1)', color: selectedTemplate.channel === 'whatsapp' ? '#25D366' : selectedTemplate.channel === 'email' ? '#8b5cf6' : '#3b82f6' }}>{selectedTemplate.channel}</span>
-                      <span className="text-xs font-mono" style={{ color: theme.text.muted }}>{selectedTemplate.id}</span>
-                      {selectedTemplate.active ? <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Active</span> : <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(107,114,128,0.1)', color: '#6b7280' }}>Inactive</span>}
-                    </div>
-                  </div>
-                </div>
-                <button onClick={() => setSelectedTemplate(null)} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={20} /></button>
+            <div className="p-5 space-y-5">
+              {/* Trigger Event */}
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Trigger Event</label>
+                <span className="px-3 py-1.5 rounded-lg text-sm font-mono" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>{selectedTemplate.event}</span>
               </div>
-              <div className="p-5 space-y-5">
-                {/* Trigger Event */}
-                <div>
-                  <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Trigger Event</label>
-                  <span className="px-3 py-1.5 rounded-lg text-sm font-mono" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>{selectedTemplate.event}</span>
-                </div>
 
-                {/* Message Preview */}
-                <div>
-                  <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Message Preview</label>
-                  <div className="p-5 rounded-xl" style={{ backgroundColor: selectedTemplate.channel === 'whatsapp' ? 'rgba(37,211,102,0.05)' : selectedTemplate.channel === 'email' ? 'rgba(139,92,246,0.05)' : theme.bg.tertiary, border: selectedTemplate.channel === 'whatsapp' ? '1px solid rgba(37,211,102,0.2)' : selectedTemplate.channel === 'email' ? '1px solid rgba(139,92,246,0.2)' : `1px solid ${theme.border.primary}` }}>
-                    {selectedTemplate.channel === 'whatsapp' && (
-                      <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid rgba(37,211,102,0.15)' }}>
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#25D366' }}><MessageSquare size={14} className="text-white" /></div>
-                        <div>
-                          <p className="text-sm font-medium" style={{ color: theme.text.primary }}>LocQar</p>
-                          <p className="text-xs" style={{ color: theme.text.muted }}>WhatsApp Business</p>
-                        </div>
-                      </div>
-                    )}
-                    {selectedTemplate.channel === 'email' && (
-                      <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid rgba(139,92,246,0.15)' }}>
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#8b5cf6' }}><Mail size={14} className="text-white" /></div>
-                        <div>
-                          <p className="text-sm font-medium" style={{ color: theme.text.primary }}>LocQar</p>
-                          <p className="text-xs" style={{ color: theme.text.muted }}>noreply@locqar.com</p>
-                        </div>
-                      </div>
-                    )}
-                    <pre className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: theme.text.secondary, fontFamily: theme.font.primary }}>{selectedTemplate.message}</pre>
-                  </div>
-                </div>
-
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
-                    <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{selectedTemplate.sentCount.toLocaleString()}</p>
-                    <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Total Sent</p>
-                  </div>
-                  <div className="p-4 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
-                    <p className="text-2xl font-bold" style={{ color: '#10b981' }}>{selectedTemplate.deliveryRate}%</p>
-                    <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Delivery Rate</p>
-                  </div>
-                  <div className="p-4 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
-                    <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{selectedTemplate.lastSent}</p>
-                    <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Last Sent</p>
-                  </div>
-                </div>
-
-                {/* Variables Used */}
-                <div>
-                  <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Variables Used</label>
-                  <div className="flex flex-wrap gap-2">
-                    {(selectedTemplate.message.match(/\{(\w+)\}/g) || []).map((v, i) => (
-                      <span key={i} className="px-3 py-1.5 rounded-lg text-xs font-mono" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary, border: `1px solid ${theme.accent.border}` }}>{v}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="p-5 border-t flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
-                <button onClick={() => setSelectedTemplate(null)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
-                <div className="flex gap-2">
-                  <button onClick={() => { addToast({ type: 'info', message: `Test send: ${selectedTemplate.id}` }); }} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: '#10b981' }}>Test Send</button>
-                  <button onClick={() => { addToast({ type: 'info', message: `Editing ${selectedTemplate.name}` }); setSelectedTemplate(null); }} className="px-4 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}>Edit Template</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* SLA Detail Modal */}
-        {slaSelectedItem && (() => {
-          const item = slaSelectedItem;
-          const sev = SLA_SEVERITY[item.severity];
-          const SevIcon = sev.icon;
-          const tier = SLA_TIERS.find(t => t.name === item.slaType) || SLA_TIERS[0];
-          const itemEscalations = escalationLog.filter(e => e.waybill === item.waybill).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-          const pctClamped = Math.min(item.pctUsed, 100);
-          const circumference = 2 * Math.PI * 54;
-          const strokeOffset = circumference - (pctClamped / 100) * circumference;
-          return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setSlaSelectedItem(null)}>
-              <div className="w-full max-w-2xl rounded-2xl border overflow-hidden" onClick={e => e.stopPropagation()} style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                {/* Header */}
-                <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: sev.bg, color: sev.color }}>
-                      <SevIcon size={20} />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold" style={{ color: theme.text.primary }}>{item.waybill}</h3>
-                        <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: sev.bg, color: sev.color }}>{sev.label}</span>
-                      </div>
-                      <div className="text-sm" style={{ color: theme.text.muted }}>{item.customer} • {item.terminal}</div>
-                    </div>
-                  </div>
-                  <button onClick={() => setSlaSelectedItem(null)} className="p-2 rounded-lg hover:bg-white/5"><X size={18} style={{ color: theme.text.muted }} /></button>
-                </div>
-
-                <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto">
-                  {/* Progress Ring + Info Grid */}
-                  <div className="flex gap-6">
-                    {/* SVG Progress Ring */}
-                    <div className="flex-shrink-0 flex flex-col items-center">
-                      <svg width="130" height="130" viewBox="0 0 130 130">
-                        <circle cx="65" cy="65" r="54" fill="none" stroke={theme.border.primary} strokeWidth="8" />
-                        <circle cx="65" cy="65" r="54" fill="none" stroke={sev.color} strokeWidth="8" strokeLinecap="round"
-                          strokeDasharray={circumference} strokeDashoffset={strokeOffset}
-                          transform="rotate(-90 65 65)" style={{ transition: 'stroke-dashoffset 0.5s ease' }} />
-                        <text x="65" y="58" textAnchor="middle" fill={sev.color} fontSize="22" fontWeight="bold">{item.pctUsed.toFixed(0)}%</text>
-                        <text x="65" y="78" textAnchor="middle" fill={theme.text.muted} fontSize="11">SLA Used</text>
-                      </svg>
-                      <div className="mt-2 text-center">
-                        <span className="text-lg">{tier.icon}</span>
-                        <div className="text-xs font-medium mt-0.5" style={{ color: tier.color }}>{tier.name}</div>
-                      </div>
-                    </div>
-
-                    {/* Info Grid */}
-                    <div className="flex-1 grid grid-cols-2 gap-x-4 gap-y-3">
-                      {[
-                        { label: 'SLA Tier', value: `${item.slaType} (${item.slaHours}h)` },
-                        { label: 'Terminal', value: item.terminal },
-                        { label: 'Agent', value: item.agent },
-                        { label: 'Manager', value: item.manager || '—' },
-                        { label: 'Created', value: item.createdAt },
-                        { label: 'Deadline', value: item.deadline },
-                        { label: 'Elapsed', value: `${item.elapsedHours}h of ${item.slaHours}h` },
-                        { label: 'Remaining', value: item.remainingMin > 0 ? `${Math.floor(item.remainingMin / 60)}h ${item.remainingMin % 60}m` : `Overdue by ${Math.abs(item.remainingMin)}m` },
-                      ].map((f, i) => (
-                        <div key={i}>
-                          <div className="text-xs" style={{ color: theme.text.muted }}>{f.label}</div>
-                          <div className="text-sm font-medium" style={{ color: f.label === 'Remaining' && item.remainingMin <= 0 ? '#ef4444' : theme.text.primary }}>{f.value}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Customer & Product */}
-                  <div className="p-3 rounded-xl grid grid-cols-3 gap-3" style={{ backgroundColor: theme.bg.tertiary }}>
-                    <div>
-                      <div className="text-xs" style={{ color: theme.text.muted }}>Phone</div>
-                      <div className="text-sm font-medium" style={{ color: theme.text.primary }}>{item.phone}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs" style={{ color: theme.text.muted }}>Product</div>
-                      <div className="text-sm font-medium" style={{ color: theme.text.primary }}>{item.product}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs" style={{ color: theme.text.muted }}>Size</div>
-                      <div className="text-sm font-medium" style={{ color: theme.text.primary }}>{item.size}</div>
-                    </div>
-                  </div>
-
-                  {/* Last Action */}
-                  <div className="p-3 rounded-xl" style={{ backgroundColor: `${sev.color}10`, border: `1px solid ${sev.color}30` }}>
-                    <div className="text-xs font-medium mb-1" style={{ color: sev.color }}>Last Action</div>
-                    <div className="text-sm" style={{ color: theme.text.primary }}>{item.lastAction}</div>
-                  </div>
-
-                  {/* Escalation Timeline */}
-                  <div>
-                    <div className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Escalation Timeline ({itemEscalations.length} events)</div>
-                    {itemEscalations.length > 0 ? (
-                      <div className="relative pl-6 space-y-0">
-                        <div className="absolute left-[9px] top-2 bottom-2 w-0.5" style={{ backgroundColor: theme.border.primary }} />
-                        {itemEscalations.map((evt, i) => {
-                          const evtSev = SLA_SEVERITY[evt.severity] || SLA_SEVERITY.warning;
-                          const rule = ESCALATION_RULES[evt.level] || ESCALATION_RULES[0];
-                          return (
-                            <div key={evt.id} className="relative pb-4">
-                              <div className="absolute -left-6 top-1 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center" style={{ backgroundColor: theme.bg.card, borderColor: evtSev.color }}>
-                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: evtSev.color }} />
-                              </div>
-                              <div className="ml-2 p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
-                                <div className="flex items-center justify-between mb-1">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ backgroundColor: rule.color + '20', color: rule.color }}>{`L${evt.level}`}</span>
-                                    <span className="text-xs font-medium" style={{ color: theme.text.primary }}>{rule.name}</span>
-                                    {evt.acked && <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Acked</span>}
-                                  </div>
-                                  <span className="text-xs" style={{ color: theme.text.muted }}>{evt.timestamp.split(' ')[1]}</span>
-                                </div>
-                                <div className="text-xs" style={{ color: theme.text.secondary }}>{evt.action}</div>
-                                <div className="text-xs mt-1" style={{ color: theme.text.muted }}>By: {evt.by} ({evt.role})</div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="text-center py-6 text-sm" style={{ color: theme.text.muted }}>No escalation events yet — SLA is on track</div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Action Footer */}
-                <div className="p-5 border-t flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
-                  <button onClick={() => setSlaSelectedItem(null)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
-                  <div className="flex gap-2 flex-wrap">
-                    {!item.acknowledgedBy && (
-                      <button onClick={() => { addToast({ type: 'success', message: `Acknowledged ${item.waybill}` }); setSlaSelectedItem(null); }} className="px-3 py-2 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: '#10b981' }}>
-                        <span className="flex items-center gap-1.5"><CheckCircle2 size={14} /> Acknowledge</span>
-                      </button>
-                    )}
-                    {item.escalationLevel < 3 && (
-                      <button onClick={() => { addToast({ type: 'warning', message: `Escalated ${item.waybill} to L${item.escalationLevel + 1}` }); setSlaSelectedItem(null); }} className="px-3 py-2 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: '#f97316' }}>
-                        <span className="flex items-center gap-1.5"><AlertTriangle size={14} /> Escalate to L{item.escalationLevel + 1}</span>
-                      </button>
-                    )}
-                    <button onClick={() => { addToast({ type: 'info', message: `Reassigning agent for ${item.waybill}` }); }} className="px-3 py-2 rounded-xl border text-sm font-medium" style={{ borderColor: theme.border.primary, color: '#3b82f6' }}>
-                      <span className="flex items-center gap-1.5"><Users size={14} /> Reassign</span>
-                    </button>
-                    <button onClick={() => { addToast({ type: 'info', message: `SLA override requested for ${item.waybill}` }); }} className="px-3 py-2 rounded-xl border text-sm font-medium" style={{ borderColor: theme.border.primary, color: '#8b5cf6' }}>
-                      <span className="flex items-center gap-1.5"><Clock size={14} /> Override SLA</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* Subscriber Detail Modal */}
-        {subscriberDetailItem && (() => {
-          const s = subscriberDetailItem;
-          const plan = SUBSCRIPTION_PLANS.find(p => p.id === s.plan);
-          const usagePct = plan && plan.deliveries > 0 ? Math.min(Math.round(s.deliveriesUsed / plan.deliveries * 100), 100) : s.deliveriesUsed > 0 ? 100 : 0;
-          const circumference = 2 * Math.PI * 54;
-          const strokeDashoffset = circumference - (usagePct / 100) * circumference;
-          return (
-            <div className="fixed inset-0 z-50 flex items-start justify-center pt-8 pb-8" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setSubscriberDetailItem(null)}>
-              <div className="w-full max-w-2xl max-h-full overflow-y-auto rounded-2xl border" style={{ backgroundColor: theme.bg.primary, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
-                {/* Header */}
-                <div className="p-6 border-b" style={{ borderColor: theme.border.primary }}>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg" style={{ backgroundColor: plan?.color || theme.accent.primary }}>{s.name.charAt(0)}</div>
+              {/* Message Preview */}
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Message Preview</label>
+                <div className="p-5 rounded-xl" style={{ backgroundColor: selectedTemplate.channel === 'whatsapp' ? 'rgba(37,211,102,0.05)' : selectedTemplate.channel === 'email' ? 'rgba(139,92,246,0.05)' : theme.bg.tertiary, border: selectedTemplate.channel === 'whatsapp' ? '1px solid rgba(37,211,102,0.2)' : selectedTemplate.channel === 'email' ? '1px solid rgba(139,92,246,0.2)' : `1px solid ${theme.border.primary}` }}>
+                  {selectedTemplate.channel === 'whatsapp' && (
+                    <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid rgba(37,211,102,0.15)' }}>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#25D366' }}><MessageSquare size={14} className="text-white" /></div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-bold" style={{ color: theme.text.primary }}>{s.name}</h3>
-                          {s.verified ? <CheckCircle size={16} className="text-emerald-500" /> : <AlertTriangle size={16} className="text-amber-500" />}
-                        </div>
-                        <p className="text-sm" style={{ color: theme.text.muted }}>{s.university} &bull; {s.campus}</p>
-                        <p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{s.studentId}</p>
+                        <p className="text-sm font-medium" style={{ color: theme.text.primary }}>LocQar</p>
+                        <p className="text-xs" style={{ color: theme.text.muted }}>WhatsApp Business</p>
                       </div>
                     </div>
-                    <button onClick={() => setSubscriberDetailItem(null)} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
-                  </div>
-                </div>
-
-                {/* Body */}
-                <div className="p-6 space-y-6">
-                  {/* Progress Ring + Info Grid */}
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0">
-                      <svg width="128" height="128" viewBox="0 0 128 128">
-                        <circle cx="64" cy="64" r="54" fill="none" stroke={theme.border.primary} strokeWidth="8" />
-                        <circle cx="64" cy="64" r="54" fill="none" stroke={plan?.color || theme.accent.primary} strokeWidth="8" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} transform="rotate(-90 64 64)" />
-                        <text x="64" y="58" textAnchor="middle" fill={theme.text.primary} fontSize="20" fontWeight="bold">{usagePct}%</text>
-                        <text x="64" y="76" textAnchor="middle" fill={theme.text.muted} fontSize="10">usage</text>
-                      </svg>
-                    </div>
-                    <div className="flex-1 grid grid-cols-2 gap-3">
-                      {[
-                        ['Plan', plan?.name || '—'],
-                        ['Price', `GH₵${plan?.price}/mo`],
-                        ['Status', s.status],
-                        ['Terminal', s.terminal],
-                        ['Start Date', s.startDate],
-                        ['Renewal Date', s.renewalDate],
-                        ['Phone', s.phone],
-                        ['Email', s.email],
-                        ['Auto-Renew', s.autoRenew ? 'Enabled' : 'Disabled'],
-                        ['Verified', s.verified ? 'Yes' : 'No'],
-                      ].map(([label, val]) => (
-                        <div key={label} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
-                          <p className="text-xs" style={{ color: theme.text.muted }}>{label}</p>
-                          <p className="text-sm font-medium truncate" style={{ color: label === 'Status' ? (ALL_STATUSES[val]?.color || theme.text.primary) : theme.text.primary }}>{label === 'Status' ? (ALL_STATUSES[val]?.label || val) : val}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Payment History */}
-                  <div>
-                    <h4 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Payment History</h4>
-                    <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
-                      <table className="w-full">
-                        <thead>
-                          <tr style={{ backgroundColor: theme.bg.tertiary }}>
-                            {['Date', 'Amount', 'Method', 'Status', 'Invoice'].map(h => (
-                              <th key={h} className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(s.paymentHistory || []).map((p, i) => (
-                            <tr key={i} style={{ borderTop: `1px solid ${theme.border.primary}` }}>
-                              <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{p.date}</td>
-                              <td className="p-3 text-xs font-mono font-semibold" style={{ color: theme.text.primary }}>GH₵{p.amount}</td>
-                              <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{p.method}</td>
-                              <td className="p-3"><StatusBadge status={p.status} /></td>
-                              <td className="p-3 text-xs font-mono" style={{ color: theme.accent.primary }}>{p.invoiceId}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  {/* Delivery History */}
-                  <div>
-                    <h4 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Delivery History</h4>
-                    <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
-                      <table className="w-full">
-                        <thead>
-                          <tr style={{ backgroundColor: theme.bg.tertiary }}>
-                            {['Date', 'Waybill', 'Terminal', 'Locker Size', 'Status'].map(h => (
-                              <th key={h} className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(s.deliveryLog || []).map((d, i) => (
-                            <tr key={i} style={{ borderTop: `1px solid ${theme.border.primary}` }}>
-                              <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{d.date}</td>
-                              <td className="p-3 text-xs font-mono" style={{ color: theme.text.primary }}>{d.waybill}</td>
-                              <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{d.terminal}</td>
-                              <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{d.lockerSize}</td>
-                              <td className="p-3"><StatusBadge status={d.status} /></td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  {/* Internal Notes */}
-                  <div>
-                    <h4 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Internal Notes</h4>
-                    <textarea
-                      value={subscriberNotes[s.id] !== undefined ? subscriberNotes[s.id] : (s.notes || '')}
-                      onChange={e => setSubscriberNotes(prev => ({ ...prev, [s.id]: e.target.value }))}
-                      placeholder="Add internal notes about this subscriber..."
-                      className="w-full p-3 rounded-xl border text-sm resize-none"
-                      rows={3}
-                      style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
-                    />
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="p-6 border-t flex flex-wrap gap-2 justify-end" style={{ borderColor: theme.border.primary }}>
-                  <button onClick={() => setSubscriberDetailItem(null)} className="px-4 py-2 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
-                  <button onClick={() => { addToast({ type: 'info', message: `Upgrade initiated for ${s.name}` }); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#8b5cf6' }}>Upgrade Plan</button>
-                  {s.status === 'active' ? (
-                    <button onClick={() => { addToast({ type: 'warning', message: `${s.name} suspended` }); setSubscriberDetailItem(null); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#ef4444' }}>Suspend</button>
-                  ) : (
-                    <button onClick={() => { addToast({ type: 'success', message: `${s.name} reactivated` }); setSubscriberDetailItem(null); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#10b981' }}>Reactivate</button>
                   )}
-                  <button onClick={() => addToast({ type: 'success', message: `Message sent to ${s.name}` })} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#3b82f6' }}>Send Message</button>
-                  <button onClick={() => addToast({ type: 'success', message: `${s.name}'s data exported` })} className="px-4 py-2 rounded-xl text-sm font-medium border" style={{ borderColor: theme.border.primary, color: theme.text.primary }}>Export</button>
+                  {selectedTemplate.channel === 'email' && (
+                    <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid rgba(139,92,246,0.15)' }}>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#8b5cf6' }}><Mail size={14} className="text-white" /></div>
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: theme.text.primary }}>LocQar</p>
+                        <p className="text-xs" style={{ color: theme.text.muted }}>noreply@locqar.com</p>
+                      </div>
+                    </div>
+                  )}
+                  <pre className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: theme.text.secondary, fontFamily: theme.font.primary }}>{selectedTemplate.message}</pre>
+                </div>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-4 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
+                  <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{selectedTemplate.sentCount.toLocaleString()}</p>
+                  <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Total Sent</p>
+                </div>
+                <div className="p-4 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
+                  <p className="text-2xl font-bold" style={{ color: '#10b981' }}>{selectedTemplate.deliveryRate}%</p>
+                  <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Delivery Rate</p>
+                </div>
+                <div className="p-4 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
+                  <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{selectedTemplate.lastSent}</p>
+                  <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Last Sent</p>
+                </div>
+              </div>
+
+              {/* Variables Used */}
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Variables Used</label>
+                <div className="flex flex-wrap gap-2">
+                  {(selectedTemplate.message.match(/\{(\w+)\}/g) || []).map((v, i) => (
+                    <span key={i} className="px-3 py-1.5 rounded-lg text-xs font-mono" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary, border: `1px solid ${theme.accent.border}` }}>{v}</span>
+                  ))}
                 </div>
               </div>
             </div>
-          );
-        })()}
-
-        {/* Add Subscriber Form Modal */}
-        {showAddSubscriber && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setShowAddSubscriber(false)}>
-            <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border" style={{ backgroundColor: theme.bg.primary, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
-              <div className="p-6 border-b" style={{ borderColor: theme.border.primary }}>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold" style={{ color: theme.text.primary }}>Add Subscriber</h3>
-                  <button onClick={() => setShowAddSubscriber(false)} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
-                </div>
+            <div className="p-5 border-t flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+              <button onClick={() => setSelectedTemplate(null)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
+              <div className="flex gap-2">
+                <button onClick={() => { addToast({ type: 'info', message: `Test send: ${selectedTemplate.id}` }); }} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: '#10b981' }}>Test Send</button>
+                <button onClick={() => { addToast({ type: 'info', message: `Editing ${selectedTemplate.name}` }); setSelectedTemplate(null); }} className="px-4 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}>Edit Template</button>
               </div>
-              <div className="p-6 space-y-4">
-                {[['Name', 'Full student name'], ['Email', 'student@university.edu'], ['Phone', '+233...'], ['Student ID', 'e.g. UG/2024/001']].map(([label, placeholder]) => (
-                  <div key={label}>
-                    <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>{label}</label>
-                    <input placeholder={placeholder} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SLA Detail Modal */}
+      {slaSelectedItem && (() => {
+        const item = slaSelectedItem;
+        const sev = SLA_SEVERITY[item.severity];
+        const SevIcon = sev.icon;
+        const tier = SLA_TIERS.find(t => t.name === item.slaType) || SLA_TIERS[0];
+        const itemEscalations = escalationLog.filter(e => e.waybill === item.waybill).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const pctClamped = Math.min(item.pctUsed, 100);
+        const circumference = 2 * Math.PI * 54;
+        const strokeOffset = circumference - (pctClamped / 100) * circumference;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setSlaSelectedItem(null)}>
+            <div className="w-full max-w-2xl rounded-2xl border overflow-hidden" onClick={e => e.stopPropagation()} style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              {/* Header */}
+              <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: sev.bg, color: sev.color }}>
+                    <SevIcon size={20} />
                   </div>
-                ))}
-                <div>
-                  <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>University</label>
-                  <select className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}>
-                    <option value="">Select university...</option>
-                    {subscriberUniversities.map(u => <option key={u} value={u}>{u}</option>)}
-                  </select>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold" style={{ color: theme.text.primary }}>{item.waybill}</h3>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: sev.bg, color: sev.color }}>{sev.label}</span>
+                    </div>
+                    <div className="text-sm" style={{ color: theme.text.muted }}>{item.customer} • {item.terminal}</div>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>Campus</label>
-                  <input placeholder="e.g. Main Campus" className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
-                </div>
-                <div>
-                  <label className="text-xs font-medium mb-2 block" style={{ color: theme.text.secondary }}>Plan</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {SUBSCRIPTION_PLANS.map(p => (
-                      <label key={p.id} className="p-3 rounded-xl border cursor-pointer hover:border-current transition-all" style={{ borderColor: theme.border.primary }}>
-                        <input type="radio" name="subPlan" value={p.id} className="hidden peer" />
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color }} />
-                          <span className="text-sm font-semibold" style={{ color: theme.text.primary }}>{p.name}</span>
-                        </div>
-                        <p className="text-xs font-mono" style={{ color: p.color }}>GH₵{p.price}/mo</p>
-                        <p className="text-xs mt-1" style={{ color: theme.text.muted }}>{p.description}</p>
-                      </label>
+                <button onClick={() => setSlaSelectedItem(null)} className="p-2 rounded-lg hover:bg-white/5"><X size={18} style={{ color: theme.text.muted }} /></button>
+              </div>
+
+              <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto">
+                {/* Progress Ring + Info Grid */}
+                <div className="flex gap-6">
+                  {/* SVG Progress Ring */}
+                  <div className="flex-shrink-0 flex flex-col items-center">
+                    <svg width="130" height="130" viewBox="0 0 130 130">
+                      <circle cx="65" cy="65" r="54" fill="none" stroke={theme.border.primary} strokeWidth="8" />
+                      <circle cx="65" cy="65" r="54" fill="none" stroke={sev.color} strokeWidth="8" strokeLinecap="round"
+                        strokeDasharray={circumference} strokeDashoffset={strokeOffset}
+                        transform="rotate(-90 65 65)" style={{ transition: 'stroke-dashoffset 0.5s ease' }} />
+                      <text x="65" y="58" textAnchor="middle" fill={sev.color} fontSize="22" fontWeight="bold">{item.pctUsed.toFixed(0)}%</text>
+                      <text x="65" y="78" textAnchor="middle" fill={theme.text.muted} fontSize="11">SLA Used</text>
+                    </svg>
+                    <div className="mt-2 text-center">
+                      <span className="text-lg">{tier.icon}</span>
+                      <div className="text-xs font-medium mt-0.5" style={{ color: tier.color }}>{tier.name}</div>
+                    </div>
+                  </div>
+
+                  {/* Info Grid */}
+                  <div className="flex-1 grid grid-cols-2 gap-x-4 gap-y-3">
+                    {[
+                      { label: 'SLA Tier', value: `${item.slaType} (${item.slaHours}h)` },
+                      { label: 'Terminal', value: item.terminal },
+                      { label: 'Agent', value: item.agent },
+                      { label: 'Manager', value: item.manager || '—' },
+                      { label: 'Created', value: item.createdAt },
+                      { label: 'Deadline', value: item.deadline },
+                      { label: 'Elapsed', value: `${item.elapsedHours}h of ${item.slaHours}h` },
+                      { label: 'Remaining', value: item.remainingMin > 0 ? `${Math.floor(item.remainingMin / 60)}h ${item.remainingMin % 60}m` : `Overdue by ${Math.abs(item.remainingMin)}m` },
+                    ].map((f, i) => (
+                      <div key={i}>
+                        <div className="text-xs" style={{ color: theme.text.muted }}>{f.label}</div>
+                        <div className="text-sm font-medium" style={{ color: f.label === 'Remaining' && item.remainingMin <= 0 ? '#ef4444' : theme.text.primary }}>{f.value}</div>
+                      </div>
                     ))}
                   </div>
                 </div>
-                <div>
-                  <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>Terminal</label>
-                  <select className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}>
-                    <option value="">Select terminal...</option>
-                    {terminalsData.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
-                  </select>
-                </div>
-                <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
+
+                {/* Customer & Product */}
+                <div className="p-3 rounded-xl grid grid-cols-3 gap-3" style={{ backgroundColor: theme.bg.tertiary }}>
                   <div>
-                    <p className="text-sm font-medium" style={{ color: theme.text.primary }}>Auto-Renew</p>
-                    <p className="text-xs" style={{ color: theme.text.muted }}>Automatically renew subscription</p>
+                    <div className="text-xs" style={{ color: theme.text.muted }}>Phone</div>
+                    <div className="text-sm font-medium" style={{ color: theme.text.primary }}>{item.phone}</div>
                   </div>
-                  <button className="w-12 h-6 rounded-full p-0.5 transition-all" style={{ backgroundColor: '#10b981' }}>
-                    <div className="w-5 h-5 rounded-full bg-white transform translate-x-6 transition-transform" />
+                  <div>
+                    <div className="text-xs" style={{ color: theme.text.muted }}>Product</div>
+                    <div className="text-sm font-medium" style={{ color: theme.text.primary }}>{item.product}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs" style={{ color: theme.text.muted }}>Size</div>
+                    <div className="text-sm font-medium" style={{ color: theme.text.primary }}>{item.size}</div>
+                  </div>
+                </div>
+
+                {/* Last Action */}
+                <div className="p-3 rounded-xl" style={{ backgroundColor: `${sev.color}10`, border: `1px solid ${sev.color}30` }}>
+                  <div className="text-xs font-medium mb-1" style={{ color: sev.color }}>Last Action</div>
+                  <div className="text-sm" style={{ color: theme.text.primary }}>{item.lastAction}</div>
+                </div>
+
+                {/* Escalation Timeline */}
+                <div>
+                  <div className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Escalation Timeline ({itemEscalations.length} events)</div>
+                  {itemEscalations.length > 0 ? (
+                    <div className="relative pl-6 space-y-0">
+                      <div className="absolute left-[9px] top-2 bottom-2 w-0.5" style={{ backgroundColor: theme.border.primary }} />
+                      {itemEscalations.map((evt, i) => {
+                        const evtSev = SLA_SEVERITY[evt.severity] || SLA_SEVERITY.warning;
+                        const rule = ESCALATION_RULES[evt.level] || ESCALATION_RULES[0];
+                        return (
+                          <div key={evt.id} className="relative pb-4">
+                            <div className="absolute -left-6 top-1 w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center" style={{ backgroundColor: theme.bg.card, borderColor: evtSev.color }}>
+                              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: evtSev.color }} />
+                            </div>
+                            <div className="ml-2 p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ backgroundColor: rule.color + '20', color: rule.color }}>{`L${evt.level}`}</span>
+                                  <span className="text-xs font-medium" style={{ color: theme.text.primary }}>{rule.name}</span>
+                                  {evt.acked && <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Acked</span>}
+                                </div>
+                                <span className="text-xs" style={{ color: theme.text.muted }}>{evt.timestamp.split(' ')[1]}</span>
+                              </div>
+                              <div className="text-xs" style={{ color: theme.text.secondary }}>{evt.action}</div>
+                              <div className="text-xs mt-1" style={{ color: theme.text.muted }}>By: {evt.by} ({evt.role})</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-sm" style={{ color: theme.text.muted }}>No escalation events yet — SLA is on track</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Footer */}
+              <div className="p-5 border-t flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
+                <button onClick={() => setSlaSelectedItem(null)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
+                <div className="flex gap-2 flex-wrap">
+                  {!item.acknowledgedBy && (
+                    <button onClick={() => { addToast({ type: 'success', message: `Acknowledged ${item.waybill}` }); setSlaSelectedItem(null); }} className="px-3 py-2 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: '#10b981' }}>
+                      <span className="flex items-center gap-1.5"><CheckCircle2 size={14} /> Acknowledge</span>
+                    </button>
+                  )}
+                  {item.escalationLevel < 3 && (
+                    <button onClick={() => { addToast({ type: 'warning', message: `Escalated ${item.waybill} to L${item.escalationLevel + 1}` }); setSlaSelectedItem(null); }} className="px-3 py-2 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: '#f97316' }}>
+                      <span className="flex items-center gap-1.5"><AlertTriangle size={14} /> Escalate to L{item.escalationLevel + 1}</span>
+                    </button>
+                  )}
+                  <button onClick={() => { addToast({ type: 'info', message: `Reassigning agent for ${item.waybill}` }); }} className="px-3 py-2 rounded-xl border text-sm font-medium" style={{ borderColor: theme.border.primary, color: '#3b82f6' }}>
+                    <span className="flex items-center gap-1.5"><Users size={14} /> Reassign</span>
+                  </button>
+                  <button onClick={() => { addToast({ type: 'info', message: `SLA override requested for ${item.waybill}` }); }} className="px-3 py-2 rounded-xl border text-sm font-medium" style={{ borderColor: theme.border.primary, color: '#8b5cf6' }}>
+                    <span className="flex items-center gap-1.5"><Clock size={14} /> Override SLA</span>
                   </button>
                 </div>
               </div>
-              <div className="p-6 border-t flex justify-end gap-3" style={{ borderColor: theme.border.primary }}>
-                <button onClick={() => setShowAddSubscriber(false)} className="px-4 py-2.5 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-                <button onClick={() => { addToast({ type: 'success', message: 'New subscriber added successfully!' }); setShowAddSubscriber(false); }} className="px-4 py-2.5 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: theme.accent.primary }}>Add Subscriber</button>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Subscriber Detail Modal */}
+      {subscriberDetailItem && (() => {
+        const s = subscriberDetailItem;
+        const plan = SUBSCRIPTION_PLANS.find(p => p.id === s.plan);
+        const usagePct = plan && plan.deliveries > 0 ? Math.min(Math.round(s.deliveriesUsed / plan.deliveries * 100), 100) : s.deliveriesUsed > 0 ? 100 : 0;
+        const circumference = 2 * Math.PI * 54;
+        const strokeDashoffset = circumference - (usagePct / 100) * circumference;
+        return (
+          <div className="fixed inset-0 z-50 flex items-start justify-center pt-8 pb-8" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setSubscriberDetailItem(null)}>
+            <div className="w-full max-w-2xl max-h-full overflow-y-auto rounded-2xl border" style={{ backgroundColor: theme.bg.primary, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+              {/* Header */}
+              <div className="p-6 border-b" style={{ borderColor: theme.border.primary }}>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg" style={{ backgroundColor: plan?.color || theme.accent.primary }}>{s.name.charAt(0)}</div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-bold" style={{ color: theme.text.primary }}>{s.name}</h3>
+                        {s.verified ? <CheckCircle size={16} className="text-emerald-500" /> : <AlertTriangle size={16} className="text-amber-500" />}
+                      </div>
+                      <p className="text-sm" style={{ color: theme.text.muted }}>{s.university} &bull; {s.campus}</p>
+                      <p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{s.studentId}</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSubscriberDetailItem(null)} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
+                </div>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 space-y-6">
+                {/* Progress Ring + Info Grid */}
+                <div className="flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    <svg width="128" height="128" viewBox="0 0 128 128">
+                      <circle cx="64" cy="64" r="54" fill="none" stroke={theme.border.primary} strokeWidth="8" />
+                      <circle cx="64" cy="64" r="54" fill="none" stroke={plan?.color || theme.accent.primary} strokeWidth="8" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} transform="rotate(-90 64 64)" />
+                      <text x="64" y="58" textAnchor="middle" fill={theme.text.primary} fontSize="20" fontWeight="bold">{usagePct}%</text>
+                      <text x="64" y="76" textAnchor="middle" fill={theme.text.muted} fontSize="10">usage</text>
+                    </svg>
+                  </div>
+                  <div className="flex-1 grid grid-cols-2 gap-3">
+                    {[
+                      ['Plan', plan?.name || '—'],
+                      ['Price', `GH₵${plan?.price}/mo`],
+                      ['Status', s.status],
+                      ['Terminal', s.terminal],
+                      ['Start Date', s.startDate],
+                      ['Renewal Date', s.renewalDate],
+                      ['Phone', s.phone],
+                      ['Email', s.email],
+                      ['Auto-Renew', s.autoRenew ? 'Enabled' : 'Disabled'],
+                      ['Verified', s.verified ? 'Yes' : 'No'],
+                    ].map(([label, val]) => (
+                      <div key={label} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
+                        <p className="text-xs" style={{ color: theme.text.muted }}>{label}</p>
+                        <p className="text-sm font-medium truncate" style={{ color: label === 'Status' ? (ALL_STATUSES[val]?.color || theme.text.primary) : theme.text.primary }}>{label === 'Status' ? (ALL_STATUSES[val]?.label || val) : val}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Payment History */}
+                <div>
+                  <h4 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Payment History</h4>
+                  <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
+                    <table className="w-full">
+                      <thead>
+                        <tr style={{ backgroundColor: theme.bg.tertiary }}>
+                          {['Date', 'Amount', 'Method', 'Status', 'Invoice'].map(h => (
+                            <th key={h} className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(s.paymentHistory || []).map((p, i) => (
+                          <tr key={i} style={{ borderTop: `1px solid ${theme.border.primary}` }}>
+                            <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{p.date}</td>
+                            <td className="p-3 text-xs font-mono font-semibold" style={{ color: theme.text.primary }}>GH₵{p.amount}</td>
+                            <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{p.method}</td>
+                            <td className="p-3"><StatusBadge status={p.status} /></td>
+                            <td className="p-3 text-xs font-mono" style={{ color: theme.accent.primary }}>{p.invoiceId}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Delivery History */}
+                <div>
+                  <h4 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Delivery History</h4>
+                  <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
+                    <table className="w-full">
+                      <thead>
+                        <tr style={{ backgroundColor: theme.bg.tertiary }}>
+                          {['Date', 'Waybill', 'Terminal', 'Locker Size', 'Status'].map(h => (
+                            <th key={h} className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(s.deliveryLog || []).map((d, i) => (
+                          <tr key={i} style={{ borderTop: `1px solid ${theme.border.primary}` }}>
+                            <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{d.date}</td>
+                            <td className="p-3 text-xs font-mono" style={{ color: theme.text.primary }}>{d.waybill}</td>
+                            <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{d.terminal}</td>
+                            <td className="p-3 text-xs" style={{ color: theme.text.secondary }}>{d.lockerSize}</td>
+                            <td className="p-3"><StatusBadge status={d.status} /></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Internal Notes */}
+                <div>
+                  <h4 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Internal Notes</h4>
+                  <textarea
+                    value={subscriberNotes[s.id] !== undefined ? subscriberNotes[s.id] : (s.notes || '')}
+                    onChange={e => setSubscriberNotes(prev => ({ ...prev, [s.id]: e.target.value }))}
+                    placeholder="Add internal notes about this subscriber..."
+                    className="w-full p-3 rounded-xl border text-sm resize-none"
+                    rows={3}
+                    style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
+                  />
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="p-6 border-t flex flex-wrap gap-2 justify-end" style={{ borderColor: theme.border.primary }}>
+                <button onClick={() => setSubscriberDetailItem(null)} className="px-4 py-2 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
+                <button onClick={() => { addToast({ type: 'info', message: `Upgrade initiated for ${s.name}` }); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#8b5cf6' }}>Upgrade Plan</button>
+                {s.status === 'active' ? (
+                  <button onClick={() => { addToast({ type: 'warning', message: `${s.name} suspended` }); setSubscriberDetailItem(null); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#ef4444' }}>Suspend</button>
+                ) : (
+                  <button onClick={() => { addToast({ type: 'success', message: `${s.name} reactivated` }); setSubscriberDetailItem(null); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#10b981' }}>Reactivate</button>
+                )}
+                <button onClick={() => addToast({ type: 'success', message: `Message sent to ${s.name}` })} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#3b82f6' }}>Send Message</button>
+                <button onClick={() => addToast({ type: 'success', message: `${s.name}'s data exported` })} className="px-4 py-2 rounded-xl text-sm font-medium border" style={{ borderColor: theme.border.primary, color: theme.text.primary }}>Export</button>
               </div>
             </div>
           </div>
-        )}
+        );
+      })()}
 
-        <SessionTimeoutModal isOpen={showSessionWarning} onExtend={() => { setShowSessionWarning(false); setSessionTimeout(60); }} onLogout={() => addToast({ type: 'info', message: 'Logging out...' })} remainingTime={sessionTimeout} />
-        
-        {!(activeMenu === 'customers' && activeSubMenu === 'Subscribers') && (
-          <BulkActionsBar
-            selectedCount={selectedItems.length}
-            onClear={() => setSelectedItems([])}
-            onAction={handleBulkAction}
-            actions={[
-              { id: 'dispatch', label: 'Dispatch Selected', icon: Truck, color: '#3b82f6' },
-              { id: 'markDelivered', label: 'Mark Delivered', icon: CheckCircle2, color: '#10b981' },
-              { id: 'export', label: 'Export Selected', icon: FileDown, color: '#8b5cf6' },
-              { id: 'print', label: 'Print Labels', icon: Printer, color: '#f59e0b' },
-            ]}
-          />
-        )}
+      {/* Add Subscriber Form Modal */}
+      {showAddSubscriber && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setShowAddSubscriber(false)}>
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border" style={{ backgroundColor: theme.bg.primary, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+            <div className="p-6 border-b" style={{ borderColor: theme.border.primary }}>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold" style={{ color: theme.text.primary }}>Add Subscriber</h3>
+                <button onClick={() => setShowAddSubscriber(false)} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              {[['Name', 'Full student name'], ['Email', 'student@university.edu'], ['Phone', '+233...'], ['Student ID', 'e.g. UG/2024/001']].map(([label, placeholder]) => (
+                <div key={label}>
+                  <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>{label}</label>
+                  <input placeholder={placeholder} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+                </div>
+              ))}
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>University</label>
+                <select className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}>
+                  <option value="">Select university...</option>
+                  {subscriberUniversities.map(u => <option key={u} value={u}>{u}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>Campus</label>
+                <input placeholder="e.g. Main Campus" className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-2 block" style={{ color: theme.text.secondary }}>Plan</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {SUBSCRIPTION_PLANS.map(p => (
+                    <label key={p.id} className="p-3 rounded-xl border cursor-pointer hover:border-current transition-all" style={{ borderColor: theme.border.primary }}>
+                      <input type="radio" name="subPlan" value={p.id} className="hidden peer" />
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color }} />
+                        <span className="text-sm font-semibold" style={{ color: theme.text.primary }}>{p.name}</span>
+                      </div>
+                      <p className="text-xs font-mono" style={{ color: p.color }}>GH₵{p.price}/mo</p>
+                      <p className="text-xs mt-1" style={{ color: theme.text.muted }}>{p.description}</p>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>Terminal</label>
+                <select className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}>
+                  <option value="">Select terminal...</option>
+                  {terminalsData.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
+                </select>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
+                <div>
+                  <p className="text-sm font-medium" style={{ color: theme.text.primary }}>Auto-Renew</p>
+                  <p className="text-xs" style={{ color: theme.text.muted }}>Automatically renew subscription</p>
+                </div>
+                <button className="w-12 h-6 rounded-full p-0.5 transition-all" style={{ backgroundColor: '#10b981' }}>
+                  <div className="w-5 h-5 rounded-full bg-white transform translate-x-6 transition-transform" />
+                </button>
+              </div>
+            </div>
+            <div className="p-6 border-t flex justify-end gap-3" style={{ borderColor: theme.border.primary }}>
+              <button onClick={() => setShowAddSubscriber(false)} className="px-4 py-2.5 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => { addToast({ type: 'success', message: 'New subscriber added successfully!' }); setShowAddSubscriber(false); }} className="px-4 py-2.5 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: theme.accent.primary }}>Add Subscriber</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <SessionTimeoutModal isOpen={showSessionWarning} onExtend={() => { setShowSessionWarning(false); setSessionTimeout(60); }} onLogout={() => addToast({ type: 'info', message: 'Logging out...' })} remainingTime={sessionTimeout} />
+
+      {!(activeMenu === 'customers' && activeSubMenu === 'Subscribers') && (
         <BulkActionsBar
-          selectedCount={selectedSubscribers.length}
-          onClear={() => setSelectedSubscribers([])}
-          onAction={handleSubscriberBulkAction}
+          selectedCount={selectedItems.length}
+          onClear={() => setSelectedItems([])}
+          onAction={handleBulkAction}
           actions={[
-            { id: 'message', label: 'Send Message', icon: MessageSquare, color: '#3b82f6' },
+            { id: 'dispatch', label: 'Dispatch Selected', icon: Truck, color: '#3b82f6' },
+            { id: 'markDelivered', label: 'Mark Delivered', icon: CheckCircle2, color: '#10b981' },
             { id: 'export', label: 'Export Selected', icon: FileDown, color: '#8b5cf6' },
-            { id: 'changePlan', label: 'Change Plan', icon: ArrowUpRight, color: '#f59e0b' },
-            { id: 'suspend', label: 'Suspend Selected', icon: Lock, color: '#ef4444' },
+            { id: 'print', label: 'Print Labels', icon: Printer, color: '#f59e0b' },
           ]}
         />
+      )}
+      <BulkActionsBar
+        selectedCount={selectedSubscribers.length}
+        onClear={() => setSelectedSubscribers([])}
+        onAction={handleSubscriberBulkAction}
+        actions={[
+          { id: 'message', label: 'Send Message', icon: MessageSquare, color: '#3b82f6' },
+          { id: 'export', label: 'Export Selected', icon: FileDown, color: '#8b5cf6' },
+          { id: 'changePlan', label: 'Change Plan', icon: ArrowUpRight, color: '#f59e0b' },
+          { id: 'suspend', label: 'Suspend Selected', icon: Lock, color: '#ef4444' },
+        ]}
+      />
 
-        <ToastContainer toasts={toasts} removeToast={removeToast} />
-      </div>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
+    </div>
   );
 }
 
