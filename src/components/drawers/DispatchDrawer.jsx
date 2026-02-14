@@ -164,8 +164,8 @@ export const DispatchDrawer = ({ isOpen, onClose, onViewFull }) => {
           <button
             onClick={handleDispatch}
             disabled={selected.length === 0 || !driverId}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-medium ${selected.length === 0 || !driverId ? 'opacity-50 cursor-not-allowed' : ''}`}
-            style={{ backgroundColor: theme.accent.primary }}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium ${selected.length === 0 || !driverId ? 'opacity-50 cursor-not-allowed' : ''}`}
+            style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}
           >
             <Send size={16} /> Dispatch {selected.length > 0 ? `${selected.length} Package${selected.length > 1 ? 's' : ''}` : ''}
           </button>

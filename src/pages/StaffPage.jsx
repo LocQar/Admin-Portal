@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserPlus, Search, ArrowUpRight, ArrowDownRight, Edit, Key, Trash2, Users2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { TableSkeleton } from '../components/ui';
+import { TableSkeleton, Tooltip } from '../components/ui';
 import { RoleBadge, StatusBadge } from '../components/ui/Badge';
 import { hasPermission, ROLES } from '../constants';
 import { staffData, teamsData } from '../constants/mockData';
@@ -17,6 +17,8 @@ export const StaffPage = ({
   staffSort,
   setStaffSort,
   filteredStaff,
+  addToast,
+  setConfirmDialog,
 }) => {
   const { theme } = useTheme();
 
@@ -28,7 +30,7 @@ export const StaffPage = ({
           <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Agents'}</p>
         </div>
         {hasPermission(currentUser.role, 'staff.manage') && (
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><UserPlus size={18} />Add Staff</button>
+          <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><UserPlus size={18} />Add Staff</button>
         )}
       </div>
 
@@ -48,7 +50,7 @@ export const StaffPage = ({
           {/* Search & Filters */}
           <div className="flex flex-col md:flex-row gap-3 mb-4">
             <div className="relative flex-1 max-w-md">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input value={staffSearch} onChange={e => setStaffSearch(e.target.value)} placeholder="Search staff..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <div className="flex gap-1 p-1 rounded-xl flex-wrap" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -89,11 +91,17 @@ export const StaffPage = ({
                       <td className="p-4"><StatusBadge status={s.status} /></td>
                       <td className="p-4 text-right">
                         {hasPermission(currentUser.role, 'staff.manage') && (
-                          <>
-                            <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Edit size={16} /></button>
-                            <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Key size={16} /></button>
-                            <button className="p-2 rounded-lg hover:bg-white/5 text-red-500"><Trash2 size={16} /></button>
-                          </>
+                          <div className="flex items-center justify-end gap-1">
+                            <Tooltip content="Edit Staff">
+                              <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.icon.muted }}><Edit size={16} /></button>
+                            </Tooltip>
+                            <Tooltip content="Reset Password">
+                              <button onClick={() => setConfirmDialog?.({ title: 'Reset Password?', message: `Send a password reset link to ${s.name}?`, variant: 'warning', confirmLabel: 'Reset', onConfirm: () => addToast?.({ type: 'success', message: `Password reset sent to ${s.email}` }) })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.icon.muted }}><Key size={16} /></button>
+                            </Tooltip>
+                            <Tooltip content="Delete Staff">
+                              <button onClick={() => setConfirmDialog?.({ title: 'Delete Staff Member?', message: `This will permanently remove ${s.name} from the system. This action cannot be undone.`, variant: 'danger', confirmLabel: 'Delete', onConfirm: () => addToast?.({ type: 'success', message: `${s.name} has been removed` }) })} className="p-2 rounded-lg hover:bg-white/5 text-red-500"><Trash2 size={16} /></button>
+                            </Tooltip>
+                          </div>
                         )}
                       </td>
                     </tr>

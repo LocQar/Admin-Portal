@@ -49,7 +49,7 @@ export const AccountingPage = ({
           {/* Search & Filters */}
           <div className="flex flex-col md:flex-row gap-3 mb-4">
             <div className="relative flex-1 max-w-md">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input value={txnSearch} onChange={e => setTxnSearch(e.target.value)} placeholder="Search transactions..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -95,7 +95,7 @@ export const AccountingPage = ({
           {/* Search & Filters */}
           <div className="flex flex-col md:flex-row gap-3 mb-4">
             <div className="relative flex-1 max-w-md">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input value={invSearch} onChange={e => setInvSearch(e.target.value)} placeholder="Search invoices..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -108,7 +108,7 @@ export const AccountingPage = ({
           <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
             <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>Invoices</h3>
-              <button onClick={() => addToast({ type: 'info', message: 'Invoice form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={16} />Create Invoice</button>
+              <button onClick={() => addToast({ type: 'info', message: 'Invoice form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Plus size={16} />Create Invoice</button>
             </div>
             <table className="w-full">
               <thead>

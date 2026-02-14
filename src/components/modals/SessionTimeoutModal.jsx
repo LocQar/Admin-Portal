@@ -18,7 +18,7 @@ export const SessionTimeoutModal = ({ isOpen, onExtend, onLogout, remainingTime 
         <p className="text-sm mb-4" style={{ color: theme.text.muted }}>Your session will expire in <span className="font-bold text-amber-500">{remainingTime}s</span>. Would you like to continue?</p>
         <div className="flex gap-3">
           <button onClick={onLogout} className="flex-1 py-2 rounded-xl border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Logout</button>
-          <button onClick={onExtend} className="flex-1 py-2 rounded-xl text-white" style={{ backgroundColor: theme.accent.primary }}>Continue Session</button>
+          <button onClick={onExtend} className="flex-1 py-2 rounded-xl" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>Continue Session</button>
         </div>
       </div>
     </div>

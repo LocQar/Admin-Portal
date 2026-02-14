@@ -76,7 +76,7 @@ export const ScanModal = ({ isOpen, onClose, userRole, addToast, onViewPackage, 
             <h2 className="font-semibold" style={{ color: theme.text.primary }}>Scan Package</h2>
             <p className="text-xs" style={{ color: theme.text.muted }}>Enter or scan a waybill number</p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.icon.muted }}>
             <X size={18} />
           </button>
         </div>
@@ -90,7 +90,7 @@ export const ScanModal = ({ isOpen, onClose, userRole, addToast, onViewPackage, 
               borderColor: result ? '#10b981' : searched && !result ? '#ef4444' : theme.border.primary
             }}
           >
-            <QrCode size={18} style={{ color: theme.text.muted }} />
+            <QrCode size={18} style={{ color: theme.icon.muted }} />
             <input
               type="text"
               value={query}
@@ -101,7 +101,7 @@ export const ScanModal = ({ isOpen, onClose, userRole, addToast, onViewPackage, 
               style={{ color: theme.text.primary }}
             />
             {query && (
-              <button onClick={() => handleSearch('')} className="p-1 rounded" style={{ color: theme.text.muted }}>
+              <button onClick={() => handleSearch('')} className="p-1 rounded" style={{ color: theme.icon.muted }}>
                 <X size={14} />
               </button>
             )}
@@ -185,8 +185,8 @@ export const ScanModal = ({ isOpen, onClose, userRole, addToast, onViewPackage, 
               <div className="flex gap-2">
                 <button
                   onClick={handleConfirmScan}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-medium"
-                  style={{ backgroundColor: theme.accent.primary }}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium"
+                  style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}
                 >
                   <CheckCircle2 size={16} /> Confirm Scan
                 </button>

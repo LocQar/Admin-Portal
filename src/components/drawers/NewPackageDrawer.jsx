@@ -268,7 +268,7 @@ export const NewPackageDrawer = ({ isOpen, onClose }) => {
                   <button onClick={() => setStep(0)} className="text-xs" style={{ color: theme.accent.primary }}>Edit</button>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold" style={{ backgroundColor: theme.accent.primary }}>
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-semibold" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
                     {form.customer.charAt(0) || '?'}
                   </div>
                   <div>
@@ -329,11 +329,11 @@ export const NewPackageDrawer = ({ isOpen, onClose }) => {
           </button>
         )}
         {step < 3 ? (
-          <button onClick={handleNext} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: theme.accent.primary }}>
+          <button onClick={handleNext} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             Next <ChevronRight size={16} />
           </button>
         ) : (
-          <button onClick={handleSubmit} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: theme.accent.primary }}>
+          <button onClick={handleSubmit} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <Send size={16} /> Create Package
           </button>
         )}

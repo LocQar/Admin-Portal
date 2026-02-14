@@ -58,6 +58,8 @@ import {
   QuickAction,
   RoleBadge,
   BulkActionsBar,
+  Breadcrumb,
+  ConfirmDialog,
 } from './components/ui';
 
 // ============ MOCK DATA ============
@@ -88,16 +90,21 @@ const ToastContext = createContext();
 // ============ ROLES & PERMISSIONS ============
 
 const ROLES = {
-  SUPER_ADMIN: { id: 'super_admin', name: 'Super Admin', level: 100, color: '#FF6B58', permissions: ['*'] },
-  ADMIN: { id: 'admin', name: 'Administrator', level: 80, color: '#f59e0b', permissions: ['dashboard.*', 'packages.*', 'lockers.*', 'dropbox.*', 'terminals.*', 'customers.*', 'staff.*', 'reports.*', 'dispatch.*', 'accounting.*'] },
-  MANAGER: { id: 'manager', name: 'Branch Manager', level: 60, color: '#3b82f6', permissions: ['dashboard.view', 'packages.*', 'dropbox.*', 'lockers.*', 'terminals.view', 'customers.*', 'staff.view', 'reports.view', 'dispatch.*'] },
-  AGENT: { id: 'agent', name: 'Field Agent', level: 40, color: '#10b981', permissions: ['dashboard.view', 'packages.view', 'packages.scan', 'packages.receive', 'dropbox.view', 'dropbox.collect', 'lockers.view', 'lockers.open', 'dispatch.view'] },
-  SUPPORT: { id: 'support', name: 'Support', level: 30, color: '#8b5cf6', permissions: ['dashboard.view', 'packages.view', 'packages.track', 'customers.*', 'tickets.*'] },
-  VIEWER: { id: 'viewer', name: 'View Only', level: 10, color: '#6b7280', permissions: ['dashboard.view', 'packages.view', 'lockers.view'] },
+  SUPER_ADMIN: { id: 'super_admin', name: 'Super Admin', level: 100, color: '#6366F1', permissions: ['*'] },
+  ADMIN: { id: 'admin', name: 'Administrator', level: 80, color: '#FBBF24', permissions: ['dashboard.*', 'packages.*', 'lockers.*', 'dropbox.*', 'terminals.*', 'customers.*', 'staff.*', 'reports.*', 'dispatch.*', 'accounting.*'] },
+  MANAGER: { id: 'manager', name: 'Branch Manager', level: 60, color: '#60A5FA', permissions: ['dashboard.view', 'packages.*', 'dropbox.*', 'lockers.*', 'terminals.view', 'customers.*', 'staff.view', 'reports.view', 'dispatch.*'] },
+  AGENT: { id: 'agent', name: 'Field Agent', level: 40, color: '#4ADE80', permissions: ['dashboard.view', 'packages.view', 'packages.scan', 'packages.receive', 'dropbox.view', 'dropbox.collect', 'lockers.view', 'lockers.open', 'dispatch.view'] },
+  SUPPORT: { id: 'support', name: 'Support', level: 30, color: '#A78BFA', permissions: ['dashboard.view', 'packages.view', 'packages.track', 'customers.*', 'tickets.*'] },
+  VIEWER: { id: 'viewer', name: 'View Only', level: 10, color: '#9CA3AF', permissions: ['dashboard.view', 'packages.view', 'lockers.view'] },
 };
 
-const hasPermission = (userRole, permission) => {
-  const role = ROLES[userRole];
+const resolveRole = (userRole, customRoles = []) => {
+  if (ROLES[userRole]) return ROLES[userRole];
+  return customRoles.find(r => r.key === userRole) || null;
+};
+
+const hasPermission = (userRole, permission, customRoles = []) => {
+  const role = resolveRole(userRole, customRoles);
   if (!role) return false;
   if (role.permissions.includes('*')) return true;
   if (role.permissions.includes(permission)) return true;
@@ -116,48 +123,48 @@ const SHORTCUTS = [
 
 // ============ CONSTANTS ============
 const DELIVERY_METHODS = {
-  warehouse_to_locker: { id: 'warehouse_to_locker', label: 'Warehouse → Locker', icon: Warehouse, color: '#3b82f6' },
-  dropbox_to_locker: { id: 'dropbox_to_locker', label: 'Dropbox → Locker', icon: Inbox, color: '#8b5cf6' },
-  locker_to_home: { id: 'locker_to_home', label: 'Locker → Home', icon: Home, color: '#10b981' },
+  warehouse_to_locker: { id: 'warehouse_to_locker', label: 'Warehouse → Locker', icon: Warehouse, color: '#60A5FA' },
+  dropbox_to_locker: { id: 'dropbox_to_locker', label: 'Dropbox → Locker', icon: Inbox, color: '#A78BFA' },
+  locker_to_home: { id: 'locker_to_home', label: 'Locker → Home', icon: Home, color: '#4ADE80' },
 };
 
 const PACKAGE_STATUSES = {
-  pending: { label: 'Pending', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  at_warehouse: { label: 'At Warehouse', color: '#6366f1', bg: 'rgba(99, 102, 241, 0.1)' },
-  at_dropbox: { label: 'At Dropbox', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
-  in_transit_to_locker: { label: 'Transit → Locker', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  in_transit_to_home: { label: 'Transit → Home', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)' },
-  delivered_to_locker: { label: 'In Locker', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  delivered_to_home: { label: 'Delivered', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  picked_up: { label: 'Picked Up', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
-  expired: { label: 'Expired', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  pending: { label: 'Pending', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  at_warehouse: { label: 'At Warehouse', color: '#818CF8', bg: 'rgba(129, 140, 248, 0.07)' },
+  at_dropbox: { label: 'At Dropbox', color: '#A78BFA', bg: 'rgba(167, 139, 250, 0.07)' },
+  in_transit_to_locker: { label: 'Transit → Locker', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  in_transit_to_home: { label: 'Transit → Home', color: '#22D3EE', bg: 'rgba(34, 211, 238, 0.07)' },
+  delivered_to_locker: { label: 'In Locker', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  delivered_to_home: { label: 'Delivered', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  picked_up: { label: 'Picked Up', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
+  expired: { label: 'Expired', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
 };
 
 const ALL_STATUSES = {
   ...PACKAGE_STATUSES,
-  available: { label: 'Available', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  occupied: { label: 'Occupied', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  reserved: { label: 'Reserved', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  maintenance: { label: 'Maintenance', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  active: { label: 'Active', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  inactive: { label: 'Inactive', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
-  offline: { label: 'Offline', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
-  online: { label: 'Online', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  on_delivery: { label: 'On Delivery', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  open: { label: 'Open', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  in_progress: { label: 'In Progress', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  completed: { label: 'Completed', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  paid: { label: 'Paid', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  overdue: { label: 'Overdue', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  full: { label: 'Full', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  individual: { label: 'Individual', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  b2b: { label: 'B2B Partner', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
-  high: { label: 'High', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  medium: { label: 'Medium', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  low: { label: 'Low', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  failed: { label: 'Failed', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  refunded: { label: 'Refunded', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
-  suspended: { label: 'Suspended', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+  available: { label: 'Available', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  occupied: { label: 'Occupied', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  reserved: { label: 'Reserved', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  maintenance: { label: 'Maintenance', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  active: { label: 'Active', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  inactive: { label: 'Inactive', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
+  offline: { label: 'Offline', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
+  online: { label: 'Online', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  on_delivery: { label: 'On Delivery', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  open: { label: 'Open', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  in_progress: { label: 'In Progress', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  completed: { label: 'Completed', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  paid: { label: 'Paid', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  overdue: { label: 'Overdue', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  full: { label: 'Full', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  individual: { label: 'Individual', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  b2b: { label: 'B2B Partner', color: '#A78BFA', bg: 'rgba(167, 139, 250, 0.07)' },
+  high: { label: 'High', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  medium: { label: 'Medium', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  low: { label: 'Low', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  failed: { label: 'Failed', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  refunded: { label: 'Refunded', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
+  suspended: { label: 'Suspended', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
 };
 
 // ============ SAMPLE DATA ============
@@ -245,10 +252,10 @@ const customersData = [
 ];
 
 const SUBSCRIPTION_PLANS = [
-  { id: 'PLAN-BASIC', name: 'Basic', price: 25, period: 'month', deliveries: 5, lockerAccess: 'standard', color: '#6b7280', description: '5 deliveries/mo, standard lockers' },
-  { id: 'PLAN-STD', name: 'Standard', price: 45, period: 'month', deliveries: 15, lockerAccess: 'standard', color: '#3b82f6', description: '15 deliveries/mo, standard lockers' },
-  { id: 'PLAN-PREM', name: 'Premium', price: 75, period: 'month', deliveries: 40, lockerAccess: 'priority', color: '#8b5cf6', description: '40 deliveries/mo, priority lockers' },
-  { id: 'PLAN-UNLIM', name: 'Unlimited', price: 120, period: 'month', deliveries: -1, lockerAccess: 'priority', color: '#f59e0b', description: 'Unlimited deliveries, priority lockers' },
+  { id: 'PLAN-BASIC', name: 'Basic', price: 25, period: 'month', deliveries: 5, lockerAccess: 'standard', color: '#9CA3AF', description: '5 deliveries/mo, standard lockers' },
+  { id: 'PLAN-STD', name: 'Standard', price: 45, period: 'month', deliveries: 15, lockerAccess: 'standard', color: '#60A5FA', description: '15 deliveries/mo, standard lockers' },
+  { id: 'PLAN-PREM', name: 'Premium', price: 75, period: 'month', deliveries: 40, lockerAccess: 'priority', color: '#A78BFA', description: '40 deliveries/mo, priority lockers' },
+  { id: 'PLAN-UNLIM', name: 'Unlimited', price: 120, period: 'month', deliveries: -1, lockerAccess: 'priority', color: '#FBBF24', description: 'Unlimited deliveries, priority lockers' },
 ];
 
 const subscribersData = [
@@ -606,14 +613,6 @@ const MSG_STATUSES = {
   pending: { label: 'Pending', color: '#6b7280', bg: 'rgba(107,114,128,0.1)', icon: '⏳' },
 };
 
-const auditLogData = [
-  { id: 1, user: 'John Doe', action: 'Opened locker A-15', timestamp: '2024-01-15 14:32:15', ip: '192.168.1.100' },
-  { id: 2, user: 'Kofi Asante', action: 'Updated package LQ-2024-00002 status', timestamp: '2024-01-15 14:28:00', ip: '192.168.1.105' },
-  { id: 3, user: 'Yaw Boateng', action: 'Scanned package LQ-2024-00007', timestamp: '2024-01-15 14:15:30', ip: '192.168.1.110' },
-  { id: 4, user: 'Akua Mansa', action: 'Created new customer account', timestamp: '2024-01-15 13:45:00', ip: '192.168.1.102' },
-  { id: 5, user: 'John Doe', action: 'Generated monthly report', timestamp: '2024-01-15 12:00:00', ip: '192.168.1.100' },
-];
-
 // ============ SLA BREACH ALERTS DATA ============
 const SLA_SEVERITY = {
   on_track: { label: 'On Track', color: '#10b981', bg: 'rgba(16,185,129,0.1)', icon: CheckCircle2, pulse: false },
@@ -690,7 +689,7 @@ const slaBreachCauses = [
 ];
 
 // ============ SIDEBAR ============
-const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activeSubMenu, setActiveSubMenu, theme, userRole, isMobile, onCloseMobile }) => {
+const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activeSubMenu, setActiveSubMenu, theme, userRole, isMobile, onCloseMobile, customRoles = [] }) => {
   const [expandedMenus, setExpandedMenus] = useState(['packages']);
   const menuGroups = [
     { label: 'Overview', items: [{ icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard', permission: 'dashboard.view' }] },
@@ -744,8 +743,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
         <div className="h-16 flex items-center justify-between px-4 border-b" style={{ borderColor: theme.border.primary }}>
           {(!isCollapsed || isMobile) && <span className="font-bold text-lg" style={{ color: theme.text.primary }}>LocQar</span>}
           {isCollapsed && !isMobile && <span className="font-bold text-sm" style={{ color: theme.text.primary }}>LQ</span>}
-          {!isMobile && <button onClick={() => setIsCollapsed(!isCollapsed)} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.hover }}>{isCollapsed ? <ChevronRight size={18} style={{ color: theme.text.secondary }} /> : <ChevronLeft size={18} style={{ color: theme.text.secondary }} />}</button>}
-          {isMobile && <button onClick={onCloseMobile} className="p-2 rounded-lg" style={{ color: theme.text.secondary }}><X size={18} /></button>}
+          {!isMobile && <button onClick={() => setIsCollapsed(!isCollapsed)} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.hover }}>{isCollapsed ? <ChevronRight size={18} style={{ color: theme.icon.primary }} /> : <ChevronLeft size={18} style={{ color: theme.icon.primary }} />}</button>}
+          {isMobile && <button onClick={onCloseMobile} className="p-2 rounded-lg" style={{ color: theme.icon.primary }}><X size={18} /></button>}
         </div>
         <nav className="flex-1 overflow-y-auto py-4 px-3">
           {menuGroups.map((group, idx) => (
@@ -753,12 +752,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
               {(!isCollapsed || isMobile) && <p className="px-3 mb-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>{group.label}</p>}
               <div className="space-y-1">
                 {group.items.map((item) => {
-                  if (!hasPermission(userRole, item.permission)) return null;
+                  if (!hasPermission(userRole, item.permission, customRoles)) return null;
                   return (
                     <div key={item.id}>
                       <button onClick={() => handleMenuClick(item)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl" style={{ backgroundColor: activeMenu === item.id ? theme.accent.light : 'transparent', border: activeMenu === item.id ? `1px solid ${theme.accent.border}` : '1px solid transparent', color: activeMenu === item.id ? theme.accent.primary : theme.text.secondary }}>
-                        <item.icon size={20} />
-                        {(!isCollapsed || isMobile) && <><span className="flex-1 text-sm text-left">{item.label}</span>{item.subItems && <ChevronDown size={16} className={`transition-transform ${expandedMenus.includes(item.id) ? 'rotate-180' : ''}`} />}</>}
+                        <item.icon size={20} style={{ color: activeMenu === item.id ? theme.accent.primary : theme.icon.primary }} />
+                        {(!isCollapsed || isMobile) && <><span className="flex-1 text-sm text-left">{item.label}</span>{item.subItems && <ChevronDown size={16} style={{ color: activeMenu === item.id ? theme.accent.primary : theme.icon.muted }} className={`transition-transform ${expandedMenus.includes(item.id) ? 'rotate-180' : ''}`} />}</>}
                       </button>
                       {(!isCollapsed || isMobile) && item.subItems && expandedMenus.includes(item.id) && (
                         <div className="mt-1 ml-4 pl-4 space-y-1" style={{ borderLeft: `1px solid ${theme.border.primary}` }}>
@@ -776,7 +775,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
         </nav>
         <div className="p-3 border-t" style={{ borderColor: theme.border.primary }}>
           <button onClick={() => { setActiveMenu('settings'); if (isMobile) onCloseMobile(); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl" style={{ color: activeMenu === 'settings' ? theme.accent.primary : theme.text.secondary, backgroundColor: activeMenu === 'settings' ? theme.accent.light : 'transparent' }}>
-            <Settings size={20} />{(!isCollapsed || isMobile) && <span className="text-sm">Settings</span>}
+            <Settings size={20} style={{ color: activeMenu === 'settings' ? theme.accent.primary : theme.icon.primary }} />{(!isCollapsed || isMobile) && <span className="text-sm">Settings</span>}
           </button>
         </div>
       </aside>
@@ -787,7 +786,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
 
 // ============ PIE CHART FOR STATUS DISTRIBUTION ============
 const StatusPieChart = ({ data, theme }) => {
-  const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#6b7280'];
+  const COLORS = ['#4ADE80', '#60A5FA', '#FBBF24', '#F87171', '#9CA3AF'];
   return (
     <ResponsiveContainer width="100%" height={200}>
       <PieChart>
@@ -810,6 +809,9 @@ function LocQarERPInner() {
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [currentUser, setCurrentUser] = useState({ name: 'John Doe', email: 'john@locqar.com', role: 'SUPER_ADMIN' });
+  const [customRoles, setCustomRoles] = useState([
+    { id: 'custom_business_owner', key: 'CUSTOM_BUSINESS_OWNER', name: 'Business Owner', level: 20, color: '#F9A8D4', permissions: ['dashboard.view', 'reports.view'], isCustom: true, createdAt: '2024-01-10T00:00:00Z' },
+  ]);
   const [packageFilter, setPackageFilter] = useState('all');
   const [methodFilter, setMethodFilter] = useState('all');
   const [packageSearch, setPackageSearch] = useState('');
@@ -820,6 +822,7 @@ function LocQarERPInner() {
   const [showSearch, setShowSearch] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(null);
   const [showScanModal, setShowScanModal] = useState(false);
   const [showNewPackage, setShowNewPackage] = useState(false);
   const [showDispatchDrawer, setShowDispatchDrawer] = useState(false);
@@ -1381,25 +1384,25 @@ function LocQarERPInner() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap'); * { font-family: 'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: ${theme.border.secondary}; border-radius: 3px; } .font-mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace !important; } @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } .animate-slide-in { animation: slide-in 0.3s ease-out; }`}</style>
 
       {(!isMobile || mobileSidebarOpen) && (
-        <Sidebar isCollapsed={sidebarCollapsed} setIsCollapsed={setSidebarCollapsed} activeMenu={activeMenu} setActiveMenu={setActiveMenu} activeSubMenu={activeSubMenu} setActiveSubMenu={setActiveSubMenu} theme={theme} userRole={currentUser.role} isMobile={isMobile} onCloseMobile={() => setMobileSidebarOpen(false)} />
+        <Sidebar isCollapsed={sidebarCollapsed} setIsCollapsed={setSidebarCollapsed} activeMenu={activeMenu} setActiveMenu={setActiveMenu} activeSubMenu={activeSubMenu} setActiveSubMenu={setActiveSubMenu} theme={theme} userRole={currentUser.role} isMobile={isMobile} onCloseMobile={() => setMobileSidebarOpen(false)} customRoles={customRoles} />
       )}
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="h-16 border-b px-4 md:px-6 flex items-center justify-between sticky top-0 z-30" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary }}>
           <div className="flex items-center gap-3">
-            {isMobile && <button onClick={() => setMobileSidebarOpen(true)} className="p-2 rounded-lg" style={{ color: theme.text.secondary }}><Menu size={20} /></button>}
+            {isMobile && <button onClick={() => setMobileSidebarOpen(true)} className="p-2 rounded-lg" style={{ color: theme.icon.primary }}><Menu size={20} /></button>}
             <button onClick={() => setShowSearch(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border w-48 md:w-96" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
-              <Search size={16} style={{ color: theme.text.muted }} />
+              <Search size={16} style={{ color: theme.icon.muted }} />
               <span className="text-sm hidden md:inline" style={{ color: theme.text.muted }}>Search...</span>
               <kbd className="ml-auto px-1.5 py-0.5 rounded text-xs hidden md:inline" style={{ backgroundColor: theme.bg.secondary, color: theme.text.muted }}>⌘K</kbd>
             </button>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
-            <button onClick={() => setShowShortcuts(true)} className="p-2.5 rounded-xl border hidden md:flex" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}><Keyboard size={18} style={{ color: theme.text.secondary }} /></button>
-            <button onClick={() => setThemeName(t => t === 'dark' ? 'light' : 'dark')} className="p-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>{themeName === 'dark' ? <Sun size={18} style={{ color: theme.text.secondary }} /> : <Moon size={18} style={{ color: theme.text.secondary }} />}</button>
-            {hasPermission(currentUser.role, 'packages.scan') && <button onClick={() => setShowScanModal(true)} className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><QrCode size={18} />Scan</button>}
+            <button onClick={() => setShowShortcuts(true)} className="p-2.5 rounded-xl border hidden md:flex" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}><Keyboard size={18} style={{ color: theme.icon.primary }} /></button>
+            <button onClick={() => setThemeName(t => t === 'dark' ? 'light' : 'dark')} className="p-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>{themeName === 'dark' ? <Sun size={18} style={{ color: theme.icon.primary }} /> : <Moon size={18} style={{ color: theme.icon.primary }} />}</button>
+            {hasPermission(currentUser.role, 'packages.scan', customRoles) && <button onClick={() => setShowScanModal(true)} className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><QrCode size={18} />Scan</button>}
             <div className="relative">
-              <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}><Bell size={18} style={{ color: theme.text.secondary }} /><span className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs text-white flex items-center justify-center" style={{ backgroundColor: theme.accent.primary }}>{notifications.filter(n => !n.read).length}</span></button>
+              <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}><Bell size={18} style={{ color: theme.icon.primary }} /><span className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>{notifications.filter(n => !n.read).length}</span></button>
               {showNotifications && (
                 <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border shadow-xl z-50" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                   <div className="p-3 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
@@ -1409,7 +1412,7 @@ function LocQarERPInner() {
                   <div className="max-h-80 overflow-y-auto">
                     {notifications.map(n => (
                       <div key={n.id} className="p-3 border-b flex gap-3" style={{ backgroundColor: n.read ? 'transparent' : theme.accent.light, borderColor: theme.border.primary }}>
-                        <div className={`w-2 h-2 rounded-full mt-2 ${n.type === 'error' ? 'bg-red-500' : n.type === 'warning' ? 'bg-amber-500' : n.type === 'success' ? 'bg-emerald-500' : 'bg-blue-500'}`} />
+                        <div className="w-2 h-2 rounded-full mt-2" style={{ backgroundColor: n.type === 'error' ? theme.status.error : n.type === 'warning' ? theme.status.warning : n.type === 'success' ? theme.status.success : theme.status.info }} />
                         <div><p className="text-sm" style={{ color: theme.text.primary }}>{n.title}</p><p className="text-xs" style={{ color: theme.text.muted }}>{n.time}</p></div>
                       </div>
                     ))}
@@ -1426,6 +1429,12 @@ function LocQarERPInner() {
             </div>
           </div>
         </header>
+
+        <Breadcrumb
+          activeMenu={activeMenu}
+          activeSubMenu={activeSubMenu}
+          onNavigate={(menuId, subMenu) => { setActiveMenu(menuId); setActiveSubMenu(subMenu); }}
+        />
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-auto">
@@ -1653,6 +1662,7 @@ function LocQarERPInner() {
               setTicketStatusFilter={setTicketStatusFilter}
               addToast={addToast}
               setShowExport={setShowExport}
+              setConfirmDialog={setConfirmDialog}
             />
           )}
 
@@ -1672,6 +1682,7 @@ function LocQarERPInner() {
               filteredStaff={filteredStaff}
               addToast={addToast}
               setShowExport={setShowExport}
+              setConfirmDialog={setConfirmDialog}
             />
           )}
 
@@ -1743,15 +1754,7 @@ function LocQarERPInner() {
           {/* Audit Log Page */}
           {activeMenu === 'audit' && (
             <AuditLogPage
-              currentUser={currentUser}
-              loading={loading}
-              auditSearch={auditSearch}
-              setAuditSearch={setAuditSearch}
-              auditTypeFilter={auditTypeFilter}
-              setAuditTypeFilter={setAuditTypeFilter}
-              auditSort={auditSort}
-              setAuditSort={setAuditSort}
-              filteredAudit={filteredAudit}
+              setShowExport={setShowExport}
             />
           )}
 
@@ -1759,9 +1762,13 @@ function LocQarERPInner() {
           {activeMenu === 'settings' && (
             <SettingsPage
               currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
               themeName={themeName}
               setThemeName={setThemeName}
+              setShowShortcuts={setShowShortcuts}
               addToast={addToast}
+              customRoles={customRoles}
+              setCustomRoles={setCustomRoles}
             />
           )}
         </main>
@@ -1975,7 +1982,7 @@ function LocQarERPInner() {
                     <div className="text-sm" style={{ color: theme.text.muted }}>{item.customer} • {item.terminal}</div>
                   </div>
                 </div>
-                <button onClick={() => setSlaSelectedItem(null)} className="p-2 rounded-lg hover:bg-white/5"><X size={18} style={{ color: theme.text.muted }} /></button>
+                <button onClick={() => setSlaSelectedItem(null)} className="p-2 rounded-lg hover:bg-white/5"><X size={18} style={{ color: theme.icon.muted }} /></button>
               </div>
 
               <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto">
@@ -2116,7 +2123,7 @@ function LocQarERPInner() {
               <div className="p-6 border-b" style={{ borderColor: theme.border.primary }}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg" style={{ backgroundColor: plan?.color || theme.accent.primary }}>{s.name.charAt(0)}</div>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg" style={{ backgroundColor: plan?.color || theme.accent.primary, color: plan?.color ? '#fff' : theme.accent.contrast }}>{s.name.charAt(0)}</div>
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="text-lg font-bold" style={{ color: theme.text.primary }}>{s.name}</h3>
@@ -2311,7 +2318,7 @@ function LocQarERPInner() {
             </div>
             <div className="p-6 border-t flex justify-end gap-3" style={{ borderColor: theme.border.primary }}>
               <button onClick={() => setShowAddSubscriber(false)} className="px-4 py-2.5 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-              <button onClick={() => { addToast({ type: 'success', message: 'New subscriber added successfully!' }); setShowAddSubscriber(false); }} className="px-4 py-2.5 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: theme.accent.primary }}>Add Subscriber</button>
+              <button onClick={() => { addToast({ type: 'success', message: 'New subscriber added successfully!' }); setShowAddSubscriber(false); }} className="px-4 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>Add Subscriber</button>
             </div>
           </div>
         </div>
@@ -2344,6 +2351,16 @@ function LocQarERPInner() {
         ]}
       />
 
+      <ConfirmDialog
+        isOpen={!!confirmDialog}
+        onClose={() => setConfirmDialog(null)}
+        onConfirm={() => { confirmDialog?.onConfirm?.(); setConfirmDialog(null); }}
+        title={confirmDialog?.title}
+        message={confirmDialog?.message}
+        variant={confirmDialog?.variant || 'danger'}
+        confirmLabel={confirmDialog?.confirmLabel}
+        cancelLabel={confirmDialog?.cancelLabel}
+      />
       <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   );

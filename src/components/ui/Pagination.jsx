@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronFirst, ChevronLeft, ChevronRight, ChevronLast } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { Dropdown } from './Dropdown';
 
 export const Pagination = ({
   currentPage,
@@ -27,18 +28,12 @@ export const Pagination = ({
     >
       <div className="flex items-center gap-2">
         <span className="text-sm" style={{ color: theme.text.muted }}>Show</span>
-        <select
+        <Dropdown
           value={pageSize}
-          onChange={(e) => onPageSizeChange(Number(e.target.value))}
-          className="px-2 py-1 rounded-lg text-sm border"
-          style={{
-            backgroundColor: theme.bg.tertiary,
-            borderColor: theme.border.primary,
-            color: theme.text.primary
-          }}
-        >
-          {[10, 25, 50, 100].map(size => <option key={size} value={size}>{size}</option>)}
-        </select>
+          onChange={(val) => onPageSizeChange(Number(val))}
+          options={[10, 25, 50, 100].map(size => ({ value: size, label: String(size) }))}
+          className="w-20"
+        />
         <span className="text-sm" style={{ color: theme.text.muted }}>
           of {totalItems} items
         </span>

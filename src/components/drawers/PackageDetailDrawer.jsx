@@ -32,14 +32,14 @@ export const PackageDetailDrawer = ({ pkg, onClose, userRole, onReassign, onRetu
         </div>
         <div className="flex gap-2">
           {hasPermission(userRole, 'packages.update') && (
-            <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.secondary }}>
+            <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.icon.primary }}>
               <Edit size={18} />
             </button>
           )}
-          <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.secondary }}>
+          <button className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.icon.primary }}>
             <Printer size={18} />
           </button>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.secondary }}>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.icon.primary }}>
             <X size={18} />
           </button>
         </div>
@@ -102,7 +102,7 @@ export const PackageDetailDrawer = ({ pkg, onClose, userRole, onReassign, onRetu
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
               <h3 className="text-xs font-semibold uppercase mb-3" style={{ color: theme.text.muted }}>Customer</h3>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold" style={{ backgroundColor: theme.accent.primary }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center font-semibold" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
                   {pkg.customer.charAt(0)}
                 </div>
                 <div>
@@ -195,10 +195,10 @@ export const PackageDetailDrawer = ({ pkg, onClose, userRole, onReassign, onRetu
 
         {activeTab === 'messages' && (
           <div className="text-center py-8">
-            <MessageSquare size={32} style={{ color: theme.text.muted }} className="mx-auto mb-2" />
+            <MessageSquare size={32} style={{ color: theme.icon.muted }} className="mx-auto mb-2" />
             <p className="text-sm" style={{ color: theme.text.muted }}>No messages</p>
             {hasPermission(userRole, 'customers.communicate') && (
-              <button className="mt-4 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}>
+              <button className="mt-4 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
                 <Send size={14} className="inline mr-2" />Send SMS
               </button>
             )}

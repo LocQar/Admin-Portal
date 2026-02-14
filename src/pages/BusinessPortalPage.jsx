@@ -25,7 +25,7 @@ export const BusinessPortalPage = ({
         </div>
         <div className="flex gap-2">
           <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={16} />Export</button>
-          <button onClick={() => addToast({ type: 'info', message: 'Partner onboarding form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={18} />Onboard Partner</button>
+          <button onClick={() => addToast({ type: 'info', message: 'Partner onboarding form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Plus size={18} />Onboard Partner</button>
         </div>
       </div>
 
@@ -100,7 +100,7 @@ export const BusinessPortalPage = ({
             <MetricCard title="Pending" value={bulkShipmentsData.reduce((s, b) => s + b.pending, 0)} icon={Clock} theme={theme} loading={loading} />
           </div>
           <div className="flex gap-2">
-            <button onClick={() => addToast({ type: 'info', message: 'New bulk shipment form' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={16} />New Batch</button>
+            <button onClick={() => addToast({ type: 'info', message: 'New bulk shipment form' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Plus size={16} />New Batch</button>
             <button onClick={() => addToast({ type: 'info', message: 'Import CSV dialog' })} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><FileDown size={16} />Import CSV</button>
           </div>
           <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
@@ -156,7 +156,7 @@ export const BusinessPortalPage = ({
           <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
             <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>Partner Invoices</h3>
-              <button onClick={() => addToast({ type: 'info', message: 'Generate invoice' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={16} />Create Invoice</button>
+              <button onClick={() => addToast({ type: 'info', message: 'Generate invoice' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Plus size={16} />Create Invoice</button>
             </div>
             <table className="w-full">
               <thead>
@@ -234,7 +234,7 @@ export const BusinessPortalPage = ({
           <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
             <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>API Keys</h3>
-              <button onClick={() => addToast({ type: 'info', message: 'Generate new API key' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Key size={16} />Generate Key</button>
+              <button onClick={() => addToast({ type: 'info', message: 'Generate new API key' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Key size={16} />Generate Key</button>
             </div>
             <table className="w-full">
               <thead>

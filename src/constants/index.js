@@ -6,54 +6,61 @@ export const ROLES = {
     id: 'super_admin',
     name: 'Super Admin',
     level: 100,
-    color: '#FF6B58',
+    color: '#6366F1',
     permissions: ['*']
   },
   ADMIN: {
     id: 'admin',
     name: 'Administrator',
     level: 80,
-    color: '#f59e0b',
+    color: '#FBBF24',
     permissions: ['dashboard.*', 'packages.*', 'lockers.*', 'dropbox.*', 'terminals.*', 'customers.*', 'staff.*', 'reports.*', 'dispatch.*', 'accounting.*']
   },
   MANAGER: {
     id: 'manager',
     name: 'Branch Manager',
     level: 60,
-    color: '#3b82f6',
+    color: '#60A5FA',
     permissions: ['dashboard.view', 'packages.*', 'dropbox.*', 'lockers.*', 'terminals.view', 'customers.*', 'staff.view', 'reports.view', 'dispatch.*']
   },
   AGENT: {
     id: 'agent',
     name: 'Field Agent',
     level: 40,
-    color: '#10b981',
+    color: '#4ADE80',
     permissions: ['dashboard.view', 'packages.view', 'packages.scan', 'packages.receive', 'dropbox.view', 'dropbox.collect', 'lockers.view', 'lockers.open', 'dispatch.view']
   },
   SUPPORT: {
     id: 'support',
     name: 'Support',
     level: 30,
-    color: '#8b5cf6',
+    color: '#A78BFA',
     permissions: ['dashboard.view', 'packages.view', 'packages.track', 'customers.*', 'tickets.*']
   },
   VIEWER: {
     id: 'viewer',
     name: 'View Only',
     level: 10,
-    color: '#6b7280',
+    color: '#9CA3AF',
     permissions: ['dashboard.view', 'packages.view', 'lockers.view']
   },
 };
 
-export const hasPermission = (userRole, permission) => {
-  const role = ROLES[userRole];
+export const resolveRole = (userRole, customRoles = []) => {
+  if (ROLES[userRole]) return ROLES[userRole];
+  return customRoles.find(r => r.key === userRole) || null;
+};
+
+export const hasPermission = (userRole, permission, customRoles = []) => {
+  const role = resolveRole(userRole, customRoles);
   if (!role) return false;
   if (role.permissions.includes('*')) return true;
   if (role.permissions.includes(permission)) return true;
   const [module] = permission.split('.');
   return role.permissions.includes(`${module}.*`);
 };
+
+export const PRESET_COLORS = ['#F87171', '#FBBF24', '#4ADE80', '#60A5FA', '#A78BFA', '#F9A8D4', '#5EEAD4', '#FB923C', '#22D3EE', '#BEF264'];
 
 // ============ KEYBOARD SHORTCUTS ============
 export const SHORTCUTS = [
@@ -70,60 +77,60 @@ export const DELIVERY_METHODS = {
     id: 'warehouse_to_locker',
     label: 'Warehouse → Locker',
     icon: Warehouse,
-    color: '#3b82f6'
+    color: '#60A5FA'
   },
   dropbox_to_locker: {
     id: 'dropbox_to_locker',
     label: 'Dropbox → Locker',
     icon: Inbox,
-    color: '#8b5cf6'
+    color: '#A78BFA'
   },
   locker_to_home: {
     id: 'locker_to_home',
     label: 'Locker → Home',
     icon: Home,
-    color: '#10b981'
+    color: '#4ADE80'
   },
 };
 
 // ============ PACKAGE STATUSES ============
 export const PACKAGE_STATUSES = {
-  pending: { label: 'Pending', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  at_warehouse: { label: 'At Warehouse', color: '#6366f1', bg: 'rgba(99, 102, 241, 0.1)' },
-  at_dropbox: { label: 'At Dropbox', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
-  in_transit_to_locker: { label: 'Transit → Locker', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  in_transit_to_home: { label: 'Transit → Home', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)' },
-  delivered_to_locker: { label: 'In Locker', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  delivered_to_home: { label: 'Delivered', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  picked_up: { label: 'Picked Up', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
-  expired: { label: 'Expired', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  pending: { label: 'Pending', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  at_warehouse: { label: 'At Warehouse', color: '#818CF8', bg: 'rgba(129, 140, 248, 0.07)' },
+  at_dropbox: { label: 'At Dropbox', color: '#A78BFA', bg: 'rgba(167, 139, 250, 0.07)' },
+  in_transit_to_locker: { label: 'Transit → Locker', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  in_transit_to_home: { label: 'Transit → Home', color: '#22D3EE', bg: 'rgba(34, 211, 238, 0.07)' },
+  delivered_to_locker: { label: 'In Locker', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  delivered_to_home: { label: 'Delivered', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  picked_up: { label: 'Picked Up', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
+  expired: { label: 'Expired', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
 };
 
 export const ALL_STATUSES = {
   ...PACKAGE_STATUSES,
-  available: { label: 'Available', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  occupied: { label: 'Occupied', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  reserved: { label: 'Reserved', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  maintenance: { label: 'Maintenance', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  active: { label: 'Active', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  inactive: { label: 'Inactive', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
-  offline: { label: 'Offline', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
-  online: { label: 'Online', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  on_delivery: { label: 'On Delivery', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  open: { label: 'Open', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  in_progress: { label: 'In Progress', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  completed: { label: 'Completed', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  paid: { label: 'Paid', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  overdue: { label: 'Overdue', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  full: { label: 'Full', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  individual: { label: 'Individual', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  b2b: { label: 'B2B Partner', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
-  high: { label: 'High', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  medium: { label: 'Medium', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  low: { label: 'Low', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-  failed: { label: 'Failed', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
-  refunded: { label: 'Refunded', color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' },
-  suspended: { label: 'Suspended', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+  available: { label: 'Available', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  occupied: { label: 'Occupied', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  reserved: { label: 'Reserved', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  maintenance: { label: 'Maintenance', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  active: { label: 'Active', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  inactive: { label: 'Inactive', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
+  offline: { label: 'Offline', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
+  online: { label: 'Online', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  on_delivery: { label: 'On Delivery', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  open: { label: 'Open', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  in_progress: { label: 'In Progress', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  completed: { label: 'Completed', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  paid: { label: 'Paid', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  overdue: { label: 'Overdue', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  full: { label: 'Full', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  individual: { label: 'Individual', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  b2b: { label: 'B2B Partner', color: '#A78BFA', bg: 'rgba(167, 139, 250, 0.07)' },
+  high: { label: 'High', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  medium: { label: 'Medium', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  low: { label: 'Low', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
+  failed: { label: 'Failed', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  refunded: { label: 'Refunded', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
+  suspended: { label: 'Suspended', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
 };
 
 // ============ SUBSCRIPTION PLANS ============
@@ -135,7 +142,7 @@ export const SUBSCRIPTION_PLANS = [
     period: 'month',
     deliveries: 5,
     lockerAccess: 'standard',
-    color: '#6b7280',
+    color: '#9CA3AF',
     description: '5 deliveries/mo, standard lockers'
   },
   {
@@ -145,7 +152,7 @@ export const SUBSCRIPTION_PLANS = [
     period: 'month',
     deliveries: 15,
     lockerAccess: 'standard',
-    color: '#3b82f6',
+    color: '#60A5FA',
     description: '15 deliveries/mo, standard lockers'
   },
   {
@@ -155,7 +162,7 @@ export const SUBSCRIPTION_PLANS = [
     period: 'month',
     deliveries: 40,
     lockerAccess: 'priority',
-    color: '#8b5cf6',
+    color: '#A78BFA',
     description: '40 deliveries/mo, priority lockers'
   },
   {
@@ -165,7 +172,7 @@ export const SUBSCRIPTION_PLANS = [
     period: 'month',
     deliveries: -1,
     lockerAccess: 'priority',
-    color: '#f59e0b',
+    color: '#FBBF24',
     description: 'Unlimited deliveries, priority lockers'
   },
 ];

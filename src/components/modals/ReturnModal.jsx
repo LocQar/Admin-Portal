@@ -43,7 +43,7 @@ export const ReturnModal = ({ isOpen, onClose, pkg, addToast }) => {
       <div className="relative w-full max-w-lg rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}><PackageX size={20} className="text-red-500" /> Return Package</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.icon.muted }}><X size={18} /></button>
         </div>
 
         {/* Package Info */}

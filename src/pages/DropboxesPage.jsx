@@ -225,7 +225,7 @@ export const DropboxesPage = ({
           <div className="flex flex-col gap-3 mb-4">
             <div className="flex flex-col md:flex-row gap-3">
               <div className="relative flex-1 max-w-md">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
                 <input value={collectionSearch} onChange={e => setCollectionSearch(e.target.value)} placeholder="Search collections..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
               <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -409,7 +409,7 @@ export const DropboxesPage = ({
                     <p className="text-2xl font-bold mt-1" style={{ color: stage.color }}>{stage.count}</p>
                     <p className="text-xs text-center" style={{ color: stage.color }}>{stage.label}</p>
                   </div>
-                  {idx < arr.length - 1 && <ChevronRight size={20} style={{ color: theme.text.muted }} className="hidden md:block shrink-0" />}
+                  {idx < arr.length - 1 && <ChevronRight size={20} style={{ color: theme.icon.muted }} className="hidden md:block shrink-0" />}
                 </React.Fragment>
               ))}
             </div>
@@ -469,7 +469,7 @@ export const DropboxesPage = ({
                         </td>
                         <td className="p-4 hidden md:table-cell">
                           <div className="flex items-center gap-1">
-                            <Grid3X3 size={14} style={{ color: theme.text.muted }} />
+                            <Grid3X3 size={14} style={{ color: theme.icon.muted }} />
                             <span className="font-mono text-sm" style={{ color: theme.text.primary }}>{flow.targetLocker}</span>
                           </div>
                           <span className="text-xs" style={{ color: theme.text.muted }}>{flow.targetTerminal}</span>

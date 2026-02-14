@@ -49,7 +49,7 @@ export const PackagesPage = ({
             <Download size={16} /> Export
           </button>
           {hasPermission(currentUser.role, 'packages.receive') && (
-            <button onClick={() => setShowNewPackage(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}>
+            <button onClick={() => setShowNewPackage(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={18} /> Add Package
             </button>
           )}
@@ -82,7 +82,7 @@ export const PackagesPage = ({
 
       {/* Search Bar */}
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-        <Search size={18} style={{ color: theme.text.muted }} />
+        <Search size={18} style={{ color: theme.icon.muted }} />
         <input
           type="text"
           value={packageSearch}
@@ -157,7 +157,7 @@ export const PackagesPage = ({
                       </td>
                       <td className="p-4 hidden md:table-cell" onClick={() => setSelectedPackage(pkg)}>
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: theme.accent.primary }}>{pkg.customer.charAt(0)}</div>
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>{pkg.customer.charAt(0)}</div>
                           <div>
                             <p className="text-sm" style={{ color: theme.text.primary }}>{pkg.customer}</p>
                             <p className="text-xs" style={{ color: theme.text.muted }}>{pkg.phone}</p>
@@ -167,7 +167,7 @@ export const PackagesPage = ({
                       <td className="p-4 hidden lg:table-cell" onClick={() => setSelectedPackage(pkg)}><DeliveryMethodBadge method={pkg.deliveryMethod} /></td>
                       <td className="p-4 hidden md:table-cell" onClick={() => setSelectedPackage(pkg)}>
                         <div className="flex items-start gap-2">
-                          <MapPin size={14} className="mt-0.5 shrink-0" style={{ color: theme.text.muted }} />
+                          <MapPin size={14} className="mt-0.5 shrink-0" style={{ color: theme.icon.muted }} />
                           <div>
                             <p className="text-sm" style={{ color: theme.text.primary }}>{pkg.destination}</p>
                             {pkg.locker !== '-' && (

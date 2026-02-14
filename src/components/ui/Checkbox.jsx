@@ -14,7 +14,7 @@ export const Checkbox = ({ checked, onChange }) => {
         borderColor: checked ? theme.accent.primary : theme.border.secondary
       }}
     >
-      {checked && <Check size={12} className="text-white" />}
+      {checked && <Check size={12} style={{ color: theme.accent.contrast }} />}
     </button>
   );
 };

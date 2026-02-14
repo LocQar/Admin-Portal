@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Download, CheckCircle2, AlertOctagon, AlertTriangle, XCircle, Eye, Users, Bell, Clock, Package, TrendingUp, Play, Pause, Edit, Trash2, Plus, Search, Filter, ChevronDown } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { MetricCard, TableSkeleton, EmptyState, Pagination } from '../components/ui';
+import { MetricCard, TableSkeleton, EmptyState, Pagination, Dropdown } from '../components/ui';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast }) => {
@@ -189,7 +189,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input
                 type="text"
                 placeholder="Search by tracking ID, customer, or package ID..."
@@ -199,18 +199,18 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }}
               />
             </div>
-            <select
+            <Dropdown
               value={liveSeverityFilter}
-              onChange={(e) => { setLiveSeverityFilter(e.target.value); setLivePage(1); }}
-              className="px-4 py-2 rounded-xl border text-sm"
-              style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }}
-            >
-              <option value="all">All Severities</option>
-              <option value="on_track">On Track</option>
-              <option value="warning">Warning</option>
-              <option value="critical">Critical</option>
-              <option value="breached">Breached</option>
-            </select>
+              onChange={(val) => { setLiveSeverityFilter(val); setLivePage(1); }}
+              options={[
+                { value: 'all', label: 'All Severities' },
+                { value: 'on_track', label: 'On Track' },
+                { value: 'warning', label: 'Warning' },
+                { value: 'critical', label: 'Critical' },
+                { value: 'breached', label: 'Breached' },
+              ]}
+              className="w-44"
+            />
           </div>
 
           {/* Live Packages Table */}
@@ -336,11 +336,11 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                     </div>
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-sm">
-                        <Clock size={14} style={{ color: theme.text.muted }} />
+                        <Clock size={14} style={{ color: theme.icon.muted }} />
                         <span style={{ color: theme.text.secondary }}><strong>Trigger:</strong> {rule.trigger}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <Bell size={14} style={{ color: theme.text.muted }} />
+                        <Bell size={14} style={{ color: theme.icon.muted }} />
                         <span style={{ color: theme.text.secondary }}><strong>Action:</strong> {rule.action}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm flex-wrap">
@@ -354,13 +354,13 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                   </div>
                   <div className="flex items-center gap-2 ml-4">
                     <button onClick={() => handleTestRule(rule.name)} className="p-2 rounded-xl hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Test rule">
-                      <Play size={16} style={{ color: theme.text.secondary }} />
+                      <Play size={16} style={{ color: theme.icon.primary }} />
                     </button>
                     <button onClick={() => handleToggleRule(rule.id)} className="p-2 rounded-xl hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title={rule.active ? 'Pause' : 'Resume'}>
-                      {rule.active ? <Pause size={16} style={{ color: theme.text.secondary }} /> : <Play size={16} style={{ color: theme.text.secondary }} />}
+                      {rule.active ? <Pause size={16} style={{ color: theme.icon.primary }} /> : <Play size={16} style={{ color: theme.icon.primary }} />}
                     </button>
                     <button className="p-2 rounded-xl hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit">
-                      <Edit size={16} style={{ color: theme.text.secondary }} />
+                      <Edit size={16} style={{ color: theme.icon.primary }} />
                     </button>
                     <button className="p-2 rounded-xl hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Delete">
                       <Trash2 size={16} style={{ color: '#ef4444' }} />
@@ -509,7 +509,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input
                 type="text"
                 placeholder="Search by incident ID, tracking ID, or customer..."
@@ -519,17 +519,17 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }}
               />
             </div>
-            <select
+            <Dropdown
               value={incidentStatusFilter}
-              onChange={(e) => { setIncidentStatusFilter(e.target.value); setIncidentPage(1); }}
-              className="px-4 py-2 rounded-xl border text-sm"
-              style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }}
-            >
-              <option value="all">All Statuses</option>
-              <option value="Investigating">Investigating</option>
-              <option value="Resolved">Resolved</option>
-              <option value="Closed">Closed</option>
-            </select>
+              onChange={(val) => { setIncidentStatusFilter(val); setIncidentPage(1); }}
+              options={[
+                { value: 'all', label: 'All Statuses' },
+                { value: 'Investigating', label: 'Investigating' },
+                { value: 'Resolved', label: 'Resolved' },
+                { value: 'Closed', label: 'Closed' },
+              ]}
+              className="w-44"
+            />
           </div>
 
           {/* Incidents Table */}

@@ -21,8 +21,8 @@ export const EmptyState = ({ icon: Icon = Package, title, description, action })
       </p>
       {action && (
         <button
-          className="px-4 py-2 rounded-xl text-white text-sm"
-          style={{ backgroundColor: theme.accent.primary }}
+          className="px-4 py-2 rounded-xl text-sm"
+          style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}
         >
           {action}
         </button>

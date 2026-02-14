@@ -22,7 +22,7 @@ export const ShortcutsModal = ({ isOpen, onClose }) => {
       <div className="relative w-full max-w-md rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}><Keyboard size={20} /> Keyboard Shortcuts</h2>
-          <button onClick={onClose} className="p-2 rounded-lg" style={{ color: theme.text.muted }}><X size={18} /></button>
+          <button onClick={onClose} className="p-2 rounded-lg" style={{ color: theme.icon.muted }}><X size={18} /></button>
         </div>
         <div className="space-y-3">
           {SHORTCUTS.map(s => (

@@ -217,7 +217,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>Recent Messages</h3>
               <div className="flex gap-2">
                 <div className="relative">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
                   <input type="text" placeholder="Search messages..." value={msgSearch} onChange={(e) => setMsgSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full md:w-64 outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary, borderColor: theme.border.primary }} />
                 </div>
                 <select value={msgChannelFilter} onChange={(e) => setMsgChannelFilter(e.target.value)} className="px-3 py-2 rounded-lg text-sm outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}>
@@ -295,7 +295,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           {/* Search & Filters */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input type="text" placeholder="Search templates..." value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
             </div>
             <select value={templateChannelFilter} onChange={(e) => setTemplateChannelFilter(e.target.value)} className="px-4 py-2 rounded-lg text-sm outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}>
@@ -335,10 +335,10 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       </div>
                     </div>
                     <div className="flex gap-2 ml-4">
-                      <button onClick={() => handleToggleTemplate(template.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: template.active ? '#10b981' : theme.text.muted }} title={template.active ? 'Deactivate' : 'Activate'}>
+                      <button onClick={() => handleToggleTemplate(template.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: template.active ? '#10b981' : theme.icon.muted }} title={template.active ? 'Deactivate' : 'Activate'}>
                         {template.active ? <Power size={18} /> : <PowerOff size={18} />}
                       </button>
-                      <button onClick={() => handleDuplicateTemplate(template)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.text.secondary }} title="Duplicate">
+                      <button onClick={() => handleDuplicateTemplate(template)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.icon.primary }} title="Duplicate">
                         <Copy size={18} />
                       </button>
                       <button onClick={() => setSelectedTemplate(template)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.accent.primary }} title="Edit">
@@ -361,7 +361,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input type="text" placeholder="Search rules..." value={ruleSearch} onChange={(e) => setRuleSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
             </div>
             <button onClick={() => addToast({ type: 'info', message: 'New rule form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm whitespace-nowrap" style={{ backgroundColor: '#10b981' }}>
@@ -420,7 +420,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Full Message History</h3>
             <div className="flex gap-2">
               <div className="relative flex-1">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
                 <input type="text" placeholder="Search by recipient, phone, or waybill..." value={msgSearch} onChange={(e) => setMsgSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
               </div>
               <select value={msgChannelFilter} onChange={(e) => setMsgChannelFilter(e.target.value)} className="px-3 py-2 rounded-lg text-sm outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}>

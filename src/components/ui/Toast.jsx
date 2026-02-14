@@ -6,7 +6,7 @@ export const Toast = ({ message, type = 'info', onClose }) => {
   const { theme } = useTheme();
   const icons = { success: CheckCircle, error: XCircle, warning: AlertTriangle, info: Info };
   const Icon = icons[type] || Info;
-  const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: '#3b82f6' };
+  const colors = { success: theme.status.success, error: theme.status.error, warning: theme.status.warning, info: theme.status.info };
 
   useEffect(() => {
     const timer = setTimeout(onClose, 4000);
@@ -21,7 +21,7 @@ export const Toast = ({ message, type = 'info', onClose }) => {
       <Icon size={20} style={{ color: colors[type] }} />
       <span className="text-sm flex-1" style={{ color: theme.text.primary }}>{message}</span>
       <button onClick={onClose} className="p-1 rounded hover:bg-white/10">
-        <X size={16} style={{ color: theme.text.muted }} />
+        <X size={16} style={{ color: theme.icon.muted }} />
       </button>
     </div>
   );

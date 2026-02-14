@@ -31,7 +31,7 @@ export const GlobalSearchModal = ({ isOpen, onClose, onNavigate }) => {
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative w-full max-w-2xl rounded-2xl border shadow-2xl" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center gap-3 p-4 border-b" style={{ borderColor: theme.border.primary }}>
-          <Search size={20} style={{ color: theme.text.muted }} />
+          <Search size={20} style={{ color: theme.icon.muted }} />
           <input type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search by phone, waybill, address code, name..." autoFocus className="flex-1 bg-transparent outline-none text-lg" style={{ color: theme.text.primary }} />
           <kbd className="px-2 py-1 rounded text-xs" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted }}>ESC</kbd>
         </div>

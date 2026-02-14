@@ -53,7 +53,7 @@ export const DispatchPage = ({
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><FileDown size={18} />Export</button>
-          <button onClick={() => setShowDispatchDrawer(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={18} />New Dispatch</button>
+          <button onClick={() => setShowDispatchDrawer(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Plus size={18} />New Dispatch</button>
         </div>
       </div>
 
@@ -86,7 +86,7 @@ export const DispatchPage = ({
 
           {/* Search Bar */}
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-            <Search size={18} style={{ color: theme.text.muted }} />
+            <Search size={18} style={{ color: theme.icon.muted }} />
             <input type="text" value={dispatchSearch} onChange={e => { setDispatchSearch(e.target.value); setDispatchPage(1); }} placeholder="Search by waybill, customer, phone, destination..." className="flex-1 bg-transparent outline-none text-sm" style={{ color: theme.text.primary }} />
             {dispatchSearch && <button onClick={() => { setDispatchSearch(''); setDispatchPage(1); }} className="p-1 rounded" style={{ color: theme.text.muted }}><X size={16} /></button>}
           </div>
@@ -147,7 +147,7 @@ export const DispatchPage = ({
                       <td className="p-4 hidden lg:table-cell"><DeliveryMethodBadge method={pkg.deliveryMethod} /></td>
                       <td className="p-4 hidden md:table-cell">
                         <div className="flex items-start gap-2">
-                          <MapPin size={14} className="mt-0.5 shrink-0" style={{ color: theme.text.muted }} />
+                          <MapPin size={14} className="mt-0.5 shrink-0" style={{ color: theme.icon.muted }} />
                           <div>
                             <p className="text-sm" style={{ color: theme.text.primary }}>{pkg.destination}</p>
                             {(() => { const t = terminalsData.find(t => t.name === pkg.destination); return t ? <p className="text-xs font-mono mt-0.5" style={{ color: theme.text.muted }}>{getTerminalAddress(t)}</p> : null; })()}
@@ -220,7 +220,7 @@ export const DispatchPage = ({
 
               {/* Map Placeholder */}
               <div className="p-6 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-3" style={{ borderColor: theme.border.secondary, backgroundColor: theme.bg.card }}>
-                <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}><MapPin size={28} style={{ color: theme.text.muted }} /></div>
+                <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}><MapPin size={28} style={{ color: theme.icon.muted }} /></div>
                 <p className="font-medium text-sm" style={{ color: theme.text.secondary }}>Map View Coming Soon</p>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {terminalsData.map(t => (
@@ -234,7 +234,7 @@ export const DispatchPage = ({
                 <p className="text-sm font-medium" style={{ color: theme.text.secondary }}>{routesData.length} routes</p>
                 <div className="flex gap-2">
                   <button onClick={() => addToast({ type: 'success', message: 'Routes optimized successfully' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Route size={16} /> Optimize</button>
-                  <button onClick={() => addToast({ type: 'info', message: 'Create route wizard coming soon' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={16} /> Create Route</button>
+                  <button onClick={() => addToast({ type: 'info', message: 'Create route wizard coming soon' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Plus size={16} /> Create Route</button>
                 </div>
               </div>
 
@@ -424,7 +424,7 @@ export const DispatchPage = ({
                                       <div className="border-t" style={{ borderColor: theme.border.primary }}>
                                         {stopPkgs.map(pkg => (
                                           <div key={pkg.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
-                                            <Package size={14} style={{ color: theme.text.muted }} />
+                                            <Package size={14} style={{ color: theme.icon.muted }} />
                                             <span className="font-mono text-xs" style={{ color: theme.accent.primary }}>{pkg.waybill}</span>
                                             <span className="text-xs flex-1" style={{ color: theme.text.secondary }}>{pkg.customer}</span>
                                             <span className="text-xs" style={{ color: theme.text.muted }}>{pkg.size}</span>
@@ -527,7 +527,7 @@ export const DispatchPage = ({
                             return (
                               <div key={idx} className="flex gap-3">
                                 <div className="flex flex-col items-center">
-                                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: theme.bg.tertiary }}><EvtIcon size={14} style={{ color: theme.text.muted }} /></div>
+                                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: theme.bg.tertiary }}><EvtIcon size={14} style={{ color: theme.icon.muted }} /></div>
                                   {idx < r.timeline.length - 1 && <div className="w-0.5 flex-1 my-1" style={{ backgroundColor: theme.border.secondary }} />}
                                 </div>
                                 <div className="pb-4 flex-1">
@@ -576,7 +576,7 @@ export const DispatchPage = ({
 
           {/* Search Bar */}
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-            <Search size={18} style={{ color: theme.text.muted }} />
+            <Search size={18} style={{ color: theme.icon.muted }} />
             <input type="text" value={driverSearch} onChange={e => setDriverSearch(e.target.value)} placeholder="Search by driver name, phone, zone..." className="flex-1 bg-transparent outline-none text-sm" style={{ color: theme.text.primary }} />
             {driverSearch && <button onClick={() => setDriverSearch('')} className="p-1 rounded" style={{ color: theme.text.muted }}><X size={16} /></button>}
           </div>

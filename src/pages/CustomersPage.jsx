@@ -175,7 +175,7 @@ export const CustomersPage = ({
           <div className="space-y-4 mb-6">
             <div className="flex flex-col md:flex-row gap-3">
               <div className="relative flex-1">
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
                 <input value={customerSearch} onChange={e => { setCustomerSearch(e.target.value); setPage(1); }} placeholder="Search by name, email, or phone..." className="w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
               <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
@@ -243,8 +243,8 @@ export const CustomersPage = ({
                         </td>
                         <td className="p-4 hidden md:table-cell">
                           <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-sm"><Mail size={12} style={{ color: theme.text.muted }} /><span style={{ color: theme.text.secondary }}>{customer.email}</span></div>
-                            <div className="flex items-center gap-2 text-sm"><Phone size={12} style={{ color: theme.text.muted }} /><span style={{ color: theme.text.secondary }}>{customer.phone}</span></div>
+                            <div className="flex items-center gap-2 text-sm"><Mail size={12} style={{ color: theme.icon.muted }} /><span style={{ color: theme.text.secondary }}>{customer.email}</span></div>
+                            <div className="flex items-center gap-2 text-sm"><Phone size={12} style={{ color: theme.icon.muted }} /><span style={{ color: theme.text.secondary }}>{customer.phone}</span></div>
                           </div>
                         </td>
                         <td className="p-4">
@@ -257,10 +257,10 @@ export const CustomersPage = ({
                         <td className="p-4"><StatusBadge status={customer.status} /></td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
-                            <button onClick={() => handleViewCustomer(customer)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="View details"><Eye size={16} style={{ color: theme.text.secondary }} /></button>
+                            <button onClick={() => handleViewCustomer(customer)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="View details"><Eye size={16} style={{ color: theme.icon.primary }} /></button>
                             {hasPermission(currentUser?.role, 'customers.manage') && (
                               <>
-                                <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit"><Edit size={16} style={{ color: theme.text.secondary }} /></button>
+                                <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit"><Edit size={16} style={{ color: theme.icon.primary }} /></button>
                                 <button onClick={() => handleDeleteCustomer(customer)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Delete"><Trash2 size={16} style={{ color: '#ef4444' }} /></button>
                               </>
                             )}
@@ -282,7 +282,7 @@ export const CustomersPage = ({
               <div className="relative w-full max-w-2xl h-full overflow-y-auto" style={{ backgroundColor: theme.bg.primary }}>
                 <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b" style={{ backgroundColor: theme.bg.primary, borderColor: theme.border.primary }}>
                   <h2 className="text-xl font-bold" style={{ color: theme.text.primary }}>Customer Details</h2>
-                  <button onClick={() => setShowCustomerDrawer(false)} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.hover }}><X size={20} style={{ color: theme.text.secondary }} /></button>
+                  <button onClick={() => setShowCustomerDrawer(false)} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.hover }}><X size={20} style={{ color: theme.icon.primary }} /></button>
                 </div>
                 <div className="p-6 space-y-6">
                   <div className="flex items-start gap-4">
@@ -298,8 +298,8 @@ export const CustomersPage = ({
                   <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                     <h4 className="font-semibold mb-3" style={{ color: theme.text.primary }}>Contact Information</h4>
                     <div className="space-y-2">
-                      <div className="flex items-center gap-3"><Mail size={16} style={{ color: theme.text.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{selectedCustomer.email}</span></div>
-                      <div className="flex items-center gap-3"><Phone size={16} style={{ color: theme.text.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{selectedCustomer.phone}</span></div>
+                      <div className="flex items-center gap-3"><Mail size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{selectedCustomer.email}</span></div>
+                      <div className="flex items-center gap-3"><Phone size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{selectedCustomer.phone}</span></div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -350,7 +350,7 @@ export const CustomersPage = ({
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input value={subscriberSearch || ''} onChange={e => { setSubscriberSearch(e.target.value); setSubPage(1); }} placeholder="Search by name, email, university..." className="w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <select value={subscriberPlanFilter || 'all'} onChange={e => { setSubscriberPlanFilter(e.target.value); setSubPage(1); }} className="px-3 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }}>
@@ -425,9 +425,9 @@ export const CustomersPage = ({
                           <td className="p-4"><StatusBadge status={sub.status} /></td>
                           <td className="p-4">
                             <div className="flex items-center gap-2">
-                              <button onClick={() => setSubscriberDetailItem(sub)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="View details"><Eye size={16} style={{ color: theme.text.secondary }} /></button>
+                              <button onClick={() => setSubscriberDetailItem(sub)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="View details"><Eye size={16} style={{ color: theme.icon.primary }} /></button>
                               {hasPermission(currentUser?.role, 'customers.manage') && (
-                                <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit"><Edit size={16} style={{ color: theme.text.secondary }} /></button>
+                                <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit"><Edit size={16} style={{ color: theme.icon.primary }} /></button>
                               )}
                             </div>
                           </td>
@@ -448,7 +448,7 @@ export const CustomersPage = ({
               <div className="relative w-full max-w-2xl h-full overflow-y-auto" style={{ backgroundColor: theme.bg.primary }}>
                 <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b" style={{ backgroundColor: theme.bg.primary, borderColor: theme.border.primary }}>
                   <h2 className="text-xl font-bold" style={{ color: theme.text.primary }}>Subscriber Details</h2>
-                  <button onClick={() => setSubscriberDetailItem(null)} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.hover }}><X size={20} style={{ color: theme.text.secondary }} /></button>
+                  <button onClick={() => setSubscriberDetailItem(null)} className="p-2 rounded-lg" style={{ backgroundColor: theme.bg.hover }}><X size={20} style={{ color: theme.icon.primary }} /></button>
                 </div>
                 <div className="p-6 space-y-6">
                   <div className="flex items-start gap-4">
@@ -477,9 +477,9 @@ export const CustomersPage = ({
                   <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                     <h4 className="font-semibold mb-3" style={{ color: theme.text.primary }}>Contact</h4>
                     <div className="space-y-2">
-                      <div className="flex items-center gap-3"><Mail size={16} style={{ color: theme.text.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.email}</span></div>
-                      <div className="flex items-center gap-3"><Phone size={16} style={{ color: theme.text.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.phone}</span></div>
-                      <div className="flex items-center gap-3"><MapPin size={16} style={{ color: theme.text.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.terminal}</span></div>
+                      <div className="flex items-center gap-3"><Mail size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.email}</span></div>
+                      <div className="flex items-center gap-3"><Phone size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.phone}</span></div>
+                      <div className="flex items-center gap-3"><MapPin size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.terminal}</span></div>
                     </div>
                   </div>
                   {subscriberDetailItem.notes && (
@@ -537,7 +537,7 @@ export const CustomersPage = ({
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input value={partnerSearch} onChange={e => setPartnerSearch(e.target.value)} placeholder="Search partners..." className="w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <select value={partnerTierFilter} onChange={e => setPartnerTierFilter(e.target.value)} className="px-3 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }}>
@@ -572,9 +572,9 @@ export const CustomersPage = ({
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="View details"><Eye size={16} style={{ color: theme.text.secondary }} /></button>
+                        <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="View details"><Eye size={16} style={{ color: theme.icon.primary }} /></button>
                         {hasPermission(currentUser?.role, 'customers.manage') && (
-                          <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit"><Edit size={16} style={{ color: theme.text.secondary }} /></button>
+                          <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit"><Edit size={16} style={{ color: theme.icon.primary }} /></button>
                         )}
                       </div>
                     </div>
@@ -623,7 +623,7 @@ export const CustomersPage = ({
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input value={ticketSearch || ''} onChange={e => { setTicketSearch(e.target.value); setTktPage(1); }} placeholder="Search tickets by ID, customer, subject..." className="w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <select value={ticketPriorityFilter || 'all'} onChange={e => { setTicketPriorityFilter(e.target.value); setTktPage(1); }} className="px-3 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }}>
@@ -685,9 +685,9 @@ export const CustomersPage = ({
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
-                            <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="View details"><Eye size={16} style={{ color: theme.text.secondary }} /></button>
+                            <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="View details"><Eye size={16} style={{ color: theme.icon.primary }} /></button>
                             {hasPermission(currentUser?.role, 'customers.manage') && (
-                              <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Assign"><UserCheck size={16} style={{ color: theme.text.secondary }} /></button>
+                              <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Assign"><UserCheck size={16} style={{ color: theme.icon.primary }} /></button>
                             )}
                           </div>
                         </td>

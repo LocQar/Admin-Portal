@@ -32,7 +32,7 @@ export const NewVehicleDrawer = ({ isOpen, onClose }) => {
                     <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>FLEET MANAGEMENT</p>
                     <h2 className="text-lg font-bold" style={{ color: theme.text.primary }}>Add New Vehicle</h2>
                 </div>
-                <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.secondary }}>
+                <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.icon.primary }}>
                     <X size={20} />
                 </button>
             </div>
@@ -102,7 +102,7 @@ export const NewVehicleDrawer = ({ isOpen, onClose }) => {
                         <div>
                             <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>Insurance Expiry</label>
                             <div className="relative">
-                                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+                                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
                                 <input
                                     type="date"
                                     value={form.insuranceExpiry}
@@ -115,7 +115,7 @@ export const NewVehicleDrawer = ({ isOpen, onClose }) => {
                         <div>
                             <label className="text-xs font-medium mb-1.5 block" style={{ color: theme.text.secondary }}>Next Service Due</label>
                             <div className="relative">
-                                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+                                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
                                 <input
                                     type="date"
                                     value={form.nextService}
@@ -140,8 +140,8 @@ export const NewVehicleDrawer = ({ isOpen, onClose }) => {
             <div className="p-4 border-t" style={{ borderColor: theme.border.primary }}>
                 <button
                     onClick={handleSubmit}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-medium shadow-lg hover:shadow-xl transition-all"
-                    style={{ backgroundColor: theme.accent.primary }}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                    style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}
                 >
                     <Save size={18} />
                     Save Vehicle

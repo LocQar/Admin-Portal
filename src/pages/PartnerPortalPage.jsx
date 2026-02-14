@@ -31,7 +31,7 @@ export const PartnerPortalPage = ({
         <div className="flex gap-2">
           <button onClick={() => addToast({ type: 'info', message: 'Opening API docs' })} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><FileText size={16} />API Docs</button>
           <button onClick={() => addToast({ type: 'info', message: 'Opening support chat' })} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><MessageSquare size={16} />Support</button>
-          <button onClick={() => { setActiveSubMenu('Ship Now'); }} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={18} />Ship Now</button>
+          <button onClick={() => { setActiveSubMenu('Ship Now'); }} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Plus size={18} />Ship Now</button>
         </div>
       </div>
 
@@ -224,7 +224,7 @@ export const PartnerPortalPage = ({
                 </div>
                 <div><label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Notes</label><textarea rows={2} placeholder="Special instructions..." className="w-full px-3 py-2.5 rounded-xl border text-sm bg-transparent resize-none" style={{ borderColor: theme.border.primary, color: theme.text.primary }} /></div>
                 <div className="flex gap-3 pt-2">
-                  <button onClick={() => addToast({ type: 'success', message: 'Shipment created! Waybill: LQ-2024-01211' })} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: theme.accent.primary }}><Send size={16} />Create Shipment</button>
+                  <button onClick={() => addToast({ type: 'success', message: 'Shipment created! Waybill: LQ-2024-01211' })} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Send size={16} />Create Shipment</button>
                   <button onClick={() => addToast({ type: 'info', message: 'Generating label...' })} className="px-6 py-3 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Printer size={16} className="inline mr-2" />Print Label</button>
                 </div>
               </div>
@@ -236,7 +236,7 @@ export const PartnerPortalPage = ({
                 <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}><FileDown size={20} style={{ color: '#8b5cf6' }} />Bulk Upload</h3>
                 <p className="text-sm mb-6" style={{ color: theme.text.muted }}>Upload a CSV file to create multiple shipments at once</p>
                 <div className="border-2 border-dashed rounded-2xl p-8 text-center" style={{ borderColor: theme.border.secondary }}>
-                  <FileDown size={40} style={{ color: theme.text.muted }} className="mx-auto mb-3" />
+                  <FileDown size={40} style={{ color: theme.icon.muted }} className="mx-auto mb-3" />
                   <p className="font-medium mb-1" style={{ color: theme.text.primary }}>Drop CSV file here or click to browse</p>
                   <p className="text-sm mb-4" style={{ color: theme.text.muted }}>Max 500 packages per upload • CSV or XLSX format</p>
                   <button onClick={() => addToast({ type: 'info', message: 'File browser opened' })} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}>Choose File</button>
@@ -303,7 +303,7 @@ export const PartnerPortalPage = ({
           {/* Search Bar */}
           <div className="flex gap-3">
             <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
-              <Search size={18} style={{ color: theme.text.muted }} />
+              <Search size={18} style={{ color: theme.icon.muted }} />
               <input placeholder="Search by Order ID, Waybill, Phone, or Locker Address..." className="flex-1 bg-transparent outline-none text-sm" style={{ color: theme.text.primary }} />
             </div>
             <button className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Filter size={16} />Filters</button>
@@ -605,7 +605,7 @@ export const PartnerPortalPage = ({
               <div><label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Subject</label><input placeholder="Brief description of the issue" className="w-full px-3 py-2.5 rounded-xl border text-sm bg-transparent" style={{ borderColor: theme.border.primary, color: theme.text.primary }} /></div>
               <div><label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Related Package (optional)</label><input placeholder="Waybill or Order ID" className="w-full px-3 py-2.5 rounded-xl border text-sm bg-transparent" style={{ borderColor: theme.border.primary, color: theme.text.primary }} /></div>
               <div><label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Description</label><textarea rows={4} placeholder="Describe the issue in detail..." className="w-full px-3 py-2.5 rounded-xl border text-sm bg-transparent resize-none" style={{ borderColor: theme.border.primary, color: theme.text.primary }} /></div>
-              <button onClick={() => addToast({ type: 'success', message: 'Ticket submitted! ID: TKT-004. Our team will respond within 4 hours.' })} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Send size={16} />Submit Ticket</button>
+              <button onClick={() => addToast({ type: 'success', message: 'Ticket submitted! ID: TKT-004. Our team will respond within 4 hours.' })} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Send size={16} />Submit Ticket</button>
             </div>
           </div>
 
@@ -624,7 +624,7 @@ export const PartnerPortalPage = ({
                 <details key={i} className="group rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
                   <summary className="flex items-center justify-between p-4 cursor-pointer" style={{ backgroundColor: theme.bg.tertiary }}>
                     <span className="font-medium text-sm" style={{ color: theme.text.primary }}>{faq.q}</span>
-                    <ChevronDown size={16} style={{ color: theme.text.muted }} className="group-open:rotate-180 transition-transform" />
+                    <ChevronDown size={16} style={{ color: theme.icon.muted }} className="group-open:rotate-180 transition-transform" />
                   </summary>
                   <div className="p-4 text-sm" style={{ color: theme.text.secondary }}>{faq.a}</div>
                 </details>
@@ -640,7 +640,7 @@ export const PartnerPortalPage = ({
                 <button key={r.label} onClick={() => addToast({ type: 'info', message: `Opening ${r.label}` })} className="flex items-center gap-4 p-4 rounded-xl border text-left hover:bg-white/5" style={{ borderColor: theme.border.primary }}>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${r.color}15` }}><r.icon size={20} style={{ color: r.color }} /></div>
                   <div><p className="font-medium text-sm" style={{ color: theme.text.primary }}>{r.label}</p><p className="text-xs" style={{ color: theme.text.muted }}>{r.desc}</p></div>
-                  <ChevronRight size={16} style={{ color: theme.text.muted }} className="ml-auto" />
+                  <ChevronRight size={16} style={{ color: theme.icon.muted }} className="ml-auto" />
                 </button>
               ))}
             </div>

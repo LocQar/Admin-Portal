@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FileDown, Download } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { Dropdown } from '../ui/Dropdown';
 
 export const ExportModal = ({ isOpen, onClose, onExport, dataType }) => {
   const { theme } = useTheme();
@@ -23,18 +24,22 @@ export const ExportModal = ({ isOpen, onClose, onExport, dataType }) => {
           </div>
           <div>
             <label className="text-sm mb-2 block" style={{ color: theme.text.muted }}>Date Range</label>
-            <select value={dateRange} onChange={e => setDateRange(e.target.value)} className="w-full px-3 py-2 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary, color: theme.text.primary }}>
-              <option value="all">All Time</option>
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="custom">Custom Range</option>
-            </select>
+            <Dropdown
+              value={dateRange}
+              onChange={setDateRange}
+              options={[
+                { value: 'all', label: 'All Time' },
+                { value: 'today', label: 'Today' },
+                { value: 'week', label: 'This Week' },
+                { value: 'month', label: 'This Month' },
+                { value: 'custom', label: 'Custom Range' },
+              ]}
+            />
           </div>
         </div>
         <div className="flex gap-3 mt-6">
           <button onClick={onClose} className="flex-1 py-2 rounded-xl border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={() => { onExport(format, dateRange); onClose(); }} className="flex-1 py-2 rounded-xl text-white flex items-center justify-center gap-2" style={{ backgroundColor: theme.accent.primary }}><Download size={16} /> Export</button>
+          <button onClick={() => { onExport(format, dateRange); onClose(); }} className="flex-1 py-2 rounded-xl flex items-center justify-center gap-2" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Download size={16} /> Export</button>
         </div>
       </div>
     </div>

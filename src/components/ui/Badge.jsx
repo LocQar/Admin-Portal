@@ -27,8 +27,9 @@ export const DeliveryMethodBadge = ({ method }) => {
   );
 };
 
-export const RoleBadge = ({ role }) => {
-  const r = ROLES[role];
+export const RoleBadge = ({ role, customRoles = [] }) => {
+  let r = ROLES[role];
+  if (!r) r = customRoles.find(cr => cr.key === role);
   if (!r) return null;
   return (
     <span

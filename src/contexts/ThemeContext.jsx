@@ -5,73 +5,83 @@ export const themes = {
   dark: {
     name: 'dark',
     bg: {
-      primary: '#0A1628',
-      secondary: '#152238',
-      tertiary: '#1E3A5F',
-      card: '#152238',
-      hover: '#1E3A5F'
+      primary: '#111827',
+      secondary: '#1F2937',
+      tertiary: '#374151',
+      card: '#1F2937',
+      hover: '#374151'
     },
     border: {
-      primary: 'rgba(255,255,255,0.08)',
-      secondary: 'rgba(255,255,255,0.15)',
-      focus: '#FF6B58'
+      primary: 'rgba(255,255,255,0.06)',
+      secondary: 'rgba(255,255,255,0.10)',
+      focus: '#FFFFFF'
     },
     text: {
-      primary: '#FFFFFF',
-      secondary: '#8B9AAF',
-      muted: '#5E7290'
+      primary: '#F9FAFB',
+      secondary: '#9CA3AF',
+      muted: '#6B7280'
     },
     accent: {
-      primary: '#FF6B58',
-      secondary: '#FF8A7A',
-      light: 'rgba(255,107,88,0.12)',
-      border: 'rgba(255,107,88,0.3)'
+      primary: '#FFFFFF',
+      secondary: '#D1D5DB',
+      light: 'rgba(255,255,255,0.08)',
+      border: 'rgba(255,255,255,0.20)',
+      contrast: '#111827'
     },
     font: {
       primary: "'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
       mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace"
     },
+    icon: {
+      primary: '#FFFFFF',
+      muted: '#9CA3AF'
+    },
     status: {
-      success: '#34D399',
-      warning: '#f59e0b',
-      error: '#FF4D4D',
-      info: '#3b82f6'
+      success: '#4ADE80',
+      warning: '#FBBF24',
+      error: '#F87171',
+      info: '#60A5FA'
     }
   },
   light: {
     name: 'light',
     bg: {
-      primary: '#FFFFFF',
+      primary: '#FAFAFA',
       secondary: '#FFFFFF',
       tertiary: '#F3F4F6',
       card: '#FFFFFF',
       hover: '#E5E7EB'
     },
     border: {
-      primary: 'rgba(0,0,0,0.08)',
-      secondary: 'rgba(0,0,0,0.12)',
-      focus: '#FF6B58'
+      primary: 'rgba(0,0,0,0.06)',
+      secondary: 'rgba(0,0,0,0.08)',
+      focus: '#111827'
     },
     text: {
-      primary: '#0A1628',
-      secondary: '#1E3A5F',
-      muted: '#8B9AAF'
+      primary: '#1F2937',
+      secondary: '#4B5563',
+      muted: '#9CA3AF'
     },
     accent: {
-      primary: '#FF6B58',
-      secondary: '#FF8A7A',
-      light: 'rgba(255,107,88,0.08)',
-      border: 'rgba(255,107,88,0.2)'
+      primary: '#111827',
+      secondary: '#374151',
+      light: 'rgba(17,24,39,0.06)',
+      border: 'rgba(17,24,39,0.15)',
+      contrast: '#FFFFFF'
     },
     font: {
       primary: "'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
       mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace"
     },
+    icon: {
+      primary: '#111827',
+      muted: '#6B7280'
+    },
     status: {
-      success: '#34D399',
-      warning: '#f59e0b',
-      error: '#FF4D4D',
-      info: '#3b82f6'
+      success: '#4ADE80',
+      warning: '#FBBF24',
+      error: '#F87171',
+      info: '#60A5FA'
     }
   }
 };

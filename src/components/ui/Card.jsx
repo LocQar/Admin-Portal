@@ -22,7 +22,7 @@ export const MetricCard = ({ title, value, change, changeType, icon: Icon, subti
             <p className="text-sm" style={{ color: theme.text.secondary }}>{title}</p>
             <p className="text-3xl font-bold mt-1" style={{ color: theme.text.primary }}>{value}</p>
             {change && (
-              <p className={`text-sm mt-1 flex items-center ${changeType === 'up' ? 'text-emerald-500' : 'text-red-500'}`}>
+              <p className="text-sm mt-1 flex items-center" style={{ color: changeType === 'up' ? theme.status.success : theme.status.error }}>
                 {changeType === 'up' ? <ArrowUpRight size={14}/> : <ArrowDownRight size={14}/>}
                 {change}
               </p>
@@ -50,8 +50,8 @@ export const QuickAction = ({ icon: Icon, label, disabled, onClick, badge }) => 
     >
       {badge && (
         <span
-          className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs text-white flex items-center justify-center"
-          style={{ backgroundColor: theme.accent.primary }}
+          className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center"
+          style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}
         >
           {badge}
         </span>

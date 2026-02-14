@@ -12,7 +12,8 @@ export const Sidebar = ({
   theme,
   userRole,
   isMobile,
-  onCloseMobile
+  onCloseMobile,
+  customRoles = []
 }) => {
   const [expandedMenus, setExpandedMenus] = useState(['packages']);
 
@@ -54,9 +55,9 @@ export const Sidebar = ({
               style={{ backgroundColor: theme.bg.hover }}
             >
               {isCollapsed ? (
-                <ChevronRight size={18} style={{ color: theme.text.secondary }}/>
+                <ChevronRight size={18} style={{ color: theme.icon.primary }}/>
               ) : (
-                <ChevronLeft size={18} style={{ color: theme.text.secondary }}/>
+                <ChevronLeft size={18} style={{ color: theme.icon.primary }}/>
               )}
             </button>
           )}
@@ -77,7 +78,7 @@ export const Sidebar = ({
               )}
               <div className="space-y-1">
                 {group.items.map((item) => {
-                  if (!hasPermission(userRole, item.permission)) return null;
+                  if (!hasPermission(userRole, item.permission, customRoles)) return null;
                   return (
                     <div key={item.id}>
                       <button

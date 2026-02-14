@@ -33,7 +33,7 @@ export const LockersPage = ({
           <p style={{ color: theme.text.muted }}>{activeSubMenu || 'All Lockers'}</p>
         </div>
         {hasPermission(currentUser.role, 'lockers.manage') && (
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: theme.accent.primary }}><Plus size={18} />Add Locker</button>
+          <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}><Plus size={18} />Add Locker</button>
         )}
       </div>
 
@@ -62,7 +62,7 @@ export const LockersPage = ({
           <div className="flex flex-col gap-3 mb-4">
             <div className="flex flex-col md:flex-row gap-3">
               <div className="relative flex-1 max-w-md">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
                 <input value={lockerSearch} onChange={e => setLockerSearch(e.target.value)} placeholder="Search lockers..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
               <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -109,10 +109,10 @@ export const LockersPage = ({
                       <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{l.size}</span></td>
                       <td className="p-3"><StatusBadge status={l.status} /></td>
                       <td className="p-3 hidden lg:table-cell">{l.package ? <span className="text-sm font-mono" style={{ color: theme.accent.primary }}>{l.package}</span> : '—'}</td>
-                      <td className="p-3 hidden md:table-cell">{l.temp ? <div className="flex items-center gap-1"><Thermometer size={14} style={{ color: theme.text.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{l.temp}°C</span></div> : '—'}</td>
+                      <td className="p-3 hidden md:table-cell">{l.temp ? <div className="flex items-center gap-1"><Thermometer size={14} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{l.temp}°C</span></div> : '—'}</td>
                       <td className="p-3 hidden md:table-cell">
                         <div className="flex items-center gap-2">
-                          {l.battery < 20 ? <BatteryWarning size={14} className="text-red-500" /> : <Battery size={14} style={{ color: theme.text.muted }} />}
+                          {l.battery < 20 ? <BatteryWarning size={14} className="text-red-500" /> : <Battery size={14} style={{ color: theme.icon.muted }} />}
                           <span className={`text-sm ${l.battery < 20 ? 'text-red-500' : ''}`} style={{ color: l.battery >= 20 ? theme.text.secondary : undefined }}>{l.battery}%</span>
                         </div>
                       </td>
@@ -154,7 +154,7 @@ export const LockersPage = ({
                     <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{l.size}</span></td>
                     <td className="p-3 hidden md:table-cell">
                       <div className="flex items-center gap-2">
-                        {l.battery < 20 ? <BatteryWarning size={14} className="text-red-500" /> : <Battery size={14} style={{ color: theme.text.muted }} />}
+                        {l.battery < 20 ? <BatteryWarning size={14} className="text-red-500" /> : <Battery size={14} style={{ color: theme.icon.muted }} />}
                         <span className={`text-sm ${l.battery < 20 ? 'text-red-500 font-semibold' : ''}`} style={{ color: l.battery >= 20 ? theme.text.secondary : undefined }}>{l.battery}%</span>
                       </div>
                     </td>
