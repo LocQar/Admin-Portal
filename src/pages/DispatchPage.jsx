@@ -64,15 +64,15 @@ export const DispatchPage = ({
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Ready</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: '#f59e0b' }}>{filteredDispatchPackages.filter(p => ['pending', 'at_warehouse', 'at_dropbox'].includes(p.status)).length}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: '#D4AA5A' }}>{filteredDispatchPackages.filter(p => ['pending', 'at_warehouse', 'at_dropbox'].includes(p.status)).length}</p>
             </div>
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>In Transit</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: '#3b82f6' }}>{filteredDispatchPackages.filter(p => p.status.startsWith('in_transit')).length}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: '#7EA8C9' }}>{filteredDispatchPackages.filter(p => p.status.startsWith('in_transit')).length}</p>
             </div>
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Delivered</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: '#10b981' }}>{filteredDispatchPackages.filter(p => p.status.startsWith('delivered')).length}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: '#81C995' }}>{filteredDispatchPackages.filter(p => p.status.startsWith('delivered')).length}</p>
             </div>
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Active Drivers</p>
@@ -202,18 +202,18 @@ export const DispatchPage = ({
                 </div>
                 <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                   <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Total Stops</p>
-                  <p className="text-2xl font-bold mt-1" style={{ color: '#3b82f6' }}>{routesData.reduce((s, r) => s + r.stops.length, 0)}</p>
+                  <p className="text-2xl font-bold mt-1" style={{ color: '#7EA8C9' }}>{routesData.reduce((s, r) => s + r.stops.length, 0)}</p>
                 </div>
                 <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                   <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Packages</p>
-                  <p className="text-2xl font-bold mt-1" style={{ color: '#10b981' }}>{routesData.reduce((s, r) => s + r.stops.reduce((ss, st) => ss + st.packages.length, 0), 0)}</p>
+                  <p className="text-2xl font-bold mt-1" style={{ color: '#81C995' }}>{routesData.reduce((s, r) => s + r.stops.reduce((ss, st) => ss + st.packages.length, 0), 0)}</p>
                 </div>
                 <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                   <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Avg Completion</p>
                   {(() => {
                     const totalPkgs = routesData.reduce((s, r) => s + r.stops.reduce((ss, st) => ss + st.packages.length, 0), 0);
                     const totalDel = routesData.reduce((s, r) => s + r.stops.reduce((ss, st) => ss + st.delivered, 0), 0);
-                    return <p className="text-2xl font-bold mt-1" style={{ color: '#f59e0b' }}>{totalPkgs > 0 ? Math.round((totalDel / totalPkgs) * 100) : 0}%</p>;
+                    return <p className="text-2xl font-bold mt-1" style={{ color: '#D4AA5A' }}>{totalPkgs > 0 ? Math.round((totalDel / totalPkgs) * 100) : 0}%</p>;
                   })()}
                 </div>
               </div>
@@ -244,8 +244,8 @@ export const DispatchPage = ({
                   const totalPkgs = r.stops.reduce((s, st) => s + st.packages.length, 0);
                   const totalDel = r.stops.reduce((s, st) => s + st.delivered, 0);
                   const pct = totalPkgs > 0 ? Math.round((totalDel / totalPkgs) * 100) : 0;
-                  const statusColors = { active: '#10b981', pending: '#f59e0b', completed: '#6b7280' };
-                  const clr = statusColors[r.status] || '#6b7280';
+                  const statusColors = { active: '#81C995', pending: '#D4AA5A', completed: '#78716C' };
+                  const clr = statusColors[r.status] || '#78716C';
                   return (
                     <div key={r.id} className="rounded-2xl border overflow-hidden cursor-pointer hover:shadow-lg transition-shadow" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={() => { setSelectedRoute(r); setRouteTab('stops'); setExpandedStops([]); }}>
                       <div className="p-4">
@@ -280,7 +280,7 @@ export const DispatchPage = ({
                         {/* Stop Preview */}
                         <div className="flex items-center gap-1.5 mb-3">
                           {r.stops.map((st, i) => {
-                            const stClr = st.status === 'completed' ? '#10b981' : st.status === 'in_progress' ? '#3b82f6' : theme.border.secondary;
+                            const stClr = st.status === 'completed' ? '#81C995' : st.status === 'in_progress' ? '#7EA8C9' : theme.border.secondary;
                             return (
                               <React.Fragment key={st.id}>
                                 <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: stClr }} title={st.terminal} />
@@ -296,7 +296,7 @@ export const DispatchPage = ({
 
                         {/* Driver */}
                         <div className="flex items-center gap-2 pt-3 mt-3 border-t" style={{ borderColor: theme.border.primary }}>
-                          <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: clr }}>{r.driver.name.charAt(0)}</div>
+                          <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs" style={{ backgroundColor: clr, color: '#1C1917' }}>{r.driver.name.charAt(0)}</div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm truncate" style={{ color: theme.text.primary }}>{r.driver.name}</p>
                             <p className="text-xs font-mono truncate" style={{ color: theme.text.muted }}>{r.driver.vehicle.split(' - ')[1]}</p>
@@ -327,8 +327,8 @@ export const DispatchPage = ({
                 const r = selectedRoute;
                 const totalPkgs = r.stops.reduce((s, st) => s + st.packages.length, 0);
                 const totalDel = r.stops.reduce((s, st) => s + st.delivered, 0);
-                const statusColors = { active: '#10b981', pending: '#f59e0b', completed: '#6b7280' };
-                const clr = statusColors[r.status] || '#6b7280';
+                const statusColors = { active: '#81C995', pending: '#D4AA5A', completed: '#78716C' };
+                const clr = statusColors[r.status] || '#78716C';
                 const allRoutePkgs = r.stops.flatMap(st => st.packages.map(pid => ({ ...packagesData.find(p => p.id === pid), stopTerminal: st.terminal, stopStatus: st.status }))).filter(p => p.id);
                 return (
                   <div className="space-y-4">
@@ -343,7 +343,7 @@ export const DispatchPage = ({
                         <p className="text-xs font-mono" style={{ color: theme.text.muted }}>{r.id} · {r.distance} · {r.startTime} — {r.estEndTime}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: clr }}>{r.driver.name.charAt(0)}</div>
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs" style={{ backgroundColor: clr, color: '#1C1917' }}>{r.driver.name.charAt(0)}</div>
                         <div className="hidden sm:block">
                           <p className="text-sm" style={{ color: theme.text.primary }}>{r.driver.name}</p>
                           <p className="text-xs" style={{ color: theme.text.muted }}>{r.driver.phone}</p>
@@ -379,12 +379,12 @@ export const DispatchPage = ({
                           const terminal = terminalsData.find(t => t.name === stop.terminal);
                           const stopPkgs = stop.packages.map(pid => packagesData.find(p => p.id === pid)).filter(Boolean);
                           const isExpanded = expandedStops.includes(stop.id);
-                          const stClr = stop.status === 'completed' ? '#10b981' : stop.status === 'in_progress' ? '#3b82f6' : '#9ca3af';
+                          const stClr = stop.status === 'completed' ? '#81C995' : stop.status === 'in_progress' ? '#7EA8C9' : '#9ca3af';
                           return (
                             <div key={stop.id} className="flex gap-3">
                               {/* Timeline column */}
                               <div className="flex flex-col items-center">
-                                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{ backgroundColor: stClr }}>{stop.order}</div>
+                                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0" style={{ backgroundColor: stClr, color: '#1C1917' }}>{stop.order}</div>
                                 {idx < r.stops.length - 1 && <div className="w-0.5 flex-1 my-1" style={{ backgroundColor: theme.border.secondary }} />}
                               </div>
                               {/* Stop Card */}
@@ -468,11 +468,11 @@ export const DispatchPage = ({
                             <p className="text-xs" style={{ color: theme.text.muted }}>Total</p>
                           </div>
                           <div className="p-3 rounded-xl text-center" style={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
-                            <p className="text-lg font-bold" style={{ color: '#10b981' }}>{totalDel}</p>
+                            <p className="text-lg font-bold" style={{ color: '#81C995' }}>{totalDel}</p>
                             <p className="text-xs" style={{ color: theme.text.muted }}>Delivered</p>
                           </div>
                           <div className="p-3 rounded-xl text-center" style={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
-                            <p className="text-lg font-bold" style={{ color: '#f59e0b' }}>{totalPkgs - totalDel}</p>
+                            <p className="text-lg font-bold" style={{ color: '#D4AA5A' }}>{totalPkgs - totalDel}</p>
                             <p className="text-xs" style={{ color: theme.text.muted }}>Pending</p>
                           </div>
                         </div>
@@ -562,15 +562,15 @@ export const DispatchPage = ({
             </div>
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Active</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: '#10b981' }}>{driversData.filter(d => d.status === 'active').length}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: '#81C995' }}>{driversData.filter(d => d.status === 'active').length}</p>
             </div>
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>On Delivery</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: '#3b82f6' }}>{driversData.filter(d => d.status === 'on_delivery').length}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: '#7EA8C9' }}>{driversData.filter(d => d.status === 'on_delivery').length}</p>
             </div>
             <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Offline</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: '#ef4444' }}>{driversData.filter(d => d.status === 'offline').length}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: '#D48E8A' }}>{driversData.filter(d => d.status === 'offline').length}</p>
             </div>
           </div>
 
@@ -608,14 +608,14 @@ export const DispatchPage = ({
               </thead>
               <tbody>
                 {filteredDrivers.map(d => {
-                  const driverColors = { active: '#10b981', on_delivery: '#3b82f6', offline: '#6b7280' };
+                  const driverColors = { active: '#81C995', on_delivery: '#7EA8C9', offline: '#78716C' };
                   const capacity = 20;
                   return (
                   <tr key={d.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="relative">
-                          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold" style={{ backgroundColor: driverColors[d.status] || '#6b7280' }}>{d.name.charAt(0)}</div>
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold" style={{ backgroundColor: driverColors[d.status] || '#78716C', color: '#1C1917' }}>{d.name.charAt(0)}</div>
                           {d.status === 'active' && <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2" style={{ borderColor: theme.bg.card }} />}
                         </div>
                         <div>
@@ -636,10 +636,10 @@ export const DispatchPage = ({
                         <span className="text-xs" style={{ color: theme.text.muted }}>/{capacity}</span>
                       </div>
                       <div className="w-16 h-1.5 rounded-full mt-1 overflow-hidden" style={{ backgroundColor: theme.bg.tertiary }}>
-                        <div className="h-full rounded-full" style={{ width: `${Math.min((d.deliveriesToday / capacity) * 100, 100)}%`, backgroundColor: d.deliveriesToday > capacity * 0.8 ? '#ef4444' : d.deliveriesToday > capacity * 0.5 ? '#f59e0b' : '#10b981' }} />
+                        <div className="h-full rounded-full" style={{ width: `${Math.min((d.deliveriesToday / capacity) * 100, 100)}%`, backgroundColor: d.deliveriesToday > capacity * 0.8 ? '#D48E8A' : d.deliveriesToday > capacity * 0.5 ? '#D4AA5A' : '#81C995' }} />
                       </div>
                     </td>
-                    <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: '#f59e0b' }}>★ {d.rating}</span></td>
+                    <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: '#D4AA5A' }}>★ {d.rating}</span></td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button onClick={() => addToast({ type: 'info', message: `Viewing ${d.name}'s details` })} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }} title="View"><Eye size={15} /></button>

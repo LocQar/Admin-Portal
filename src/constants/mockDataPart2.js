@@ -47,9 +47,9 @@ export const staffData = [
 
 export const teamsData = [
   { id: 1, name: 'Management', members: 2, lead: 'John Doe', color: '#4E0F0F', description: 'Executive leadership and strategic oversight', terminals: ['All'], avgPerformance: 96.5, activeProjects: 3, createdAt: '2023-01-15' },
-  { id: 2, name: 'Operations', members: 4, lead: 'Kofi Asante', color: '#3b82f6', description: 'Terminal management and daily operations', terminals: ['Achimota Mall', 'Accra Mall', 'Kotoka T3'], avgPerformance: 83.5, activeProjects: 5, createdAt: '2023-02-01' },
-  { id: 3, name: 'Field', members: 6, lead: 'Yaw Boateng', color: '#10b981', description: 'Package handling, deliveries, and field operations', terminals: ['Achimota Mall', 'Accra Mall', 'Kotoka T3', 'Junction Mall', 'West Hills Mall'], avgPerformance: 85.3, activeProjects: 8, createdAt: '2023-03-01' },
-  { id: 4, name: 'Support', members: 3, lead: 'Kweku Appiah', color: '#8b5cf6', description: 'Customer support and ticket resolution', terminals: ['All'], avgPerformance: 90.0, activeProjects: 4, createdAt: '2023-04-15' },
+  { id: 2, name: 'Operations', members: 4, lead: 'Kofi Asante', color: '#7EA8C9', description: 'Terminal management and daily operations', terminals: ['Achimota Mall', 'Accra Mall', 'Kotoka T3'], avgPerformance: 83.5, activeProjects: 5, createdAt: '2023-02-01' },
+  { id: 3, name: 'Field', members: 6, lead: 'Yaw Boateng', color: '#81C995', description: 'Package handling, deliveries, and field operations', terminals: ['Achimota Mall', 'Accra Mall', 'Kotoka T3', 'Junction Mall', 'West Hills Mall'], avgPerformance: 85.3, activeProjects: 8, createdAt: '2023-03-01' },
+  { id: 4, name: 'Support', members: 3, lead: 'Kweku Appiah', color: '#B5A0D1', description: 'Customer support and ticket resolution', terminals: ['All'], avgPerformance: 90.0, activeProjects: 4, createdAt: '2023-04-15' },
 ];
 
 // ============ DRIVERS & ROUTES ============
@@ -112,7 +112,7 @@ export const partnersData = [
 ];
 
 export const TIERS = {
-  gold: { label: 'Gold', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
+  gold: { label: 'Gold', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
   silver: { label: 'Silver', color: '#a3a3a3', bg: 'rgba(163,163,163,0.1)', perks: 'Standard SLA, Email Support, Standard API Limits' },
   bronze: { label: 'Bronze', color: '#cd7c32', bg: 'rgba(205,124,50,0.1)', perks: 'Basic SLA, Ticket Support, Basic API Limits' },
 };
@@ -161,12 +161,12 @@ export const dropboxFlowData = [
 ];
 
 export const DROPBOX_FLOW_STAGES = {
-  awaiting_collection: { label: 'In Dropbox', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', step: 0 },
-  collection_overdue: { label: 'Collection Overdue', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', step: 0 },
-  collected: { label: 'Collected', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', step: 1 },
+  awaiting_collection: { label: 'In Dropbox', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', step: 0 },
+  collection_overdue: { label: 'Collection Overdue', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', step: 0 },
+  collected: { label: 'Collected', color: '#7EA8C9', bg: 'rgba(126,168,201,0.1)', step: 1 },
   in_transit: { label: 'In Transit to Terminal', color: '#6366f1', bg: 'rgba(99,102,241,0.1)', step: 2 },
-  at_terminal: { label: 'At Terminal', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', step: 3 },
-  delivered_to_locker: { label: 'In Locker', color: '#10b981', bg: 'rgba(16,185,129,0.1)', step: 4 },
+  at_terminal: { label: 'At Terminal', color: '#B5A0D1', bg: 'rgba(181,160,209,0.1)', step: 3 },
+  delivered_to_locker: { label: 'In Locker', color: '#81C995', bg: 'rgba(129,201,149,0.1)', step: 4 },
 };
 
 export const dropboxFillHistory = [
@@ -193,13 +193,13 @@ export const autoRulesData = [
 ];
 
 export const MSG_STATUSES = {
-  delivered: { label: 'Delivered', color: '#10b981', bg: 'rgba(16,185,129,0.1)', icon: '✓✓' },
-  read: { label: 'Read', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', icon: '✓✓' },
-  opened: { label: 'Opened', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', icon: '👁' },
-  sent: { label: 'Sent', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: '✓' },
-  failed: { label: 'Failed', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', icon: '✕' },
-  bounced: { label: 'Bounced', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', icon: '↩' },
-  pending: { label: 'Pending', color: '#6b7280', bg: 'rgba(107,114,128,0.1)', icon: '⏳' },
+  delivered: { label: 'Delivered', color: '#81C995', bg: 'rgba(129,201,149,0.1)', icon: '✓✓' },
+  read: { label: 'Read', color: '#7EA8C9', bg: 'rgba(126,168,201,0.1)', icon: '✓✓' },
+  opened: { label: 'Opened', color: '#B5A0D1', bg: 'rgba(181,160,209,0.1)', icon: '👁' },
+  sent: { label: 'Sent', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', icon: '✓' },
+  failed: { label: 'Failed', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', icon: '✕' },
+  bounced: { label: 'Bounced', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', icon: '↩' },
+  pending: { label: 'Pending', color: '#78716C', bg: 'rgba(120,113,108,0.1)', icon: '⏳' },
 };
 
 // ============ PARTNER SELF-SERVICE PORTAL DATA ============

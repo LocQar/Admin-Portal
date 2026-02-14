@@ -5,68 +5,68 @@ export const themes = {
   dark: {
     name: 'dark',
     bg: {
-      primary: '#111827',
-      secondary: '#1F2937',
-      tertiary: '#374151',
-      card: '#1F2937',
-      hover: '#374151'
+      primary: '#1A1614',
+      secondary: '#231F1C',
+      tertiary: '#2E2926',
+      card: '#231F1C',
+      hover: '#2E2926'
     },
     border: {
-      primary: 'rgba(255,255,255,0.06)',
-      secondary: 'rgba(255,255,255,0.10)',
-      focus: '#FFFFFF'
+      primary: 'rgba(245,240,235,0.06)',
+      secondary: 'rgba(245,240,235,0.10)',
+      focus: '#F5F0EB'
     },
     text: {
-      primary: '#F9FAFB',
-      secondary: '#9CA3AF',
-      muted: '#6B7280'
+      primary: '#F5F0EB',
+      secondary: '#A8A29E',
+      muted: '#78716C'
     },
     accent: {
-      primary: '#FFFFFF',
-      secondary: '#D1D5DB',
-      light: 'rgba(255,255,255,0.08)',
-      border: 'rgba(255,255,255,0.20)',
-      contrast: '#111827'
+      primary: '#F5F0EB',
+      secondary: '#D6D3D1',
+      light: 'rgba(245,240,235,0.08)',
+      border: 'rgba(245,240,235,0.20)',
+      contrast: '#1C1917'
     },
     font: {
       primary: "'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
       mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace"
     },
     icon: {
-      primary: '#FFFFFF',
-      muted: '#9CA3AF'
+      primary: '#F5F0EB',
+      muted: '#A8A29E'
     },
     status: {
-      success: '#4ADE80',
-      warning: '#FBBF24',
-      error: '#F87171',
-      info: '#60A5FA'
+      success: '#81C995',
+      warning: '#D4AA5A',
+      error: '#D48E8A',
+      info: '#7EA8C9'
     }
   },
   light: {
     name: 'light',
     bg: {
-      primary: '#FAFAFA',
+      primary: '#F9F7F4',
       secondary: '#FFFFFF',
-      tertiary: '#F3F4F6',
+      tertiary: '#F3F0EC',
       card: '#FFFFFF',
-      hover: '#E5E7EB'
+      hover: '#EBE7E2'
     },
     border: {
-      primary: 'rgba(0,0,0,0.06)',
-      secondary: 'rgba(0,0,0,0.08)',
-      focus: '#111827'
+      primary: 'rgba(28,25,23,0.06)',
+      secondary: 'rgba(28,25,23,0.08)',
+      focus: '#1C1917'
     },
     text: {
-      primary: '#1F2937',
-      secondary: '#4B5563',
-      muted: '#9CA3AF'
+      primary: '#1C1917',
+      secondary: '#57534E',
+      muted: '#A8A29E'
     },
     accent: {
-      primary: '#111827',
-      secondary: '#374151',
-      light: 'rgba(17,24,39,0.06)',
-      border: 'rgba(17,24,39,0.15)',
+      primary: '#1C1917',
+      secondary: '#44403C',
+      light: 'rgba(28,25,23,0.05)',
+      border: 'rgba(28,25,23,0.12)',
       contrast: '#FFFFFF'
     },
     font: {
@@ -74,14 +74,14 @@ export const themes = {
       mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace"
     },
     icon: {
-      primary: '#111827',
-      muted: '#6B7280'
+      primary: '#1C1917',
+      muted: '#78716C'
     },
     status: {
-      success: '#4ADE80',
-      warning: '#FBBF24',
-      error: '#F87171',
-      info: '#60A5FA'
+      success: '#81C995',
+      warning: '#D4AA5A',
+      error: '#D48E8A',
+      info: '#7EA8C9'
     }
   }
 };

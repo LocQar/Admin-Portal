@@ -115,7 +115,7 @@ export const CustomersPage = ({
     };
   }, [filteredSubscribers]);
 
-  const getPlanInfo = (planId) => SUBSCRIPTION_PLANS?.find(p => p.id === planId) || { name: planId, color: '#6b7280', price: 0 };
+  const getPlanInfo = (planId) => SUBSCRIPTION_PLANS?.find(p => p.id === planId) || { name: planId, color: '#78716C', price: 0 };
 
   // ============ TICKETS LOGIC ============
   const tktItemsPerPage = 10;
@@ -138,7 +138,7 @@ export const CustomersPage = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-            <TitleIcon size={28} style={{ color: '#3b82f6' }} /> {titles[currentView] || 'Customers'}
+            <TitleIcon size={28} style={{ color: '#7EA8C9' }} /> {titles[currentView] || 'Customers'}
           </h1>
           <p style={{ color: theme.text.muted }}>{currentView} • Customer Management</p>
         </div>
@@ -147,12 +147,12 @@ export const CustomersPage = ({
             <Download size={16} />Export
           </button>
           {currentView === 'All Customers' && hasPermission(currentUser?.role, 'customers.manage') && (
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#3b82f6' }}>
+            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: '#7EA8C9', color: '#1C1917' }}>
               <Plus size={16} />Add Customer
             </button>
           )}
           {currentView === 'Subscribers' && hasPermission(currentUser?.role, 'customers.manage') && (
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}>
+            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: '#B5A0D1', color: '#1C1917' }}>
               <Plus size={16} />Add Subscriber
             </button>
           )}
@@ -232,7 +232,7 @@ export const CustomersPage = ({
                       <tr key={customer.id} className="border-b hover:bg-opacity-50" style={{ borderColor: theme.border.primary }}>
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: customer.type === 'b2b' ? '#8b5cf6' : '#3b82f6' }}>
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: customer.type === 'b2b' ? '#B5A0D1' : '#7EA8C9', color: '#1C1917' }}>
                               {customer.type === 'b2b' ? <Briefcase size={16} /> : <Users size={16} />}
                             </div>
                             <div>
@@ -248,7 +248,7 @@ export const CustomersPage = ({
                           </div>
                         </td>
                         <td className="p-4">
-                          <span className="text-xs px-2.5 py-1 rounded-lg font-medium" style={{ backgroundColor: customer.type === 'b2b' ? '#8b5cf610' : '#3b82f610', color: customer.type === 'b2b' ? '#8b5cf6' : '#3b82f6' }}>
+                          <span className="text-xs px-2.5 py-1 rounded-lg font-medium" style={{ backgroundColor: customer.type === 'b2b' ? '#B5A0D110' : '#7EA8C910', color: customer.type === 'b2b' ? '#B5A0D1' : '#7EA8C9' }}>
                             {customer.type === 'b2b' ? 'B2B' : 'Individual'}
                           </span>
                         </td>
@@ -261,7 +261,7 @@ export const CustomersPage = ({
                             {hasPermission(currentUser?.role, 'customers.manage') && (
                               <>
                                 <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit"><Edit size={16} style={{ color: theme.icon.primary }} /></button>
-                                <button onClick={() => handleDeleteCustomer(customer)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Delete"><Trash2 size={16} style={{ color: '#ef4444' }} /></button>
+                                <button onClick={() => handleDeleteCustomer(customer)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Delete"><Trash2 size={16} style={{ color: '#D48E8A' }} /></button>
                               </>
                             )}
                           </div>
@@ -286,7 +286,7 @@ export const CustomersPage = ({
                 </div>
                 <div className="p-6 space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl" style={{ backgroundColor: selectedCustomer.type === 'b2b' ? '#8b5cf6' : '#3b82f6' }}>
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl" style={{ backgroundColor: selectedCustomer.type === 'b2b' ? '#B5A0D1' : '#7EA8C9', color: '#1C1917' }}>
                       {selectedCustomer.type === 'b2b' ? <Briefcase size={24} /> : <Users size={24} />}
                     </div>
                     <div className="flex-1">
@@ -304,11 +304,11 @@ export const CustomersPage = ({
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <div className="flex items-center gap-2 mb-2"><Package size={16} style={{ color: '#3b82f6' }} /><span className="text-xs" style={{ color: theme.text.muted }}>Total Orders</span></div>
+                      <div className="flex items-center gap-2 mb-2"><Package size={16} style={{ color: '#7EA8C9' }} /><span className="text-xs" style={{ color: theme.text.muted }}>Total Orders</span></div>
                       <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{selectedCustomer.totalOrders}</p>
                     </div>
                     <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <div className="flex items-center gap-2 mb-2"><DollarSign size={16} style={{ color: '#10b981' }} /><span className="text-xs" style={{ color: theme.text.muted }}>Total Spent</span></div>
+                      <div className="flex items-center gap-2 mb-2"><DollarSign size={16} style={{ color: '#81C995' }} /><span className="text-xs" style={{ color: theme.text.muted }}>Total Spent</span></div>
                       <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>GH₵ {selectedCustomer.totalSpent.toLocaleString()}</p>
                     </div>
                   </div>
@@ -397,7 +397,7 @@ export const CustomersPage = ({
                         <tr key={sub.id} className="border-b hover:bg-opacity-50" style={{ borderColor: theme.border.primary }}>
                           <td className="p-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: '#8b5cf6' }}>
+                              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#B5A0D1', color: '#1C1917' }}>
                                 <GraduationCap size={16} />
                               </div>
                               <div>
@@ -452,14 +452,14 @@ export const CustomersPage = ({
                 </div>
                 <div className="p-6 space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl" style={{ backgroundColor: '#8b5cf6' }}><GraduationCap size={24} /></div>
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl" style={{ backgroundColor: '#B5A0D1', color: '#1C1917' }}><GraduationCap size={24} /></div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold" style={{ color: theme.text.primary }}>{subscriberDetailItem.name}</h3>
                       <p className="text-sm" style={{ color: theme.text.muted }}>{subscriberDetailItem.university} • {subscriberDetailItem.campus}</p>
                       <p className="text-xs font-mono mt-1" style={{ color: theme.text.muted }}>ID: {subscriberDetailItem.studentId}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <StatusBadge status={subscriberDetailItem.status} />
-                        {subscriberDetailItem.verified && <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>✓ Verified</span>}
+                        {subscriberDetailItem.verified && <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(129,201,149,0.1)', color: '#81C995' }}>✓ Verified</span>}
                       </div>
                     </div>
                   </div>
@@ -589,11 +589,11 @@ export const CustomersPage = ({
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: theme.text.muted }}>Revenue</p>
-                        <p className="font-semibold" style={{ color: '#10b981' }}>GH₵ {partner.revenue.toLocaleString()}</p>
+                        <p className="font-semibold" style={{ color: '#81C995' }}>GH₵ {partner.revenue.toLocaleString()}</p>
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: theme.text.muted }}>Delivery Rate</p>
-                        <p className="font-semibold" style={{ color: partner.deliveryRate >= 95 ? '#10b981' : partner.deliveryRate >= 90 ? '#f59e0b' : '#ef4444' }}>{partner.deliveryRate}%</p>
+                        <p className="font-semibold" style={{ color: partner.deliveryRate >= 95 ? '#81C995' : partner.deliveryRate >= 90 ? '#D4AA5A' : '#D48E8A' }}>{partner.deliveryRate}%</p>
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: theme.text.muted }}>API Calls</p>

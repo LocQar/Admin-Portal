@@ -49,14 +49,14 @@ export const PartnerPortalPage = ({
 
           {/* Alerts */}
           {portalShipmentsData.some(p => p.status === 'expired' || p.daysInLocker >= 3) && (
-            <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.2)' }}>
-              <p className="text-sm font-semibold mb-2" style={{ color: '#f59e0b' }}>⚠️ Attention Required</p>
+            <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(212,170,90,0.05)', border: '1px solid rgba(212,170,90,0.2)' }}>
+              <p className="text-sm font-semibold mb-2" style={{ color: '#D4AA5A' }}>⚠️ Attention Required</p>
               <div className="flex flex-wrap gap-2">
                 {portalShipmentsData.filter(p => p.status === 'expired').length > 0 && (
-                  <span className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: 'rgba(239,68,68,0.1)', color: '#ef4444' }}>🔴 {portalShipmentsData.filter(p => p.status === 'expired').length} expired package(s) — will be returned</span>
+                  <span className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: 'rgba(212,142,138,0.1)', color: '#D48E8A' }}>🔴 {portalShipmentsData.filter(p => p.status === 'expired').length} expired package(s) — will be returned</span>
                 )}
                 {portalShipmentsData.filter(p => p.daysInLocker >= 3 && p.status === 'delivered_to_locker').length > 0 && (
-                  <span className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>🟡 {portalShipmentsData.filter(p => p.daysInLocker >= 3 && p.status === 'delivered_to_locker').length} package(s) nearing expiry (3+ days)</span>
+                  <span className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: 'rgba(212,170,90,0.1)', color: '#D4AA5A' }}>🟡 {portalShipmentsData.filter(p => p.daysInLocker >= 3 && p.status === 'delivered_to_locker').length} package(s) nearing expiry (3+ days)</span>
                 )}
               </div>
             </div>
@@ -67,7 +67,7 @@ export const PartnerPortalPage = ({
             <div className="lg:col-span-2 p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold" style={{ color: theme.text.primary }}>Shipment Trend</h3>
-                <div className="flex gap-3">{[{ l: 'Shipped', c: theme.accent.primary }, { l: 'Delivered', c: '#10b981' }, { l: 'Returned', c: '#ef4444' }].map(i => (<span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>))}</div>
+                <div className="flex gap-3">{[{ l: 'Shipped', c: theme.accent.primary }, { l: 'Delivered', c: '#81C995' }, { l: 'Returned', c: '#D48E8A' }].map(i => (<span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>))}</div>
               </div>
               <ResponsiveContainer width="100%" height={220}>
                 <AreaChart data={portalShipmentTrend}>
@@ -76,8 +76,8 @@ export const PartnerPortalPage = ({
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
                   <Area type="monotone" dataKey="shipped" name="Shipped" stroke={theme.accent.primary} fill={`${theme.accent.primary}20`} strokeWidth={2} />
-                  <Area type="monotone" dataKey="delivered" name="Delivered" stroke="#10b981" fill="transparent" strokeWidth={2} />
-                  <Area type="monotone" dataKey="returned" name="Returned" stroke="#ef4444" fill="transparent" strokeWidth={2} />
+                  <Area type="monotone" dataKey="delivered" name="Delivered" stroke="#81C995" fill="transparent" strokeWidth={2} />
+                  <Area type="monotone" dataKey="returned" name="Returned" stroke="#D48E8A" fill="transparent" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -85,12 +85,12 @@ export const PartnerPortalPage = ({
               <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Current Status</h3>
               <div className="space-y-3">
                 {[
-                  { label: 'In Locker', count: portalShipmentsData.filter(p => p.status === 'delivered_to_locker').length, color: '#10b981' },
-                  { label: 'In Transit', count: portalShipmentsData.filter(p => p.status.includes('transit')).length, color: '#3b82f6' },
+                  { label: 'In Locker', count: portalShipmentsData.filter(p => p.status === 'delivered_to_locker').length, color: '#81C995' },
+                  { label: 'In Transit', count: portalShipmentsData.filter(p => p.status.includes('transit')).length, color: '#7EA8C9' },
                   { label: 'At Warehouse', count: portalShipmentsData.filter(p => p.status === 'at_warehouse').length, color: '#6366f1' },
-                  { label: 'Pending', count: portalShipmentsData.filter(p => p.status === 'pending').length, color: '#f59e0b' },
-                  { label: 'Picked Up', count: portalShipmentsData.filter(p => p.status === 'picked_up').length, color: '#6b7280' },
-                  { label: 'Expired', count: portalShipmentsData.filter(p => p.status === 'expired').length, color: '#ef4444' },
+                  { label: 'Pending', count: portalShipmentsData.filter(p => p.status === 'pending').length, color: '#D4AA5A' },
+                  { label: 'Picked Up', count: portalShipmentsData.filter(p => p.status === 'picked_up').length, color: '#78716C' },
+                  { label: 'Expired', count: portalShipmentsData.filter(p => p.status === 'expired').length, color: '#D48E8A' },
                 ].map(s => (
                   <div key={s.label} className="flex items-center justify-between">
                     <span className="flex items-center gap-2 text-sm" style={{ color: theme.text.secondary }}><span className="w-3 h-3 rounded-full" style={{ backgroundColor: s.color }} />{s.label}</span>
@@ -167,7 +167,7 @@ export const PartnerPortalPage = ({
               <h4 className="text-sm font-semibold mb-3" style={{ color: theme.text.muted }}>API Usage Today</h4>
               <div className="mb-3">
                 <div className="flex justify-between mb-1"><span className="text-sm" style={{ color: theme.text.muted }}>Calls</span><span className="text-sm font-mono" style={{ color: theme.text.primary }}>342 / 1,000</span></div>
-                <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: '34.2%', backgroundColor: '#3b82f6' }} /></div>
+                <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: '34.2%', backgroundColor: '#7EA8C9' }} /></div>
               </div>
               <div className="space-y-2 text-sm">{[['Rate Limit', '1,000/day'], ['Last Call', '2 min ago'], ['Avg Response', '120ms'], ['Error Rate', '0.2%']].map(([l, v]) => (
                 <div key={l} className="flex justify-between"><span style={{ color: theme.text.muted }}>{l}</span><span className="font-medium" style={{ color: theme.text.primary }}>{v}</span></div>
@@ -233,23 +233,23 @@ export const PartnerPortalPage = ({
             {/* Bulk Upload */}
             <div className="space-y-6">
               <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}><FileDown size={20} style={{ color: '#8b5cf6' }} />Bulk Upload</h3>
+                <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}><FileDown size={20} style={{ color: '#B5A0D1' }} />Bulk Upload</h3>
                 <p className="text-sm mb-6" style={{ color: theme.text.muted }}>Upload a CSV file to create multiple shipments at once</p>
                 <div className="border-2 border-dashed rounded-2xl p-8 text-center" style={{ borderColor: theme.border.secondary }}>
                   <FileDown size={40} style={{ color: theme.icon.muted }} className="mx-auto mb-3" />
                   <p className="font-medium mb-1" style={{ color: theme.text.primary }}>Drop CSV file here or click to browse</p>
                   <p className="text-sm mb-4" style={{ color: theme.text.muted }}>Max 500 packages per upload • CSV or XLSX format</p>
-                  <button onClick={() => addToast({ type: 'info', message: 'File browser opened' })} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}>Choose File</button>
+                  <button onClick={() => addToast({ type: 'info', message: 'File browser opened' })} className="px-6 py-2.5 rounded-xl text-sm" style={{ backgroundColor: '#B5A0D1', color: '#1C1917' }}>Choose File</button>
                 </div>
                 <div className="flex items-center gap-4 mt-4">
                   <button onClick={() => addToast({ type: 'info', message: 'Downloading template...' })} className="text-sm flex items-center gap-1" style={{ color: theme.accent.primary }}><Download size={14} />Download CSV Template</button>
-                  <button onClick={() => addToast({ type: 'info', message: 'Opening field mapping guide' })} className="text-sm flex items-center gap-1" style={{ color: '#3b82f6' }}><Info size={14} />Field Guide</button>
+                  <button onClick={() => addToast({ type: 'info', message: 'Opening field mapping guide' })} className="text-sm flex items-center gap-1" style={{ color: '#7EA8C9' }}><Info size={14} />Field Guide</button>
                 </div>
               </div>
 
               {/* Rate Card */}
               <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><CreditCard size={20} style={{ color: '#f59e0b' }} />Your Rate Card</h3>
+                <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><CreditCard size={20} style={{ color: '#D4AA5A' }} />Your Rate Card</h3>
                 <table className="w-full">
                   <thead><tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                     <th className="text-left p-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Size</th>
@@ -288,7 +288,7 @@ export const PartnerPortalPage = ({
                   <td className="p-3"><span className="font-mono font-bold" style={{ color: theme.text.primary }}>{b.id}</span><br/><span className="text-xs" style={{ color: theme.text.muted }}>{b.packages} packages</span></td>
                   <td className="p-3 hidden md:table-cell" style={{ color: theme.text.secondary }}>{b.terminal}</td>
                   <td className="p-3"><StatusBadge status={b.status} /></td>
-                  <td className="p-3"><div className="flex items-center gap-2"><div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: `${(b.delivered / b.packages) * 100}%`, backgroundColor: '#10b981' }} /></div><span className="text-xs font-mono" style={{ color: theme.text.secondary }}>{b.delivered}/{b.packages}</span></div></td>
+                  <td className="p-3"><div className="flex items-center gap-2"><div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: `${(b.delivered / b.packages) * 100}%`, backgroundColor: '#81C995' }} /></div><span className="text-xs font-mono" style={{ color: theme.text.secondary }}>{b.delivered}/{b.packages}</span></div></td>
                   <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.muted }}>{b.eta}</span></td>
                 </tr>
               ))}
@@ -332,7 +332,7 @@ export const PartnerPortalPage = ({
                 <th className="text-right p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Actions</th>
               </tr></thead>
               <tbody>{portalShipmentsData.map(s => (
-                <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: s.status === 'expired' ? 'rgba(239,68,68,0.03)' : s.daysInLocker >= 3 && s.status === 'delivered_to_locker' ? 'rgba(245,158,11,0.03)' : 'transparent' }}>
+                <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: s.status === 'expired' ? 'rgba(212,142,138,0.03)' : s.daysInLocker >= 3 && s.status === 'delivered_to_locker' ? 'rgba(212,170,90,0.03)' : 'transparent' }}>
                   <td className="p-3"><span className="font-mono font-medium text-sm" style={{ color: theme.text.primary }}>{s.id}</span><br/><span className="text-xs font-mono" style={{ color: theme.text.muted }}>{s.waybill}</span></td>
                   <td className="p-3"><span className="text-sm" style={{ color: theme.text.primary }}>{s.customer}</span><br/><span className="text-xs" style={{ color: theme.text.muted }}>{s.phone}</span></td>
                   <td className="p-3 hidden md:table-cell">
@@ -347,12 +347,12 @@ export const PartnerPortalPage = ({
                     {s.locker === '-' && (() => { const t = terminalsData.find(t => t.name === s.destination); return t ? <p className="text-xs font-mono mt-0.5" style={{ color: theme.text.muted }}>{getTerminalAddress(t)}</p> : null; })()}
                   </td>
                   <td className="p-3"><StatusBadge status={s.status} /></td>
-                  <td className="p-3 hidden lg:table-cell">{s.pickupCode ? <span className="font-mono font-bold tracking-wider" style={{ color: '#10b981' }}>{s.pickupCode}</span> : '—'}</td>
+                  <td className="p-3 hidden lg:table-cell">{s.pickupCode ? <span className="font-mono font-bold tracking-wider" style={{ color: '#81C995' }}>{s.pickupCode}</span> : '—'}</td>
                   <td className="p-3 hidden lg:table-cell">{s.daysInLocker > 0 ? <span className={`text-sm font-medium ${s.daysInLocker >= 5 ? 'text-red-500' : s.daysInLocker >= 3 ? 'text-amber-500' : ''}`} style={{ color: s.daysInLocker < 3 ? theme.text.secondary : undefined }}>{s.daysInLocker}d</span> : '—'}</td>
                   <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.primary }}>GH₵ {s.value}</span></td>
                   <td className="p-3 text-right">
                     <button onClick={() => addToast({ type: 'info', message: `Tracking ${s.waybill}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Eye size={14} /></button>
-                    {s.status === 'delivered_to_locker' && <button onClick={() => addToast({ type: 'info', message: `Sending reminder to ${s.customer}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#f59e0b' }}><Bell size={14} /></button>}
+                    {s.status === 'delivered_to_locker' && <button onClick={() => addToast({ type: 'info', message: `Sending reminder to ${s.customer}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#D4AA5A' }}><Bell size={14} /></button>}
                     <button onClick={() => addToast({ type: 'info', message: 'Printing label...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Printer size={14} /></button>
                   </td>
                 </tr>
@@ -365,13 +365,13 @@ export const PartnerPortalPage = ({
       {/* ========== LOCKER MAP ========== */}
       {activeSubMenu === 'Locker Map' && (
         <div className="space-y-6">
-          <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.2)' }}>
-            <div className="flex items-center gap-2"><Info size={18} style={{ color: '#3b82f6' }} /><p className="text-sm" style={{ color: '#3b82f6' }}>Real-time locker availability across all terminals. Data refreshes every 5 minutes.</p></div>
+          <div className="p-4 rounded-2xl" style={{ backgroundColor: 'rgba(126,168,201,0.05)', border: '1px solid rgba(126,168,201,0.2)' }}>
+            <div className="flex items-center gap-2"><Info size={18} style={{ color: '#7EA8C9' }} /><p className="text-sm" style={{ color: '#7EA8C9' }}>Real-time locker availability across all terminals. Data refreshes every 5 minutes.</p></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {portalTerminalAvailability.map(t => {
               const utilizationPct = Math.round(((t.totalLockers - t.available) / t.totalLockers) * 100);
-              const utilizationColor = utilizationPct > 85 ? '#ef4444' : utilizationPct > 60 ? '#f59e0b' : '#10b981';
+              const utilizationColor = utilizationPct > 85 ? '#D48E8A' : utilizationPct > 60 ? '#D4AA5A' : '#81C995';
               return (
                 <div key={t.id} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                   <div className="p-5">
@@ -385,12 +385,12 @@ export const PartnerPortalPage = ({
                       <div className="flex justify-between mt-1 text-xs" style={{ color: theme.text.muted }}><span>{t.available} available</span><span>{t.totalLockers} total</span></div>
                     </div>
                     <div className="space-y-2">
-                      {[{ label: 'Small', ...t.small, color: '#10b981' }, { label: 'Medium', ...t.medium, color: '#3b82f6' }, { label: 'Large', ...t.large, color: '#8b5cf6' }, { label: 'XLarge', ...t.xlarge, color: '#f59e0b' }].map(s => (
+                      {[{ label: 'Small', ...t.small, color: '#81C995' }, { label: 'Medium', ...t.medium, color: '#7EA8C9' }, { label: 'Large', ...t.large, color: '#B5A0D1' }, { label: 'XLarge', ...t.xlarge, color: '#D4AA5A' }].map(s => (
                         <div key={s.label} className="flex items-center justify-between p-2 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
                           <span className="text-sm flex items-center gap-2" style={{ color: theme.text.secondary }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />{s.label}</span>
                           <div className="flex items-center gap-3">
                             <div className="w-12 h-1.5 rounded-full" style={{ backgroundColor: theme.border.primary }}><div className="h-full rounded-full" style={{ width: `${s.total > 0 ? ((s.total - s.available) / s.total) * 100 : 0}%`, backgroundColor: s.color }} /></div>
-                            <span className="font-mono text-sm w-12 text-right" style={{ color: s.available > 0 ? '#10b981' : '#ef4444' }}>{s.available}/{s.total}</span>
+                            <span className="font-mono text-sm w-12 text-right" style={{ color: s.available > 0 ? '#81C995' : '#D48E8A' }}>{s.available}/{s.total}</span>
                           </div>
                         </div>
                       ))}
@@ -418,10 +418,10 @@ export const PartnerPortalPage = ({
 
           {/* Pending Invoice Alert */}
           {portalInvoicesData.some(i => i.status === 'pending') && (
-            <div className="p-5 rounded-2xl flex flex-col md:flex-row md:items-center gap-4" style={{ backgroundColor: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.2)' }}>
-              <div className="flex items-center gap-3 flex-1"><AlertTriangle size={24} style={{ color: '#f59e0b' }} /><div><p className="font-semibold" style={{ color: '#f59e0b' }}>Invoice Due</p><p className="text-sm" style={{ color: theme.text.muted }}>{portalInvoicesData.find(i => i.status === 'pending')?.id} — GH₵ {portalInvoicesData.find(i => i.status === 'pending')?.total.toLocaleString()} due by {portalInvoicesData.find(i => i.status === 'pending')?.dueDate}</p></div></div>
+            <div className="p-5 rounded-2xl flex flex-col md:flex-row md:items-center gap-4" style={{ backgroundColor: 'rgba(212,170,90,0.05)', border: '1px solid rgba(212,170,90,0.2)' }}>
+              <div className="flex items-center gap-3 flex-1"><AlertTriangle size={24} style={{ color: '#D4AA5A' }} /><div><p className="font-semibold" style={{ color: '#D4AA5A' }}>Invoice Due</p><p className="text-sm" style={{ color: theme.text.muted }}>{portalInvoicesData.find(i => i.status === 'pending')?.id} — GH₵ {portalInvoicesData.find(i => i.status === 'pending')?.total.toLocaleString()} due by {portalInvoicesData.find(i => i.status === 'pending')?.dueDate}</p></div></div>
               <div className="flex gap-2">
-                <button onClick={() => addToast({ type: 'info', message: 'Opening payment portal...' })} className="px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#f59e0b' }}>Pay Now</button>
+                <button onClick={() => addToast({ type: 'info', message: 'Opening payment portal...' })} className="px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: '#D4AA5A', color: '#1C1917' }}>Pay Now</button>
                 <button onClick={() => addToast({ type: 'info', message: 'Downloading invoice PDF...' })} className="px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Download size={14} className="inline mr-1" />Download</button>
               </div>
             </div>
@@ -454,7 +454,7 @@ export const PartnerPortalPage = ({
                   <td className="p-4 text-right">
                     <button onClick={() => addToast({ type: 'info', message: `Downloading ${inv.id}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Download size={14} /></button>
                     <button onClick={() => addToast({ type: 'info', message: `Viewing ${inv.id}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Eye size={14} /></button>
-                    {inv.status === 'pending' && <button onClick={() => addToast({ type: 'info', message: 'Opening payment...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#f59e0b' }}><CreditCard size={14} /></button>}
+                    {inv.status === 'pending' && <button onClick={() => addToast({ type: 'info', message: 'Opening payment...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#D4AA5A' }}><CreditCard size={14} /></button>}
                   </td>
                 </tr>
               ))}
@@ -475,18 +475,18 @@ export const PartnerPortalPage = ({
 
           {/* API Key */}
           <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Key size={20} style={{ color: '#f59e0b' }} />Your API Keys</h3>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Key size={20} style={{ color: '#D4AA5A' }} />Your API Keys</h3>
             <div className="space-y-3">
               {apiKeysData.filter(k => k.partner === 'Jumia Ghana').map(k => (
                 <div key={k.id} className="flex flex-col md:flex-row md:items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2"><span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: k.env === 'production' ? 'rgba(16,185,129,0.1)' : 'rgba(245,158,11,0.1)', color: k.env === 'production' ? '#10b981' : '#f59e0b' }}>{k.env}</span><StatusBadge status={k.status === 'revoked' ? 'expired' : k.status} /></div>
+                    <div className="flex items-center gap-2"><span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: k.env === 'production' ? 'rgba(129,201,149,0.1)' : 'rgba(212,170,90,0.1)', color: k.env === 'production' ? '#81C995' : '#D4AA5A' }}>{k.env}</span><StatusBadge status={k.status === 'revoked' ? 'expired' : k.status} /></div>
                     <code className="text-sm mt-1 block font-mono" style={{ color: theme.text.primary }}>{k.key}</code>
                     <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Created: {k.created} • Last used: {k.lastUsed} • Calls today: {k.callsToday}/{k.rateLimit}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => addToast({ type: 'success', message: 'Key copied to clipboard' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}>Copy Key</button>
-                    <button onClick={() => addToast({ type: 'warning', message: 'Are you sure? This will invalidate the current key.' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>Regenerate</button>
+                    <button onClick={() => addToast({ type: 'success', message: 'Key copied to clipboard' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(126,168,201,0.1)', color: '#7EA8C9' }}>Copy Key</button>
+                    <button onClick={() => addToast({ type: 'warning', message: 'Are you sure? This will invalidate the current key.' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(212,170,90,0.1)', color: '#D4AA5A' }}>Regenerate</button>
                   </div>
                 </div>
               ))}
@@ -495,7 +495,7 @@ export const PartnerPortalPage = ({
 
           {/* API Playground */}
           <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Command size={20} style={{ color: '#8b5cf6' }} />API Playground</h3>
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}><Command size={20} style={{ color: '#B5A0D1' }} />API Playground</h3>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Endpoint</label>
@@ -509,7 +509,7 @@ export const PartnerPortalPage = ({
                   <option>GET /v2/invoices — List Invoices</option>
                 </select>
                 <label className="text-xs font-semibold uppercase block mt-4 mb-2" style={{ color: theme.text.muted }}>Request Body</label>
-                <pre className="p-4 rounded-xl text-sm overflow-x-auto" style={{ backgroundColor: theme.bg.primary, color: '#10b981', fontFamily: theme.font.mono, border: `1px solid ${theme.border.primary}` }}>{`{
+                <pre className="p-4 rounded-xl text-sm overflow-x-auto" style={{ backgroundColor: theme.bg.primary, color: '#81C995', fontFamily: theme.font.mono, border: `1px solid ${theme.border.primary}` }}>{`{
   "order_id": "JUM-2024-0461",
   "customer_name": "Kwame Mensah",
   "customer_phone": "+233551234567",
@@ -519,11 +519,11 @@ export const PartnerPortalPage = ({
   "cod": false,
   "notify": true
 }`}</pre>
-                <button onClick={() => addToast({ type: 'success', message: 'API call successful! Status: 201 Created' })} className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm" style={{ backgroundColor: '#8b5cf6' }}><Send size={16} />Send Request</button>
+                <button onClick={() => addToast({ type: 'success', message: 'API call successful! Status: 201 Created' })} className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: '#B5A0D1', color: '#1C1917' }}><Send size={16} />Send Request</button>
               </div>
               <div>
                 <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Response</label>
-                <pre className="p-4 rounded-xl text-sm overflow-x-auto h-full min-h-[280px]" style={{ backgroundColor: theme.bg.primary, color: '#3b82f6', fontFamily: theme.font.mono, border: `1px solid ${theme.border.primary}` }}>{`// 201 Created — 120ms
+                <pre className="p-4 rounded-xl text-sm overflow-x-auto h-full min-h-[280px]" style={{ backgroundColor: theme.bg.primary, color: '#7EA8C9', fontFamily: theme.font.mono, border: `1px solid ${theme.border.primary}` }}>{`// 201 Created — 120ms
 {
   "success": true,
   "data": {
@@ -546,7 +546,7 @@ export const PartnerPortalPage = ({
               <h3 className="font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}><Send size={18} />Webhook Delivery Log</h3>
               <div className="flex gap-2">
                 <button onClick={() => addToast({ type: 'info', message: 'Opening webhook settings' })} className="px-3 py-1.5 rounded-lg text-xs border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}><Cog size={12} className="inline mr-1" />Configure</button>
-                <button onClick={() => addToast({ type: 'info', message: 'Testing webhook endpoint...' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Test Webhook</button>
+                <button onClick={() => addToast({ type: 'info', message: 'Testing webhook endpoint...' })} className="px-3 py-1.5 rounded-lg text-xs" style={{ backgroundColor: 'rgba(129,201,149,0.1)', color: '#81C995' }}>Test Webhook</button>
               </div>
             </div>
             <table className="w-full"><thead><tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
@@ -558,15 +558,15 @@ export const PartnerPortalPage = ({
               <th className="text-right p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Actions</th>
             </tr></thead><tbody>
               {portalWebhookLogsData.map(w => (
-                <tr key={w.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: w.status !== 200 ? 'rgba(239,68,68,0.03)' : 'transparent' }}>
+                <tr key={w.id} style={{ borderBottom: `1px solid ${theme.border.primary}`, backgroundColor: w.status !== 200 ? 'rgba(212,142,138,0.03)' : 'transparent' }}>
                   <td className="p-3"><span className="font-mono text-sm" style={{ color: theme.text.primary }}>{w.event}</span></td>
-                  <td className="p-3"><span className={`px-2 py-0.5 rounded-full text-xs font-mono ${w.status === 200 ? 'text-emerald-500' : 'text-red-500'}`} style={{ backgroundColor: w.status === 200 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)' }}>{w.status}</span>{w.error && <span className="text-xs text-red-500 ml-1">{w.error}</span>}</td>
+                  <td className="p-3"><span className={`px-2 py-0.5 rounded-full text-xs font-mono ${w.status === 200 ? 'text-emerald-500' : 'text-red-500'}`} style={{ backgroundColor: w.status === 200 ? 'rgba(129,201,149,0.1)' : 'rgba(212,142,138,0.1)' }}>{w.status}</span>{w.error && <span className="text-xs text-red-500 ml-1">{w.error}</span>}</td>
                   <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{w.responseTime}</span></td>
                   <td className="p-3 hidden md:table-cell"><span className="text-xs font-mono" style={{ color: theme.text.muted }}>{w.timestamp.split(' ')[1]}</span></td>
                   <td className="p-3 hidden lg:table-cell"><span className="text-xs" style={{ color: theme.text.muted }}>{w.timestamp}</span></td>
                   <td className="p-3 text-right">
                     <button onClick={() => addToast({ type: 'info', message: `Payload: ${w.payload}` })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><Eye size={14} /></button>
-                    {w.status !== 200 && <button onClick={() => addToast({ type: 'info', message: 'Retrying webhook...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#f59e0b' }}><RefreshCw size={14} /></button>}
+                    {w.status !== 200 && <button onClick={() => addToast({ type: 'info', message: 'Retrying webhook...' })} className="p-2 rounded-lg hover:bg-white/5" style={{ color: '#D4AA5A' }}><RefreshCw size={14} /></button>}
                   </td>
                 </tr>
               ))}
@@ -580,12 +580,12 @@ export const PartnerPortalPage = ({
         <div className="space-y-6 max-w-4xl">
           {/* Contact Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[{ icon: Phone, label: 'Call Support', desc: '+233 55 139 9333', action: 'Call Now', color: '#3b82f6' }, { icon: MessageSquare, label: 'WhatsApp', desc: 'Chat with support team', action: 'Open Chat', color: '#25D366' }, { icon: Send, label: 'Email', desc: 'partners@locqar.com', action: 'Send Email', color: theme.accent.primary }].map(c => (
+            {[{ icon: Phone, label: 'Call Support', desc: '+233 55 139 9333', action: 'Call Now', color: '#7EA8C9' }, { icon: MessageSquare, label: 'WhatsApp', desc: 'Chat with support team', action: 'Open Chat', color: '#25D366' }, { icon: Send, label: 'Email', desc: 'partners@locqar.com', action: 'Send Email', color: theme.accent.primary }].map(c => (
               <div key={c.label} className="p-5 rounded-2xl border text-center" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: `${c.color}15` }}><c.icon size={24} style={{ color: c.color }} /></div>
                 <p className="font-semibold" style={{ color: theme.text.primary }}>{c.label}</p>
                 <p className="text-sm mt-1 mb-4" style={{ color: theme.text.muted }}>{c.desc}</p>
-                <button onClick={() => addToast({ type: 'info', message: c.action })} className="px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: c.color }}>{c.action}</button>
+                <button onClick={() => addToast({ type: 'info', message: c.action })} className="px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: c.color, color: '#1C1917' }}>{c.action}</button>
               </div>
             ))}
           </div>
@@ -636,7 +636,7 @@ export const PartnerPortalPage = ({
           <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Resources & Documentation</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {[{ icon: FileText, label: 'API Documentation', desc: 'Complete REST API reference', color: '#3b82f6' }, { icon: FileDown, label: 'CSV Template', desc: 'Bulk upload spreadsheet template', color: '#10b981' }, { icon: Cog, label: 'Webhook Guide', desc: 'Set up real-time event notifications', color: '#8b5cf6' }, { icon: CreditCard, label: 'Billing FAQ', desc: 'Payment methods, invoicing, refunds', color: '#f59e0b' }].map(r => (
+              {[{ icon: FileText, label: 'API Documentation', desc: 'Complete REST API reference', color: '#7EA8C9' }, { icon: FileDown, label: 'CSV Template', desc: 'Bulk upload spreadsheet template', color: '#81C995' }, { icon: Cog, label: 'Webhook Guide', desc: 'Set up real-time event notifications', color: '#B5A0D1' }, { icon: CreditCard, label: 'Billing FAQ', desc: 'Payment methods, invoicing, refunds', color: '#D4AA5A' }].map(r => (
                 <button key={r.label} onClick={() => addToast({ type: 'info', message: `Opening ${r.label}` })} className="flex items-center gap-4 p-4 rounded-xl border text-left hover:bg-white/5" style={{ borderColor: theme.border.primary }}>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${r.color}15` }}><r.icon size={20} style={{ color: r.color }} /></div>
                   <div><p className="font-medium text-sm" style={{ color: theme.text.primary }}>{r.label}</p><p className="text-xs" style={{ color: theme.text.muted }}>{r.desc}</p></div>

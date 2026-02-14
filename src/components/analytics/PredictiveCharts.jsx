@@ -27,8 +27,8 @@ export const PredictiveRevenueChart = () => {
                             <stop offset="95%" stopColor={theme.accent.primary} stopOpacity={0} />
                         </linearGradient>
                         <linearGradient id="colorProjected" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#B5A0D1" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="#B5A0D1" stopOpacity={0} />
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
@@ -51,7 +51,7 @@ export const PredictiveRevenueChart = () => {
                     <Area
                         type="monotone"
                         dataKey="projected"
-                        stroke="#8b5cf6"
+                        stroke="#B5A0D1"
                         strokeDasharray="5 5"
                         fillOpacity={1}
                         fill="url(#colorProjected)"
@@ -77,10 +77,10 @@ export const ChurnRiskHeatmap = () => {
     ];
 
     const getRiskColor = (score) => {
-        if (score >= 80) return '#ef4444'; // Red
-        if (score >= 50) return '#f59e0b'; // Orange
-        if (score >= 20) return '#3b82f6'; // Blue
-        return '#10b981'; // Green
+        if (score >= 80) return '#D48E8A'; // Red
+        if (score >= 50) return '#D4AA5A'; // Orange
+        if (score >= 20) return '#7EA8C9'; // Blue
+        return '#81C995'; // Green
     };
 
     return (
@@ -97,8 +97,8 @@ export const ChurnRiskHeatmap = () => {
                     {[row.lowTickets, row.midTickets, row.highTickets].map((score, i) => (
                         <div
                             key={i}
-                            className="h-10 rounded-lg flex items-center justify-center font-bold text-white transition-transform hover:scale-105 cursor-pointer relative group"
-                            style={{ backgroundColor: getRiskColor(score) }}
+                            className="h-10 rounded-lg flex items-center justify-center font-bold transition-transform hover:scale-105 cursor-pointer relative group"
+                            style={{ backgroundColor: getRiskColor(score), color: '#1C1917' }}
                         >
                             {score}%
                             <div className="absolute opacity-0 group-hover:opacity-100 bottom-full mb-2 bg-black/80 text-white text-xs p-2 rounded pointer-events-none whitespace-nowrap z-10">

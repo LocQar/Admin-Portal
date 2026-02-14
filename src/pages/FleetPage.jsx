@@ -151,8 +151,8 @@ export const FleetPage = () => {
                                                 {vehicle.mileage.toLocaleString()} km
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Fuel size={16} style={{ color: vehicle.fuelLevel < 30 ? '#ef4444' : theme.icon.primary }} />
-                                                <span style={{ color: vehicle.fuelLevel < 30 ? '#ef4444' : theme.text.secondary }}>{vehicle.fuelLevel}%</span>
+                                                <Fuel size={16} style={{ color: vehicle.fuelLevel < 30 ? '#D48E8A' : theme.icon.primary }} />
+                                                <span style={{ color: vehicle.fuelLevel < 30 ? '#D48E8A' : theme.text.secondary }}>{vehicle.fuelLevel}%</span>
                                             </div>
                                             <StatusBadge status={vehicle.status} />
                                         </div>
@@ -207,15 +207,15 @@ export const FleetPage = () => {
                                 </div>
                                 <div className="p-4 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                                     <p className="text-xs" style={{ color: theme.text.muted }}>Total Gallons</p>
-                                    <p className="text-xl font-bold" style={{ color: '#3b82f6' }}>{fuelLogsData.reduce((s, f) => s + f.gallons, 0)}</p>
+                                    <p className="text-xl font-bold" style={{ color: '#7EA8C9' }}>{fuelLogsData.reduce((s, f) => s + f.gallons, 0)}</p>
                                 </div>
                                 <div className="p-4 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                                     <p className="text-xs" style={{ color: theme.text.muted }}>Avg Cost/Gallon</p>
-                                    <p className="text-xl font-bold" style={{ color: '#f59e0b' }}>GH₵ {(fuelLogsData.reduce((s, f) => s + f.cost, 0) / fuelLogsData.reduce((s, f) => s + f.gallons, 0)).toFixed(0)}</p>
+                                    <p className="text-xl font-bold" style={{ color: '#D4AA5A' }}>GH₵ {(fuelLogsData.reduce((s, f) => s + f.cost, 0) / fuelLogsData.reduce((s, f) => s + f.gallons, 0)).toFixed(0)}</p>
                                 </div>
                                 <div className="p-4 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                                     <p className="text-xs" style={{ color: theme.text.muted }}>Entries</p>
-                                    <p className="text-xl font-bold" style={{ color: '#10b981' }}>{fuelLogsData.length}</p>
+                                    <p className="text-xl font-bold" style={{ color: '#81C995' }}>{fuelLogsData.length}</p>
                                 </div>
                             </div>
 
@@ -243,7 +243,7 @@ export const FleetPage = () => {
                                                 </td>
                                                 <td className="p-3" style={{ color: theme.text.secondary }}>{log.date}</td>
                                                 <td className="p-3">
-                                                    <span className="font-medium" style={{ color: '#3b82f6' }}>{log.gallons} gal</span>
+                                                    <span className="font-medium" style={{ color: '#7EA8C9' }}>{log.gallons} gal</span>
                                                 </td>
                                                 <td className="p-3">
                                                     <span className="font-medium" style={{ color: theme.accent.primary }}>GH₵ {log.cost}</span>
@@ -274,7 +274,7 @@ export const FleetPage = () => {
                                             <div key={vehicle.id} className="flex items-center gap-3">
                                                 <span className="text-sm w-28 shrink-0 truncate" style={{ color: theme.text.primary }}>{vehicle.plate}</span>
                                                 <div className="flex-1 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                                                    <div className="h-full rounded-full" style={{ width: `${maxCost > 0 ? (totalCost / maxCost) * 100 : 0}%`, backgroundColor: '#f59e0b' }} />
+                                                    <div className="h-full rounded-full" style={{ width: `${maxCost > 0 ? (totalCost / maxCost) * 100 : 0}%`, backgroundColor: '#D4AA5A' }} />
                                                 </div>
                                                 <span className="text-sm font-mono w-24 text-right" style={{ color: theme.text.secondary }}>GH₵ {totalCost.toLocaleString()}</span>
                                                 <span className="text-xs w-16 text-right" style={{ color: theme.text.muted }}>{totalGallons} gal</span>

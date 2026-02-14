@@ -58,7 +58,7 @@ export const GlobalSearchModal = ({ isOpen, onClose, onNavigate }) => {
                     <p className="px-3 py-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Customers</p>
                     {results.customers.map(c => (
                       <button key={c.id} onClick={() => { onNavigate('customers', c); onClose(); }} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-left">
-                        <Users size={18} style={{ color: '#3b82f6' }} />
+                        <Users size={18} style={{ color: '#7EA8C9' }} />
                         <div className="flex-1"><p className="text-sm" style={{ color: theme.text.primary }}>{c.name}</p><p className="text-xs" style={{ color: theme.text.muted }}>{c.email}</p></div>
                         <StatusBadge status={c.type} />
                       </button>
@@ -70,7 +70,7 @@ export const GlobalSearchModal = ({ isOpen, onClose, onNavigate }) => {
                     <p className="px-3 py-2 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Lockers</p>
                     {results.lockers.map(l => (
                       <button key={l.id} onClick={() => { onNavigate('lockers', l); onClose(); }} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-left">
-                        <Grid3X3 size={18} style={{ color: '#10b981' }} />
+                        <Grid3X3 size={18} style={{ color: '#81C995' }} />
                         <div className="flex-1"><p className="font-mono text-sm" style={{ color: theme.text.primary }}>{l.id}</p><p className="text-xs font-mono" style={{ color: theme.accent.primary }}>{getLockerAddress(l.id, l.terminal)}</p><p className="text-xs" style={{ color: theme.text.muted }}>{l.terminal}</p></div>
                         <StatusBadge status={l.status} />
                       </button>

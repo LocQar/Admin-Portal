@@ -2,7 +2,7 @@ import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const StatusPieChart = ({ data, theme }) => {
-  const COLORS = ['#4ADE80', '#60A5FA', '#FBBF24', '#F87171', '#9CA3AF'];
+  const COLORS = ['#81C995', '#7EA8C9', '#D4AA5A', '#D48E8A', '#A8A29E'];
 
   return (
     <ResponsiveContainer width="100%" height={200}>

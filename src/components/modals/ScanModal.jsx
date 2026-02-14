@@ -87,7 +87,7 @@ export const ScanModal = ({ isOpen, onClose, userRole, addToast, onViewPackage, 
             className="flex items-center gap-2 px-4 py-3 rounded-xl border"
             style={{
               backgroundColor: theme.bg.tertiary,
-              borderColor: result ? '#10b981' : searched && !result ? '#ef4444' : theme.border.primary
+              borderColor: result ? '#81C995' : searched && !result ? '#D48E8A' : theme.border.primary
             }}
           >
             <QrCode size={18} style={{ color: theme.icon.muted }} />

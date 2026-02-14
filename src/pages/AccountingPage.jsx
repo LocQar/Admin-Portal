@@ -54,7 +54,7 @@ export const AccountingPage = ({
             </div>
             <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
               {[['all', 'All'], ['completed', 'Completed'], ['pending', 'Pending']].map(([val, label]) => (
-                <button key={val} onClick={() => setTxnStatusFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: txnStatusFilter === val ? theme.accent.primary : 'transparent', color: txnStatusFilter === val ? '#fff' : theme.text.muted }}>{label}</button>
+                <button key={val} onClick={() => setTxnStatusFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: txnStatusFilter === val ? theme.accent.primary : 'transparent', color: txnStatusFilter === val ? theme.accent.contrast : theme.text.muted }}>{label}</button>
               ))}
             </div>
           </div>
@@ -100,7 +100,7 @@ export const AccountingPage = ({
             </div>
             <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
               {[['all', 'All'], ['paid', 'Paid'], ['pending', 'Pending'], ['overdue', 'Overdue']].map(([val, label]) => (
-                <button key={val} onClick={() => setInvStatusFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: invStatusFilter === val ? theme.accent.primary : 'transparent', color: invStatusFilter === val ? '#fff' : theme.text.muted }}>{label}</button>
+                <button key={val} onClick={() => setInvStatusFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: invStatusFilter === val ? theme.accent.primary : 'transparent', color: invStatusFilter === val ? theme.accent.contrast : theme.text.muted }}>{label}</button>
               ))}
             </div>
           </div>
@@ -149,10 +149,10 @@ export const AccountingPage = ({
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
-                  <Bar dataKey="standard" stackId="a" fill="#6b7280" radius={[0, 0, 0, 0]} name="Standard" />
-                  <Bar dataKey="express" stackId="a" fill="#f59e0b" name="Express" />
-                  <Bar dataKey="rush" stackId="a" fill="#ef4444" name="Rush" />
-                  <Bar dataKey="economy" stackId="a" fill="#10b981" radius={[4, 4, 0, 0]} name="Economy" />
+                  <Bar dataKey="standard" stackId="a" fill="#78716C" radius={[0, 0, 0, 0]} name="Standard" />
+                  <Bar dataKey="express" stackId="a" fill="#D4AA5A" name="Express" />
+                  <Bar dataKey="rush" stackId="a" fill="#D48E8A" name="Rush" />
+                  <Bar dataKey="economy" stackId="a" fill="#81C995" radius={[4, 4, 0, 0]} name="Economy" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -164,9 +164,9 @@ export const AccountingPage = ({
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-                  <Line type="monotone" dataKey="accra" stroke="#3b82f6" strokeWidth={2} name="Accra Mall" />
-                  <Line type="monotone" dataKey="achimota" stroke="#10b981" strokeWidth={2} name="Achimota Mall" />
-                  <Line type="monotone" dataKey="kotoka" stroke="#f59e0b" strokeWidth={2} name="Kotoka T3" />
+                  <Line type="monotone" dataKey="accra" stroke="#7EA8C9" strokeWidth={2} name="Accra Mall" />
+                  <Line type="monotone" dataKey="achimota" stroke="#81C995" strokeWidth={2} name="Achimota Mall" />
+                  <Line type="monotone" dataKey="kotoka" stroke="#D4AA5A" strokeWidth={2} name="Kotoka T3" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -176,9 +176,9 @@ export const AccountingPage = ({
               <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Invoice Aging</h3>
               <div className="space-y-3">
                 {[
-                  ['Current (0-30 days)', invoicesData.filter(i => i.status === 'paid').length, '#10b981'],
-                  ['Due (30-60 days)', invoicesData.filter(i => i.status === 'pending').length, '#f59e0b'],
-                  ['Overdue (60+ days)', invoicesData.filter(i => i.status === 'overdue').length, '#ef4444'],
+                  ['Current (0-30 days)', invoicesData.filter(i => i.status === 'paid').length, '#81C995'],
+                  ['Due (30-60 days)', invoicesData.filter(i => i.status === 'pending').length, '#D4AA5A'],
+                  ['Overdue (60+ days)', invoicesData.filter(i => i.status === 'overdue').length, '#D48E8A'],
                 ].map(([label, count, color]) => (
                   <div key={label} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: `${color}10` }}>
                     <span className="text-sm" style={{ color: theme.text.primary }}>{label}</span>

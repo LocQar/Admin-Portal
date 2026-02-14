@@ -160,7 +160,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-            <MessageSquare size={28} style={{ color: '#10b981' }} /> Notifications
+            <MessageSquare size={28} style={{ color: '#81C995' }} /> Notifications
           </h1>
           <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Message Center'} • Manage customer communications</p>
         </div>
@@ -168,7 +168,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <Download size={16} />Export
           </button>
-          <button onClick={() => setComposeOpen(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}>
+          <button onClick={() => setComposeOpen(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>
             <Send size={18} />Send Message
           </button>
         </div>
@@ -191,9 +191,9 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>Message Volume (Last 7 Days)</h3>
               <div className="flex gap-2 text-xs">
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#10b981' }} />SMS</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#8b5cf6' }} />WhatsApp</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#3b82f6' }} />Email</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#81C995' }} />SMS</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#B5A0D1' }} />WhatsApp</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#7EA8C9' }} />Email</span>
               </div>
             </div>
             {loading ? <TableSkeleton rows={3} cols={1} /> : (
@@ -203,9 +203,9 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                   <XAxis dataKey="date" tick={{ fill: theme.text.muted, fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fill: theme.text.muted, fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 8 }} />
-                  <Line type="monotone" dataKey="sms" stroke="#10b981" strokeWidth={2} dot={false} />
-                  <Line type="monotone" dataKey="whatsapp" stroke="#8b5cf6" strokeWidth={2} dot={false} />
-                  <Line type="monotone" dataKey="email" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="sms" stroke="#81C995" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="whatsapp" stroke="#B5A0D1" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="email" stroke="#7EA8C9" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             )}
@@ -262,7 +262,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                             </td>
                             <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{msg.template}</span></td>
                             <td className="p-3">
-                              <span className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full w-fit capitalize" style={{ backgroundColor: msg.channel === 'sms' ? '#10b98115' : msg.channel === 'whatsapp' ? '#8b5cf615' : '#3b82f615', color: msg.channel === 'sms' ? '#10b981' : msg.channel === 'whatsapp' ? '#8b5cf6' : '#3b82f6' }}>
+                              <span className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full w-fit capitalize" style={{ backgroundColor: msg.channel === 'sms' ? '#81C99515' : msg.channel === 'whatsapp' ? '#B5A0D115' : '#7EA8C915', color: msg.channel === 'sms' ? '#81C995' : msg.channel === 'whatsapp' ? '#B5A0D1' : '#7EA8C9' }}>
                                 {msg.channel === 'sms' ? <Smartphone size={12} /> : msg.channel === 'whatsapp' ? <MessageSquare size={12} /> : <Mail size={12} />}
                                 {msg.channel}
                               </span>
@@ -304,7 +304,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               <option value="whatsapp">WhatsApp</option>
               <option value="email">Email</option>
             </select>
-            <button onClick={() => setShowTemplateForm(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm whitespace-nowrap" style={{ backgroundColor: '#10b981' }}>
+            <button onClick={() => setShowTemplateForm(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>
               <Plus size={16} />New Template
             </button>
           </div>
@@ -320,7 +320,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h4 className="font-semibold" style={{ color: theme.text.primary }}>{template.name}</h4>
-                        <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: template.channel === 'sms' ? '#10b98115' : template.channel === 'whatsapp' ? '#8b5cf615' : '#3b82f615', color: template.channel === 'sms' ? '#10b981' : template.channel === 'whatsapp' ? '#8b5cf6' : '#3b82f6' }}>
+                        <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: template.channel === 'sms' ? '#81C99515' : template.channel === 'whatsapp' ? '#B5A0D115' : '#7EA8C915', color: template.channel === 'sms' ? '#81C995' : template.channel === 'whatsapp' ? '#B5A0D1' : '#7EA8C9' }}>
                           {template.channel}
                         </span>
                         <span className={`text-xs px-2 py-1 rounded-full ${template.active ? 'bg-green-500/10 text-green-500' : 'bg-gray-500/10 text-gray-500'}`}>
@@ -335,7 +335,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       </div>
                     </div>
                     <div className="flex gap-2 ml-4">
-                      <button onClick={() => handleToggleTemplate(template.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: template.active ? '#10b981' : theme.icon.muted }} title={template.active ? 'Deactivate' : 'Activate'}>
+                      <button onClick={() => handleToggleTemplate(template.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: template.active ? '#81C995' : theme.icon.muted }} title={template.active ? 'Deactivate' : 'Activate'}>
                         {template.active ? <Power size={18} /> : <PowerOff size={18} />}
                       </button>
                       <button onClick={() => handleDuplicateTemplate(template)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.icon.primary }} title="Duplicate">
@@ -344,7 +344,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       <button onClick={() => setSelectedTemplate(template)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.accent.primary }} title="Edit">
                         <Edit size={18} />
                       </button>
-                      <button onClick={() => addToast({ type: 'success', message: 'Template deleted' })} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: '#ef4444' }} title="Delete">
+                      <button onClick={() => addToast({ type: 'success', message: 'Template deleted' })} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: '#D48E8A' }} title="Delete">
                         <Trash2 size={18} />
                       </button>
                     </div>
@@ -364,7 +364,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
               <input type="text" placeholder="Search rules..." value={ruleSearch} onChange={(e) => setRuleSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }} />
             </div>
-            <button onClick={() => addToast({ type: 'info', message: 'New rule form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm whitespace-nowrap" style={{ backgroundColor: '#10b981' }}>
+            <button onClick={() => addToast({ type: 'info', message: 'New rule form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>
               <Plus size={16} />New Rule
             </button>
           </div>
@@ -395,13 +395,13 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       <button onClick={() => handleTestRule(rule)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.accent.primary }} title="Test Rule">
                         <Play size={18} />
                       </button>
-                      <button onClick={() => handleToggleRule(rule.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: rule.active ? '#f59e0b' : '#10b981' }} title={rule.active ? 'Pause' : 'Activate'}>
+                      <button onClick={() => handleToggleRule(rule.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: rule.active ? '#D4AA5A' : '#81C995' }} title={rule.active ? 'Pause' : 'Activate'}>
                         {rule.active ? <Pause size={18} /> : <Play size={18} />}
                       </button>
                       <button onClick={() => setSelectedRule(rule)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.accent.primary }} title="Edit">
                         <Edit size={18} />
                       </button>
-                      <button onClick={() => addToast({ type: 'success', message: 'Rule deleted' })} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: '#ef4444' }} title="Delete">
+                      <button onClick={() => addToast({ type: 'success', message: 'Rule deleted' })} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: '#D48E8A' }} title="Delete">
                         <Trash2 size={18} />
                       </button>
                     </div>
@@ -462,7 +462,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                         <td className="p-3"><span className="text-xs font-mono" style={{ color: theme.accent.primary }}>{msg.waybill}</span></td>
                         <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{msg.template}</span></td>
                         <td className="p-3">
-                          <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: msg.channel === 'sms' ? '#10b98115' : msg.channel === 'whatsapp' ? '#8b5cf615' : '#3b82f615', color: msg.channel === 'sms' ? '#10b981' : msg.channel === 'whatsapp' ? '#8b5cf6' : '#3b82f6' }}>
+                          <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: msg.channel === 'sms' ? '#81C99515' : msg.channel === 'whatsapp' ? '#B5A0D115' : '#7EA8C915', color: msg.channel === 'sms' ? '#81C995' : msg.channel === 'whatsapp' ? '#B5A0D1' : '#7EA8C9' }}>
                             {msg.channel}
                           </span>
                         </td>
@@ -491,21 +491,21 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
             <button
               onClick={() => setSettingsTab('channels')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'channels' ? 'border-blue-500' : 'border-transparent'}`}
-              style={{ color: settingsTab === 'channels' ? '#3b82f6' : theme.text.secondary }}
+              style={{ color: settingsTab === 'channels' ? '#7EA8C9' : theme.text.secondary }}
             >
               Channels & APIs
             </button>
             <button
               onClick={() => setSettingsTab('preferences')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'preferences' ? 'border-blue-500' : 'border-transparent'}`}
-              style={{ color: settingsTab === 'preferences' ? '#3b82f6' : theme.text.secondary }}
+              style={{ color: settingsTab === 'preferences' ? '#7EA8C9' : theme.text.secondary }}
             >
               Preferences
             </button>
             <button
               onClick={() => setSettingsTab('advanced')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'advanced' ? 'border-blue-500' : 'border-transparent'}`}
-              style={{ color: settingsTab === 'advanced' ? '#3b82f6' : theme.text.secondary }}
+              style={{ color: settingsTab === 'advanced' ? '#7EA8C9' : theme.text.secondary }}
             >
               Advanced
             </button>
@@ -671,8 +671,8 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
-                <CheckCircle2 size={16} style={{ color: '#10b981' }} />
-                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#10b981' }}>Connected</span></span>
+                <CheckCircle2 size={16} style={{ color: '#81C995' }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#81C995' }}>Connected</span></span>
                 <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
               </div>
             </div>
@@ -749,16 +749,16 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
-                <CheckCircle2 size={16} style={{ color: '#10b981' }} />
-                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#10b981' }}>Connected</span></span>
+                <CheckCircle2 size={16} style={{ color: '#81C995' }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#81C995' }}>Connected</span></span>
                 <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
               </div>
 
-              <div className="p-4 rounded-lg border-l-4" style={{ backgroundColor: theme.bg.tertiary, borderColor: '#3b82f6' }}>
+              <div className="p-4 rounded-lg border-l-4" style={{ backgroundColor: theme.bg.tertiary, borderColor: '#7EA8C9' }}>
                 <p className="text-sm font-medium mb-1" style={{ color: theme.text.primary }}>Message Templates</p>
                 <p className="text-xs" style={{ color: theme.text.muted }}>
                   WhatsApp requires pre-approved templates for business-initiated messages.
-                  <a href="#" className="ml-1" style={{ color: '#3b82f6' }}>Manage templates →</a>
+                  <a href="#" className="ml-1" style={{ color: '#7EA8C9' }}>Manage templates →</a>
                 </p>
               </div>
             </div>
@@ -860,15 +860,15 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
-                <CheckCircle2 size={16} style={{ color: '#10b981' }} />
-                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#10b981' }}>Connected</span></span>
+                <CheckCircle2 size={16} style={{ color: '#81C995' }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#81C995' }}>Connected</span></span>
                 <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
               </div>
             </div>
           </div>
 
           <div className="flex justify-end">
-            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl text-white font-medium" style={{ backgroundColor: '#10b981' }}>
+            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>
               Save Channel Settings
             </button>
           </div>
@@ -1031,7 +1031,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           </div>
 
           <div className="flex justify-end">
-            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl text-white font-medium" style={{ backgroundColor: '#10b981' }}>
+            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>
               Save Preferences
             </button>
           </div>
@@ -1078,7 +1078,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           </div>
 
           <div className="flex justify-end">
-            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl text-white font-medium" style={{ backgroundColor: '#10b981' }}>
+            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>
               Save Advanced Settings
             </button>
           </div>

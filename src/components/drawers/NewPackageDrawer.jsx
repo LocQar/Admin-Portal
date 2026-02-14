@@ -74,7 +74,7 @@ export const NewPackageDrawer = ({ isOpen, onClose }) => {
 
   const inputStyle = (field) => ({
     backgroundColor: 'transparent',
-    borderColor: errors[field] ? '#ef4444' : theme.border.primary,
+    borderColor: errors[field] ? '#D48E8A' : theme.border.primary,
     color: theme.text.primary,
   });
 
@@ -102,7 +102,7 @@ export const NewPackageDrawer = ({ isOpen, onClose }) => {
                 className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold"
                 style={{
                   backgroundColor: i < step ? theme.accent.primary : i === step ? theme.accent.light : theme.bg.tertiary,
-                  color: i < step ? '#fff' : i === step ? theme.accent.primary : theme.text.muted,
+                  color: i < step ? theme.accent.contrast : i === step ? theme.accent.primary : theme.text.muted,
                 }}
               >
                 {i < step ? <Check size={14} /> : i + 1}
@@ -160,7 +160,7 @@ export const NewPackageDrawer = ({ isOpen, onClose }) => {
                     style={{
                       backgroundColor: form.size === s ? theme.accent.light : theme.bg.tertiary,
                       color: form.size === s ? theme.accent.primary : theme.text.secondary,
-                      borderColor: form.size === s ? theme.accent.border : errors.size ? '#ef4444' : theme.border.primary,
+                      borderColor: form.size === s ? theme.accent.border : errors.size ? '#D48E8A' : theme.border.primary,
                     }}
                   >
                     {s}
@@ -171,7 +171,7 @@ export const NewPackageDrawer = ({ isOpen, onClose }) => {
             </div>
             <div>
               <label className={labelCls} style={{ color: theme.text.muted }}>Product / Service *</label>
-              <select value={form.product} onChange={e => update('product', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: errors.product ? '#ef4444' : theme.border.primary, color: theme.text.primary }}>
+              <select value={form.product} onChange={e => update('product', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: errors.product ? '#D48E8A' : theme.border.primary, color: theme.text.primary }}>
                 <option value="">Select service</option>
                 {PRODUCTS.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
@@ -213,7 +213,7 @@ export const NewPackageDrawer = ({ isOpen, onClose }) => {
                     className="w-full flex items-center gap-3 p-3 rounded-xl border text-left"
                     style={{
                       backgroundColor: form.deliveryMethod === m.id ? `${m.color}10` : theme.bg.tertiary,
-                      borderColor: form.deliveryMethod === m.id ? m.color : errors.deliveryMethod ? '#ef4444' : theme.border.primary,
+                      borderColor: form.deliveryMethod === m.id ? m.color : errors.deliveryMethod ? '#D48E8A' : theme.border.primary,
                     }}
                   >
                     <div className="p-2 rounded-lg" style={{ backgroundColor: `${m.color}20` }}>
@@ -230,7 +230,7 @@ export const NewPackageDrawer = ({ isOpen, onClose }) => {
             </div>
             <div>
               <label className={labelCls} style={{ color: theme.text.muted }}>Destination Terminal *</label>
-              <select value={form.destination} onChange={e => update('destination', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: errors.destination ? '#ef4444' : theme.border.primary, color: theme.text.primary }}>
+              <select value={form.destination} onChange={e => update('destination', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: errors.destination ? '#D48E8A' : theme.border.primary, color: theme.text.primary }}>
                 <option value="">Select terminal</option>
                 {terminalsData.filter(t => t.status === 'online').map(t => (
                   <option key={t.id} value={t.id}>{t.name} — {getTerminalAddress(t)}</option>

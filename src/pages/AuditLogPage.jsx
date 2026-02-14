@@ -27,21 +27,21 @@ const AUDIT_LOG_DATA = [
 ];
 
 const CATEGORIES = {
-  package: { label: 'Package', color: '#3b82f6', icon: Package },
-  locker: { label: 'Locker', color: '#10b981', icon: Lock },
-  user: { label: 'User', color: '#8b5cf6', icon: User },
-  security: { label: 'Security', color: '#ef4444', icon: Shield },
-  system: { label: 'System', color: '#6b7280', icon: Settings },
-  dispatch: { label: 'Dispatch', color: '#f59e0b', icon: Truck },
-  config: { label: 'Config', color: '#f59e0b', icon: Settings },
-  alert: { label: 'Alert', color: '#ef4444', icon: AlertTriangle },
-  support: { label: 'Support', color: '#10b981', icon: User },
+  package: { label: 'Package', color: '#7EA8C9', icon: Package },
+  locker: { label: 'Locker', color: '#81C995', icon: Lock },
+  user: { label: 'User', color: '#B5A0D1', icon: User },
+  security: { label: 'Security', color: '#D48E8A', icon: Shield },
+  system: { label: 'System', color: '#78716C', icon: Settings },
+  dispatch: { label: 'Dispatch', color: '#D4AA5A', icon: Truck },
+  config: { label: 'Config', color: '#D4AA5A', icon: Settings },
+  alert: { label: 'Alert', color: '#D48E8A', icon: AlertTriangle },
+  support: { label: 'Support', color: '#81C995', icon: User },
 };
 
 const SEVERITIES = {
-  info: { label: 'Info', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
-  warning: { label: 'Warning', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-  critical: { label: 'Critical', color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+  info: { label: 'Info', color: '#7EA8C9', bg: 'rgba(126,168,201,0.1)' },
+  warning: { label: 'Warning', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)' },
+  critical: { label: 'Critical', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)' },
 };
 
 export const AuditLogPage = ({ setShowExport }) => {
@@ -102,31 +102,31 @@ export const AuditLogPage = ({ setShowExport }) => {
         </div>
         <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <div className="flex items-center gap-2 mb-1">
-            <Shield size={16} style={{ color: '#3b82f6' }} />
+            <Shield size={16} style={{ color: '#7EA8C9' }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Info</span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: '#3b82f6' }}>{severityCounts.info}</p>
+          <p className="text-2xl font-bold" style={{ color: '#7EA8C9' }}>{severityCounts.info}</p>
         </div>
         <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle size={16} style={{ color: '#f59e0b' }} />
+            <AlertTriangle size={16} style={{ color: '#D4AA5A' }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Warnings</span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: '#f59e0b' }}>{severityCounts.warning}</p>
+          <p className="text-2xl font-bold" style={{ color: '#D4AA5A' }}>{severityCounts.warning}</p>
         </div>
         <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle size={16} style={{ color: '#ef4444' }} />
+            <AlertTriangle size={16} style={{ color: '#D48E8A' }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Critical</span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: '#ef4444' }}>{severityCounts.critical}</p>
+          <p className="text-2xl font-bold" style={{ color: '#D48E8A' }}>{severityCounts.critical}</p>
         </div>
         <div className="p-4 rounded-xl border hidden md:block" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <div className="flex items-center gap-2 mb-1">
-            <User size={16} style={{ color: '#8b5cf6' }} />
+            <User size={16} style={{ color: '#B5A0D1' }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Unique Users</span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: '#8b5cf6' }}>{new Set(AUDIT_LOG_DATA.map(l => l.user)).size}</p>
+          <p className="text-2xl font-bold" style={{ color: '#B5A0D1' }}>{new Set(AUDIT_LOG_DATA.map(l => l.user)).size}</p>
         </div>
       </div>
 
@@ -144,7 +144,7 @@ export const AuditLogPage = ({ setShowExport }) => {
         </div>
         <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
           {[['all', 'All'], ['info', 'Info'], ['warning', 'Warning'], ['critical', 'Critical']].map(([val, label]) => (
-            <button key={val} onClick={() => { setSeverityFilter(val); setCurrentPage(1); }} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: severityFilter === val ? theme.accent.primary : 'transparent', color: severityFilter === val ? '#fff' : theme.text.muted }}>
+            <button key={val} onClick={() => { setSeverityFilter(val); setCurrentPage(1); }} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: severityFilter === val ? theme.accent.primary : 'transparent', color: severityFilter === val ? theme.accent.contrast : theme.text.muted }}>
               {label}
             </button>
           ))}
@@ -202,7 +202,7 @@ export const AuditLogPage = ({ setShowExport }) => {
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: log.user === 'System' ? '#6b7280' : theme.accent.primary, color: log.user === 'System' ? '#fff' : theme.accent.contrast }}>
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: log.user === 'System' ? '#78716C' : theme.accent.primary, color: log.user === 'System' ? '#fff' : theme.accent.contrast }}>
                           {log.user === 'System' ? '⚙' : log.user.charAt(0)}
                         </div>
                         <div>

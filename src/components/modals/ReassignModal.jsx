@@ -94,7 +94,7 @@ export const ReassignModal = ({ isOpen, onClose, pkg, addToast }) => {
           <div>
             <label className="text-sm mb-2 block" style={{ color: theme.text.muted }}>Priority</label>
             <div className="flex gap-2">
-              {[['normal', 'Normal', '#6b7280'], ['high', 'High', '#f59e0b'], ['urgent', 'Urgent', '#ef4444']].map(([k, l, c]) => (
+              {[['normal', 'Normal', '#78716C'], ['high', 'High', '#D4AA5A'], ['urgent', 'Urgent', '#D48E8A']].map(([k, l, c]) => (
                 <button key={k} onClick={() => setPriority(k)} className="flex-1 py-2 rounded-xl text-sm" style={{ backgroundColor: priority === k ? c + '15' : theme.bg.tertiary, color: priority === k ? c : theme.text.secondary, border: priority === k ? `1px solid ${c}30` : `1px solid ${theme.border.primary}` }}>{l}</button>
               ))}
             </div>
@@ -110,7 +110,7 @@ export const ReassignModal = ({ isOpen, onClose, pkg, addToast }) => {
         {/* Actions */}
         <div className="flex gap-3 mt-6">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={handleSubmit} className="flex-1 py-2.5 rounded-xl text-white text-sm flex items-center justify-center gap-2" style={{ backgroundColor: '#f59e0b' }}>
+          <button onClick={handleSubmit} className="flex-1 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2" style={{ backgroundColor: '#D4AA5A', color: '#1C1917' }}>
             <RefreshCw size={16} /> Reassign Package
           </button>
         </div>

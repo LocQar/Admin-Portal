@@ -12,17 +12,17 @@ const BASE_RATE_CARD = [
 ];
 
 const SLA_TIERS = [
-  { id: 'SLA-STD', name: 'Standard', description: 'Next-day delivery to locker', hours: 24, multiplier: 1.0, color: '#6b7280', icon: '🕐' },
-  { id: 'SLA-EXP', name: 'Express', description: 'Same-day delivery (before 6PM)', hours: 8, multiplier: 1.5, color: '#f59e0b', icon: '⚡' },
-  { id: 'SLA-RUSH', name: 'Rush', description: 'Within 4 hours', hours: 4, multiplier: 2.2, color: '#ef4444', icon: '🔥' },
-  { id: 'SLA-ECO', name: 'Economy', description: '2-3 business days', hours: 72, multiplier: 0.75, color: '#10b981', icon: '🌿' },
+  { id: 'SLA-STD', name: 'Standard', description: 'Next-day delivery to locker', hours: 24, multiplier: 1.0, color: '#78716C', icon: '🕐' },
+  { id: 'SLA-EXP', name: 'Express', description: 'Same-day delivery (before 6PM)', hours: 8, multiplier: 1.5, color: '#D4AA5A', icon: '⚡' },
+  { id: 'SLA-RUSH', name: 'Rush', description: 'Within 4 hours', hours: 4, multiplier: 2.2, color: '#D48E8A', icon: '🔥' },
+  { id: 'SLA-ECO', name: 'Economy', description: '2-3 business days', hours: 72, multiplier: 0.75, color: '#81C995', icon: '🌿' },
 ];
 
 const DELIVERY_METHOD_PRICING = [
-  { id: 'DM-WL', method: 'warehouse_to_locker', label: 'Warehouse → Locker', baseMarkup: 0, description: 'Standard flow. Package from partner warehouse to locker terminal.', icon: Warehouse, color: '#3b82f6' },
-  { id: 'DM-DL', method: 'dropbox_to_locker', label: 'Dropbox → Locker', baseMarkup: 3, description: 'Customer drops off at dropbox, collected and routed to locker.', icon: Inbox, color: '#8b5cf6' },
-  { id: 'DM-LH', method: 'locker_to_home', label: 'Locker → Home', baseMarkup: 8, description: 'Last-mile home delivery from locker terminal. Includes driver dispatch.', icon: Home, color: '#10b981' },
-  { id: 'DM-WH', method: 'warehouse_to_home', label: 'Warehouse → Home (Direct)', baseMarkup: 12, description: 'Direct home delivery bypassing locker network. Premium service.', icon: Truck, color: '#f59e0b' },
+  { id: 'DM-WL', method: 'warehouse_to_locker', label: 'Warehouse → Locker', baseMarkup: 0, description: 'Standard flow. Package from partner warehouse to locker terminal.', icon: Warehouse, color: '#7EA8C9' },
+  { id: 'DM-DL', method: 'dropbox_to_locker', label: 'Dropbox → Locker', baseMarkup: 3, description: 'Customer drops off at dropbox, collected and routed to locker.', icon: Inbox, color: '#B5A0D1' },
+  { id: 'DM-LH', method: 'locker_to_home', label: 'Locker → Home', baseMarkup: 8, description: 'Last-mile home delivery from locker terminal. Includes driver dispatch.', icon: Home, color: '#81C995' },
+  { id: 'DM-WH', method: 'warehouse_to_home', label: 'Warehouse → Home (Direct)', baseMarkup: 12, description: 'Direct home delivery bypassing locker network. Premium service.', icon: Truck, color: '#D4AA5A' },
 ];
 
 const SURCHARGES = [
@@ -58,7 +58,7 @@ const VOLUME_DISCOUNT_TIERS = [
 const STORAGE_FREE_DAYS = { bronze: 3, silver: 3, gold: 5, enterprise: 7, individual: 5 };
 
 const TIERS = {
-  gold: { label: 'Gold', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
+  gold: { label: 'Gold', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
   silver: { label: 'Silver', color: '#a3a3a3', bg: 'rgba(163,163,163,0.1)', perks: 'Standard SLA, Email Support, Standard API Limits' },
   bronze: { label: 'Bronze', color: '#cd7c32', bg: 'rgba(205,124,50,0.1)', perks: 'Basic SLA, Ticket Support, Basic API Limits' },
 };
@@ -113,8 +113,8 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport }) => {
                     <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{r.dimensions}</span></td>
                     <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{r.maxWeight} kg</span></td>
                     <td className="p-3"><span className="font-medium" style={{ color: theme.accent.primary }}>GH₵ {r.basePrice.toFixed(2)}</span></td>
-                    <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: '#f59e0b' }}>GH₵ {(r.basePrice * 1.5).toFixed(2)}</span></td>
-                    <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: '#ef4444' }}>GH₵ {(r.basePrice * 2.2).toFixed(2)}</span></td>
+                    <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: '#D4AA5A' }}>GH₵ {(r.basePrice * 1.5).toFixed(2)}</span></td>
+                    <td className="p-3 hidden md:table-cell"><span className="text-sm" style={{ color: '#D48E8A' }}>GH₵ {(r.basePrice * 2.2).toFixed(2)}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -135,7 +135,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport }) => {
                 <p className="text-sm" style={{ color: theme.text.muted }}>{dm.description}</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold" style={{ color: dm.baseMarkup > 0 ? dm.color : '#10b981' }}>+{dm.baseMarkup}%</p>
+                <p className="text-2xl font-bold" style={{ color: dm.baseMarkup > 0 ? dm.color : '#81C995' }}>+{dm.baseMarkup}%</p>
                 <p className="text-xs" style={{ color: theme.text.muted }}>markup on base</p>
               </div>
             </div>
@@ -167,10 +167,10 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport }) => {
                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
                 <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
-                <Bar dataKey="standard" fill="#6b7280" radius={[0, 0, 0, 0]} name="Standard" />
-                <Bar dataKey="express" fill="#f59e0b" name="Express" />
-                <Bar dataKey="rush" fill="#ef4444" name="Rush" />
-                <Bar dataKey="economy" fill="#10b981" radius={[0, 0, 0, 0]} name="Economy" />
+                <Bar dataKey="standard" fill="#78716C" radius={[0, 0, 0, 0]} name="Standard" />
+                <Bar dataKey="express" fill="#D4AA5A" name="Express" />
+                <Bar dataKey="rush" fill="#D48E8A" name="Rush" />
+                <Bar dataKey="economy" fill="#81C995" radius={[0, 0, 0, 0]} name="Economy" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -203,7 +203,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport }) => {
                   <td className="p-3"><span className="text-sm capitalize" style={{ color: theme.text.secondary }}>{sc.type.replace('_', '/')}</span></td>
                   <td className="p-3"><span className="font-medium" style={{ color: theme.accent.primary }}>{sc.type === 'percentage' ? `${sc.value}%` : sc.type === 'per_day' && sc.tiers ? 'Tiered' : `GH₵ ${sc.value}`}</span></td>
                   <td className="p-3">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: sc.active ? '#10b98115' : '#ef444415', color: sc.active ? '#10b981' : '#ef4444' }}>{sc.active ? 'Active' : 'Inactive'}</span>
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: sc.active ? '#81C99515' : '#D48E8A15', color: sc.active ? '#81C995' : '#D48E8A' }}>{sc.active ? 'Active' : 'Inactive'}</span>
                   </td>
                 </tr>
               ))}
@@ -219,7 +219,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport }) => {
               <div key={vt.label} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
                 <p className="font-semibold" style={{ color: theme.text.primary }}>{vt.label}</p>
                 <p className="text-xs mb-2" style={{ color: theme.text.muted }}>{vt.min}–{vt.max === Infinity ? '∞' : vt.max} pkgs/mo</p>
-                <p className="text-3xl font-bold" style={{ color: i === 0 ? theme.text.muted : '#10b981' }}>{vt.discount}%</p>
+                <p className="text-3xl font-bold" style={{ color: i === 0 ? theme.text.muted : '#81C995' }}>{vt.discount}%</p>
                 <p className="text-xs" style={{ color: theme.text.muted }}>discount</p>
               </div>
             ))}
@@ -253,7 +253,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport }) => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm" style={{ color: theme.text.muted }}>Volume Discount</p>
-                  <p className="text-xl font-bold" style={{ color: '#10b981' }}>{pp.volumeDiscount}%</p>
+                  <p className="text-xl font-bold" style={{ color: '#81C995' }}>{pp.volumeDiscount}%</p>
                 </div>
               </div>
               <div className="p-4">

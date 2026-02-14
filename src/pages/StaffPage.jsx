@@ -55,7 +55,7 @@ export const StaffPage = ({
             </div>
             <div className="flex gap-1 p-1 rounded-xl flex-wrap" style={{ backgroundColor: theme.bg.tertiary }}>
               {[['all', 'All'], ...Object.entries(ROLES).map(([k, v]) => [k, v.name])].map(([val, label]) => (
-                <button key={val} onClick={() => setStaffRoleFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: staffRoleFilter === val ? theme.accent.primary : 'transparent', color: staffRoleFilter === val ? '#fff' : theme.text.muted }}>{label}</button>
+                <button key={val} onClick={() => setStaffRoleFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: staffRoleFilter === val ? theme.accent.primary : 'transparent', color: staffRoleFilter === val ? theme.accent.contrast : theme.text.muted }}>{label}</button>
               ))}
             </div>
           </div>
@@ -78,7 +78,7 @@ export const StaffPage = ({
                     <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold" style={{ backgroundColor: ROLES[s.role]?.color }}>{s.name.charAt(0)}</div>
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center font-semibold" style={{ backgroundColor: ROLES[s.role]?.color, color: '#1C1917' }}>{s.name.charAt(0)}</div>
                           <div>
                             <p style={{ color: theme.text.primary }}>{s.name}</p>
                             <p className="text-sm" style={{ color: theme.text.muted }}>{s.email}</p>
@@ -149,7 +149,7 @@ export const StaffPage = ({
                 <tr key={s.id} style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs" style={{ backgroundColor: ROLES[s.role]?.color }}>{s.name.charAt(0)}</div>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs" style={{ backgroundColor: ROLES[s.role]?.color, color: '#1C1917' }}>{s.name.charAt(0)}</div>
                       <span style={{ color: theme.text.primary }}>{s.name}</span>
                     </div>
                   </td>
@@ -157,7 +157,7 @@ export const StaffPage = ({
                   <td className="p-4">
                     <div className="flex items-center gap-2">
                       <div className="w-24 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                        <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? '#10b981' : s.performance > 75 ? '#f59e0b' : '#ef4444' }} />
+                        <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? '#81C995' : s.performance > 75 ? '#D4AA5A' : '#D48E8A' }} />
                       </div>
                       <span className="text-sm" style={{ color: theme.text.secondary }}>{s.performance}%</span>
                     </div>

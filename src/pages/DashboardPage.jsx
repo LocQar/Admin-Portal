@@ -107,7 +107,7 @@ export const DashboardPage = ({
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
             style={{
               backgroundColor: showMap ? theme.accent.primary : 'transparent',
-              color: showMap ? '#fff' : theme.text.secondary,
+              color: showMap ? theme.accent.contrast : theme.text.secondary,
               border: `1px solid ${showMap ? theme.accent.primary : theme.border.primary} `
             }}
           >
@@ -322,8 +322,8 @@ export const DashboardPage = ({
             <div className="flex gap-2">
               {[
                 { label: "Accra", color: theme.accent.primary },
-                { label: "Achimota", color: "#3b82f6" },
-                { label: "Kotoka", color: "#10b981" },
+                { label: "Achimota", color: "#7EA8C9" },
+                { label: "Kotoka", color: "#81C995" },
               ].map((l) => (
                 <span
                   key={l.label}
@@ -391,14 +391,14 @@ export const DashboardPage = ({
                 <Area
                   type="monotone"
                   dataKey="achimota"
-                  stroke="#3b82f6"
+                  stroke="#7EA8C9"
                   fill="transparent"
                   strokeWidth={2}
                 />
                 <Area
                   type="monotone"
                   dataKey="kotoka"
-                  stroke="#10b981"
+                  stroke="#81C995"
                   fill="transparent"
                   strokeWidth={2}
                 />
@@ -438,11 +438,11 @@ export const DashboardPage = ({
                         className="w-3 h-3 rounded-full"
                         style={{
                           backgroundColor: [
-                            "#10b981",
-                            "#3b82f6",
-                            "#f59e0b",
-                            "#ef4444",
-                            "#6b7280",
+                            "#81C995",
+                            "#7EA8C9",
+                            "#D4AA5A",
+                            "#D48E8A",
+                            "#78716C",
                           ][i],
                         }}
                       />

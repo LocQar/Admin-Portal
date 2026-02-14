@@ -110,9 +110,9 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case 'on_track': return '#10b981';
-      case 'warning': return '#f59e0b';
-      case 'critical': return '#ef4444';
+      case 'on_track': return '#81C995';
+      case 'warning': return '#D4AA5A';
+      case 'critical': return '#D48E8A';
       case 'breached': return '#7c3aed';
       default: return theme.text.muted;
     }
@@ -120,9 +120,9 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
 
   const getSeverityBadge = (severity) => {
     const colors = {
-      on_track: { bg: '#10b98110', text: '#10b981' },
-      warning: { bg: '#f59e0b10', text: '#f59e0b' },
-      critical: { bg: '#ef444410', text: '#ef4444' },
+      on_track: { bg: '#81C99510', text: '#81C995' },
+      warning: { bg: '#D4AA5A10', text: '#D4AA5A' },
+      critical: { bg: '#D48E8A10', text: '#D48E8A' },
       breached: { bg: '#7c3aed10', text: '#7c3aed' },
     };
     const color = colors[severity] || { bg: theme.bg.card, text: theme.text.muted };
@@ -132,9 +132,9 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
   const getPriorityBadge = (priority) => {
     const colors = {
       Critical: { bg: '#7c3aed10', text: '#7c3aed' },
-      High: { bg: '#ef444410', text: '#ef4444' },
-      Medium: { bg: '#f59e0b10', text: '#f59e0b' },
-      Low: { bg: '#10b98110', text: '#10b981' },
+      High: { bg: '#D48E8A10', text: '#D48E8A' },
+      Medium: { bg: '#D4AA5A10', text: '#D4AA5A' },
+      Low: { bg: '#81C99510', text: '#81C995' },
     };
     const color = colors[priority] || { bg: theme.bg.card, text: theme.text.muted };
     return <span className="px-2 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: color.bg, color: color.text }}>{priority}</span>;
@@ -142,8 +142,8 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
 
   const getStatusBadge = (status) => {
     const colors = {
-      Investigating: { bg: '#f59e0b10', text: '#f59e0b' },
-      Resolved: { bg: '#10b98110', text: '#10b981' },
+      Investigating: { bg: '#D4AA5A10', text: '#D4AA5A' },
+      Resolved: { bg: '#81C99510', text: '#81C995' },
       Closed: { bg: '#64748b10', text: '#64748b' },
     };
     const color = colors[status] || { bg: theme.bg.card, text: theme.text.muted };
@@ -165,7 +165,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-              <AlertOctagon size={28} style={{ color: '#ef4444' }} /> SLA Monitor
+              <AlertOctagon size={28} style={{ color: '#D48E8A' }} /> SLA Monitor
             </h1>
             <p style={{ color: theme.text.muted }}>Live Monitor • Real-time SLA Tracking</p>
           </div>
@@ -179,9 +179,9 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
         <div className="space-y-6">
           {/* Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <MetricCard title="On Track" value={onTrack} icon={CheckCircle2} theme={theme} loading={loading} color="#10b981" />
-            <MetricCard title="Warning" value={warning} icon={AlertTriangle} theme={theme} loading={loading} color="#f59e0b" />
-            <MetricCard title="Critical" value={critical} icon={AlertOctagon} theme={theme} loading={loading} color="#ef4444" />
+            <MetricCard title="On Track" value={onTrack} icon={CheckCircle2} theme={theme} loading={loading} color="#81C995" />
+            <MetricCard title="Warning" value={warning} icon={AlertTriangle} theme={theme} loading={loading} color="#D4AA5A" />
+            <MetricCard title="Critical" value={critical} icon={AlertOctagon} theme={theme} loading={loading} color="#D48E8A" />
             <MetricCard title="Breached" value={breached} icon={XCircle} theme={theme} loading={loading} color="#7c3aed" />
             <MetricCard title="Total Active" value={totalActive} icon={Eye} theme={theme} loading={loading} />
           </div>
@@ -254,7 +254,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                           <span className="text-sm" style={{ color: theme.text.secondary }}>{pkg.deadline}</span>
                         </td>
                         <td className="p-4">
-                          <span className="text-sm font-mono font-medium" style={{ color: pkg.timeRemaining.startsWith('-') ? '#ef4444' : theme.text.primary }}>
+                          <span className="text-sm font-mono font-medium" style={{ color: pkg.timeRemaining.startsWith('-') ? '#D48E8A' : theme.text.primary }}>
                             {pkg.timeRemaining}
                           </span>
                         </td>
@@ -301,12 +301,12 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-              <Bell size={28} style={{ color: '#f59e0b' }} /> Escalation Rules
+              <Bell size={28} style={{ color: '#D4AA5A' }} /> Escalation Rules
             </h1>
             <p style={{ color: theme.text.muted }}>Automated escalation rules for SLA breaches</p>
           </div>
           <div className="flex gap-2">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm text-white" style={{ backgroundColor: '#3b82f6' }}>
+            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: '#7EA8C9', color: '#1C1917' }}>
               <Plus size={16} />New Rule
             </button>
             <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
@@ -329,7 +329,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                       <h3 className="font-semibold text-base" style={{ color: theme.text.primary }}>{rule.name}</h3>
                       {getPriorityBadge(rule.priority)}
                       {rule.active ? (
-                        <span className="px-2 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: '#10b98110', color: '#10b981' }}>Active</span>
+                        <span className="px-2 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: '#81C99510', color: '#81C995' }}>Active</span>
                       ) : (
                         <span className="px-2 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: '#64748b10', color: '#64748b' }}>Paused</span>
                       )}
@@ -363,7 +363,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                       <Edit size={16} style={{ color: theme.icon.primary }} />
                     </button>
                     <button className="p-2 rounded-xl hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Delete">
-                      <Trash2 size={16} style={{ color: '#ef4444' }} />
+                      <Trash2 size={16} style={{ color: '#D48E8A' }} />
                     </button>
                   </div>
                 </div>
@@ -385,7 +385,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-              <TrendingUp size={28} style={{ color: '#10b981' }} /> SLA Compliance
+              <TrendingUp size={28} style={{ color: '#81C995' }} /> SLA Compliance
             </h1>
             <p style={{ color: theme.text.muted }}>Historical SLA compliance reports</p>
           </div>
@@ -405,8 +405,8 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 <p className="text-sm" style={{ color: theme.text.muted }}>Last 30 days</p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold" style={{ color: '#10b981' }}>{complianceData.overall.rate}%</div>
-                <div className="text-sm" style={{ color: '#10b981' }}>{complianceData.overall.trend}</div>
+                <div className="text-3xl font-bold" style={{ color: '#81C995' }}>{complianceData.overall.rate}%</div>
+                <div className="text-sm" style={{ color: '#81C995' }}>{complianceData.overall.trend}</div>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
@@ -414,13 +414,13 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 <div className="text-sm mb-1" style={{ color: theme.text.muted }}>Total Deliveries</div>
                 <div className="text-xl font-bold" style={{ color: theme.text.primary }}>{complianceData.overall.total.toLocaleString()}</div>
               </div>
-              <div className="p-4 rounded-xl" style={{ backgroundColor: '#10b98110' }}>
+              <div className="p-4 rounded-xl" style={{ backgroundColor: '#81C99510' }}>
                 <div className="text-sm mb-1" style={{ color: theme.text.muted }}>On Time</div>
-                <div className="text-xl font-bold" style={{ color: '#10b981' }}>{complianceData.overall.onTime.toLocaleString()}</div>
+                <div className="text-xl font-bold" style={{ color: '#81C995' }}>{complianceData.overall.onTime.toLocaleString()}</div>
               </div>
-              <div className="p-4 rounded-xl" style={{ backgroundColor: '#ef444410' }}>
+              <div className="p-4 rounded-xl" style={{ backgroundColor: '#D48E8A10' }}>
                 <div className="text-sm mb-1" style={{ color: theme.text.muted }}>Breached</div>
-                <div className="text-xl font-bold" style={{ color: '#ef4444' }}>{complianceData.overall.breached.toLocaleString()}</div>
+                <div className="text-xl font-bold" style={{ color: '#D48E8A' }}>{complianceData.overall.breached.toLocaleString()}</div>
               </div>
             </div>
           </div>
@@ -433,13 +433,13 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 <div key={service.service} className="p-4 rounded-xl" style={{ backgroundColor: theme.bg.hover }}>
                   <div className="flex items-center justify-between mb-3">
                     <span className="font-medium" style={{ color: theme.text.primary }}>{service.service}</span>
-                    <span className="font-bold" style={{ color: service.rate >= 95 ? '#10b981' : service.rate >= 90 ? '#f59e0b' : '#ef4444' }}>
+                    <span className="font-bold" style={{ color: service.rate >= 95 ? '#81C995' : service.rate >= 90 ? '#D4AA5A' : '#D48E8A' }}>
                       {service.rate}%
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: theme.bg.card }}>
-                      <div className="h-full rounded-full" style={{ width: `${service.rate}%`, backgroundColor: service.rate >= 95 ? '#10b981' : service.rate >= 90 ? '#f59e0b' : '#ef4444' }} />
+                      <div className="h-full rounded-full" style={{ width: `${service.rate}%`, backgroundColor: service.rate >= 95 ? '#81C995' : service.rate >= 90 ? '#D4AA5A' : '#D48E8A' }} />
                     </div>
                   </div>
                   <div className="flex items-center gap-4 mt-2 text-xs" style={{ color: theme.text.muted }}>
@@ -462,7 +462,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 <YAxis stroke={theme.text.muted} />
                 <Tooltip contentStyle={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }} />
                 <Legend />
-                <Line type="monotone" dataKey="rate" name="Compliance Rate (%)" stroke="#10b981" strokeWidth={3} />
+                <Line type="monotone" dataKey="rate" name="Compliance Rate (%)" stroke="#81C995" strokeWidth={3} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -477,8 +477,8 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 <YAxis stroke={theme.text.muted} />
                 <Tooltip contentStyle={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }} />
                 <Legend />
-                <Bar dataKey="onTime" name="On Time" fill="#10b981" />
-                <Bar dataKey="breached" name="Breached" fill="#ef4444" />
+                <Bar dataKey="onTime" name="On Time" fill="#81C995" />
+                <Bar dataKey="breached" name="Breached" fill="#D48E8A" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -577,7 +577,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                           <span className="text-sm" style={{ color: theme.text.secondary }}>{incident.breachTime}</span>
                         </td>
                         <td className="p-4">
-                          <span className="text-sm font-mono font-medium" style={{ color: '#ef4444' }}>{incident.delay}</span>
+                          <span className="text-sm font-mono font-medium" style={{ color: '#D48E8A' }}>{incident.delay}</span>
                         </td>
                         <td className="p-4">
                           <span className="text-sm" style={{ color: theme.text.secondary }}>{incident.reason}</span>

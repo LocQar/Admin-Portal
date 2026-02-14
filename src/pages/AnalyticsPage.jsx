@@ -54,13 +54,13 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
                 ]}
                 cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} dataKey="value"
               >
-                <Cell fill="#3b82f6" /><Cell fill="#8b5cf6" /><Cell fill="#10b981" />
+                <Cell fill="#7EA8C9" /><Cell fill="#B5A0D1" /><Cell fill="#81C995" />
               </Pie>
               <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
             </PieChart>
           </ResponsiveContainer>
           <div className="space-y-2 mt-2">
-            {[['Warehouse→Locker', '#3b82f6'], ['Dropbox→Locker', '#8b5cf6'], ['Locker→Home', '#10b981']].map(([l, c]) => (
+            {[['Warehouse→Locker', '#7EA8C9'], ['Dropbox→Locker', '#B5A0D1'], ['Locker→Home', '#81C995']].map(([l, c]) => (
               <div key={l} className="flex items-center gap-2 text-sm">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: c }} />
                 <span style={{ color: theme.text.secondary }}>{l}</span>
@@ -102,7 +102,7 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               <Bar dataKey="probability" radius={[0, 4, 4, 0]} barSize={20}>
                 {
                   [85, 45, 30, 15, 10].map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry > 80 ? '#ef4444' : entry > 40 ? '#f59e0b' : '#10b981'} />
+                    <Cell key={`cell-${index}`} fill={entry > 80 ? '#D48E8A' : entry > 40 ? '#D4AA5A' : '#81C995'} />
                   ))
                 }
               </Bar>
@@ -139,7 +139,7 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                          <div className="h-full rounded-full" style={{ width: `${util}%`, backgroundColor: util > 80 ? '#ef4444' : util > 60 ? '#f59e0b' : '#10b981' }} />
+                          <div className="h-full rounded-full" style={{ width: `${util}%`, backgroundColor: util > 80 ? '#D48E8A' : util > 60 ? '#D4AA5A' : '#81C995' }} />
                         </div>
                         <span className="text-xs font-medium" style={{ color: theme.text.secondary }}>{util}%</span>
                       </div>

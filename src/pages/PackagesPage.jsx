@@ -64,15 +64,15 @@ export const PackagesPage = ({
         </div>
         <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>In Locker</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#10b981' }}>{filteredPackages.filter(p => p.status === 'delivered_to_locker').length}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#81C995' }}>{filteredPackages.filter(p => p.status === 'delivered_to_locker').length}</p>
         </div>
         <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>In Transit</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#3b82f6' }}>{filteredPackages.filter(p => p.status.startsWith('in_transit')).length}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#7EA8C9' }}>{filteredPackages.filter(p => p.status.startsWith('in_transit')).length}</p>
         </div>
         <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Pending</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#f59e0b' }}>{filteredPackages.filter(p => ['pending', 'at_warehouse', 'at_dropbox'].includes(p.status)).length}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#D4AA5A' }}>{filteredPackages.filter(p => ['pending', 'at_warehouse', 'at_dropbox'].includes(p.status)).length}</p>
         </div>
         <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Total Value</p>

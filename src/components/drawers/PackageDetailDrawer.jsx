@@ -61,7 +61,7 @@ export const PackageDetailDrawer = ({ pkg, onClose, userRole, onReassign, onRetu
               <div>
                 <p className="text-sm font-medium text-emerald-500">Locker {pkg.locker}</p>
                 <p className="text-xs" style={{ color: theme.text.muted }}>{pkg.destination}</p>
-                <p className="text-xs font-mono" style={{ color: '#10b981' }}>{getLockerAddress(pkg.locker, pkg.destination)}</p>
+                <p className="text-xs font-mono" style={{ color: '#81C995' }}>{getLockerAddress(pkg.locker, pkg.destination)}</p>
               </div>
             </div>
             {pkg.daysInLocker > 0 && (

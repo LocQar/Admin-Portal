@@ -3,7 +3,7 @@ import { Shield } from 'lucide-react';
 import { ALL_STATUSES, DELIVERY_METHODS, ROLES } from '../../constants';
 
 export const StatusBadge = ({ status }) => {
-  const config = ALL_STATUSES[status] || { label: status, color: '#6b7280', bg: 'rgba(107, 114, 128, 0.1)' };
+  const config = ALL_STATUSES[status] || { label: status, color: '#78716C', bg: 'rgba(107, 114, 128, 0.1)' };
   return (
     <span
       className="px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap"

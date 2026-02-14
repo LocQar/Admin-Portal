@@ -40,9 +40,9 @@ export const LockersPage = ({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[
           ['Total', lockersData.length, Grid3X3, null],
-          ['Available', lockersData.filter(l => l.status === 'available').length, Unlock, '#10b981'],
-          ['Occupied', lockersData.filter(l => l.status === 'occupied').length, Package, '#3b82f6'],
-          ['Maintenance', lockersData.filter(l => l.status === 'maintenance').length, AlertTriangle, '#ef4444']
+          ['Available', lockersData.filter(l => l.status === 'available').length, Unlock, '#81C995'],
+          ['Occupied', lockersData.filter(l => l.status === 'occupied').length, Package, '#7EA8C9'],
+          ['Maintenance', lockersData.filter(l => l.status === 'maintenance').length, AlertTriangle, '#D48E8A']
         ].map(([l, v, I, c]) => (
           <div key={l} className="p-5 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
             <div className="flex justify-between">
@@ -67,19 +67,19 @@ export const LockersPage = ({
               </div>
               <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                 {[['all', 'All'], ['available', 'Available'], ['occupied', 'Occupied'], ['reserved', 'Reserved'], ['maintenance', 'Maint.']].map(([val, label]) => (
-                  <button key={val} onClick={() => setLockerStatusFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: lockerStatusFilter === val ? theme.accent.primary : 'transparent', color: lockerStatusFilter === val ? '#fff' : theme.text.muted }}>{label}</button>
+                  <button key={val} onClick={() => setLockerStatusFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: lockerStatusFilter === val ? theme.accent.primary : 'transparent', color: lockerStatusFilter === val ? theme.accent.contrast : theme.text.muted }}>{label}</button>
                 ))}
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
               <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                 {[['all', 'All Terminals'], ...terminalsData.map(t => [t.name, t.name])].map(([val, label]) => (
-                  <button key={val} onClick={() => setLockerTerminalFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap" style={{ backgroundColor: lockerTerminalFilter === val ? theme.accent.primary : 'transparent', color: lockerTerminalFilter === val ? '#fff' : theme.text.muted }}>{label}</button>
+                  <button key={val} onClick={() => setLockerTerminalFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap" style={{ backgroundColor: lockerTerminalFilter === val ? theme.accent.primary : 'transparent', color: lockerTerminalFilter === val ? theme.accent.contrast : theme.text.muted }}>{label}</button>
                 ))}
               </div>
               <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                 {[['all', 'All Sizes'], ['small', 'Small'], ['medium', 'Medium'], ['large', 'Large'], ['xlarge', 'XLarge']].map(([val, label]) => (
-                  <button key={val} onClick={() => setLockerSizeFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: lockerSizeFilter === val ? theme.accent.primary : 'transparent', color: lockerSizeFilter === val ? '#fff' : theme.text.muted }}>{label}</button>
+                  <button key={val} onClick={() => setLockerSizeFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: lockerSizeFilter === val ? theme.accent.primary : 'transparent', color: lockerSizeFilter === val ? theme.accent.contrast : theme.text.muted }}>{label}</button>
                 ))}
               </div>
             </div>

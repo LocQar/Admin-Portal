@@ -37,16 +37,16 @@ export const PackageStatusFlow = ({ status, deliveryMethod }) => {
               }}
             >
               {idx < currentStep ? (
-                <CheckCircle size={14} className="text-white" />
+                <CheckCircle size={14} style={{ color: '#1C1917' }} />
               ) : idx === currentStep ? (
-                <Circle size={8} className="text-white fill-white" />
+                <Circle size={8} style={{ color: '#1C1917', fill: '#1C1917' }} />
               ) : (
                 <Circle size={8} style={{ color: 'rgba(107, 114, 128, 0.5)' }} />
               )}
             </div>
             <span
               className={`text-xs mt-1 ${idx === currentStep ? 'font-medium' : ''}`}
-              style={{ color: idx <= currentStep ? method.color : '#6b7280' }}
+              style={{ color: idx <= currentStep ? method.color : '#78716C' }}
             >
               {step}
             </span>

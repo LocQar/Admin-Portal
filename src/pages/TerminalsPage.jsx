@@ -38,10 +38,10 @@ export const TerminalsPage = ({
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         {[
           ['Total Lockers', terminalsData.reduce((s, t) => s + t.totalLockers, 0), Grid3X3, null],
-          ['Available', terminalsData.reduce((s, t) => s + t.available, 0), Unlock, '#10b981'],
-          ['Occupied', terminalsData.reduce((s, t) => s + t.occupied, 0), Package, '#3b82f6'],
-          ['Maintenance', terminalsData.reduce((s, t) => s + t.maintenance, 0), Wrench, '#ef4444'],
-          ['Utilization', `${Math.round(terminalsData.reduce((s, t) => s + t.occupied, 0) / terminalsData.reduce((s, t) => s + t.totalLockers, 0) * 100)}%`, TrendingUp, '#8b5cf6'],
+          ['Available', terminalsData.reduce((s, t) => s + t.available, 0), Unlock, '#81C995'],
+          ['Occupied', terminalsData.reduce((s, t) => s + t.occupied, 0), Package, '#7EA8C9'],
+          ['Maintenance', terminalsData.reduce((s, t) => s + t.maintenance, 0), Wrench, '#D48E8A'],
+          ['Utilization', `${Math.round(terminalsData.reduce((s, t) => s + t.occupied, 0) / terminalsData.reduce((s, t) => s + t.totalLockers, 0) * 100)}%`, TrendingUp, '#B5A0D1'],
         ].map(([l, v, I, c]) => (
           <div key={l} className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
             <div className="flex items-center gap-2 mb-1">
@@ -60,7 +60,7 @@ export const TerminalsPage = ({
         </div>
         <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
           {[['all', 'All'], ['online', 'Online'], ['maintenance', 'Maintenance']].map(([val, label]) => (
-            <button key={val} onClick={() => setTerminalStatusFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: terminalStatusFilter === val ? theme.accent.primary : 'transparent', color: terminalStatusFilter === val ? '#fff' : theme.text.muted }}>{label}</button>
+            <button key={val} onClick={() => setTerminalStatusFilter(val)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={{ backgroundColor: terminalStatusFilter === val ? theme.accent.primary : 'transparent', color: terminalStatusFilter === val ? theme.accent.contrast : theme.text.muted }}>{label}</button>
           ))}
         </div>
       </div>
@@ -91,14 +91,14 @@ export const TerminalsPage = ({
               <div className="mb-3">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs" style={{ color: theme.text.muted }}>Utilization</span>
-                  <span className="text-xs font-medium" style={{ color: utilPct > 80 ? '#ef4444' : utilPct > 60 ? '#f59e0b' : '#10b981' }}>{utilPct}%</span>
+                  <span className="text-xs font-medium" style={{ color: utilPct > 80 ? '#D48E8A' : utilPct > 60 ? '#D4AA5A' : '#81C995' }}>{utilPct}%</span>
                 </div>
                 <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                  <div className="h-full rounded-full transition-all" style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? '#ef4444' : utilPct > 60 ? '#f59e0b' : '#10b981' }} />
+                  <div className="h-full rounded-full transition-all" style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? '#D48E8A' : utilPct > 60 ? '#D4AA5A' : '#81C995' }} />
                 </div>
               </div>
               <div className="grid grid-cols-4 gap-2 text-center">
-                {[['Total', t.totalLockers, null], ['Open', t.available, '#10b981'], ['In Use', t.occupied, '#3b82f6'], ['Maint.', t.maintenance, '#ef4444']].map(([l, v, c]) => (
+                {[['Total', t.totalLockers, null], ['Open', t.available, '#81C995'], ['In Use', t.occupied, '#7EA8C9'], ['Maint.', t.maintenance, '#D48E8A']].map(([l, v, c]) => (
                   <div key={l} className="p-2 rounded-lg" style={{ backgroundColor: c ? `${c}10` : theme.bg.tertiary }}>
                     <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
                     <p className="text-lg font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
@@ -159,7 +159,7 @@ export const TerminalsPage = ({
             <div className="p-4 rounded-xl border mb-4" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
               <h3 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Locker Breakdown</h3>
               <div className="grid grid-cols-4 gap-3 text-center mb-4">
-                {[['Total', selectedTerminal.totalLockers, null], ['Available', selectedTerminal.available, '#10b981'], ['Occupied', selectedTerminal.occupied, '#3b82f6'], ['Maint.', selectedTerminal.maintenance, '#ef4444']].map(([l, v, c]) => (
+                {[['Total', selectedTerminal.totalLockers, null], ['Available', selectedTerminal.available, '#81C995'], ['Occupied', selectedTerminal.occupied, '#7EA8C9'], ['Maint.', selectedTerminal.maintenance, '#D48E8A']].map(([l, v, c]) => (
                   <div key={l} className="p-3 rounded-xl" style={{ backgroundColor: c ? `${c}10` : theme.bg.tertiary }}>
                     <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
                     <p className="text-xl font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
@@ -170,10 +170,10 @@ export const TerminalsPage = ({
               <h4 className="text-xs font-semibold uppercase mb-2" style={{ color: theme.text.muted }}>Size Distribution (estimated)</h4>
               <div className="space-y-2">
                 {[
-                  { label: 'Small', pct: 30, color: '#10b981' },
-                  { label: 'Medium', pct: 35, color: '#3b82f6' },
-                  { label: 'Large', pct: 25, color: '#8b5cf6' },
-                  { label: 'XLarge', pct: 10, color: '#f59e0b' },
+                  { label: 'Small', pct: 30, color: '#81C995' },
+                  { label: 'Medium', pct: 35, color: '#7EA8C9' },
+                  { label: 'Large', pct: 25, color: '#B5A0D1' },
+                  { label: 'XLarge', pct: 10, color: '#D4AA5A' },
                 ].map(s => {
                   const count = Math.floor(selectedTerminal.totalLockers * s.pct / 100);
                   return (
@@ -199,8 +199,8 @@ export const TerminalsPage = ({
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-sm" style={{ color: theme.text.primary }}>{l.id}</span>
                         <span className="text-xs px-2 py-0.5 rounded-full capitalize" style={{
-                          backgroundColor: l.status === 'available' ? '#10b98115' : l.status === 'occupied' ? '#3b82f615' : l.status === 'reserved' ? '#f59e0b15' : '#ef444415',
-                          color: l.status === 'available' ? '#10b981' : l.status === 'occupied' ? '#3b82f6' : l.status === 'reserved' ? '#f59e0b' : '#ef4444'
+                          backgroundColor: l.status === 'available' ? '#81C99515' : l.status === 'occupied' ? '#7EA8C915' : l.status === 'reserved' ? '#D4AA5A15' : '#D48E8A15',
+                          color: l.status === 'available' ? '#81C995' : l.status === 'occupied' ? '#7EA8C9' : l.status === 'reserved' ? '#D4AA5A' : '#D48E8A'
                         }}>{l.status}</span>
                       </div>
                       <div className="flex items-center gap-3 text-xs" style={{ color: theme.text.muted }}>

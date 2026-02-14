@@ -62,7 +62,7 @@ export const ReturnModal = ({ isOpen, onClose, pkg, addToast }) => {
             <label className="text-sm mb-2 block" style={{ color: theme.text.muted }}>Reason for Return</label>
             <div className="grid grid-cols-2 gap-2">
               {RETURN_REASONS.map(r => (
-                <button key={r.id} onClick={() => setReturnReason(r.id)} className="p-3 rounded-xl text-left text-sm" style={{ backgroundColor: returnReason === r.id ? 'rgba(239, 68, 68, 0.08)' : theme.bg.tertiary, color: returnReason === r.id ? '#ef4444' : theme.text.secondary, border: returnReason === r.id ? '1px solid rgba(239, 68, 68, 0.3)' : `1px solid ${theme.border.primary}` }}>
+                <button key={r.id} onClick={() => setReturnReason(r.id)} className="p-3 rounded-xl text-left text-sm" style={{ backgroundColor: returnReason === r.id ? 'rgba(239, 68, 68, 0.08)' : theme.bg.tertiary, color: returnReason === r.id ? '#D48E8A' : theme.text.secondary, border: returnReason === r.id ? '1px solid rgba(239, 68, 68, 0.3)' : `1px solid ${theme.border.primary}` }}>
                   <p className="font-medium text-xs">{r.label}</p>
                   <p className="text-xs mt-0.5 opacity-70">{r.desc}</p>
                 </button>
@@ -90,7 +90,7 @@ export const ReturnModal = ({ isOpen, onClose, pkg, addToast }) => {
             </div>
             <div className="flex items-center gap-3">
               <span className={`text-sm font-semibold ${waiveReturn ? 'line-through opacity-50' : ''}`} style={{ color: theme.text.primary }}>GH₵ 8.00</span>
-              <button onClick={() => setWaiveReturn(!waiveReturn)} className="px-2.5 py-1 rounded-lg text-xs" style={{ backgroundColor: waiveReturn ? 'rgba(16, 185, 129, 0.1)' : theme.bg.tertiary, color: waiveReturn ? '#10b981' : theme.text.muted, border: waiveReturn ? '1px solid rgba(16, 185, 129, 0.3)' : `1px solid ${theme.border.primary}` }}>
+              <button onClick={() => setWaiveReturn(!waiveReturn)} className="px-2.5 py-1 rounded-lg text-xs" style={{ backgroundColor: waiveReturn ? 'rgba(16, 185, 129, 0.1)' : theme.bg.tertiary, color: waiveReturn ? '#81C995' : theme.text.muted, border: waiveReturn ? '1px solid rgba(16, 185, 129, 0.3)' : `1px solid ${theme.border.primary}` }}>
                 {waiveReturn ? 'Waived' : 'Waive'}
               </button>
             </div>

@@ -20,7 +20,7 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const CustomMarker = ({ position, children, onClick, color = '#3b82f6' }) => {
+const CustomMarker = ({ position, children, onClick, color = '#7EA8C9' }) => {
     const iconMarkup = `
     <div style="
       background-color: ${color};
@@ -62,12 +62,12 @@ export const OperationsMap = () => {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'online': return '#10b981';
-            case 'active': return '#10b981';
-            case 'offline': return '#ef4444';
-            case 'maintenance': return '#ef4444';
-            case 'busy': return '#f59e0b';
-            default: return '#3b82f6';
+            case 'online': return '#81C995';
+            case 'active': return '#81C995';
+            case 'offline': return '#D48E8A';
+            case 'maintenance': return '#D48E8A';
+            case 'busy': return '#D4AA5A';
+            default: return '#7EA8C9';
         }
     };
 
@@ -135,7 +135,7 @@ export const OperationsMap = () => {
                             position={[lat, lng]}
                             icon={divIcon({
                                 className: 'bg-transparent',
-                                html: `<div style="background-color: #3b82f6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                                html: `<div style="background-color: #7EA8C9; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="1" y="5" rx="4"/><path d="M17 5v5a2 2 0 0 0 2 2h2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4h2a2 2 0 0 0 2-2V5"/></svg>
                                        </div>`,
                                 iconSize: [28, 28],
@@ -168,7 +168,7 @@ export const OperationsMap = () => {
                                 position={[lat, lng]}
                                 icon={divIcon({
                                     className: 'bg-transparent',
-                                    html: `<div style="background-color: ${isFull ? '#ef4444' : '#8b5cf6'}; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; border: 2px solid white;">
+                                    html: `<div style="background-color: ${isFull ? '#D48E8A' : '#B5A0D1'}; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; border: 2px solid white;">
                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
                                            </div>`,
                                     iconSize: [24, 24],
@@ -183,7 +183,7 @@ export const OperationsMap = () => {
                                     </div>
                                 </Popup>
                             </Marker>
-                            {isFull && <Circle center={[lat, lng]} radius={500} pathOptions={{ color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.2 }} />}
+                            {isFull && <Circle center={[lat, lng]} radius={500} pathOptions={{ color: '#D48E8A', fillColor: '#D48E8A', fillOpacity: 0.2 }} />}
                         </React.Fragment>
                     );
                 })}

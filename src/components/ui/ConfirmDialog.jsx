@@ -3,9 +3,9 @@ import { AlertTriangle, Info, X } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const variantConfig = {
-  danger: { color: '#ef4444', icon: AlertTriangle },
-  warning: { color: '#f59e0b', icon: AlertTriangle },
-  info: { color: '#3b82f6', icon: Info },
+  danger: { color: '#D48E8A', icon: AlertTriangle },
+  warning: { color: '#D4AA5A', icon: AlertTriangle },
+  info: { color: '#7EA8C9', icon: Info },
 };
 
 export const ConfirmDialog = ({
@@ -71,8 +71,8 @@ export const ConfirmDialog = ({
           </button>
           <button
             onClick={() => { onConfirm(); onClose(); }}
-            className="flex-1 py-2.5 rounded-xl text-white text-sm font-medium transition-colors hover:opacity-90"
-            style={{ backgroundColor: config.color }}
+            className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-colors hover:opacity-90"
+            style={{ backgroundColor: config.color, color: '#1C1917' }}
           >
             {confirmLabel}
           </button>

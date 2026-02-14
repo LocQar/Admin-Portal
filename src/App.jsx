@@ -90,12 +90,12 @@ const ToastContext = createContext();
 // ============ ROLES & PERMISSIONS ============
 
 const ROLES = {
-  SUPER_ADMIN: { id: 'super_admin', name: 'Super Admin', level: 100, color: '#6366F1', permissions: ['*'] },
-  ADMIN: { id: 'admin', name: 'Administrator', level: 80, color: '#FBBF24', permissions: ['dashboard.*', 'packages.*', 'lockers.*', 'dropbox.*', 'terminals.*', 'customers.*', 'staff.*', 'reports.*', 'dispatch.*', 'accounting.*'] },
-  MANAGER: { id: 'manager', name: 'Branch Manager', level: 60, color: '#60A5FA', permissions: ['dashboard.view', 'packages.*', 'dropbox.*', 'lockers.*', 'terminals.view', 'customers.*', 'staff.view', 'reports.view', 'dispatch.*'] },
-  AGENT: { id: 'agent', name: 'Field Agent', level: 40, color: '#4ADE80', permissions: ['dashboard.view', 'packages.view', 'packages.scan', 'packages.receive', 'dropbox.view', 'dropbox.collect', 'lockers.view', 'lockers.open', 'dispatch.view'] },
-  SUPPORT: { id: 'support', name: 'Support', level: 30, color: '#A78BFA', permissions: ['dashboard.view', 'packages.view', 'packages.track', 'customers.*', 'tickets.*'] },
-  VIEWER: { id: 'viewer', name: 'View Only', level: 10, color: '#9CA3AF', permissions: ['dashboard.view', 'packages.view', 'lockers.view'] },
+  SUPER_ADMIN: { id: 'super_admin', name: 'Super Admin', level: 100, color: '#7EA8C9', permissions: ['*'] },
+  ADMIN: { id: 'admin', name: 'Administrator', level: 80, color: '#D4AA5A', permissions: ['dashboard.*', 'packages.*', 'lockers.*', 'dropbox.*', 'terminals.*', 'customers.*', 'staff.*', 'reports.*', 'dispatch.*', 'accounting.*'] },
+  MANAGER: { id: 'manager', name: 'Branch Manager', level: 60, color: '#81C995', permissions: ['dashboard.view', 'packages.*', 'dropbox.*', 'lockers.*', 'terminals.view', 'customers.*', 'staff.view', 'reports.view', 'dispatch.*'] },
+  AGENT: { id: 'agent', name: 'Field Agent', level: 40, color: '#B5A0D1', permissions: ['dashboard.view', 'packages.view', 'packages.scan', 'packages.receive', 'dropbox.view', 'dropbox.collect', 'lockers.view', 'lockers.open', 'dispatch.view'] },
+  SUPPORT: { id: 'support', name: 'Support', level: 30, color: '#D48E8A', permissions: ['dashboard.view', 'packages.view', 'packages.track', 'customers.*', 'tickets.*'] },
+  VIEWER: { id: 'viewer', name: 'View Only', level: 10, color: '#A8A29E', permissions: ['dashboard.view', 'packages.view', 'lockers.view'] },
 };
 
 const resolveRole = (userRole, customRoles = []) => {
@@ -123,48 +123,48 @@ const SHORTCUTS = [
 
 // ============ CONSTANTS ============
 const DELIVERY_METHODS = {
-  warehouse_to_locker: { id: 'warehouse_to_locker', label: 'Warehouse → Locker', icon: Warehouse, color: '#60A5FA' },
-  dropbox_to_locker: { id: 'dropbox_to_locker', label: 'Dropbox → Locker', icon: Inbox, color: '#A78BFA' },
-  locker_to_home: { id: 'locker_to_home', label: 'Locker → Home', icon: Home, color: '#4ADE80' },
+  warehouse_to_locker: { id: 'warehouse_to_locker', label: 'Warehouse → Locker', icon: Warehouse, color: '#7EA8C9' },
+  dropbox_to_locker: { id: 'dropbox_to_locker', label: 'Dropbox → Locker', icon: Inbox, color: '#B5A0D1' },
+  locker_to_home: { id: 'locker_to_home', label: 'Locker → Home', icon: Home, color: '#81C995' },
 };
 
 const PACKAGE_STATUSES = {
-  pending: { label: 'Pending', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  pending: { label: 'Pending', color: '#D4AA5A', bg: 'rgba(212, 170, 90, 0.07)' },
   at_warehouse: { label: 'At Warehouse', color: '#818CF8', bg: 'rgba(129, 140, 248, 0.07)' },
-  at_dropbox: { label: 'At Dropbox', color: '#A78BFA', bg: 'rgba(167, 139, 250, 0.07)' },
-  in_transit_to_locker: { label: 'Transit → Locker', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
+  at_dropbox: { label: 'At Dropbox', color: '#B5A0D1', bg: 'rgba(181, 160, 209, 0.07)' },
+  in_transit_to_locker: { label: 'Transit → Locker', color: '#7EA8C9', bg: 'rgba(126, 168, 201, 0.07)' },
   in_transit_to_home: { label: 'Transit → Home', color: '#22D3EE', bg: 'rgba(34, 211, 238, 0.07)' },
-  delivered_to_locker: { label: 'In Locker', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
-  delivered_to_home: { label: 'Delivered', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
-  picked_up: { label: 'Picked Up', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
-  expired: { label: 'Expired', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
+  delivered_to_locker: { label: 'In Locker', color: '#81C995', bg: 'rgba(129, 201, 149, 0.07)' },
+  delivered_to_home: { label: 'Delivered', color: '#81C995', bg: 'rgba(129, 201, 149, 0.07)' },
+  picked_up: { label: 'Picked Up', color: '#A8A29E', bg: 'rgba(168, 162, 158, 0.07)' },
+  expired: { label: 'Expired', color: '#D48E8A', bg: 'rgba(212, 142, 138, 0.07)' },
 };
 
 const ALL_STATUSES = {
   ...PACKAGE_STATUSES,
-  available: { label: 'Available', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
-  occupied: { label: 'Occupied', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
-  reserved: { label: 'Reserved', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
-  maintenance: { label: 'Maintenance', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
-  active: { label: 'Active', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
-  inactive: { label: 'Inactive', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
-  offline: { label: 'Offline', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
-  online: { label: 'Online', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
-  on_delivery: { label: 'On Delivery', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
-  open: { label: 'Open', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
-  in_progress: { label: 'In Progress', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
-  completed: { label: 'Completed', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
-  paid: { label: 'Paid', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
-  overdue: { label: 'Overdue', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
-  full: { label: 'Full', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
-  individual: { label: 'Individual', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.07)' },
-  b2b: { label: 'B2B Partner', color: '#A78BFA', bg: 'rgba(167, 139, 250, 0.07)' },
-  high: { label: 'High', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
-  medium: { label: 'Medium', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
-  low: { label: 'Low', color: '#4ADE80', bg: 'rgba(74, 222, 128, 0.07)' },
-  failed: { label: 'Failed', color: '#F87171', bg: 'rgba(248, 113, 113, 0.07)' },
-  refunded: { label: 'Refunded', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.07)' },
-  suspended: { label: 'Suspended', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.07)' },
+  available: { label: 'Available', color: '#81C995', bg: 'rgba(129, 201, 149, 0.07)' },
+  occupied: { label: 'Occupied', color: '#7EA8C9', bg: 'rgba(126, 168, 201, 0.07)' },
+  reserved: { label: 'Reserved', color: '#B5A0D1', bg: 'rgba(181, 160, 209, 0.07)' },
+  maintenance: { label: 'Maintenance', color: '#D48E8A', bg: 'rgba(212, 142, 138, 0.07)' },
+  active: { label: 'Active', color: '#81C995', bg: 'rgba(129, 201, 149, 0.07)' },
+  inactive: { label: 'Inactive', color: '#A8A29E', bg: 'rgba(168, 162, 158, 0.07)' },
+  offline: { label: 'Offline', color: '#A8A29E', bg: 'rgba(168, 162, 158, 0.07)' },
+  online: { label: 'Online', color: '#81C995', bg: 'rgba(129, 201, 149, 0.07)' },
+  on_delivery: { label: 'On Delivery', color: '#7EA8C9', bg: 'rgba(126, 168, 201, 0.07)' },
+  open: { label: 'Open', color: '#D48E8A', bg: 'rgba(212, 142, 138, 0.07)' },
+  in_progress: { label: 'In Progress', color: '#D4AA5A', bg: 'rgba(212, 170, 90, 0.07)' },
+  completed: { label: 'Completed', color: '#81C995', bg: 'rgba(129, 201, 149, 0.07)' },
+  paid: { label: 'Paid', color: '#81C995', bg: 'rgba(129, 201, 149, 0.07)' },
+  overdue: { label: 'Overdue', color: '#D48E8A', bg: 'rgba(212, 142, 138, 0.07)' },
+  full: { label: 'Full', color: '#D4AA5A', bg: 'rgba(212, 170, 90, 0.07)' },
+  individual: { label: 'Individual', color: '#7EA8C9', bg: 'rgba(126, 168, 201, 0.07)' },
+  b2b: { label: 'B2B Partner', color: '#B5A0D1', bg: 'rgba(181, 160, 209, 0.07)' },
+  high: { label: 'High', color: '#D48E8A', bg: 'rgba(212, 142, 138, 0.07)' },
+  medium: { label: 'Medium', color: '#D4AA5A', bg: 'rgba(212, 170, 90, 0.07)' },
+  low: { label: 'Low', color: '#81C995', bg: 'rgba(129, 201, 149, 0.07)' },
+  failed: { label: 'Failed', color: '#D48E8A', bg: 'rgba(212, 142, 138, 0.07)' },
+  refunded: { label: 'Refunded', color: '#A8A29E', bg: 'rgba(168, 162, 158, 0.07)' },
+  suspended: { label: 'Suspended', color: '#D4AA5A', bg: 'rgba(212, 170, 90, 0.07)' },
 };
 
 // ============ SAMPLE DATA ============
@@ -252,10 +252,10 @@ const customersData = [
 ];
 
 const SUBSCRIPTION_PLANS = [
-  { id: 'PLAN-BASIC', name: 'Basic', price: 25, period: 'month', deliveries: 5, lockerAccess: 'standard', color: '#9CA3AF', description: '5 deliveries/mo, standard lockers' },
-  { id: 'PLAN-STD', name: 'Standard', price: 45, period: 'month', deliveries: 15, lockerAccess: 'standard', color: '#60A5FA', description: '15 deliveries/mo, standard lockers' },
-  { id: 'PLAN-PREM', name: 'Premium', price: 75, period: 'month', deliveries: 40, lockerAccess: 'priority', color: '#A78BFA', description: '40 deliveries/mo, priority lockers' },
-  { id: 'PLAN-UNLIM', name: 'Unlimited', price: 120, period: 'month', deliveries: -1, lockerAccess: 'priority', color: '#FBBF24', description: 'Unlimited deliveries, priority lockers' },
+  { id: 'PLAN-BASIC', name: 'Basic', price: 25, period: 'month', deliveries: 5, lockerAccess: 'standard', color: '#A8A29E', description: '5 deliveries/mo, standard lockers' },
+  { id: 'PLAN-STD', name: 'Standard', price: 45, period: 'month', deliveries: 15, lockerAccess: 'standard', color: '#7EA8C9', description: '15 deliveries/mo, standard lockers' },
+  { id: 'PLAN-PREM', name: 'Premium', price: 75, period: 'month', deliveries: 40, lockerAccess: 'priority', color: '#B5A0D1', description: '40 deliveries/mo, priority lockers' },
+  { id: 'PLAN-UNLIM', name: 'Unlimited', price: 120, period: 'month', deliveries: -1, lockerAccess: 'priority', color: '#D4AA5A', description: 'Unlimited deliveries, priority lockers' },
 ];
 
 const subscribersData = [
@@ -508,7 +508,7 @@ const partnerMonthlyData = [
 ];
 
 const TIERS = {
-  gold: { label: 'Gold', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
+  gold: { label: 'Gold', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
   silver: { label: 'Silver', color: '#a3a3a3', bg: 'rgba(163,163,163,0.1)', perks: 'Standard SLA, Email Support, Standard API Limits' },
   bronze: { label: 'Bronze', color: '#cd7c32', bg: 'rgba(205,124,50,0.1)', perks: 'Basic SLA, Ticket Support, Basic API Limits' },
 };
@@ -604,28 +604,28 @@ const msgVolumeData = [
 ];
 
 const MSG_STATUSES = {
-  delivered: { label: 'Delivered', color: '#10b981', bg: 'rgba(16,185,129,0.1)', icon: '✓✓' },
-  read: { label: 'Read', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', icon: '✓✓' },
-  opened: { label: 'Opened', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', icon: '👁' },
-  sent: { label: 'Sent', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: '✓' },
-  failed: { label: 'Failed', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', icon: '✕' },
-  bounced: { label: 'Bounced', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', icon: '↩' },
-  pending: { label: 'Pending', color: '#6b7280', bg: 'rgba(107,114,128,0.1)', icon: '⏳' },
+  delivered: { label: 'Delivered', color: '#81C995', bg: 'rgba(129,201,149,0.1)', icon: '✓✓' },
+  read: { label: 'Read', color: '#7EA8C9', bg: 'rgba(126,168,201,0.1)', icon: '✓✓' },
+  opened: { label: 'Opened', color: '#B5A0D1', bg: 'rgba(181,160,209,0.1)', icon: '👁' },
+  sent: { label: 'Sent', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', icon: '✓' },
+  failed: { label: 'Failed', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', icon: '✕' },
+  bounced: { label: 'Bounced', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', icon: '↩' },
+  pending: { label: 'Pending', color: '#78716C', bg: 'rgba(120,113,108,0.1)', icon: '⏳' },
 };
 
 // ============ SLA BREACH ALERTS DATA ============
 const SLA_SEVERITY = {
-  on_track: { label: 'On Track', color: '#10b981', bg: 'rgba(16,185,129,0.1)', icon: CheckCircle2, pulse: false },
-  warning: { label: 'Warning', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: AlertTriangle, pulse: false },
-  critical: { label: 'Critical', color: '#f97316', bg: 'rgba(249,115,22,0.1)', icon: AlertOctagon, pulse: true },
-  breached: { label: 'BREACHED', color: '#ef4444', bg: 'rgba(239,68,68,0.15)', icon: XCircle, pulse: true },
+  on_track: { label: 'On Track', color: '#81C995', bg: 'rgba(129,201,149,0.1)', icon: CheckCircle2, pulse: false },
+  warning: { label: 'Warning', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', icon: AlertTriangle, pulse: false },
+  critical: { label: 'Critical', color: '#C49B6A', bg: 'rgba(196,155,106,0.1)', icon: AlertOctagon, pulse: true },
+  breached: { label: 'BREACHED', color: '#D48E8A', bg: 'rgba(212,142,138,0.15)', icon: XCircle, pulse: true },
 };
 
 const ESCALATION_RULES = [
-  { level: 0, name: 'Monitoring', triggerPct: 0, actions: ['Standard tracking active'], color: '#10b981', icon: Eye, role: 'System' },
-  { level: 1, name: 'Auto-Alert', triggerPct: 75, actions: ['SMS + WhatsApp to customer', 'Push notification to assigned agent', 'Flag in agent dashboard'], color: '#f59e0b', icon: Bell, role: 'System' },
-  { level: 2, name: 'Manager Escalation', triggerPct: 90, actions: ['Urgent alert to branch manager', 'Auto-reassign to nearest available driver', 'Priority queue bump'], color: '#f97316', icon: Users, role: 'Branch Manager' },
-  { level: 3, name: 'Executive Escalation', triggerPct: 100, actions: ['Alert operations director', 'Auto-generate incident report', 'Freeze new deliveries to terminal', 'Customer compensation workflow'], color: '#ef4444', icon: AlertOctagon, role: 'Ops Director' },
+  { level: 0, name: 'Monitoring', triggerPct: 0, actions: ['Standard tracking active'], color: '#81C995', icon: Eye, role: 'System' },
+  { level: 1, name: 'Auto-Alert', triggerPct: 75, actions: ['SMS + WhatsApp to customer', 'Push notification to assigned agent', 'Flag in agent dashboard'], color: '#D4AA5A', icon: Bell, role: 'System' },
+  { level: 2, name: 'Manager Escalation', triggerPct: 90, actions: ['Urgent alert to branch manager', 'Auto-reassign to nearest available driver', 'Priority queue bump'], color: '#C49B6A', icon: Users, role: 'Branch Manager' },
+  { level: 3, name: 'Executive Escalation', triggerPct: 100, actions: ['Alert operations director', 'Auto-generate incident report', 'Freeze new deliveries to terminal', 'Customer compensation workflow'], color: '#D48E8A', icon: AlertOctagon, role: 'Ops Director' },
 ];
 
 const slaBreachData = [
@@ -682,10 +682,10 @@ const slaComplianceMonthly = [
 ];
 
 const slaBreachCauses = [
-  { cause: 'Late Driver Dispatch', count: 34, pct: 38, color: '#ef4444' },
-  { cause: 'High Terminal Volume', count: 22, pct: 25, color: '#f97316' },
-  { cause: 'System Processing Delay', count: 18, pct: 20, color: '#f59e0b' },
-  { cause: 'Customer No-Show', count: 15, pct: 17, color: '#8b5cf6' },
+  { cause: 'Late Driver Dispatch', count: 34, pct: 38, color: '#D48E8A' },
+  { cause: 'High Terminal Volume', count: 22, pct: 25, color: '#C49B6A' },
+  { cause: 'System Processing Delay', count: 18, pct: 20, color: '#D4AA5A' },
+  { cause: 'Customer No-Show', count: 15, pct: 17, color: '#B5A0D1' },
 ];
 
 // ============ SIDEBAR ============
@@ -786,7 +786,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activeMenu, setActiveMenu, activ
 
 // ============ PIE CHART FOR STATUS DISTRIBUTION ============
 const StatusPieChart = ({ data, theme }) => {
-  const COLORS = ['#4ADE80', '#60A5FA', '#FBBF24', '#F87171', '#9CA3AF'];
+  const COLORS = ['#81C995', '#7EA8C9', '#D4AA5A', '#D48E8A', '#A8A29E'];
   return (
     <ResponsiveContainer width="100%" height={200}>
       <PieChart>
@@ -810,7 +810,7 @@ function LocQarERPInner() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [currentUser, setCurrentUser] = useState({ name: 'John Doe', email: 'john@locqar.com', role: 'SUPER_ADMIN' });
   const [customRoles, setCustomRoles] = useState([
-    { id: 'custom_business_owner', key: 'CUSTOM_BUSINESS_OWNER', name: 'Business Owner', level: 20, color: '#F9A8D4', permissions: ['dashboard.view', 'reports.view'], isCustom: true, createdAt: '2024-01-10T00:00:00Z' },
+    { id: 'custom_business_owner', key: 'CUSTOM_BUSINESS_OWNER', name: 'Business Owner', level: 20, color: '#D4A0B9', permissions: ['dashboard.view', 'reports.view'], isCustom: true, createdAt: '2024-01-10T00:00:00Z' },
   ]);
   const [packageFilter, setPackageFilter] = useState('all');
   const [methodFilter, setMethodFilter] = useState('all');
@@ -1421,7 +1421,7 @@ function LocQarERPInner() {
               )}
             </div>
             <div className="hidden md:flex items-center gap-3 pl-3 border-l" style={{ borderColor: theme.border.primary }}>
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-semibold" style={{ backgroundColor: ROLES[currentUser.role]?.color }}>{currentUser.name.charAt(0)}</div>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-semibold" style={{ backgroundColor: ROLES[currentUser.role]?.color, color: '#1C1917' }}>{currentUser.name.charAt(0)}</div>
               <div className="text-right">
                 <p className="text-sm" style={{ color: theme.text.primary }}>{currentUser.name}</p>
                 <p className="text-xs" style={{ color: theme.text.muted }}>{ROLES[currentUser.role]?.name}</p>
@@ -1797,7 +1797,7 @@ function LocQarERPInner() {
           <div className="w-full max-w-2xl rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
             <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(16,185,129,0.1)' }}><Send size={20} style={{ color: '#10b981' }} /></div>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(129,201,149,0.1)' }}><Send size={20} style={{ color: '#81C995' }} /></div>
                 <div>
                   <h2 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Compose Message</h2>
                   <p className="text-sm" style={{ color: theme.text.muted }}>Send a custom or template-based notification</p>
@@ -1809,7 +1809,7 @@ function LocQarERPInner() {
               <div>
                 <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Channel</label>
                 <div className="grid grid-cols-4 gap-2">
-                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)' }}><Smartphone size={18} />SMS</button>
+                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(126,168,201,0.1)', color: '#7EA8C9', border: '1px solid rgba(126,168,201,0.3)' }}><Smartphone size={18} />SMS</button>
                   <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><MessageSquare size={18} />WhatsApp</button>
                   <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Mail size={18} />Email</button>
                   <button className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Users size={18} />All</button>
@@ -1845,7 +1845,7 @@ function LocQarERPInner() {
               <div>
                 <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Schedule</label>
                 <div className="flex gap-2">
-                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)' }}><Send size={16} />Send Now</button>
+                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: 'rgba(129,201,149,0.1)', color: '#81C995', border: '1px solid rgba(129,201,149,0.3)' }}><Send size={16} />Send Now</button>
                   <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted, border: `1px solid ${theme.border.primary}` }}><Clock size={16} />Schedule Later</button>
                 </div>
               </div>
@@ -1854,7 +1854,7 @@ function LocQarERPInner() {
               <button onClick={() => setComposeOpen(false)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
               <div className="flex gap-2">
                 <button onClick={() => addToast({ type: 'info', message: 'Test message sent to your phone' })} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Send Test</button>
-                <button onClick={() => { addToast({ type: 'success', message: 'Message sent successfully!' }); setComposeOpen(false); }} className="px-6 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}>Send Message</button>
+                <button onClick={() => { addToast({ type: 'success', message: 'Message sent successfully!' }); setComposeOpen(false); }} className="px-6 py-2.5 rounded-xl text-sm" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>Send Message</button>
               </div>
             </div>
           </div>
@@ -1868,18 +1868,18 @@ function LocQarERPInner() {
             <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <div className="flex items-center gap-3">
                 {selectedTemplate.channel === 'whatsapp' ? (
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(37,211,102,0.1)' }}><MessageSquare size={20} style={{ color: '#25D366' }} /></div>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(129,201,149,0.1)' }}><MessageSquare size={20} style={{ color: '#81C995' }} /></div>
                 ) : selectedTemplate.channel === 'email' ? (
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(139,92,246,0.1)' }}><Mail size={20} style={{ color: '#8b5cf6' }} /></div>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(181,160,209,0.1)' }}><Mail size={20} style={{ color: '#B5A0D1' }} /></div>
                 ) : (
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(59,130,246,0.1)' }}><Smartphone size={20} style={{ color: '#3b82f6' }} /></div>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(126,168,201,0.1)' }}><Smartphone size={20} style={{ color: '#7EA8C9' }} /></div>
                 )}
                 <div>
                   <h2 className="font-semibold" style={{ color: theme.text.primary }}>{selectedTemplate.name}</h2>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="px-2 py-0.5 rounded-full text-xs uppercase font-medium" style={{ backgroundColor: selectedTemplate.channel === 'whatsapp' ? 'rgba(37,211,102,0.1)' : selectedTemplate.channel === 'email' ? 'rgba(139,92,246,0.1)' : 'rgba(59,130,246,0.1)', color: selectedTemplate.channel === 'whatsapp' ? '#25D366' : selectedTemplate.channel === 'email' ? '#8b5cf6' : '#3b82f6' }}>{selectedTemplate.channel}</span>
+                    <span className="px-2 py-0.5 rounded-full text-xs uppercase font-medium" style={{ backgroundColor: selectedTemplate.channel === 'whatsapp' ? 'rgba(129,201,149,0.1)' : selectedTemplate.channel === 'email' ? 'rgba(181,160,209,0.1)' : 'rgba(126,168,201,0.1)', color: selectedTemplate.channel === 'whatsapp' ? '#81C995' : selectedTemplate.channel === 'email' ? '#B5A0D1' : '#7EA8C9' }}>{selectedTemplate.channel}</span>
                     <span className="text-xs font-mono" style={{ color: theme.text.muted }}>{selectedTemplate.id}</span>
-                    {selectedTemplate.active ? <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Active</span> : <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(107,114,128,0.1)', color: '#6b7280' }}>Inactive</span>}
+                    {selectedTemplate.active ? <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(129,201,149,0.1)', color: '#81C995' }}>Active</span> : <span className="px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: 'rgba(120,113,108,0.1)', color: '#78716C' }}>Inactive</span>}
                   </div>
                 </div>
               </div>
@@ -1889,16 +1889,16 @@ function LocQarERPInner() {
               {/* Trigger Event */}
               <div>
                 <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Trigger Event</label>
-                <span className="px-3 py-1.5 rounded-lg text-sm font-mono" style={{ backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>{selectedTemplate.event}</span>
+                <span className="px-3 py-1.5 rounded-lg text-sm font-mono" style={{ backgroundColor: 'rgba(212,170,90,0.1)', color: '#D4AA5A' }}>{selectedTemplate.event}</span>
               </div>
 
               {/* Message Preview */}
               <div>
                 <label className="text-xs font-semibold uppercase block mb-2" style={{ color: theme.text.muted }}>Message Preview</label>
-                <div className="p-5 rounded-xl" style={{ backgroundColor: selectedTemplate.channel === 'whatsapp' ? 'rgba(37,211,102,0.05)' : selectedTemplate.channel === 'email' ? 'rgba(139,92,246,0.05)' : theme.bg.tertiary, border: selectedTemplate.channel === 'whatsapp' ? '1px solid rgba(37,211,102,0.2)' : selectedTemplate.channel === 'email' ? '1px solid rgba(139,92,246,0.2)' : `1px solid ${theme.border.primary}` }}>
+                <div className="p-5 rounded-xl" style={{ backgroundColor: selectedTemplate.channel === 'whatsapp' ? 'rgba(129,201,149,0.05)' : selectedTemplate.channel === 'email' ? 'rgba(181,160,209,0.05)' : theme.bg.tertiary, border: selectedTemplate.channel === 'whatsapp' ? '1px solid rgba(129,201,149,0.2)' : selectedTemplate.channel === 'email' ? '1px solid rgba(181,160,209,0.2)' : `1px solid ${theme.border.primary}` }}>
                   {selectedTemplate.channel === 'whatsapp' && (
-                    <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid rgba(37,211,102,0.15)' }}>
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#25D366' }}><MessageSquare size={14} className="text-white" /></div>
+                    <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid rgba(129,201,149,0.15)' }}>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#81C995' }}><MessageSquare size={14} style={{ color: '#1C1917' }} /></div>
                       <div>
                         <p className="text-sm font-medium" style={{ color: theme.text.primary }}>LocQar</p>
                         <p className="text-xs" style={{ color: theme.text.muted }}>WhatsApp Business</p>
@@ -1906,8 +1906,8 @@ function LocQarERPInner() {
                     </div>
                   )}
                   {selectedTemplate.channel === 'email' && (
-                    <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid rgba(139,92,246,0.15)' }}>
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#8b5cf6' }}><Mail size={14} className="text-white" /></div>
+                    <div className="flex items-center gap-2 mb-3 pb-3" style={{ borderBottom: '1px solid rgba(181,160,209,0.15)' }}>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#B5A0D1' }}><Mail size={14} style={{ color: '#1C1917' }} /></div>
                       <div>
                         <p className="text-sm font-medium" style={{ color: theme.text.primary }}>LocQar</p>
                         <p className="text-xs" style={{ color: theme.text.muted }}>noreply@locqar.com</p>
@@ -1925,7 +1925,7 @@ function LocQarERPInner() {
                   <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Total Sent</p>
                 </div>
                 <div className="p-4 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
-                  <p className="text-2xl font-bold" style={{ color: '#10b981' }}>{selectedTemplate.deliveryRate}%</p>
+                  <p className="text-2xl font-bold" style={{ color: '#81C995' }}>{selectedTemplate.deliveryRate}%</p>
                   <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Delivery Rate</p>
                 </div>
                 <div className="p-4 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -1947,8 +1947,8 @@ function LocQarERPInner() {
             <div className="p-5 border-t flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <button onClick={() => setSelectedTemplate(null)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
               <div className="flex gap-2">
-                <button onClick={() => { addToast({ type: 'info', message: `Test send: ${selectedTemplate.id}` }); }} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: '#10b981' }}>Test Send</button>
-                <button onClick={() => { addToast({ type: 'info', message: `Editing ${selectedTemplate.name}` }); setSelectedTemplate(null); }} className="px-4 py-2.5 rounded-xl text-white text-sm" style={{ backgroundColor: '#10b981' }}>Edit Template</button>
+                <button onClick={() => { addToast({ type: 'info', message: `Test send: ${selectedTemplate.id}` }); }} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: '#81C995' }}>Test Send</button>
+                <button onClick={() => { addToast({ type: 'info', message: `Editing ${selectedTemplate.name}` }); setSelectedTemplate(null); }} className="px-4 py-2.5 rounded-xl text-sm" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>Edit Template</button>
               </div>
             </div>
           </div>
@@ -2018,7 +2018,7 @@ function LocQarERPInner() {
                     ].map((f, i) => (
                       <div key={i}>
                         <div className="text-xs" style={{ color: theme.text.muted }}>{f.label}</div>
-                        <div className="text-sm font-medium" style={{ color: f.label === 'Remaining' && item.remainingMin <= 0 ? '#ef4444' : theme.text.primary }}>{f.value}</div>
+                        <div className="text-sm font-medium" style={{ color: f.label === 'Remaining' && item.remainingMin <= 0 ? '#D48E8A' : theme.text.primary }}>{f.value}</div>
                       </div>
                     ))}
                   </div>
@@ -2065,7 +2065,7 @@ function LocQarERPInner() {
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ backgroundColor: rule.color + '20', color: rule.color }}>{`L${evt.level}`}</span>
                                   <span className="text-xs font-medium" style={{ color: theme.text.primary }}>{rule.name}</span>
-                                  {evt.acked && <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Acked</span>}
+                                  {evt.acked && <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(129,201,149,0.1)', color: '#81C995' }}>Acked</span>}
                                 </div>
                                 <span className="text-xs" style={{ color: theme.text.muted }}>{evt.timestamp.split(' ')[1]}</span>
                               </div>
@@ -2087,19 +2087,19 @@ function LocQarERPInner() {
                 <button onClick={() => setSlaSelectedItem(null)} className="px-4 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
                 <div className="flex gap-2 flex-wrap">
                   {!item.acknowledgedBy && (
-                    <button onClick={() => { addToast({ type: 'success', message: `Acknowledged ${item.waybill}` }); setSlaSelectedItem(null); }} className="px-3 py-2 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: '#10b981' }}>
+                    <button onClick={() => { addToast({ type: 'success', message: `Acknowledged ${item.waybill}` }); setSlaSelectedItem(null); }} className="px-3 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>
                       <span className="flex items-center gap-1.5"><CheckCircle2 size={14} /> Acknowledge</span>
                     </button>
                   )}
                   {item.escalationLevel < 3 && (
-                    <button onClick={() => { addToast({ type: 'warning', message: `Escalated ${item.waybill} to L${item.escalationLevel + 1}` }); setSlaSelectedItem(null); }} className="px-3 py-2 rounded-xl text-white text-sm font-medium" style={{ backgroundColor: '#f97316' }}>
+                    <button onClick={() => { addToast({ type: 'warning', message: `Escalated ${item.waybill} to L${item.escalationLevel + 1}` }); setSlaSelectedItem(null); }} className="px-3 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: '#C49B6A', color: '#1C1917' }}>
                       <span className="flex items-center gap-1.5"><AlertTriangle size={14} /> Escalate to L{item.escalationLevel + 1}</span>
                     </button>
                   )}
-                  <button onClick={() => { addToast({ type: 'info', message: `Reassigning agent for ${item.waybill}` }); }} className="px-3 py-2 rounded-xl border text-sm font-medium" style={{ borderColor: theme.border.primary, color: '#3b82f6' }}>
+                  <button onClick={() => { addToast({ type: 'info', message: `Reassigning agent for ${item.waybill}` }); }} className="px-3 py-2 rounded-xl border text-sm font-medium" style={{ borderColor: theme.border.primary, color: '#7EA8C9' }}>
                     <span className="flex items-center gap-1.5"><Users size={14} /> Reassign</span>
                   </button>
-                  <button onClick={() => { addToast({ type: 'info', message: `SLA override requested for ${item.waybill}` }); }} className="px-3 py-2 rounded-xl border text-sm font-medium" style={{ borderColor: theme.border.primary, color: '#8b5cf6' }}>
+                  <button onClick={() => { addToast({ type: 'info', message: `SLA override requested for ${item.waybill}` }); }} className="px-3 py-2 rounded-xl border text-sm font-medium" style={{ borderColor: theme.border.primary, color: '#B5A0D1' }}>
                     <span className="flex items-center gap-1.5"><Clock size={14} /> Override SLA</span>
                   </button>
                 </div>
@@ -2241,13 +2241,13 @@ function LocQarERPInner() {
               {/* Footer */}
               <div className="p-6 border-t flex flex-wrap gap-2 justify-end" style={{ borderColor: theme.border.primary }}>
                 <button onClick={() => setSubscriberDetailItem(null)} className="px-4 py-2 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
-                <button onClick={() => { addToast({ type: 'info', message: `Upgrade initiated for ${s.name}` }); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#8b5cf6' }}>Upgrade Plan</button>
+                <button onClick={() => { addToast({ type: 'info', message: `Upgrade initiated for ${s.name}` }); }} className="px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: '#B5A0D1', color: '#1C1917' }}>Upgrade Plan</button>
                 {s.status === 'active' ? (
-                  <button onClick={() => { addToast({ type: 'warning', message: `${s.name} suspended` }); setSubscriberDetailItem(null); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#ef4444' }}>Suspend</button>
+                  <button onClick={() => { addToast({ type: 'warning', message: `${s.name} suspended` }); setSubscriberDetailItem(null); }} className="px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: '#D48E8A', color: '#1C1917' }}>Suspend</button>
                 ) : (
-                  <button onClick={() => { addToast({ type: 'success', message: `${s.name} reactivated` }); setSubscriberDetailItem(null); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#10b981' }}>Reactivate</button>
+                  <button onClick={() => { addToast({ type: 'success', message: `${s.name} reactivated` }); setSubscriberDetailItem(null); }} className="px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>Reactivate</button>
                 )}
-                <button onClick={() => addToast({ type: 'success', message: `Message sent to ${s.name}` })} className="px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ backgroundColor: '#3b82f6' }}>Send Message</button>
+                <button onClick={() => addToast({ type: 'success', message: `Message sent to ${s.name}` })} className="px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: '#7EA8C9', color: '#1C1917' }}>Send Message</button>
                 <button onClick={() => addToast({ type: 'success', message: `${s.name}'s data exported` })} className="px-4 py-2 rounded-xl text-sm font-medium border" style={{ borderColor: theme.border.primary, color: theme.text.primary }}>Export</button>
               </div>
             </div>
@@ -2311,7 +2311,7 @@ function LocQarERPInner() {
                   <p className="text-sm font-medium" style={{ color: theme.text.primary }}>Auto-Renew</p>
                   <p className="text-xs" style={{ color: theme.text.muted }}>Automatically renew subscription</p>
                 </div>
-                <button className="w-12 h-6 rounded-full p-0.5 transition-all" style={{ backgroundColor: '#10b981' }}>
+                <button className="w-12 h-6 rounded-full p-0.5 transition-all" style={{ backgroundColor: '#81C995' }}>
                   <div className="w-5 h-5 rounded-full bg-white transform translate-x-6 transition-transform" />
                 </button>
               </div>
@@ -2332,10 +2332,10 @@ function LocQarERPInner() {
           onClear={() => setSelectedItems([])}
           onAction={handleBulkAction}
           actions={[
-            { id: 'dispatch', label: 'Dispatch Selected', icon: Truck, color: '#3b82f6' },
-            { id: 'markDelivered', label: 'Mark Delivered', icon: CheckCircle2, color: '#10b981' },
-            { id: 'export', label: 'Export Selected', icon: FileDown, color: '#8b5cf6' },
-            { id: 'print', label: 'Print Labels', icon: Printer, color: '#f59e0b' },
+            { id: 'dispatch', label: 'Dispatch Selected', icon: Truck, color: '#7EA8C9' },
+            { id: 'markDelivered', label: 'Mark Delivered', icon: CheckCircle2, color: '#81C995' },
+            { id: 'export', label: 'Export Selected', icon: FileDown, color: '#B5A0D1' },
+            { id: 'print', label: 'Print Labels', icon: Printer, color: '#D4AA5A' },
           ]}
         />
       )}
@@ -2344,10 +2344,10 @@ function LocQarERPInner() {
         onClear={() => setSelectedSubscribers([])}
         onAction={handleSubscriberBulkAction}
         actions={[
-          { id: 'message', label: 'Send Message', icon: MessageSquare, color: '#3b82f6' },
-          { id: 'export', label: 'Export Selected', icon: FileDown, color: '#8b5cf6' },
-          { id: 'changePlan', label: 'Change Plan', icon: ArrowUpRight, color: '#f59e0b' },
-          { id: 'suspend', label: 'Suspend Selected', icon: Lock, color: '#ef4444' },
+          { id: 'message', label: 'Send Message', icon: MessageSquare, color: '#7EA8C9' },
+          { id: 'export', label: 'Export Selected', icon: FileDown, color: '#B5A0D1' },
+          { id: 'changePlan', label: 'Change Plan', icon: ArrowUpRight, color: '#D4AA5A' },
+          { id: 'suspend', label: 'Suspend Selected', icon: Lock, color: '#D48E8A' },
         ]}
       />
 

@@ -38,13 +38,13 @@ export const FormInput = ({
           className={`w-full ${Icon ? 'pl-10' : 'px-3'} pr-3 py-2.5 rounded-xl border text-sm transition-colors ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           style={{
             backgroundColor: theme.bg.input || theme.bg.tertiary,
-            borderColor: error ? '#ef4444' : theme.border.primary,
+            borderColor: error ? '#D48E8A' : theme.border.primary,
             color: theme.text.primary,
           }}
         />
       </div>
       {(error || helperText) && (
-        <p className="text-xs mt-1" style={{ color: error ? '#ef4444' : theme.text.muted }}>
+        <p className="text-xs mt-1" style={{ color: error ? '#D48E8A' : theme.text.muted }}>
           {error || helperText}
         </p>
       )}
@@ -80,12 +80,12 @@ export const FormTextarea = ({
         className={`w-full px-3 py-2.5 rounded-xl border text-sm resize-none transition-colors ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         style={{
           backgroundColor: theme.bg.input || theme.bg.tertiary,
-          borderColor: error ? '#ef4444' : theme.border.primary,
+          borderColor: error ? '#D48E8A' : theme.border.primary,
           color: theme.text.primary,
         }}
       />
       {(error || helperText) && (
-        <p className="text-xs mt-1" style={{ color: error ? '#ef4444' : theme.text.muted }}>
+        <p className="text-xs mt-1" style={{ color: error ? '#D48E8A' : theme.text.muted }}>
           {error || helperText}
         </p>
       )}

@@ -62,7 +62,7 @@ export const Pagination = ({
             className="w-8 h-8 rounded-lg text-sm"
             style={{
               backgroundColor: currentPage === page ? theme.accent.primary : 'transparent',
-              color: currentPage === page ? '#fff' : theme.text.secondary
+              color: currentPage === page ? theme.accent.contrast : theme.text.secondary
             }}
           >
             {page}

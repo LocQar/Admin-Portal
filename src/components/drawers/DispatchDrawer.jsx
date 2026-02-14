@@ -66,11 +66,11 @@ export const DispatchDrawer = ({ isOpen, onClose, onViewFull }) => {
           <p className="text-xs" style={{ color: theme.text.muted }}>Pending</p>
         </div>
         <div className="p-3 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
-          <p className="text-lg font-bold" style={{ color: '#3b82f6' }}>{inTransitCount}</p>
+          <p className="text-lg font-bold" style={{ color: '#7EA8C9' }}>{inTransitCount}</p>
           <p className="text-xs" style={{ color: theme.text.muted }}>In Transit</p>
         </div>
         <div className="p-3 rounded-xl text-center" style={{ backgroundColor: theme.bg.tertiary }}>
-          <p className="text-lg font-bold" style={{ color: '#10b981' }}>{activeDrivers.length}</p>
+          <p className="text-lg font-bold" style={{ color: '#81C995' }}>{activeDrivers.length}</p>
           <p className="text-xs" style={{ color: theme.text.muted }}>Active Drivers</p>
         </div>
       </div>
@@ -146,7 +146,7 @@ export const DispatchDrawer = ({ isOpen, onClose, onViewFull }) => {
 
         {selectedDriver && (
           <div className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-semibold" style={{ backgroundColor: '#10b981' }}>
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold" style={{ backgroundColor: '#81C995', color: '#1C1917' }}>
               {selectedDriver.name.charAt(0)}
             </div>
             <div className="flex-1">
@@ -154,7 +154,7 @@ export const DispatchDrawer = ({ isOpen, onClose, onViewFull }) => {
               <p className="text-xs" style={{ color: theme.text.muted }}>{selectedDriver.vehicle}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm font-medium" style={{ color: '#f59e0b' }}>★ {selectedDriver.rating}</p>
+              <p className="text-sm font-medium" style={{ color: '#D4AA5A' }}>★ {selectedDriver.rating}</p>
               <p className="text-xs" style={{ color: theme.text.muted }}>{selectedDriver.zone}</p>
             </div>
           </div>
