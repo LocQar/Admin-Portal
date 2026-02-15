@@ -321,9 +321,9 @@ export const DashboardPage = ({
             </h3>
             <div className="flex gap-2">
               {[
-                { label: "Accra", color: theme.accent.primary },
-                { label: "Achimota", color: "#7EA8C9" },
-                { label: "Kotoka", color: "#81C995" },
+                { label: "Accra", color: theme.chart.blue },
+                { label: "Achimota", color: theme.chart.teal },
+                { label: "Kotoka", color: theme.chart.green },
               ].map((l) => (
                 <span
                   key={l.label}
@@ -348,12 +348,12 @@ export const DashboardPage = ({
                   <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
                     <stop
                       offset="5%"
-                      stopColor={theme.accent.primary}
+                      stopColor={theme.chart.blue}
                       stopOpacity={0.3}
                     />
                     <stop
                       offset="95%"
-                      stopColor={theme.accent.primary}
+                      stopColor={theme.chart.blue}
                       stopOpacity={0}
                     />
                   </linearGradient>
@@ -384,21 +384,21 @@ export const DashboardPage = ({
                 <Area
                   type="monotone"
                   dataKey="accra"
-                  stroke={theme.accent.primary}
+                  stroke={theme.chart.blue}
                   fill="url(#grad)"
                   strokeWidth={2}
                 />
                 <Area
                   type="monotone"
                   dataKey="achimota"
-                  stroke="#7EA8C9"
+                  stroke={theme.chart.teal}
                   fill="transparent"
                   strokeWidth={2}
                 />
                 <Area
                   type="monotone"
                   dataKey="kotoka"
-                  stroke="#81C995"
+                  stroke={theme.chart.green}
                   fill="transparent"
                   strokeWidth={2}
                 />
@@ -437,13 +437,7 @@ export const DashboardPage = ({
                       <span
                         className="w-3 h-3 rounded-full"
                         style={{
-                          backgroundColor: [
-                            "#81C995",
-                            "#7EA8C9",
-                            "#D4AA5A",
-                            "#D48E8A",
-                            "#78716C",
-                          ][i],
+                          backgroundColor: theme.chart.series[i],
                         }}
                       />
                       {s.name}
@@ -503,7 +497,7 @@ export const DashboardPage = ({
               />
               <Bar
                 dataKey="packages"
-                fill={theme.accent.primary}
+                fill={theme.chart.blue}
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>

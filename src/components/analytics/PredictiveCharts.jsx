@@ -23,12 +23,12 @@ export const PredictiveRevenueChart = () => {
                 <AreaChart data={data}>
                     <defs>
                         <linearGradient id="colorActual" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor={theme.accent.primary} stopOpacity={0.3} />
-                            <stop offset="95%" stopColor={theme.accent.primary} stopOpacity={0} />
+                            <stop offset="5%" stopColor={theme.chart.blue} stopOpacity={0.3} />
+                            <stop offset="95%" stopColor={theme.chart.blue} stopOpacity={0} />
                         </linearGradient>
                         <linearGradient id="colorProjected" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#B5A0D1" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#B5A0D1" stopOpacity={0} />
+                            <stop offset="5%" stopColor={theme.chart.violet} stopOpacity={0.3} />
+                            <stop offset="95%" stopColor={theme.chart.violet} stopOpacity={0} />
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke={theme.border.primary} vertical={false} />
@@ -42,7 +42,7 @@ export const PredictiveRevenueChart = () => {
                     <Area
                         type="monotone"
                         dataKey="actual"
-                        stroke={theme.accent.primary}
+                        stroke={theme.chart.blue}
                         fillOpacity={1}
                         fill="url(#colorActual)"
                         name="Actual Revenue"
@@ -51,7 +51,7 @@ export const PredictiveRevenueChart = () => {
                     <Area
                         type="monotone"
                         dataKey="projected"
-                        stroke="#B5A0D1"
+                        stroke={theme.chart.violet}
                         strokeDasharray="5 5"
                         fillOpacity={1}
                         fill="url(#colorProjected)"
@@ -77,10 +77,10 @@ export const ChurnRiskHeatmap = () => {
     ];
 
     const getRiskColor = (score) => {
-        if (score >= 80) return '#D48E8A'; // Red
-        if (score >= 50) return '#D4AA5A'; // Orange
-        if (score >= 20) return '#7EA8C9'; // Blue
-        return '#81C995'; // Green
+        if (score >= 80) return theme.chart.coral;
+        if (score >= 50) return theme.chart.amber;
+        if (score >= 20) return theme.chart.blue;
+        return theme.chart.green;
     };
 
     return (
@@ -113,7 +113,7 @@ export const ChurnRiskHeatmap = () => {
                 <span>At Risk</span>
                 <span>Critical</span>
             </div>
-            <div className="h-1 w-full rounded-full bg-gradient-to-r from-emerald-500 via-blue-500 via-orange-500 to-red-500"></div>
+            <div className="h-1 w-full rounded-full" style={{ background: `linear-gradient(to right, ${theme.chart.green}, ${theme.chart.blue}, ${theme.chart.amber}, ${theme.chart.coral})` }} />
         </div>
     );
 };

@@ -292,7 +292,7 @@ export const BusinessPortalPage = ({
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold" style={{ color: theme.text.primary }}>Monthly Volume by Partner</h3>
                 <div className="flex gap-3">
-                  {[{ l: 'Jumia', c: theme.accent.primary }, { l: 'Melcom', c: '#7EA8C9' }, { l: 'Telecel', c: '#81C995' }, { l: 'Hubtel', c: '#D4AA5A' }].map(i => (
+                  {[{ l: 'Jumia', c: theme.chart.blue }, { l: 'Melcom', c: theme.chart.teal }, { l: 'Telecel', c: theme.chart.green }, { l: 'Hubtel', c: theme.chart.amber }].map(i => (
                     <span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>
                   ))}
                 </div>
@@ -303,10 +303,10 @@ export const BusinessPortalPage = ({
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-                  <Bar dataKey="jumia" fill={theme.accent.primary} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="melcom" fill="#7EA8C9" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="telecel" fill="#81C995" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="hubtel" fill="#D4AA5A" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="jumia" fill={theme.chart.blue} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="melcom" fill={theme.chart.teal} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="telecel" fill={theme.chart.green} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="hubtel" fill={theme.chart.amber} radius={[4, 4, 0, 0]} />
                 </RechartsBarChart>
               </ResponsiveContainer>
             </div>

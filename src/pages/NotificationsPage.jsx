@@ -191,9 +191,9 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>Message Volume (Last 7 Days)</h3>
               <div className="flex gap-2 text-xs">
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#81C995' }} />SMS</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#B5A0D1' }} />WhatsApp</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#7EA8C9' }} />Email</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: theme.chart.green }} />SMS</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: theme.chart.violet }} />WhatsApp</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded" style={{ backgroundColor: theme.chart.blue }} />Email</span>
               </div>
             </div>
             {loading ? <TableSkeleton rows={3} cols={1} /> : (
@@ -203,9 +203,9 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                   <XAxis dataKey="date" tick={{ fill: theme.text.muted, fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fill: theme.text.muted, fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 8 }} />
-                  <Line type="monotone" dataKey="sms" stroke="#81C995" strokeWidth={2} dot={false} />
-                  <Line type="monotone" dataKey="whatsapp" stroke="#B5A0D1" strokeWidth={2} dot={false} />
-                  <Line type="monotone" dataKey="email" stroke="#7EA8C9" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="sms" stroke={theme.chart.green} strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="whatsapp" stroke={theme.chart.violet} strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="email" stroke={theme.chart.blue} strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             )}

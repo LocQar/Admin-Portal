@@ -149,10 +149,10 @@ export const AccountingPage = ({
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
-                  <Bar dataKey="standard" stackId="a" fill="#78716C" radius={[0, 0, 0, 0]} name="Standard" />
-                  <Bar dataKey="express" stackId="a" fill="#D4AA5A" name="Express" />
-                  <Bar dataKey="rush" stackId="a" fill="#D48E8A" name="Rush" />
-                  <Bar dataKey="economy" stackId="a" fill="#81C995" radius={[4, 4, 0, 0]} name="Economy" />
+                  <Bar dataKey="standard" stackId="a" fill={theme.chart.stone} radius={[0, 0, 0, 0]} name="Standard" />
+                  <Bar dataKey="express" stackId="a" fill={theme.chart.amber} name="Express" />
+                  <Bar dataKey="rush" stackId="a" fill={theme.chart.coral} name="Rush" />
+                  <Bar dataKey="economy" stackId="a" fill={theme.chart.green} radius={[4, 4, 0, 0]} name="Economy" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -164,9 +164,9 @@ export const AccountingPage = ({
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-                  <Line type="monotone" dataKey="accra" stroke="#7EA8C9" strokeWidth={2} name="Accra Mall" />
-                  <Line type="monotone" dataKey="achimota" stroke="#81C995" strokeWidth={2} name="Achimota Mall" />
-                  <Line type="monotone" dataKey="kotoka" stroke="#D4AA5A" strokeWidth={2} name="Kotoka T3" />
+                  <Line type="monotone" dataKey="accra" stroke={theme.chart.blue} strokeWidth={2} name="Accra Mall" />
+                  <Line type="monotone" dataKey="achimota" stroke={theme.chart.green} strokeWidth={2} name="Achimota Mall" />
+                  <Line type="monotone" dataKey="kotoka" stroke={theme.chart.amber} strokeWidth={2} name="Kotoka T3" />
                 </LineChart>
               </ResponsiveContainer>
             </div>

@@ -41,6 +41,16 @@ export const themes = {
       warning: '#D4AA5A',
       error: '#D48E8A',
       info: '#7EA8C9'
+    },
+    chart: {
+      green: '#4CAF82',
+      blue: '#5B9BD5',
+      amber: '#E4A63A',
+      coral: '#D97066',
+      violet: '#9B7FD4',
+      teal: '#4DB8A4',
+      stone: '#8C857E',
+      series: ['#5B9BD5', '#4CAF82', '#E4A63A', '#D97066', '#9B7FD4', '#4DB8A4', '#8C857E']
     }
   },
   light: {
@@ -82,6 +92,16 @@ export const themes = {
       warning: '#D4AA5A',
       error: '#D48E8A',
       info: '#7EA8C9'
+    },
+    chart: {
+      green: '#4CAF82',
+      blue: '#5B9BD5',
+      amber: '#E4A63A',
+      coral: '#D97066',
+      violet: '#9B7FD4',
+      teal: '#4DB8A4',
+      stone: '#8C857E',
+      series: ['#5B9BD5', '#4CAF82', '#E4A63A', '#D97066', '#9B7FD4', '#4DB8A4', '#8C857E']
     }
   }
 };

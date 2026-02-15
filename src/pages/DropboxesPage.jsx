@@ -90,9 +90,9 @@ export const DropboxesPage = ({
                 <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                 <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-                <Area type="monotone" dataKey="dbx001" name="Achimota Overpass" stroke={theme.accent.primary} fill={`${theme.accent.primary}20`} strokeWidth={2} />
-                <Area type="monotone" dataKey="dbx003" name="Osu Oxford St" stroke="#B5A0D1" fill="transparent" strokeWidth={2} />
-                <Area type="monotone" dataKey="dbx004" name="Tema Comm. 1" stroke="#D48E8A" fill="transparent" strokeWidth={2} />
+                <Area type="monotone" dataKey="dbx001" name="Achimota Overpass" stroke={theme.chart.blue} fill={theme.chart.blue + '20'} strokeWidth={2} />
+                <Area type="monotone" dataKey="dbx003" name="Osu Oxford St" stroke={theme.chart.violet} fill="transparent" strokeWidth={2} />
+                <Area type="monotone" dataKey="dbx004" name="Tema Comm. 1" stroke={theme.chart.coral} fill="transparent" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>

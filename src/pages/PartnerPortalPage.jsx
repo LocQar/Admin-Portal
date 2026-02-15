@@ -67,7 +67,7 @@ export const PartnerPortalPage = ({
             <div className="lg:col-span-2 p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold" style={{ color: theme.text.primary }}>Shipment Trend</h3>
-                <div className="flex gap-3">{[{ l: 'Shipped', c: theme.accent.primary }, { l: 'Delivered', c: '#81C995' }, { l: 'Returned', c: '#D48E8A' }].map(i => (<span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>))}</div>
+                <div className="flex gap-3">{[{ l: 'Shipped', c: theme.chart.blue }, { l: 'Delivered', c: theme.chart.green }, { l: 'Returned', c: theme.chart.coral }].map(i => (<span key={i.l} className="flex items-center gap-1 text-xs" style={{ color: theme.text.muted }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: i.c }} />{i.l}</span>))}</div>
               </div>
               <ResponsiveContainer width="100%" height={220}>
                 <AreaChart data={portalShipmentTrend}>
@@ -75,9 +75,9 @@ export const PartnerPortalPage = ({
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-                  <Area type="monotone" dataKey="shipped" name="Shipped" stroke={theme.accent.primary} fill={`${theme.accent.primary}20`} strokeWidth={2} />
-                  <Area type="monotone" dataKey="delivered" name="Delivered" stroke="#81C995" fill="transparent" strokeWidth={2} />
-                  <Area type="monotone" dataKey="returned" name="Returned" stroke="#D48E8A" fill="transparent" strokeWidth={2} />
+                  <Area type="monotone" dataKey="shipped" name="Shipped" stroke={theme.chart.blue} fill={theme.chart.blue + '20'} strokeWidth={2} />
+                  <Area type="monotone" dataKey="delivered" name="Delivered" stroke={theme.chart.green} fill="transparent" strokeWidth={2} />
+                  <Area type="monotone" dataKey="returned" name="Returned" stroke={theme.chart.coral} fill="transparent" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

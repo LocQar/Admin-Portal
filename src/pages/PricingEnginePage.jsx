@@ -167,10 +167,10 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport }) => {
                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
                 <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
-                <Bar dataKey="standard" fill="#78716C" radius={[0, 0, 0, 0]} name="Standard" />
-                <Bar dataKey="express" fill="#D4AA5A" name="Express" />
-                <Bar dataKey="rush" fill="#D48E8A" name="Rush" />
-                <Bar dataKey="economy" fill="#81C995" radius={[0, 0, 0, 0]} name="Economy" />
+                <Bar dataKey="standard" fill={theme.chart.stone} radius={[0, 0, 0, 0]} name="Standard" />
+                <Bar dataKey="express" fill={theme.chart.amber} name="Express" />
+                <Bar dataKey="rush" fill={theme.chart.coral} name="Rush" />
+                <Bar dataKey="economy" fill={theme.chart.green} radius={[0, 0, 0, 0]} name="Economy" />
               </BarChart>
             </ResponsiveContainer>
           </div>

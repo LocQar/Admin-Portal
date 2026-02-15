@@ -462,7 +462,7 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 <YAxis stroke={theme.text.muted} />
                 <Tooltip contentStyle={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }} />
                 <Legend />
-                <Line type="monotone" dataKey="rate" name="Compliance Rate (%)" stroke="#81C995" strokeWidth={3} />
+                <Line type="monotone" dataKey="rate" name="Compliance Rate (%)" stroke={theme.chart.green} strokeWidth={3} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -477,8 +477,8 @@ export const SLAMonitorPage = ({ activeSubMenu, loading, setShowExport, addToast
                 <YAxis stroke={theme.text.muted} />
                 <Tooltip contentStyle={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }} />
                 <Legend />
-                <Bar dataKey="onTime" name="On Time" fill="#81C995" />
-                <Bar dataKey="breached" name="Breached" fill="#D48E8A" />
+                <Bar dataKey="onTime" name="On Time" fill={theme.chart.green} />
+                <Bar dataKey="breached" name="Breached" fill={theme.chart.coral} />
               </BarChart>
             </ResponsiveContainer>
           </div>

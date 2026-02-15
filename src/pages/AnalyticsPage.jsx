@@ -54,13 +54,13 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
                 ]}
                 cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} dataKey="value"
               >
-                <Cell fill="#7EA8C9" /><Cell fill="#B5A0D1" /><Cell fill="#81C995" />
+                <Cell fill={theme.chart.blue} /><Cell fill={theme.chart.violet} /><Cell fill={theme.chart.green} />
               </Pie>
               <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
             </PieChart>
           </ResponsiveContainer>
           <div className="space-y-2 mt-2">
-            {[['Warehouse→Locker', '#7EA8C9'], ['Dropbox→Locker', '#B5A0D1'], ['Locker→Home', '#81C995']].map(([l, c]) => (
+            {[['Warehouse→Locker', theme.chart.blue], ['Dropbox→Locker', theme.chart.violet], ['Locker→Home', theme.chart.green]].map(([l, c]) => (
               <div key={l} className="flex items-center gap-2 text-sm">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: c }} />
                 <span style={{ color: theme.text.secondary }}>{l}</span>
@@ -102,7 +102,7 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               <Bar dataKey="probability" radius={[0, 4, 4, 0]} barSize={20}>
                 {
                   [85, 45, 30, 15, 10].map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry > 80 ? '#D48E8A' : entry > 40 ? '#D4AA5A' : '#81C995'} />
+                    <Cell key={`cell-${index}`} fill={entry > 80 ? theme.chart.coral : entry > 40 ? theme.chart.amber : theme.chart.green} />
                   ))
                 }
               </Bar>
@@ -159,7 +159,7 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 11 }} />
               <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
               <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} />
-              <Bar dataKey="packages" fill={theme.accent.primary} radius={[4, 4, 0, 0]} name="Packages" />
+              <Bar dataKey="packages" fill={theme.chart.blue} radius={[4, 4, 0, 0]} name="Packages" />
             </BarChart>
           </ResponsiveContainer>
         </div>
