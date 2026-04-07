@@ -1,0 +1,395 @@
+.admin-dashboard {
+  padding: 20px;
+  background: #f5f6fa;
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #2c3e50;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-input {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #2c3e50;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-export {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.3s;
+}
+
+.btn-export:hover {
+  background: #5568d3;
+}
+
+.dashboard-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #7f8c8d;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  background: #f5f6fa;
+  color: #2c3e50;
+}
+
+.tab.active {
+  background: #667eea;
+  color: white;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: #95a5a6;
+  font-size: 16px;
+}
+
+.dashboard-content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.stat-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.stat-icon {
+  font-size: 32px;
+  min-width: 40px;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-content h3 {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #95a5a6;
+  font-weight: 600;
+}
+
+.stat-number {
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.stat-content small {
+  color: #7f8c8d;
+  font-size: 12px;
+}
+
+.health-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.health-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.health-item label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7f8c8d;
+  min-width: 150px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.3s ease;
+}
+
+.health-item span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 45px;
+  text-align: right;
+}
+
+.data-table-container {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.data-table-container h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: #2c3e50;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.data-table thead {
+  background: #f5f6fa;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.data-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.data-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #2c3e50;
+}
+
+.data-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.monospace {
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-super_admin {
+  background: #c0392b;
+  color: white;
+}
+
+.role-admin {
+  background: #e67e22;
+  color: white;
+}
+
+.role-manager {
+  background: #3498db;
+  color: white;
+}
+
+.role-agent {
+  background: #95a5a6;
+  color: white;
+}
+
+.status-active {
+  background: #d5f4e6;
+  color: #27ae60;
+}
+
+.status-inactive {
+  background: #fadbd8;
+  color: #c0392b;
+}
+
+.status-pending {
+  background: #fef5e7;
+  color: #f39c12;
+}
+
+.status-in_transit {
+  background: #d6eaf8;
+  color: #3498db;
+}
+
+.status-delivered_to_locker {
+  background: #d5f4e6;
+  color: #27ae60;
+}
+
+.status-picked_up {
+  background: #abebc6;
+  color: #186a3b;
+}
+
+.status-expired {
+  background: #fadbd8;
+  color: #c0392b;
+}
+
+.status-success {
+  background: #d5f4e6;
+  color: #27ae60;
+}
+
+.status-failure {
+  background: #fadbd8;
+  color: #c0392b;
+}
+
+.action-badge {
+  background: #d6eaf8;
+  color: #3498db;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.btn-action {
+  padding: 6px 12px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-action:hover {
+  background: #5568d3;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-tabs {
+    flex-wrap: wrap;
+  }
+
+  .data-table {
+    font-size: 12px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 8px;
+  }
+}
