@@ -3,10 +3,60 @@ import { Download, Send, MessageSquare, CheckCircle2, Eye, AlertTriangle, Bankno
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
 import { MetricCard, TableSkeleton, Pagination, EmptyState, StatusBadge } from '../components/ui';
-import { smsTemplatesData, notificationHistoryData, autoRulesData, msgVolumeData, MSG_STATUSES } from '../constants/mockData';
+import {
+  useTemplates,
+  useRules,
+  useNotificationSettings,
+  useMessages,
+  useNotificationStats,
+  useToggleTemplate,
+  useDuplicateTemplate,
+  useDeleteTemplate,
+  useToggleRule,
+  useTestRule,
+  useUpdateSettings,
+  useTestSms,
+} from '../features/notifications/hooks/useNotifications';
+
+// Keep MSG_STATUSES as a display constant
+const MSG_STATUSES = {
+  delivered: { label: 'Delivered', color: '#81C995', bg: 'rgba(129,201,149,0.1)', icon: '✓✓' },
+  read: { label: 'Read', color: '#7EA8C9', bg: 'rgba(126,168,201,0.1)', icon: '✓✓' },
+  opened: { label: 'Opened', color: '#B5A0D1', bg: 'rgba(181,160,209,0.1)', icon: '👁' },
+  sent: { label: 'Sent', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', icon: '✓' },
+  failed: { label: 'Failed', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', icon: '✕' },
+  bounced: { label: 'Bounced', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', icon: '↩' },
+  pending: { label: 'Pending', color: '#78716C', bg: 'rgba(120,113,108,0.1)', icon: '⏳' },
+};
+
+// Static chart data (will come from stats API in future)
+const msgVolumeData = [
+  { date: 'Mon', sms: 420, whatsapp: 380, email: 210 },
+  { date: 'Tue', sms: 480, whatsapp: 450, email: 245 },
+  { date: 'Wed', sms: 390, whatsapp: 410, email: 190 },
+  { date: 'Thu', sms: 510, whatsapp: 470, email: 260 },
+  { date: 'Fri', sms: 460, whatsapp: 430, email: 220 },
+  { date: 'Sat', sms: 280, whatsapp: 310, email: 120 },
+  { date: 'Sun', sms: 220, whatsapp: 250, email: 90 },
+];
 
 export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShowExport, setComposeOpen, addToast }) => {
   const { theme } = useTheme();
+
+  // ── API hooks ────────────────────────────────────────────────────
+  const { data: templatesData = [], isPending: templatesPending } = useTemplates();
+  const { data: rulesData = [], isPending: rulesPending } = useRules();
+  const { data: settingsData } = useNotificationSettings();
+  const { data: statsData } = useNotificationStats();
+  const { data: messagesData, isPending: messagesPending } = useMessages({ limit: 200 });
+
+  const toggleTemplateMut = useToggleTemplate();
+  const duplicateTemplateMut = useDuplicateTemplate();
+  const deleteTemplateMut = useDeleteTemplate();
+  const toggleRuleMut = useToggleRule();
+  const testRuleMut = useTestRule();
+  const updateSettingsMut = useUpdateSettings();
+  const testSmsMut = useTestSms();
 
   // Message Center state
   const [msgSearch, setMsgSearch] = React.useState('');
@@ -26,21 +76,17 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
   const [ruleSearch, setRuleSearch] = React.useState('');
   const [selectedRule, setSelectedRule] = React.useState(null);
 
-  // Settings state
+  // Settings state — seeded from API, falls back to defaults
   const [notificationSettings, setNotificationSettings] = React.useState({
-    // Channel toggles
     smsEnabled: true,
     whatsappEnabled: true,
     emailEnabled: false,
     pushEnabled: true,
-    // Rate limits
     rateLimitSMS: 100,
     rateLimitWA: 200,
     rateLimitEmail: 50,
-    // Sender config
     defaultSender: 'LocQar',
     replyTo: 'support@locqar.com',
-    // Event preferences
     notifyOnPickup: true,
     notifyOnInTransit: true,
     notifyOnDelivered: true,
@@ -49,34 +95,27 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
     notifyOnSLABreach: true,
     notifyOnPaymentDue: false,
     notifyOnPackageExpiry: true,
-    // Retry policies
     retryEnabled: true,
     maxRetries: 3,
-    retryDelay: 5, // minutes
-    // Quiet hours
+    retryDelay: 5,
     quietHoursEnabled: false,
     quietHoursStart: '22:00',
     quietHoursEnd: '08:00',
-    // Priority settings
     highPrioritySLA: true,
     highPriorityPayments: false,
-    // Batch settings
     batchEnabled: true,
     batchSize: 50,
-    batchInterval: 2, // minutes
-    // SMS Gateway config
-    smsProvider: 'africas_talking',
+    batchInterval: 2,
+    smsProvider: 'hubtel',
     smsApiKey: '',
     smsApiSecret: '',
     smsUsername: '',
     smsWebhookUrl: 'https://api.locqar.com/webhooks/sms',
-    // WhatsApp Business API config
     waBusinessAccountId: '',
     waPhoneNumberId: '',
     waAccessToken: '',
     waWebhookVerifyToken: '',
     waWebhookUrl: 'https://api.locqar.com/webhooks/whatsapp',
-    // Email SMTP config
     emailSmtpHost: 'smtp.gmail.com',
     emailSmtpPort: 587,
     emailSmtpUsername: '',
@@ -86,26 +125,33 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
     emailFromAddress: 'noreply@locqar.com',
   });
 
+  // Sync settings from API when loaded
+  React.useEffect(() => {
+    if (settingsData) {
+      setNotificationSettings((prev) => ({ ...prev, ...settingsData }));
+    }
+  }, [settingsData]);
+
   // Settings sub-tab
   const [settingsTab, setSettingsTab] = React.useState('channels');
 
-  // Filtered messages
+  // Filtered messages — from API data
+  const allMessages = messagesData?.data ?? [];
   const filteredMessages = React.useMemo(() => {
-    let result = [...notificationHistoryData];
+    let result = [...allMessages];
     if (msgSearch) {
       const q = msgSearch.toLowerCase();
       result = result.filter(m =>
         m.recipient.toLowerCase().includes(q) ||
-        m.waybill.toLowerCase().includes(q) ||
+        (m.waybill || '').toLowerCase().includes(q) ||
         m.phone.includes(q) ||
-        m.template.toLowerCase().includes(q)
+        (m.template?.name || '').toLowerCase().includes(q)
       );
     }
     if (msgChannelFilter !== 'all') result = result.filter(m => m.channel === msgChannelFilter);
     if (msgStatusFilter !== 'all') result = result.filter(m => m.status === msgStatusFilter);
-    if (msgDateFilter === 'today') result = result.filter(m => m.sentAt.includes('2024-01-15'));
     return result;
-  }, [msgSearch, msgChannelFilter, msgStatusFilter, msgDateFilter]);
+  }, [allMessages, msgSearch, msgChannelFilter, msgStatusFilter]);
 
   const paginatedMessages = React.useMemo(() => {
     const start = (msgPage - 1) * msgPageSize;
@@ -114,45 +160,61 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
 
   const totalMsgPages = Math.ceil(filteredMessages.length / msgPageSize);
 
-  // Filtered templates
+  // Filtered templates — from API data
   const filteredTemplates = React.useMemo(() => {
-    let result = [...smsTemplatesData];
+    let result = [...templatesData];
     if (templateSearch) {
       const q = templateSearch.toLowerCase();
       result = result.filter(t => t.name.toLowerCase().includes(q) || t.message.toLowerCase().includes(q));
     }
     if (templateChannelFilter !== 'all') result = result.filter(t => t.channel === templateChannelFilter);
     return result;
-  }, [templateSearch, templateChannelFilter]);
+  }, [templatesData, templateSearch, templateChannelFilter]);
 
-  // Filtered rules
+  // Filtered rules — from API data
   const filteredRules = React.useMemo(() => {
-    let result = [...autoRulesData];
+    let result = [...rulesData];
     if (ruleSearch) {
       const q = ruleSearch.toLowerCase();
-      result = result.filter(r => r.name.toLowerCase().includes(q) || r.description.toLowerCase().includes(q));
+      result = result.filter(r => r.name.toLowerCase().includes(q) || (r.description || '').toLowerCase().includes(q));
     }
     return result;
-  }, [ruleSearch]);
+  }, [rulesData, ruleSearch]);
 
   const handleToggleTemplate = (templateId) => {
-    addToast({ type: 'success', message: 'Template status updated' });
+    toggleTemplateMut.mutate(templateId, {
+      onSuccess: () => addToast({ type: 'success', message: 'Template status updated' }),
+      onError: () => addToast({ type: 'error', message: 'Failed to update template' }),
+    });
   };
 
   const handleToggleRule = (ruleId) => {
-    addToast({ type: 'success', message: 'Rule status updated' });
+    toggleRuleMut.mutate(ruleId, {
+      onSuccess: () => addToast({ type: 'success', message: 'Rule status updated' }),
+      onError: () => addToast({ type: 'error', message: 'Failed to update rule' }),
+    });
   };
 
   const handleDuplicateTemplate = (template) => {
-    addToast({ type: 'success', message: `Template "${template.name}" duplicated` });
+    duplicateTemplateMut.mutate(template.id, {
+      onSuccess: () => addToast({ type: 'success', message: `Template "${template.name}" duplicated` }),
+      onError: () => addToast({ type: 'error', message: 'Failed to duplicate template' }),
+    });
   };
 
   const handleTestRule = (rule) => {
     addToast({ type: 'info', message: `Testing rule "${rule.name}"...` });
+    testRuleMut.mutate(rule.id, {
+      onSuccess: (data) => addToast({ type: 'success', message: data.message }),
+      onError: () => addToast({ type: 'error', message: 'Rule test failed' }),
+    });
   };
 
   const handleSaveSettings = () => {
-    addToast({ type: 'success', message: 'Notification settings saved successfully' });
+    updateSettingsMut.mutate(notificationSettings, {
+      onSuccess: () => addToast({ type: 'success', message: 'Notification settings saved successfully' }),
+      onError: () => addToast({ type: 'error', message: 'Failed to save settings' }),
+    });
   };
 
   return (
@@ -179,11 +241,11 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
         <div className="space-y-6">
           {/* Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <MetricCard title="Sent Today" value={notificationHistoryData.filter(n => n.sentAt.includes('2024-01-15')).length.toLocaleString()} icon={Send} loading={loading} subtitle="SMS + WhatsApp + Email" />
-            <MetricCard title="Delivered" value={notificationHistoryData.filter(n => ['delivered','read','opened'].includes(n.status)).length} change="98.2%" changeType="up" icon={CheckCircle2} loading={loading} />
-            <MetricCard title="Opened" value={notificationHistoryData.filter(n => ['read','opened'].includes(n.status)).length} icon={Eye} loading={loading} subtitle="WA read + Email opened" />
-            <MetricCard title="Failed" value={notificationHistoryData.filter(n => ['failed','bounced'].includes(n.status)).length} icon={AlertTriangle} loading={loading} />
-            <MetricCard title="Cost Today" value={`GH₵ ${notificationHistoryData.reduce((s, n) => s + n.cost, 0).toFixed(2)}`} icon={Banknote} loading={loading} />
+            <MetricCard title="Sent Today" value={(statsData?.sentToday ?? 0).toLocaleString()} icon={Send} loading={loading || !statsData} subtitle="SMS + WhatsApp + Email" />
+            <MetricCard title="Delivered" value={statsData?.deliveredToday ?? 0} change={statsData?.sentToday ? `${Math.round((statsData.deliveredToday / statsData.sentToday) * 100)}%` : '—'} changeType="up" icon={CheckCircle2} loading={loading || !statsData} />
+            <MetricCard title="Opened" value="—" icon={Eye} loading={loading || !statsData} subtitle="WA read + Email opened" />
+            <MetricCard title="Failed" value={statsData?.failedToday ?? 0} icon={AlertTriangle} loading={loading || !statsData} />
+            <MetricCard title="Cost Today" value={`GH₵ ${(statsData?.costToday ?? 0).toFixed(2)}`} icon={Banknote} loading={loading || !statsData} />
           </div>
 
           {/* Message Volume Chart */}
@@ -260,7 +322,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                               <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{msg.recipient}</p>
                               <p className="text-xs" style={{ color: theme.text.muted }}>{msg.phone}</p>
                             </td>
-                            <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{msg.template}</span></td>
+                            <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{msg.template?.name ?? msg.template ?? '—'}</span></td>
                             <td className="p-3">
                               <span className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full w-fit capitalize" style={{ backgroundColor: msg.channel === 'sms' ? '#81C99515' : msg.channel === 'whatsapp' ? '#B5A0D115' : '#7EA8C915', color: msg.channel === 'sms' ? '#81C995' : msg.channel === 'whatsapp' ? '#B5A0D1' : '#7EA8C9' }}>
                                 {msg.channel === 'sms' ? <Smartphone size={12} /> : msg.channel === 'whatsapp' ? <MessageSquare size={12} /> : <Mail size={12} />}
@@ -331,7 +393,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       <div className="flex gap-4 text-xs" style={{ color: theme.text.muted }}>
                         <span>Sent: {template.sentCount.toLocaleString()}</span>
                         <span>Delivery: {template.deliveryRate}%</span>
-                        <span>Last sent: {template.lastSent}</span>
+                        <span>Last sent: {template.lastSentAt ?? template.lastSent ?? '—'}</span>
                       </div>
                     </div>
                     <div className="flex gap-2 ml-4">
@@ -386,9 +448,9 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       <p className="text-sm mb-3" style={{ color: theme.text.secondary }}>{rule.description}</p>
                       <div className="flex flex-wrap gap-3 text-xs" style={{ color: theme.text.muted }}>
                         <span className="px-2 py-1 rounded" style={{ backgroundColor: theme.bg.tertiary }}>Trigger: {rule.trigger}</span>
-                        <span className="px-2 py-1 rounded" style={{ backgroundColor: theme.bg.tertiary }}>Channels: {rule.channels.join(', ')}</span>
+                        <span className="px-2 py-1 rounded" style={{ backgroundColor: theme.bg.tertiary }}>Channels: {(typeof rule.channels === 'string' ? JSON.parse(rule.channels) : rule.channels).join(', ')}</span>
                         <span className="px-2 py-1 rounded" style={{ backgroundColor: theme.bg.tertiary }}>Delay: {rule.delay}</span>
-                        <span className="px-2 py-1 rounded" style={{ backgroundColor: theme.bg.tertiary }}>Fired: {rule.fired.toLocaleString()}x</span>
+                        <span className="px-2 py-1 rounded" style={{ backgroundColor: theme.bg.tertiary }}>Fired: {(rule.firedCount ?? rule.fired ?? 0).toLocaleString()}x</span>
                       </div>
                     </div>
                     <div className="flex gap-2 ml-4">
@@ -460,7 +522,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                           <p className="text-xs" style={{ color: theme.text.muted }}>{msg.phone}</p>
                         </td>
                         <td className="p-3"><span className="text-xs font-mono" style={{ color: theme.accent.primary }}>{msg.waybill}</span></td>
-                        <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{msg.template}</span></td>
+                        <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{msg.template?.name ?? msg.template ?? '—'}</span></td>
                         <td className="p-3">
                           <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: msg.channel === 'sms' ? '#81C99515' : msg.channel === 'whatsapp' ? '#B5A0D115' : '#7EA8C915', color: msg.channel === 'sms' ? '#81C995' : msg.channel === 'whatsapp' ? '#B5A0D1' : '#7EA8C9' }}>
                             {msg.channel}
@@ -611,6 +673,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                   className="w-full px-3 py-2 rounded-lg outline-none"
                   style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
                 >
+                  <option value="hubtel">Hubtel</option>
                   <option value="africas_talking">Africa's Talking</option>
                   <option value="twilio">Twilio</option>
                   <option value="nexmo">Nexmo (Vonage)</option>
@@ -622,23 +685,23 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>API Key</label>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Client ID</label>
                   <input
                     type="password"
                     value={notificationSettings.smsApiKey}
                     onChange={(e) => setNotificationSettings(prev => ({ ...prev, smsApiKey: e.target.value }))}
-                    placeholder="Enter API Key"
+                    placeholder="Enter Hubtel Client ID"
                     className="w-full px-3 py-2 rounded-lg outline-none"
                     style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>API Secret</label>
+                  <label className="block text-sm mb-2" style={{ color: theme.text.secondary }}>Client Secret</label>
                   <input
                     type="password"
                     value={notificationSettings.smsApiSecret}
                     onChange={(e) => setNotificationSettings(prev => ({ ...prev, smsApiSecret: e.target.value }))}
-                    placeholder="Enter API Secret"
+                    placeholder="Enter Hubtel Client Secret"
                     className="w-full px-3 py-2 rounded-lg outline-none"
                     style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
                   />

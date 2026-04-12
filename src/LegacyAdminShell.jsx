@@ -1,4 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback, createContext, useContext } from 'react';
+import { Navigate } from 'react-router-dom';
+import LockersListPage from '@/features/lockers/pages/LockersListPage';
+import ActivityFeedPage from '@/features/activity/pages/ActivityFeedPage';
+import { useAuthStore } from '@/features/auth/stores/authStore';
+import { useLogout } from '@/features/auth/hooks/useAuth';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { LayoutDashboard, Package, Users, Settings, ChevronDown, ChevronRight, Search, Truck, MapPin, DollarSign, Box, Bell, Plus, ArrowUpRight, ArrowDownRight, Clock, CheckCircle2, AlertTriangle, Filter, Download, Eye, Edit, Trash2, RefreshCw, TrendingUp, Calendar, ChevronLeft, X, QrCode, Building2, UserCheck, PackageX, Timer, Grid3X3, Sun, Moon, Shield, Key, Lock, Unlock, UserPlus, Phone, MessageSquare, Send, Printer, Banknote, Battery, BatteryWarning, Thermometer, Scan, Home, Warehouse, Circle, CheckCircle, Inbox, Route, Car, Wrench, Cog, Briefcase, Users2, Award, Ticket, Receipt, CreditCard, FileText, Command, Keyboard, Check, Info, AlertOctagon, XCircle, ChevronFirst, ChevronLast, MoreHorizontal, FileDown, Loader2, Menu, Smartphone, LogOut, History, Mail, Wallet } from 'lucide-react';
 
@@ -29,6 +34,7 @@ import {
   HRISPage,
   LoginPage,
   CustomerPortalPage,
+  CloudConfigPage,
 } from './pages';
 
 // ============ MODAL COMPONENTS ============
@@ -91,7 +97,33 @@ import {
   portalTerminalAvailability,
   staffData,
   teamsData,
+  // Additional mock data required by the legacy shell (re-exported from mockDataPart2)
+  driversData,
+  customersData,
+  subscribersData,
+  transactionsData,
+  invoicesData,
+  ticketsData,
+  collectionsData,
+  smsTemplatesData,
+  notificationHistoryData,
+  autoRulesData,
 } from './constants/mockData';
+
+// The Locqar-master App.jsx referenced these symbols without ever importing
+// or defining them. Stubbed here so the legacy shell can mount. Real data will
+// come from the NestJS dashboard-api in Phase 5 — tracked in
+// C:\Users\smile\.claude\plans\sleepy-hugging-ember.md.
+const slaBreachData = [];
+const escalationLog = [];
+const SLA_SEVERITY = {};
+const SLA_TIERS = [];
+const ESCALATION_RULES = [];
+const SUBSCRIPTION_PLANS = [];
+// Fallback seed data when /packages and /lockers endpoints are unreachable.
+// Empty arrays are safe: the legacy shell also re-fetches on mount.
+const INITIAL_PACKAGES = [];
+const INITIAL_LOCKERS = [];
 
 // ============ CONTEXT ============
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
@@ -180,542 +212,6 @@ const ALL_STATUSES = {
   suspended: { label: 'Suspended', color: '#D4AA5A', bg: 'rgba(212, 170, 90, 0.07)' },
 };
 
-// ============ SAMPLE DATA ============
-const terminalData = [
-  { month: 'Jan', accra: 600, achimota: 450, kotoka: 300 },
-  { month: 'Feb', accra: 750, achimota: 500, kotoka: 350 },
-  { month: 'Mar', accra: 680, achimota: 800, kotoka: 400 },
-  { month: 'Apr', accra: 900, achimota: 700, kotoka: 380 },
-  { month: 'May', accra: 720, achimota: 950, kotoka: 420 },
-  { month: 'Jun', accra: 800, achimota: 600, kotoka: 350 },
-];
-
-const hourlyData = [
-  { hour: '6AM', packages: 12 }, { hour: '8AM', packages: 45 }, { hour: '10AM', packages: 78 },
-  { hour: '12PM', packages: 92 }, { hour: '2PM', packages: 85 }, { hour: '4PM', packages: 110 },
-  { hour: '6PM', packages: 95 }, { hour: '8PM', packages: 42 }, { hour: '10PM', packages: 18 },
-];
-
-// Mock data preserved as defaults or backup if needed, but we'll use state now
-const INITIAL_LOCKERS = [
-  { id: 'A-01', terminal: 'Achimota Mall', size: 'Small', status: 'available', temp: 24, battery: 95 },
-  { id: 'A-15', terminal: 'Achimota Mall', size: 'Medium', status: 'occupied', temp: 25, battery: 91, package: 'LQ-2024-00001' },
-  { id: 'A-20', terminal: 'Achimota Mall', size: 'Large', status: 'maintenance', temp: null, battery: 15 },
-  { id: 'B-01', terminal: 'Accra Mall', size: 'Small', status: 'available', temp: 23, battery: 98 },
-  { id: 'B-08', terminal: 'Accra Mall', size: 'Large', status: 'reserved', temp: 24, battery: 85 },
-  { id: 'K-22', terminal: 'Kotoka T3', size: 'Medium', status: 'occupied', temp: 22, battery: 90, package: 'LQ-2024-00004' },
-  { id: 'A-03', terminal: 'Achimota Mall', size: 'XLarge', status: 'occupied', temp: 24, battery: 88, package: 'LQ-2024-00005' },
-  { id: 'J-05', terminal: 'Junction Mall', size: 'Medium', status: 'occupied', temp: 23, battery: 92, package: 'LQ-2024-00010' },
-];
-
-const INITIAL_PACKAGES = [
-  { id: 1, waybill: 'LQ-2024-00001', customer: 'Joe Doe', phone: '+233551399333', email: 'joe@email.com', destination: 'Achimota Mall', locker: 'A-15', size: 'Medium', status: 'delivered_to_locker', deliveryMethod: 'warehouse_to_locker', product: "Pick 'N' Go", daysInLocker: 2, value: 450, cod: true, weight: '2.5kg', createdAt: '2024-01-15 08:30', courier: { id: 1, name: 'Kwesi Asante' } },
-  { id: 2, waybill: 'LQ-2024-00002', customer: 'Jane Doe', phone: '+233557821456', email: 'jane@email.com', destination: 'Accra Mall', locker: 'B-08', size: 'Large', status: 'in_transit_to_locker', deliveryMethod: 'dropbox_to_locker', product: 'Dropbox Express', daysInLocker: 0, value: 320, cod: false, weight: '5.2kg', createdAt: '2024-01-15 09:15', courier: { id: 1, name: 'Kwesi Asante' } },
-  { id: 3, waybill: 'LQ-2024-00003', customer: 'Michael Mensah', phone: '+233549876321', email: 'michael@email.com', destination: 'Dome', locker: '-', size: 'Small', status: 'delivered_to_home', deliveryMethod: 'locker_to_home', product: 'Home Delivery', daysInLocker: 0, value: 180, cod: false, weight: '0.8kg', createdAt: '2024-01-14 14:20', courier: null },
-  { id: 4, waybill: 'LQ-2024-00004', customer: 'Sarah Asante', phone: '+233551234567', email: 'sarah@email.com', destination: 'Kotoka T3', locker: 'K-22', size: 'Medium', status: 'delivered_to_locker', deliveryMethod: 'warehouse_to_locker', product: 'Airport Pickup', daysInLocker: 1, value: 890, cod: true, weight: '3.1kg', createdAt: '2024-01-15 07:45', courier: { id: 2, name: 'Kofi Mensah' } },
-  { id: 5, waybill: 'LQ-2024-00005', customer: 'Kwame Boateng', phone: '+233559876543', email: 'kwame@email.com', destination: 'Achimota Mall', locker: 'A-03', size: 'XLarge', status: 'expired', deliveryMethod: 'warehouse_to_locker', product: "Pick 'N' Go", daysInLocker: 7, value: 275, cod: false, weight: '8.5kg', createdAt: '2024-01-08 10:00', courier: null },
-  { id: 6, waybill: 'LQ-2024-00006', customer: 'Ama Serwaa', phone: '+233542345678', email: 'ama@email.com', destination: 'Accra Mall', locker: '-', size: 'Small', status: 'at_warehouse', deliveryMethod: 'warehouse_to_locker', product: 'Standard', daysInLocker: 0, value: 150, cod: true, weight: '1.2kg', createdAt: '2024-01-15 11:30', courier: null },
-  { id: 7, waybill: 'LQ-2024-00007', customer: 'Kofi Mensah', phone: '+233551112222', email: 'kofi@email.com', destination: 'West Hills', locker: '-', size: 'Medium', status: 'pending', deliveryMethod: 'dropbox_to_locker', product: 'Dropbox Express', daysInLocker: 0, value: 220, cod: false, weight: '2.0kg', createdAt: '2024-01-15 12:00', courier: { id: 4, name: 'Kwame Asiedu' } },
-  { id: 8, waybill: 'LQ-2024-00008', customer: 'Efua Owusu', phone: '+233553334444', email: 'efua@email.com', destination: 'Tema', locker: '-', size: 'Large', status: 'in_transit_to_home', deliveryMethod: 'locker_to_home', product: 'Home Delivery', daysInLocker: 0, value: 550, cod: true, weight: '6.5kg', createdAt: '2024-01-15 06:30', courier: { id: 2, name: 'Kofi Mensah' } },
-  { id: 9, waybill: 'LQ-2024-00009', customer: 'Yaw Asiedu', phone: '+233555556666', email: 'yaw@email.com', destination: 'Achimota Mall', locker: '-', size: 'Small', status: 'at_dropbox', deliveryMethod: 'dropbox_to_locker', product: 'Dropbox Express', daysInLocker: 0, value: 95, cod: false, weight: '0.5kg', createdAt: '2024-01-15 13:45', courier: null },
-  { id: 10, waybill: 'LQ-2024-00010', customer: 'Akosua Mensah', phone: '+233557778888', email: 'akosua@email.com', destination: 'Junction Mall', locker: 'J-05', size: 'Medium', status: 'delivered_to_locker', deliveryMethod: 'warehouse_to_locker', product: 'Standard', daysInLocker: 3, value: 340, cod: false, weight: '2.8kg', createdAt: '2024-01-12 09:00', courier: { id: 5, name: 'Ama Serwaa' } },
-  { id: 11, waybill: 'LQ-2024-00011', customer: 'Nana Adjei', phone: '+233559991111', email: 'nana@email.com', destination: 'Achimota Mall', locker: '-', size: 'Small', status: 'pending', deliveryMethod: 'dropbox_to_locker', product: 'Dropbox Express', daysInLocker: 0, value: 120, cod: false, weight: '0.6kg', createdAt: '2024-01-15 14:00', courier: null },
-  { id: 12, waybill: 'LQ-2024-00012', customer: 'Abena Owusu', phone: '+233542223333', email: 'abena@email.com', destination: 'Accra Mall', locker: 'B-14', size: 'Large', status: 'delivered_to_locker', deliveryMethod: 'warehouse_to_locker', product: "Pick 'N' Go", daysInLocker: 5, value: 780, cod: true, weight: '4.2kg', createdAt: '2024-01-10 11:00', courier: { id: 3, name: 'Adjoa Frimpong' } },
-  { id: 13, waybill: 'LQ-2024-00013', customer: 'Kweku Darko', phone: '+233551441221', email: 'kweku@email.com', destination: 'West Hills Mall', locker: '-', size: 'Medium', status: 'in_transit_to_locker', deliveryMethod: 'warehouse_to_locker', product: 'Standard', daysInLocker: 0, value: 290, cod: false, weight: '2.1kg', createdAt: '2024-01-15 07:00', courier: { id: 4, name: 'Kwame Asiedu' } },
-  { id: 14, waybill: 'LQ-2024-00014', customer: 'Esi Boateng', phone: '+233557893214', email: 'esi@email.com', destination: 'Kotoka T3', locker: '-', size: 'XLarge', status: 'at_warehouse', deliveryMethod: 'warehouse_to_locker', product: 'Airport Pickup', daysInLocker: 0, value: 1200, cod: true, weight: '9.5kg', createdAt: '2024-01-15 08:00', courier: null },
-  { id: 15, waybill: 'LQ-2024-00015', customer: 'Kofi Amponsah', phone: '+233551897654', email: 'kofi.a@email.com', destination: 'Junction Mall', locker: '-', size: 'Small', status: 'at_dropbox', deliveryMethod: 'dropbox_to_locker', product: 'Dropbox Express', daysInLocker: 0, value: 75, cod: false, weight: '0.3kg', createdAt: '2024-01-15 15:30', courier: null },
-  { id: 16, waybill: 'LQ-2024-00016', customer: 'Maame Agyemang', phone: '+233543216789', email: 'maame@email.com', destination: 'Accra Mall', locker: 'C-07', size: 'Small', status: 'delivered_to_locker', deliveryMethod: 'dropbox_to_locker', product: 'Dropbox Express', daysInLocker: 1, value: 140, cod: false, weight: '0.9kg', createdAt: '2024-01-14 16:00', courier: { id: 5, name: 'Ama Serwaa' } },
-  { id: 17, waybill: 'LQ-2024-00017', customer: 'Yaa Asante', phone: '+233557654321', email: 'yaa@email.com', destination: 'Achimota Mall', locker: '-', size: 'Medium', status: 'in_transit_to_home', deliveryMethod: 'locker_to_home', product: 'Home Delivery', daysInLocker: 0, value: 410, cod: false, weight: '3.3kg', createdAt: '2024-01-15 10:30', courier: { id: 1, name: 'Kwesi Asante' } },
-  { id: 18, waybill: 'LQ-2024-00018', customer: 'Fiifi Mensah', phone: '+233559871234', email: 'fiifi@email.com', destination: 'West Hills Mall', locker: '-', size: 'Large', status: 'expired', deliveryMethod: 'warehouse_to_locker', product: 'Standard', daysInLocker: 8, value: 560, cod: true, weight: '5.8kg', createdAt: '2024-01-06 09:00', courier: null },
-  { id: 19, waybill: 'LQ-2024-00019', customer: 'Akua Amankwah', phone: '+233551235678', email: 'akua.a@email.com', destination: 'Achimota Mall', locker: 'A-22', size: 'Small', status: 'delivered_to_locker', deliveryMethod: 'warehouse_to_locker', product: 'Standard', daysInLocker: 2, value: 95, cod: false, weight: '0.7kg', createdAt: '2024-01-13 13:00', courier: { id: 2, name: 'Kofi Mensah' } },
-  { id: 20, waybill: 'LQ-2024-00020', customer: 'Kwadwo Asare', phone: '+233554321987', email: 'kwadwo@email.com', destination: 'Kotoka T3', locker: '-', size: 'Medium', status: 'pending', deliveryMethod: 'warehouse_to_locker', product: 'Airport Pickup', daysInLocker: 0, value: 670, cod: false, weight: '2.9kg', createdAt: '2024-01-15 16:00', courier: null },
-  { id: 21, waybill: 'LQ-2024-00021', customer: 'Adwoa Boateng', phone: '+233557777001', email: 'adwoa@email.com', destination: 'Junction Mall', locker: 'J-11', size: 'Medium', status: 'delivered_to_locker', deliveryMethod: 'warehouse_to_locker', product: 'Standard', daysInLocker: 4, value: 380, cod: true, weight: '2.4kg', createdAt: '2024-01-11 10:00', courier: { id: 4, name: 'Kwame Asiedu' } },
-  { id: 22, waybill: 'LQ-2024-00022', customer: 'Osei Bonsu', phone: '+233559990022', email: 'osei@email.com', destination: 'Accra Mall', locker: '-', size: 'Large', status: 'at_warehouse', deliveryMethod: 'warehouse_to_locker', product: "Pick 'N' Go", daysInLocker: 0, value: 840, cod: false, weight: '6.0kg', createdAt: '2024-01-15 09:45', courier: null },
-  { id: 23, waybill: 'LQ-2024-00023', customer: 'Ama Frimpong', phone: '+233542113344', email: 'ama.f@email.com', destination: 'Achimota Mall', locker: '-', size: 'Small', status: 'in_transit_to_locker', deliveryMethod: 'dropbox_to_locker', product: 'Dropbox Express', daysInLocker: 0, value: 110, cod: false, weight: '0.5kg', createdAt: '2024-01-15 12:30', courier: { id: 3, name: 'Adjoa Frimpong' } },
-  { id: 24, waybill: 'LQ-2024-00024', customer: 'Bright Owusu', phone: '+233551122334', email: 'bright@email.com', destination: 'West Hills Mall', locker: '-', size: 'Medium', status: 'delivered_to_home', deliveryMethod: 'locker_to_home', product: 'Home Delivery', daysInLocker: 0, value: 320, cod: false, weight: '1.9kg', createdAt: '2024-01-14 08:00', courier: { id: 1, name: 'Kwesi Asante' } },
-  { id: 25, waybill: 'LQ-2024-00025', customer: 'Abina Asante', phone: '+233557770025', email: 'abina@email.com', destination: 'Accra Mall', locker: 'B-03', size: 'XLarge', status: 'delivered_to_locker', deliveryMethod: 'warehouse_to_locker', product: 'Standard', daysInLocker: 0, value: 1550, cod: true, weight: '11.2kg', createdAt: '2024-01-15 06:00', courier: { id: 2, name: 'Kofi Mensah' } },
-];
-
-const terminalsData = [
-  { id: 'TRM-001', name: 'Achimota Mall', location: 'Achimota', region: 'Greater Accra', city: 'Achimota', totalLockers: 120, available: 45, occupied: 68, maintenance: 7, status: 'online', lat: 5.6145, lng: -0.2270 },
-  { id: 'TRM-002', name: 'Accra Mall', location: 'Tetteh Quarshie', region: 'Greater Accra', city: 'Accra', totalLockers: 85, available: 32, occupied: 50, maintenance: 3, status: 'online', lat: 5.6280, lng: -0.1750 },
-  { id: 'TRM-003', name: 'Kotoka T3', location: 'Airport', region: 'Greater Accra', city: 'Airport', totalLockers: 70, available: 28, occupied: 40, maintenance: 2, status: 'online', lat: 5.6052, lng: -0.1668 },
-  { id: 'TRM-004', name: 'West Hills Mall', location: 'Weija', region: 'Greater Accra', city: 'Weija', totalLockers: 60, available: 20, occupied: 35, maintenance: 5, status: 'maintenance', lat: 5.5580, lng: -0.3150 },
-  { id: 'TRM-005', name: 'Junction Mall', location: 'Nungua', region: 'Greater Accra', city: 'Nungua', totalLockers: 50, available: 18, occupied: 30, maintenance: 2, status: 'online', lat: 5.5920, lng: -0.0780 },
-];
-
-// LocQar Address System: GHA-GRT-ACC-LQ015
-// Format: [Country 3]-[Region 3]-[City 3]-[Locker ID]
-const getTerminalAddress = (terminal) => {
-  const city = (terminal.city || terminal.location).substring(0, 3).toUpperCase();
-  const num = terminal.id.replace('TRM-', '');
-  return `${city}-LQ${num}`;
-};
-
-const getLockerAddress = (lockerId, terminalName) => {
-  const terminal = terminalsData.find(t => t.name === terminalName);
-  if (!terminal) return null;
-  const city = (terminal.city || terminal.location).substring(0, 3).toUpperCase();
-  const num = lockerId.replace(/[A-Z]-/i, '').padStart(3, '0');
-  return `${city}-LQ${num}`;
-};
-
-// Phone-to-Locker Pinning: customers pin their phone to their preferred locker location
-const phonePinData = [
-  { phone: '+233551399333', customer: 'Joe Doe', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'ACH-LQ001', pinnedAt: '2024-01-10' },
-  { phone: '+233557821456', customer: 'Jane Doe', pinnedTerminal: 'Accra Mall', pinnedAddress: 'ACC-LQ002', pinnedAt: '2024-01-12' },
-  { phone: '+233549876321', customer: 'Michael Mensah', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'ACH-LQ001', pinnedAt: '2023-12-05' },
-  { phone: '+233551234567', customer: 'Sarah Asante', pinnedTerminal: 'Kotoka T3', pinnedAddress: 'AIR-LQ003', pinnedAt: '2024-01-08' },
-  { phone: '+233559876543', customer: 'Kwame Boateng', pinnedTerminal: 'Achimota Mall', pinnedAddress: 'ACH-LQ001', pinnedAt: '2023-11-20' },
-  { phone: '+233542345678', customer: 'Ama Serwaa', pinnedTerminal: 'Accra Mall', pinnedAddress: 'ACC-LQ002', pinnedAt: '2024-01-14' },
-  { phone: '+233551112222', customer: 'Kofi Mensah', pinnedTerminal: 'West Hills Mall', pinnedAddress: 'WEI-LQ004', pinnedAt: '2024-01-03' },
-  { phone: '+233553334444', customer: 'Efua Owusu', pinnedTerminal: 'Junction Mall', pinnedAddress: 'NUN-LQ005', pinnedAt: '2023-12-18' },
-];
-
-const customersData = [
-  { id: 1, name: 'Joe Doe', email: 'joe@email.com', phone: '+233551399333', type: 'individual', totalOrders: 15, totalSpent: 2450, status: 'active', joined: '2023-06-15' },
-  { id: 2, name: 'Jane Doe', email: 'jane@email.com', phone: '+233557821456', type: 'individual', totalOrders: 8, totalSpent: 1280, status: 'active', joined: '2023-08-22' },
-  { id: 3, name: 'Jumia Ghana', email: 'logistics@jumia.com.gh', phone: '+233302123456', type: 'b2b', totalOrders: 450, totalSpent: 45000, status: 'active', joined: '2023-01-10' },
-  { id: 4, name: 'Melcom Ltd', email: 'shipping@melcom.com', phone: '+233302654321', type: 'b2b', totalOrders: 280, totalSpent: 32000, status: 'active', joined: '2023-02-15' },
-  { id: 5, name: 'Michael Mensah', email: 'michael@email.com', phone: '+233549876321', type: 'individual', totalOrders: 5, totalSpent: 890, status: 'active', joined: '2023-10-01' },
-];
-
-const SUBSCRIPTION_PLANS = [
-  { id: 'PLAN-BASIC', name: 'Basic', price: 25, period: 'month', deliveries: 5, lockerAccess: 'standard', color: '#A8A29E', description: '5 deliveries/mo, standard lockers' },
-  { id: 'PLAN-STD', name: 'Standard', price: 45, period: 'month', deliveries: 15, lockerAccess: 'standard', color: '#7EA8C9', description: '15 deliveries/mo, standard lockers' },
-  { id: 'PLAN-PREM', name: 'Premium', price: 75, period: 'month', deliveries: 40, lockerAccess: 'priority', color: '#B5A0D1', description: '40 deliveries/mo, priority lockers' },
-  { id: 'PLAN-UNLIM', name: 'Unlimited', price: 120, period: 'month', deliveries: -1, lockerAccess: 'priority', color: '#D4AA5A', description: 'Unlimited deliveries, priority lockers' },
-];
-
-const subscribersData = [
-  {
-    id: 'SUB-001', name: 'Kwame Asante', email: 'kwame.asante@ug.edu.gh', phone: '+233551234001', university: 'University of Ghana', campus: 'Legon', studentId: 'UG-10458723', plan: 'PLAN-STD', status: 'active', startDate: '2024-09-01', renewalDate: '2025-03-01', deliveriesUsed: 12, terminal: 'Achimota Mall', lastDelivery: '2025-01-10', verified: true, autoRenew: true, notes: 'Regular user, prefers Achimota Mall terminal.',
-    paymentHistory: [
-      { date: '2025-01-01', amount: 45, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S001-01' },
-      { date: '2024-12-01', amount: 45, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S001-02' },
-      { date: '2024-11-01', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S001-03' },
-      { date: '2024-10-01', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S001-04' },
-    ],
-    deliveryLog: [
-      { date: '2025-01-10', waybill: 'LQ-2025-00112', terminal: 'Achimota Mall', status: 'picked_up', lockerSize: 'Medium' },
-      { date: '2025-01-05', waybill: 'LQ-2025-00098', terminal: 'Achimota Mall', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2024-12-28', waybill: 'LQ-2024-00987', terminal: 'Achimota Mall', status: 'picked_up', lockerSize: 'Large' },
-      { date: '2024-12-20', waybill: 'LQ-2024-00945', terminal: 'Achimota Mall', status: 'expired', lockerSize: 'Small' },
-    ],
-  },
-  {
-    id: 'SUB-002', name: 'Ama Serwaa', email: 'ama.serwaa@knust.edu.gh', phone: '+233557891002', university: 'KNUST', campus: 'Main Campus', studentId: 'KN-20234891', plan: 'PLAN-PREM', status: 'active', startDate: '2024-08-15', renewalDate: '2025-02-15', deliveriesUsed: 34, terminal: 'Kotoka T3', lastDelivery: '2025-01-14', verified: true, autoRenew: true, notes: 'High-volume user. Contacts support frequently about locker sizes.',
-    paymentHistory: [
-      { date: '2025-01-15', amount: 75, method: 'Card', status: 'completed', invoiceId: 'INV-S002-01' },
-      { date: '2024-12-15', amount: 75, method: 'Card', status: 'completed', invoiceId: 'INV-S002-02' },
-      { date: '2024-11-15', amount: 75, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S002-03' },
-      { date: '2024-10-15', amount: 75, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S002-04' },
-      { date: '2024-09-15', amount: 75, method: 'Card', status: 'completed', invoiceId: 'INV-S002-05' },
-    ],
-    deliveryLog: [
-      { date: '2025-01-14', waybill: 'LQ-2025-00145', terminal: 'Kotoka T3', status: 'picked_up', lockerSize: 'Large' },
-      { date: '2025-01-09', waybill: 'LQ-2025-00101', terminal: 'Kotoka T3', status: 'picked_up', lockerSize: 'Medium' },
-      { date: '2025-01-03', waybill: 'LQ-2025-00067', terminal: 'Kotoka T3', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2024-12-22', waybill: 'LQ-2024-00956', terminal: 'Kotoka T3', status: 'delivered_to_locker', lockerSize: 'Medium' },
-      { date: '2024-12-10', waybill: 'LQ-2024-00890', terminal: 'Accra Mall', status: 'picked_up', lockerSize: 'Large' },
-    ],
-  },
-  {
-    id: 'SUB-003', name: 'Yaw Mensah', email: 'yaw.mensah@ucc.edu.gh', phone: '+233549876003', university: 'University of Cape Coast', campus: 'North Campus', studentId: 'UCC-30127845', plan: 'PLAN-BASIC', status: 'active', startDate: '2024-10-01', renewalDate: '2025-04-01', deliveriesUsed: 3, terminal: 'West Hills Mall', lastDelivery: '2024-12-20', verified: true, autoRenew: true, notes: 'Low usage. Consider outreach for engagement.',
-    paymentHistory: [
-      { date: '2025-01-01', amount: 25, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S003-01' },
-      { date: '2024-12-01', amount: 25, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S003-02' },
-      { date: '2024-11-01', amount: 25, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S003-03' },
-    ],
-    deliveryLog: [
-      { date: '2024-12-20', waybill: 'LQ-2024-00934', terminal: 'West Hills Mall', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2024-11-15', waybill: 'LQ-2024-00812', terminal: 'West Hills Mall', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2024-10-28', waybill: 'LQ-2024-00723', terminal: 'West Hills Mall', status: 'picked_up', lockerSize: 'Medium' },
-    ],
-  },
-  {
-    id: 'SUB-004', name: 'Efua Owusu', email: 'efua.owusu@ug.edu.gh', phone: '+233558234004', university: 'University of Ghana', campus: 'City Campus', studentId: 'UG-10567234', plan: 'PLAN-UNLIM', status: 'active', startDate: '2024-07-01', renewalDate: '2025-01-01', deliveriesUsed: 67, terminal: 'Accra Mall', lastDelivery: '2025-01-15', verified: true, autoRenew: true, notes: 'Power user. Unlimited plan since July. Excellent retention.',
-    paymentHistory: [
-      { date: '2025-01-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S004-01' },
-      { date: '2024-12-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S004-02' },
-      { date: '2024-11-01', amount: 120, method: 'Card', status: 'completed', invoiceId: 'INV-S004-03' },
-      { date: '2024-10-01', amount: 120, method: 'Card', status: 'completed', invoiceId: 'INV-S004-04' },
-      { date: '2024-09-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S004-05' },
-    ],
-    deliveryLog: [
-      { date: '2025-01-15', waybill: 'LQ-2025-00178', terminal: 'Accra Mall', status: 'picked_up', lockerSize: 'Large' },
-      { date: '2025-01-12', waybill: 'LQ-2025-00156', terminal: 'Accra Mall', status: 'picked_up', lockerSize: 'Medium' },
-      { date: '2025-01-08', waybill: 'LQ-2025-00089', terminal: 'Accra Mall', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2025-01-02', waybill: 'LQ-2025-00034', terminal: 'Accra Mall', status: 'picked_up', lockerSize: 'XLarge' },
-    ],
-  },
-  {
-    id: 'SUB-005', name: 'Kofi Appiah', email: 'kofi.appiah@ashesi.edu.gh', phone: '+233542345005', university: 'Ashesi University', campus: 'Berekuso', studentId: 'ASH-40289156', plan: 'PLAN-STD', status: 'expired', startDate: '2024-06-01', renewalDate: '2024-12-01', deliveriesUsed: 15, terminal: 'Junction Mall', lastDelivery: '2024-11-28', verified: true, autoRenew: false, notes: 'Subscription expired Dec 2024. Last payment failed. Needs follow-up.',
-    paymentHistory: [
-      { date: '2024-12-01', amount: 45, method: 'Card', status: 'failed', invoiceId: 'INV-S005-01' },
-      { date: '2024-11-01', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S005-02' },
-      { date: '2024-10-01', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S005-03' },
-      { date: '2024-09-01', amount: 45, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S005-04' },
-    ],
-    deliveryLog: [
-      { date: '2024-11-28', waybill: 'LQ-2024-00867', terminal: 'Junction Mall', status: 'picked_up', lockerSize: 'Medium' },
-      { date: '2024-11-10', waybill: 'LQ-2024-00789', terminal: 'Junction Mall', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2024-10-20', waybill: 'LQ-2024-00678', terminal: 'Junction Mall', status: 'expired', lockerSize: 'Medium' },
-    ],
-  },
-  {
-    id: 'SUB-006', name: 'Abena Darkwa', email: 'abena.darkwa@gimpa.edu.gh', phone: '+233551678006', university: 'GIMPA', campus: 'Greenhill', studentId: 'GIM-50345672', plan: 'PLAN-PREM', status: 'active', startDate: '2024-09-15', renewalDate: '2025-03-15', deliveriesUsed: 28, terminal: 'Achimota Mall', lastDelivery: '2025-01-12', verified: true, autoRenew: true, notes: 'GIMPA business student. Often receives textbooks.',
-    paymentHistory: [
-      { date: '2025-01-15', amount: 75, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S006-01' },
-      { date: '2024-12-15', amount: 75, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S006-02' },
-      { date: '2024-11-15', amount: 75, method: 'Card', status: 'completed', invoiceId: 'INV-S006-03' },
-      { date: '2024-10-15', amount: 75, method: 'Card', status: 'completed', invoiceId: 'INV-S006-04' },
-    ],
-    deliveryLog: [
-      { date: '2025-01-12', waybill: 'LQ-2025-00134', terminal: 'Achimota Mall', status: 'picked_up', lockerSize: 'Large' },
-      { date: '2025-01-04', waybill: 'LQ-2025-00056', terminal: 'Achimota Mall', status: 'picked_up', lockerSize: 'Medium' },
-      { date: '2024-12-18', waybill: 'LQ-2024-00912', terminal: 'Achimota Mall', status: 'picked_up', lockerSize: 'Large' },
-    ],
-  },
-  {
-    id: 'SUB-007', name: 'Kweku Boateng', email: 'kweku.b@uew.edu.gh', phone: '+233549012007', university: 'University of Education, Winneba', campus: 'North Campus', studentId: 'UEW-60478923', plan: 'PLAN-BASIC', status: 'suspended', startDate: '2024-08-01', renewalDate: '2025-02-01', deliveriesUsed: 5, terminal: 'Tema', lastDelivery: '2024-10-15', verified: false, autoRenew: false, notes: 'Suspended due to disputed payment. Student ID unverified. Awaiting documents.',
-    paymentHistory: [
-      { date: '2024-11-01', amount: 25, method: 'Mobile Money', status: 'refunded', invoiceId: 'INV-S007-01' },
-      { date: '2024-10-01', amount: 25, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S007-02' },
-      { date: '2024-09-01', amount: 25, method: 'Mobile Money', status: 'completed', invoiceId: 'INV-S007-03' },
-    ],
-    deliveryLog: [
-      { date: '2024-10-15', waybill: 'LQ-2024-00690', terminal: 'Tema', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2024-09-20', waybill: 'LQ-2024-00578', terminal: 'Tema', status: 'picked_up', lockerSize: 'Small' },
-    ],
-  },
-  {
-    id: 'SUB-008', name: 'Adwoa Frimpong', email: 'adwoa.f@knust.edu.gh', phone: '+233557345008', university: 'KNUST', campus: 'Main Campus', studentId: 'KN-20567834', plan: 'PLAN-STD', status: 'active', startDate: '2024-10-15', renewalDate: '2025-04-15', deliveriesUsed: 9, terminal: 'Kotoka T3', lastDelivery: '2025-01-08', verified: true, autoRenew: true, notes: 'Roommate of Ama Serwaa. Referred by SUB-002.',
-    paymentHistory: [
-      { date: '2025-01-15', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S008-01' },
-      { date: '2024-12-15', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S008-02' },
-      { date: '2024-11-15', amount: 45, method: 'Card', status: 'completed', invoiceId: 'INV-S008-03' },
-    ],
-    deliveryLog: [
-      { date: '2025-01-08', waybill: 'LQ-2025-00078', terminal: 'Kotoka T3', status: 'picked_up', lockerSize: 'Medium' },
-      { date: '2024-12-15', waybill: 'LQ-2024-00878', terminal: 'Kotoka T3', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2024-11-22', waybill: 'LQ-2024-00801', terminal: 'Kotoka T3', status: 'picked_up', lockerSize: 'Medium' },
-    ],
-  },
-  {
-    id: 'SUB-009', name: 'Nana Agyei', email: 'nana.agyei@ug.edu.gh', phone: '+233553456009', university: 'University of Ghana', campus: 'Legon', studentId: 'UG-10623478', plan: 'PLAN-PREM', status: 'pending', startDate: '2025-02-01', renewalDate: '2025-08-01', deliveriesUsed: 0, terminal: 'Accra Mall', lastDelivery: null, verified: false, autoRenew: true, notes: 'New application. Awaiting student ID verification.',
-    paymentHistory: [
-      { date: '2025-01-28', amount: 75, method: 'Mobile Money', status: 'pending', invoiceId: 'INV-S009-01' },
-    ],
-    deliveryLog: [],
-  },
-  {
-    id: 'SUB-010', name: 'Akua Mensah', email: 'akua.m@ucc.edu.gh', phone: '+233548901010', university: 'University of Cape Coast', campus: 'South Campus', studentId: 'UCC-30234567', plan: 'PLAN-UNLIM', status: 'active', startDate: '2024-09-01', renewalDate: '2025-03-01', deliveriesUsed: 52, terminal: 'West Hills Mall', lastDelivery: '2025-01-13', verified: true, autoRenew: true, notes: 'Active Unlimited subscriber. Uses multiple terminals.',
-    paymentHistory: [
-      { date: '2025-01-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S010-01' },
-      { date: '2024-12-01', amount: 120, method: 'Bank Transfer', status: 'completed', invoiceId: 'INV-S010-02' },
-      { date: '2024-11-01', amount: 120, method: 'Card', status: 'completed', invoiceId: 'INV-S010-03' },
-      { date: '2024-10-01', amount: 120, method: 'Card', status: 'completed', invoiceId: 'INV-S010-04' },
-    ],
-    deliveryLog: [
-      { date: '2025-01-13', waybill: 'LQ-2025-00167', terminal: 'West Hills Mall', status: 'picked_up', lockerSize: 'Large' },
-      { date: '2025-01-07', waybill: 'LQ-2025-00082', terminal: 'West Hills Mall', status: 'picked_up', lockerSize: 'Medium' },
-      { date: '2024-12-30', waybill: 'LQ-2024-00978', terminal: 'Accra Mall', status: 'picked_up', lockerSize: 'Small' },
-      { date: '2024-12-20', waybill: 'LQ-2024-00934', terminal: 'West Hills Mall', status: 'delivered_to_locker', lockerSize: 'XLarge' },
-    ],
-  },
-];
-
-const subscriberGrowthData = [
-  { month: 'Sep', count: 3, revenue: 145 },
-  { month: 'Oct', count: 5, revenue: 270 },
-  { month: 'Nov', count: 6, revenue: 355 },
-  { month: 'Dec', count: 8, revenue: 490 },
-  { month: 'Jan', count: 9, revenue: 560 },
-  { month: 'Feb', count: 10, revenue: 615 },
-];
-
-const subscriberChurnData = {
-  churnRate: 10,
-  retentionRate: 90,
-  avgDuration: 4.2,
-  newThisMonth: 2,
-  cancelledThisMonth: 1,
-};
-
-const driversData = [
-  { id: 1, name: 'Kwesi Asante', phone: '+233551234567', vehicle: 'Toyota Hiace - GR-1234-20', zone: 'Accra Central', status: 'active', deliveriesToday: 12, rating: 4.8 },
-  { id: 2, name: 'Kofi Mensah', phone: '+233559876543', vehicle: 'Nissan Urvan - GW-5678-21', zone: 'East Legon', status: 'on_delivery', deliveriesToday: 8, rating: 4.6 },
-  { id: 3, name: 'Yaw Boateng', phone: '+233542345678', vehicle: 'Kia Bongo - GN-9012-22', zone: 'Tema', status: 'offline', deliveriesToday: 0, rating: 4.9 },
-  { id: 4, name: 'Kwame Asiedu', phone: '+233553456789', vehicle: 'Toyota Hiace - GR-3456-21', zone: 'Achimota', status: 'active', deliveriesToday: 15, rating: 4.7 },
-];
-
-const routesData = [
-  {
-    id: 'RT-001', zone: 'Accra Central', status: 'active', driver: driversData[0],
-    startTime: '08:00', estEndTime: '10:30', distance: '28 km', createdAt: '2024-01-15 07:30',
-    stops: [
-      { id: 1, order: 1, terminal: 'Achimota Mall', packages: [1, 5], delivered: 2, eta: '08:25', status: 'completed', arrivedAt: '08:22' },
-      { id: 2, order: 2, terminal: 'Accra Mall', packages: [2, 6], delivered: 1, eta: '09:00', status: 'in_progress', arrivedAt: '08:55' },
-      { id: 3, order: 3, terminal: 'Kotoka T3', packages: [4], delivered: 0, eta: '09:40', status: 'pending', arrivedAt: null },
-    ],
-    timeline: [
-      { time: '07:30', event: 'Route created', icon: 'route', by: 'System' },
-      { time: '07:35', event: 'Driver Kwesi Asante assigned', icon: 'user', by: 'Admin' },
-      { time: '08:00', event: 'Route started — driver departed warehouse', icon: 'truck', by: 'Kwesi Asante' },
-      { time: '08:22', event: 'Arrived at Achimota Mall (Stop 1)', icon: 'mappin', by: 'Kwesi Asante' },
-      { time: '08:28', event: '2 packages delivered at Achimota Mall', icon: 'package', by: 'Kwesi Asante' },
-      { time: '08:55', event: 'Arrived at Accra Mall (Stop 2)', icon: 'mappin', by: 'Kwesi Asante' },
-      { time: '09:02', event: '1 package delivered at Accra Mall', icon: 'package', by: 'Kwesi Asante' },
-    ]
-  },
-  {
-    id: 'RT-002', zone: 'East Legon', status: 'active', driver: driversData[1],
-    startTime: '08:30', estEndTime: '10:00', distance: '15 km', createdAt: '2024-01-15 08:00',
-    stops: [
-      { id: 1, order: 1, terminal: 'Junction Mall', packages: [10], delivered: 1, eta: '08:50', status: 'completed', arrivedAt: '08:48' },
-      { id: 2, order: 2, terminal: 'West Hills Mall', packages: [7], delivered: 0, eta: '09:30', status: 'pending', arrivedAt: null },
-    ],
-    timeline: [
-      { time: '08:00', event: 'Route created', icon: 'route', by: 'System' },
-      { time: '08:10', event: 'Driver Kofi Mensah assigned', icon: 'user', by: 'Admin' },
-      { time: '08:30', event: 'Route started', icon: 'truck', by: 'Kofi Mensah' },
-      { time: '08:48', event: 'Arrived at Junction Mall (Stop 1)', icon: 'mappin', by: 'Kofi Mensah' },
-      { time: '08:52', event: '1 package delivered at Junction Mall', icon: 'package', by: 'Kofi Mensah' },
-    ]
-  },
-  {
-    id: 'RT-003', zone: 'Tema', status: 'pending', driver: driversData[2],
-    startTime: '09:00', estEndTime: '11:00', distance: '22 km', createdAt: '2024-01-15 08:30',
-    stops: [
-      { id: 1, order: 1, terminal: 'Accra Mall', packages: [], delivered: 0, eta: '09:25', status: 'pending', arrivedAt: null },
-      { id: 2, order: 2, terminal: 'Achimota Mall', packages: [9], delivered: 0, eta: '10:00', status: 'pending', arrivedAt: null },
-      { id: 3, order: 3, terminal: 'West Hills Mall', packages: [], delivered: 0, eta: '10:40', status: 'pending', arrivedAt: null },
-    ],
-    timeline: [
-      { time: '08:30', event: 'Route created', icon: 'route', by: 'System' },
-      { time: '08:35', event: 'Driver Yaw Boateng assigned', icon: 'user', by: 'Admin' },
-    ]
-  }
-];
-
-const ticketsData = [
-  { id: 'TKT-001', customer: 'Joe Doe', subject: 'Cannot open locker A-15', category: 'Technical', status: 'open', priority: 'high', created: '2024-01-15 10:30', assignee: 'Support Team' },
-  { id: 'TKT-002', customer: 'Jane Doe', subject: 'Package not received', category: 'Delivery', status: 'in_progress', priority: 'medium', created: '2024-01-15 09:15', assignee: 'Kweku Appiah' },
-  { id: 'TKT-003', customer: 'Michael Mensah', subject: 'Refund request', category: 'Billing', status: 'pending', priority: 'low', created: '2024-01-14 16:45', assignee: null },
-];
-
-const transactionsData = [
-  { id: 'TXN-001', date: '2024-01-15', description: 'Package delivery - LQ-2024-00001', customer: 'Joe Doe', amount: 450, type: 'credit', status: 'completed' },
-  { id: 'TXN-002', date: '2024-01-15', description: 'COD Collection - LQ-2024-00004', customer: 'Sarah Asante', amount: 890, type: 'credit', status: 'pending' },
-  { id: 'TXN-003', date: '2024-01-14', description: 'Refund - LQ-2024-00003', customer: 'Michael Mensah', amount: -50, type: 'debit', status: 'completed' },
-  { id: 'TXN-004', date: '2024-01-15', description: 'B2B Invoice Payment - Jumia', customer: 'Jumia Ghana', amount: 15000, type: 'credit', status: 'completed' },
-];
-
-const invoicesData = [
-  { id: 'INV-001', customer: 'Jumia Ghana', date: '2024-01-01', dueDate: '2024-01-31', amount: 15000, status: 'paid' },
-  { id: 'INV-002', customer: 'Melcom Ltd', date: '2024-01-01', dueDate: '2024-01-31', amount: 12500, status: 'pending' },
-  { id: 'INV-003', customer: 'Joe Doe', date: '2024-01-10', dueDate: '2024-01-25', amount: 450, status: 'overdue' },
-];
-
-const partnersData = [
-  { id: 1, name: 'Jumia Ghana', email: 'logistics@jumia.com.gh', phone: '+233302123456', type: 'e-commerce', tier: 'gold', totalOrders: 450, monthlyVolume: 120, totalSpent: 45000, revenue: 15000, status: 'active', joined: '2023-01-10', contractEnd: '2025-12-31', sla: '24hr', apiCalls: 12450, lastApiCall: '2 min ago', deliveryRate: 97.2, logo: '🟡' },
-  { id: 2, name: 'Melcom Ltd', email: 'shipping@melcom.com', phone: '+233302654321', type: 'retail', tier: 'silver', totalOrders: 280, monthlyVolume: 75, totalSpent: 32000, revenue: 12500, status: 'active', joined: '2023-02-15', contractEnd: '2025-06-30', sla: '48hr', apiCalls: 8200, lastApiCall: '15 min ago', deliveryRate: 94.8, logo: '🔵' },
-  { id: 3, name: 'Telecel Ghana', email: 'logistics@telecel.com.gh', phone: '+233302987654', type: 'telecom', tier: 'gold', totalOrders: 180, monthlyVolume: 45, totalSpent: 28000, revenue: 8500, status: 'active', joined: '2023-05-20', contractEnd: '2025-09-30', sla: '24hr', apiCalls: 5600, lastApiCall: '1 hour ago', deliveryRate: 96.1, logo: '🔴' },
-  { id: 4, name: 'Hubtel', email: 'ops@hubtel.com', phone: '+233302456789', type: 'fintech', tier: 'bronze', totalOrders: 95, monthlyVolume: 30, totalSpent: 12000, revenue: 4200, status: 'active', joined: '2023-08-01', contractEnd: '2025-03-31', sla: '72hr', apiCalls: 2100, lastApiCall: '3 hours ago', deliveryRate: 91.5, logo: '🟢' },
-  { id: 5, name: 'CompuGhana', email: 'shipping@compughana.com', phone: '+233302111222', type: 'electronics', tier: 'bronze', totalOrders: 65, monthlyVolume: 18, totalSpent: 8500, revenue: 2800, status: 'inactive', joined: '2023-11-10', contractEnd: '2024-11-10', sla: '48hr', apiCalls: 450, lastApiCall: '2 weeks ago', deliveryRate: 88.3, logo: '⚫' },
-];
-
-
-const partnerMonthlyData = [
-  { month: 'Aug', jumia: 95, melcom: 60, telecel: 30, hubtel: 20 },
-  { month: 'Sep', jumia: 110, melcom: 65, telecel: 35, hubtel: 22 },
-  { month: 'Oct', jumia: 105, melcom: 70, telecel: 40, hubtel: 25 },
-  { month: 'Nov', jumia: 120, melcom: 75, telecel: 38, hubtel: 28 },
-  { month: 'Dec', jumia: 150, melcom: 80, telecel: 45, hubtel: 30 },
-  { month: 'Jan', jumia: 130, melcom: 78, telecel: 42, hubtel: 32 },
-];
-
-const TIERS = {
-  gold: { label: 'Gold', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', perks: 'Priority SLA, Dedicated Support, Custom API Limits' },
-  silver: { label: 'Silver', color: '#a3a3a3', bg: 'rgba(163,163,163,0.1)', perks: 'Standard SLA, Email Support, Standard API Limits' },
-  bronze: { label: 'Bronze', color: '#cd7c32', bg: 'rgba(205,124,50,0.1)', perks: 'Basic SLA, Ticket Support, Basic API Limits' },
-};
-
-const dropboxesData = [
-  { id: 'DBX-001', name: 'Achimota Overpass', location: 'Achimota', address: 'Near Achimota Interchange', capacity: 50, currentFill: 42, status: 'active', lastCollection: '2024-01-15 10:30', nextCollection: '2024-01-15 16:00', assignedAgent: 'Yaw Boateng', agentPhone: '+233542345678', terminal: 'Achimota Mall', packagesIn: 42, packagesOut: 485, avgDailyVolume: 35, installDate: '2023-03-15', type: 'standard', alerts: ['near_full'] },
-  { id: 'DBX-002', name: 'Madina Market', location: 'Madina', address: 'Madina Market Main Gate', capacity: 40, currentFill: 12, status: 'active', lastCollection: '2024-01-15 11:00', nextCollection: '2024-01-15 17:00', assignedAgent: 'Kwesi Asante', agentPhone: '+233551234567', terminal: 'Achimota Mall', packagesIn: 12, packagesOut: 320, avgDailyVolume: 22, installDate: '2023-04-20', type: 'standard', alerts: [] },
-  { id: 'DBX-003', name: 'Osu Oxford Street', location: 'Osu', address: 'Oxford Street, near Frankie\'s', capacity: 35, currentFill: 31, status: 'active', lastCollection: '2024-01-15 09:00', nextCollection: '2024-01-15 14:00', assignedAgent: 'Kwame Asiedu', agentPhone: '+233553456789', terminal: 'Accra Mall', packagesIn: 31, packagesOut: 410, avgDailyVolume: 28, installDate: '2023-02-10', type: 'premium', alerts: ['near_full', 'collection_due'] },
-  { id: 'DBX-004', name: 'Tema Community 1', location: 'Tema', address: 'Community 1, near Shell Station', capacity: 30, currentFill: 30, status: 'full', lastCollection: '2024-01-14 16:00', nextCollection: '2024-01-15 08:00', assignedAgent: 'Kofi Mensah', agentPhone: '+233559876543', terminal: 'Junction Mall', packagesIn: 30, packagesOut: 180, avgDailyVolume: 15, installDate: '2023-06-01', type: 'standard', alerts: ['full', 'collection_overdue'] },
-  { id: 'DBX-005', name: 'East Legon A&C Mall', location: 'East Legon', address: 'A&C Mall Entrance', capacity: 45, currentFill: 18, status: 'active', lastCollection: '2024-01-15 12:00', nextCollection: '2024-01-15 18:00', assignedAgent: 'Yaw Boateng', agentPhone: '+233542345678', terminal: 'Accra Mall', packagesIn: 18, packagesOut: 290, avgDailyVolume: 20, installDate: '2023-05-15', type: 'premium', alerts: [] },
-  { id: 'DBX-006', name: 'Spintex Baatsona', location: 'Spintex', address: 'Baatsona Total Junction', capacity: 35, currentFill: 28, status: 'active', lastCollection: '2024-01-15 08:30', nextCollection: '2024-01-15 15:00', assignedAgent: 'Kwesi Asante', agentPhone: '+233551234567', terminal: 'Junction Mall', packagesIn: 28, packagesOut: 350, avgDailyVolume: 25, installDate: '2023-07-10', type: 'standard', alerts: ['collection_due'] },
-  { id: 'DBX-007', name: 'Kaneshie Market', location: 'Kaneshie', address: 'Kaneshie Market, Gate 2', capacity: 40, currentFill: 0, status: 'maintenance', lastCollection: '2024-01-13 10:00', nextCollection: null, assignedAgent: null, agentPhone: null, terminal: 'West Hills Mall', packagesIn: 0, packagesOut: 220, avgDailyVolume: 18, installDate: '2023-08-22', type: 'standard', alerts: ['maintenance'] },
-  { id: 'DBX-008', name: 'Dansoman Roundabout', location: 'Dansoman', address: 'Near Dansoman Roundabout', capacity: 30, currentFill: 8, status: 'active', lastCollection: '2024-01-15 13:00', nextCollection: '2024-01-16 08:00', assignedAgent: 'Kwame Asiedu', agentPhone: '+233553456789', terminal: 'West Hills Mall', packagesIn: 8, packagesOut: 145, avgDailyVolume: 12, installDate: '2023-09-05', type: 'standard', alerts: [] },
-];
-
-const collectionsData = [
-  { id: 'COL-001', dropbox: 'DBX-001', dropboxName: 'Achimota Overpass', agent: 'Yaw Boateng', scheduled: '2024-01-15 16:00', status: 'scheduled', packages: 42, terminal: 'Achimota Mall', priority: 'high', eta: '45 min', vehicle: 'Motorbike' },
-  { id: 'COL-002', dropbox: 'DBX-003', dropboxName: 'Osu Oxford Street', agent: 'Kwame Asiedu', scheduled: '2024-01-15 14:00', status: 'overdue', packages: 31, terminal: 'Accra Mall', priority: 'high', eta: 'Overdue', vehicle: 'Van' },
-  { id: 'COL-003', dropbox: 'DBX-004', dropboxName: 'Tema Community 1', agent: 'Kofi Mensah', scheduled: '2024-01-15 08:00', status: 'overdue', packages: 30, terminal: 'Junction Mall', priority: 'high', eta: 'Overdue', vehicle: 'Motorbike' },
-  { id: 'COL-004', dropbox: 'DBX-006', dropboxName: 'Spintex Baatsona', agent: 'Kwesi Asante', scheduled: '2024-01-15 15:00', status: 'scheduled', packages: 28, terminal: 'Junction Mall', priority: 'medium', eta: '1.5 hrs', vehicle: 'Van' },
-  { id: 'COL-005', dropbox: 'DBX-002', dropboxName: 'Madina Market', agent: 'Kwesi Asante', scheduled: '2024-01-15 17:00', status: 'scheduled', packages: 12, terminal: 'Achimota Mall', priority: 'low', eta: '3 hrs', vehicle: 'Van' },
-  { id: 'COL-006', dropbox: 'DBX-005', dropboxName: 'East Legon A&C Mall', agent: 'Yaw Boateng', scheduled: '2024-01-15 18:00', status: 'scheduled', packages: 18, terminal: 'Accra Mall', priority: 'low', eta: '4 hrs', vehicle: 'Motorbike' },
-  { id: 'COL-007', dropbox: 'DBX-008', dropboxName: 'Dansoman Roundabout', agent: 'Kwame Asiedu', scheduled: '2024-01-16 08:00', status: 'scheduled', packages: 8, terminal: 'West Hills Mall', priority: 'low', eta: 'Tomorrow', vehicle: 'Van' },
-  { id: 'COL-008', dropbox: 'DBX-001', dropboxName: 'Achimota Overpass', agent: 'Yaw Boateng', scheduled: '2024-01-15 10:30', status: 'completed', packages: 38, terminal: 'Achimota Mall', priority: 'medium', eta: 'Done', vehicle: 'Motorbike' },
-  { id: 'COL-009', dropbox: 'DBX-002', dropboxName: 'Madina Market', agent: 'Kwesi Asante', scheduled: '2024-01-15 11:00', status: 'completed', packages: 25, terminal: 'Achimota Mall', priority: 'low', eta: 'Done', vehicle: 'Van' },
-];
-
-
-const smsTemplatesData = [
-  { id: 'TPL-001', name: 'Package Ready for Pickup', channel: 'sms', event: 'delivered_to_locker', message: 'Hi {customer}, your package {waybill} is ready at {terminal}, Locker {locker}. Pickup code: {code}. Valid for 5 days.', active: true, sentCount: 4820, deliveryRate: 98.2, lastSent: '2 min ago' },
-  { id: 'TPL-002', name: 'Package in Transit', channel: 'sms', event: 'in_transit', message: 'Hi {customer}, your package {waybill} is on its way to {terminal}. ETA: {eta}. Track: {trackUrl}', active: true, sentCount: 3210, deliveryRate: 97.8, lastSent: '5 min ago' },
-  { id: 'TPL-003', name: 'Pickup Reminder (Day 3)', channel: 'sms', event: 'reminder_day3', message: 'Reminder: Your package {waybill} has been in Locker {locker} for 3 days. Please pick up before {expiryDate} to avoid return. Code: {code}', active: true, sentCount: 1580, deliveryRate: 97.5, lastSent: '1 hour ago' },
-  { id: 'TPL-004', name: 'Package Expiring Soon', channel: 'sms', event: 'expiry_warning', message: '⚠️ URGENT: Package {waybill} expires TOMORROW at {terminal}. Pick up today or it will be returned. Locker {locker}, Code: {code}', active: true, sentCount: 890, deliveryRate: 96.8, lastSent: '3 hours ago' },
-  { id: 'TPL-005', name: 'Package Expired', channel: 'sms', event: 'expired', message: 'Your package {waybill} has expired at {terminal} and will be returned to sender. Contact support: 0800-LOCQAR', active: true, sentCount: 245, deliveryRate: 95.1, lastSent: '1 day ago' },
-  { id: 'TPL-006', name: 'COD Payment Required', channel: 'sms', event: 'cod_pending', message: 'Hi {customer}, package {waybill} requires COD payment of GH₵{amount}. Pay via MoMo to 055XXXXXXX or at pickup. Code: {code}', active: true, sentCount: 1120, deliveryRate: 97.0, lastSent: '30 min ago' },
-  { id: 'TPL-007', name: 'Welcome - Locker Ready (WA)', channel: 'whatsapp', event: 'delivered_to_locker', message: '📦 *Package Ready!*\n\nHi {customer},\nYour package *{waybill}* is ready for pickup.\n\n📍 *Location:* {terminal}\n🔐 *Locker:* {locker}\n🔑 *Code:* {code}\n⏰ *Expires:* {expiryDate}\n\nNeed help? Reply to this message.', active: true, sentCount: 3650, deliveryRate: 99.1, lastSent: '1 min ago' },
-  { id: 'TPL-008', name: 'Tracking Update (WA)', channel: 'whatsapp', event: 'in_transit', message: '🚚 *Delivery Update*\n\nHi {customer},\nYour package *{waybill}* is on the move!\n\n📍 Current: {currentLocation}\n🏁 Destination: {terminal}\n⏰ ETA: {eta}\n\nTrack live: {trackUrl}', active: true, sentCount: 2890, deliveryRate: 99.3, lastSent: '3 min ago' },
-  { id: 'TPL-009', name: 'Pickup Reminder (WA)', channel: 'whatsapp', event: 'reminder_day3', message: '⏰ *Pickup Reminder*\n\nHi {customer},\nYour package *{waybill}* has been waiting for 3 days.\n\n📍 {terminal}, Locker {locker}\n🔑 Code: {code}\n📅 Expires: {expiryDate}\n\nDon\'t miss it! 🙏', active: true, sentCount: 1340, deliveryRate: 99.0, lastSent: '2 hours ago' },
-  { id: 'TPL-010', name: 'Dropbox Confirmation (WA)', channel: 'whatsapp', event: 'dropbox_deposit', message: '✅ *Package Deposited*\n\nHi {customer},\nYour package *{waybill}* has been deposited at *{dropboxName}*.\n\nWe\'ll notify you when it\'s ready at your chosen locker.\n\n🔄 Status: Processing\n⏰ Expected: {eta}', active: true, sentCount: 980, deliveryRate: 99.2, lastSent: '15 min ago' },
-  { id: 'TPL-011', name: 'Home Delivery ETA (WA)', channel: 'whatsapp', event: 'out_for_delivery', message: '🏠 *Out for Delivery*\n\nHi {customer},\nYour package *{waybill}* is out for home delivery!\n\n🚚 Driver: {driverName}\n📞 Contact: {driverPhone}\n⏰ ETA: {eta}\n\nPlease ensure someone is available to receive.', active: true, sentCount: 760, deliveryRate: 98.8, lastSent: '20 min ago' },
-  { id: 'TPL-012', name: 'B2B Batch Notification', channel: 'sms', event: 'bulk_shipment', message: 'LocQar: Batch {batchId} ({packageCount} packages) received from {partnerName}. Processing to {terminal}. ETA: {eta}. Portal: {portalUrl}', active: false, sentCount: 320, deliveryRate: 97.5, lastSent: '1 day ago' },
-  { id: 'TPL-013', name: 'Package Ready - Email', channel: 'email', event: 'delivered_to_locker', message: 'Subject: Your LocQar Package is Ready for Pickup\n\nDear {customer},\n\nGreat news! Your package ({waybill}) has been delivered to your designated LocQar smart locker.\n\nPickup Details:\n- Terminal: {terminal}\n- Locker: {locker}\n- Pickup Code: {code}\n- Expires: {expiryDate}\n\nPlease collect your package within 5 days to avoid return.\n\nNeed help? Reply to this email or call 0800-LOCQAR.\n\nBest regards,\nLocQar Team', active: true, sentCount: 2150, deliveryRate: 99.5, lastSent: '5 min ago' },
-  { id: 'TPL-014', name: 'Delivery Confirmation - Email', channel: 'email', event: 'picked_up', message: 'Subject: Package Delivered Successfully\n\nDear {customer},\n\nThis confirms that your package ({waybill}) was successfully picked up from {terminal}.\n\nDelivery Summary:\n- Waybill: {waybill}\n- Terminal: {terminal}\n- Picked Up: {pickupTime}\n\nThank you for using LocQar!\n\nBest regards,\nLocQar Team', active: true, sentCount: 1890, deliveryRate: 99.6, lastSent: '10 min ago' },
-  { id: 'TPL-015', name: 'Weekly Summary - Email', channel: 'email', event: 'weekly_digest', message: 'Subject: Your Weekly LocQar Summary\n\nDear {customer},\n\nHere is your delivery summary for the past week:\n\n- Packages Received: {weeklyReceived}\n- Packages Picked Up: {weeklyPickedUp}\n- Pending Pickup: {weeklyPending}\n\nUpcoming Expiries: {expiringCount} packages\n\nView your dashboard: {dashboardUrl}\n\nBest regards,\nLocQar Team', active: true, sentCount: 890, deliveryRate: 99.2, lastSent: '1 day ago' },
-  { id: 'TPL-016', name: 'Invoice/Receipt - Email', channel: 'email', event: 'payment_received', message: 'Subject: LocQar Payment Receipt - {invoiceId}\n\nDear {customer},\n\nPayment Received:\n- Invoice: {invoiceId}\n- Amount: GH₵ {amount}\n- Method: {paymentMethod}\n- Date: {paymentDate}\n\nPackage: {waybill}\nService: {serviceType}\n\nThank you for your payment.\n\nBest regards,\nLocQar Billing Team', active: true, sentCount: 1560, deliveryRate: 99.4, lastSent: '30 min ago' },
-];
-
-const notificationHistoryData = [
-  { id: 'MSG-001', template: 'Package Ready for Pickup', channel: 'sms', recipient: 'Joe Doe', phone: '+233551399333', waybill: 'LQ-2024-00001', status: 'delivered', sentAt: '2024-01-15 14:32', deliveredAt: '2024-01-15 14:32', cost: 0.05 },
-  { id: 'MSG-002', template: 'Welcome - Locker Ready (WA)', channel: 'whatsapp', recipient: 'Joe Doe', phone: '+233551399333', waybill: 'LQ-2024-00001', status: 'read', sentAt: '2024-01-15 14:32', deliveredAt: '2024-01-15 14:33', cost: 0.02 },
-  { id: 'MSG-003', template: 'Tracking Update (WA)', channel: 'whatsapp', recipient: 'Jane Doe', phone: '+233557821456', waybill: 'LQ-2024-00002', status: 'delivered', sentAt: '2024-01-15 14:20', deliveredAt: '2024-01-15 14:20', cost: 0.02 },
-  { id: 'MSG-004', template: 'Package in Transit', channel: 'sms', recipient: 'Jane Doe', phone: '+233557821456', waybill: 'LQ-2024-00002', status: 'delivered', sentAt: '2024-01-15 14:15', deliveredAt: '2024-01-15 14:15', cost: 0.05 },
-  { id: 'MSG-005', template: 'Pickup Reminder (Day 3)', channel: 'sms', recipient: 'Kwame Boateng', phone: '+233559876543', waybill: 'LQ-2024-00005', status: 'delivered', sentAt: '2024-01-15 09:00', deliveredAt: '2024-01-15 09:01', cost: 0.05 },
-  { id: 'MSG-006', template: 'Pickup Reminder (WA)', channel: 'whatsapp', recipient: 'Kwame Boateng', phone: '+233559876543', waybill: 'LQ-2024-00005', status: 'read', sentAt: '2024-01-15 09:00', deliveredAt: '2024-01-15 09:00', cost: 0.02 },
-  { id: 'MSG-007', template: 'Package Expiring Soon', channel: 'sms', recipient: 'Kwame Boateng', phone: '+233559876543', waybill: 'LQ-2024-00005', status: 'delivered', sentAt: '2024-01-14 09:00', deliveredAt: '2024-01-14 09:01', cost: 0.05 },
-  { id: 'MSG-008', template: 'COD Payment Required', channel: 'sms', recipient: 'Sarah Asante', phone: '+233551234567', waybill: 'LQ-2024-00004', status: 'delivered', sentAt: '2024-01-15 08:00', deliveredAt: '2024-01-15 08:00', cost: 0.05 },
-  { id: 'MSG-009', template: 'Home Delivery ETA (WA)', channel: 'whatsapp', recipient: 'Efua Owusu', phone: '+233553334444', waybill: 'LQ-2024-00008', status: 'sent', sentAt: '2024-01-15 14:30', deliveredAt: null, cost: 0.02 },
-  { id: 'MSG-010', template: 'Package in Transit', channel: 'sms', recipient: 'Ama Serwaa', phone: '+233542345678', waybill: 'LQ-2024-00006', status: 'failed', sentAt: '2024-01-15 12:00', deliveredAt: null, cost: 0.00, error: 'Invalid number' },
-  { id: 'MSG-011', template: 'Dropbox Confirmation (WA)', channel: 'whatsapp', recipient: 'Yaw Asiedu', phone: '+233555556666', waybill: 'LQ-2024-00009', status: 'read', sentAt: '2024-01-15 13:50', deliveredAt: '2024-01-15 13:50', cost: 0.02 },
-  { id: 'MSG-012', template: 'Package Ready for Pickup', channel: 'sms', recipient: 'Akosua Mensah', phone: '+233557778888', waybill: 'LQ-2024-00010', status: 'delivered', sentAt: '2024-01-12 09:30', deliveredAt: '2024-01-12 09:31', cost: 0.05 },
-  { id: 'MSG-013', template: 'Package Ready - Email', channel: 'email', recipient: 'Joe Doe', phone: 'joe.doe@email.com', waybill: 'LQ-2024-00001', status: 'opened', sentAt: '2024-01-15 14:33', deliveredAt: '2024-01-15 14:33', cost: 0.01 },
-  { id: 'MSG-014', template: 'Delivery Confirmation - Email', channel: 'email', recipient: 'Jane Doe', phone: 'jane.doe@email.com', waybill: 'LQ-2024-00002', status: 'delivered', sentAt: '2024-01-15 14:21', deliveredAt: '2024-01-15 14:21', cost: 0.01 },
-  { id: 'MSG-015', template: 'Invoice/Receipt - Email', channel: 'email', recipient: 'Sarah Asante', phone: 'sarah.a@company.com', waybill: 'LQ-2024-00004', status: 'opened', sentAt: '2024-01-15 08:05', deliveredAt: '2024-01-15 08:05', cost: 0.01 },
-  { id: 'MSG-016', template: 'Weekly Summary - Email', channel: 'email', recipient: 'Kwame Boateng', phone: 'kwame.b@gmail.com', waybill: 'LQ-2024-00005', status: 'delivered', sentAt: '2024-01-14 06:00', deliveredAt: '2024-01-14 06:01', cost: 0.01 },
-  { id: 'MSG-017', template: 'Package Ready - Email', channel: 'email', recipient: 'Efua Owusu', phone: 'efua.o@outlook.com', waybill: 'LQ-2024-00008', status: 'bounced', sentAt: '2024-01-15 14:31', deliveredAt: null, cost: 0.00, error: 'Mailbox full' },
-  { id: 'MSG-018', template: 'Invoice/Receipt - Email', channel: 'email', recipient: 'Yaw Asiedu', phone: 'yaw.asiedu@work.com', waybill: 'LQ-2024-00009', status: 'opened', sentAt: '2024-01-15 13:55', deliveredAt: '2024-01-15 13:55', cost: 0.01 },
-];
-
-const autoRulesData = [
-  { id: 'RULE-001', name: 'Locker Deposit → Pickup Notification', trigger: 'delivered_to_locker', channels: ['sms', 'whatsapp'], templates: ['TPL-001', 'TPL-007'], delay: '0 min', active: true, fired: 4820, description: 'Send pickup code via SMS + WhatsApp when package is deposited in locker' },
-  { id: 'RULE-002', name: 'Transit Update', trigger: 'in_transit', channels: ['whatsapp'], templates: ['TPL-008'], delay: '0 min', active: true, fired: 2890, description: 'Send WhatsApp tracking update when package leaves terminal' },
-  { id: 'RULE-003', name: '3-Day Pickup Reminder', trigger: 'days_in_locker_3', channels: ['sms', 'whatsapp'], templates: ['TPL-003', 'TPL-009'], delay: '9:00 AM', active: true, fired: 1580, description: 'Remind customer after 3 days in locker' },
-  { id: 'RULE-004', name: 'Expiry Warning (Day 4)', trigger: 'days_in_locker_4', channels: ['sms'], templates: ['TPL-004'], delay: '8:00 AM', active: true, fired: 890, description: 'Urgent SMS warning 1 day before expiry' },
-  { id: 'RULE-005', name: 'Package Expired', trigger: 'expired', channels: ['sms'], templates: ['TPL-005'], delay: '0 min', active: true, fired: 245, description: 'Notify customer when package is expired and queued for return' },
-  { id: 'RULE-006', name: 'COD Pending Alert', trigger: 'cod_pending', channels: ['sms'], templates: ['TPL-006'], delay: '0 min', active: true, fired: 1120, description: 'Send COD payment instructions when COD package arrives' },
-  { id: 'RULE-007', name: 'Dropbox Deposit Confirmation', trigger: 'dropbox_deposit', channels: ['whatsapp'], templates: ['TPL-010'], delay: '0 min', active: true, fired: 980, description: 'Confirm package deposited in dropbox via WhatsApp' },
-  { id: 'RULE-008', name: 'Home Delivery Dispatch', trigger: 'out_for_delivery', channels: ['whatsapp'], templates: ['TPL-011'], delay: '0 min', active: true, fired: 760, description: 'Send driver details and ETA for home deliveries' },
-  { id: 'RULE-009', name: 'B2B Batch Received', trigger: 'bulk_shipment_received', channels: ['sms'], templates: ['TPL-012'], delay: '5 min', active: false, fired: 320, description: 'Notify B2B partner when bulk shipment is received' },
-  { id: 'RULE-010', name: 'Email Pickup Confirmation', trigger: 'delivered_to_locker', channels: ['email'], templates: ['TPL-013'], delay: '0 min', active: true, fired: 2150, description: 'Send email with pickup details when package is deposited in locker' },
-  { id: 'RULE-011', name: 'Email Delivery Receipt', trigger: 'picked_up', channels: ['email'], templates: ['TPL-014'], delay: '0 min', active: true, fired: 1890, description: 'Send email confirmation when package is picked up' },
-  { id: 'RULE-012', name: 'Weekly Email Digest', trigger: 'weekly_schedule', channels: ['email'], templates: ['TPL-015'], delay: 'Monday 6:00 AM', active: true, fired: 890, description: 'Send weekly delivery summary every Monday morning' },
-  { id: 'RULE-013', name: 'Payment Receipt Email', trigger: 'payment_received', channels: ['email'], templates: ['TPL-016'], delay: '0 min', active: true, fired: 1560, description: 'Send invoice/receipt email when payment is confirmed' },
-];
-
-const msgVolumeData = [
-  { date: 'Mon', sms: 420, whatsapp: 380, email: 210 },
-  { date: 'Tue', sms: 480, whatsapp: 450, email: 245 },
-  { date: 'Wed', sms: 510, whatsapp: 490, email: 260 },
-  { date: 'Thu', sms: 390, whatsapp: 370, email: 195 },
-  { date: 'Fri', sms: 550, whatsapp: 520, email: 280 },
-  { date: 'Sat', sms: 320, whatsapp: 280, email: 140 },
-  { date: 'Sun', sms: 180, whatsapp: 150, email: 85 },
-];
-
-const MSG_STATUSES = {
-  delivered: { label: 'Delivered', color: '#81C995', bg: 'rgba(129,201,149,0.1)', icon: '✓✓' },
-  read: { label: 'Read', color: '#7EA8C9', bg: 'rgba(126,168,201,0.1)', icon: '✓✓' },
-  opened: { label: 'Opened', color: '#B5A0D1', bg: 'rgba(181,160,209,0.1)', icon: '👁' },
-  sent: { label: 'Sent', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', icon: '✓' },
-  failed: { label: 'Failed', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', icon: '✕' },
-  bounced: { label: 'Bounced', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)', icon: '↩' },
-  pending: { label: 'Pending', color: '#78716C', bg: 'rgba(120,113,108,0.1)', icon: '⏳' },
-};
-
-// ============ SLA BREACH ALERTS DATA ============
-const SLA_SEVERITY = {
-  on_track: { label: 'On Track', color: '#81C995', bg: 'rgba(129,201,149,0.1)', icon: CheckCircle2, pulse: false },
-  warning: { label: 'Warning', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)', icon: AlertTriangle, pulse: false },
-  critical: { label: 'Critical', color: '#C49B6A', bg: 'rgba(196,155,106,0.1)', icon: AlertOctagon, pulse: true },
-  breached: { label: 'BREACHED', color: '#D48E8A', bg: 'rgba(212,142,138,0.15)', icon: XCircle, pulse: true },
-};
-
-const ESCALATION_RULES = [
-  { level: 0, name: 'Monitoring', triggerPct: 0, actions: ['Standard tracking active'], color: '#81C995', icon: Eye, role: 'System' },
-  { level: 1, name: 'Auto-Alert', triggerPct: 75, actions: ['SMS + WhatsApp to customer', 'Push notification to assigned agent', 'Flag in agent dashboard'], color: '#D4AA5A', icon: Bell, role: 'System' },
-  { level: 2, name: 'Manager Escalation', triggerPct: 90, actions: ['Urgent alert to branch manager', 'Auto-reassign to nearest available driver', 'Priority queue bump'], color: '#C49B6A', icon: Users, role: 'Branch Manager' },
-  { level: 3, name: 'Executive Escalation', triggerPct: 100, actions: ['Alert operations director', 'Auto-generate incident report', 'Freeze new deliveries to terminal', 'Customer compensation workflow'], color: '#D48E8A', icon: AlertOctagon, role: 'Ops Director' },
-];
-
-const slaBreachData = [
-  { id: 1, waybill: 'LQ-2024-00002', customer: 'Jane Doe', phone: '+233557821456', slaType: 'Express', terminal: 'Accra Mall', slaHours: 8, elapsedHours: 6.8, remainingMin: 72, pctUsed: 85, severity: 'critical', escalationLevel: 2, agent: 'Kofi Mensah', manager: 'Kofi Asante', createdAt: '2024-01-15 09:15', deadline: '17:15 today', lastAction: 'Manager notified, driver reassigned', acknowledgedBy: null, product: 'Dropbox Express', size: 'Large' },
-  { id: 2, waybill: 'LQ-2024-00006', customer: 'Ama Serwaa', phone: '+233542345678', slaType: 'Standard', terminal: 'Accra Mall', slaHours: 24, elapsedHours: 20.5, remainingMin: 210, pctUsed: 85.4, severity: 'warning', escalationLevel: 1, agent: 'Kwesi Asante', manager: null, createdAt: '2024-01-14 15:30', deadline: '15:30 today', lastAction: 'Customer reminder sent', acknowledgedBy: null, product: 'Standard', size: 'Small' },
-  { id: 3, waybill: 'LQ-2024-00007', customer: 'Kofi Mensah', phone: '+233551112222', slaType: 'Standard', terminal: 'West Hills', slaHours: 24, elapsedHours: 23.5, remainingMin: 30, pctUsed: 97.9, severity: 'critical', escalationLevel: 2, agent: 'Kwame Asiedu', manager: 'Kofi Asante', createdAt: '2024-01-14 12:30', deadline: '12:30 today', lastAction: 'Acknowledged by manager, priority dispatch', acknowledgedBy: 'Kofi Asante', product: 'Dropbox Express', size: 'Medium' },
-  { id: 4, waybill: 'LQ-2024-00008', customer: 'Efua Owusu', phone: '+233553334444', slaType: 'Rush', terminal: 'Tema', slaHours: 4, elapsedHours: 4.2, remainingMin: -12, pctUsed: 105, severity: 'breached', escalationLevel: 3, agent: 'Kofi Mensah', manager: 'Kofi Asante', createdAt: '2024-01-15 10:00', deadline: '14:00 today (OVERDUE)', lastAction: 'Incident report generated, exec notified', acknowledgedBy: 'Kofi Asante', product: 'Home Delivery', size: 'Large' },
-  { id: 5, waybill: 'LQ-2024-00004', customer: 'Sarah Asante', phone: '+233551234567', slaType: 'Express', terminal: 'Kotoka T3', slaHours: 8, elapsedHours: 7.2, remainingMin: 48, pctUsed: 90, severity: 'critical', escalationLevel: 2, agent: 'Kwesi Asante', manager: 'Kofi Asante', createdAt: '2024-01-15 07:45', deadline: '15:45 today', lastAction: 'Manager escalation pending ack', acknowledgedBy: null, product: 'Airport Pickup', size: 'Medium' },
-  { id: 6, waybill: 'LQ-2024-00010', customer: 'Akosua Mensah', phone: '+233557778888', slaType: 'Standard', terminal: 'Junction Mall', slaHours: 24, elapsedHours: 25.0, remainingMin: -60, pctUsed: 104.2, severity: 'breached', escalationLevel: 3, agent: 'Kwame Asiedu', manager: 'Kofi Asante', createdAt: '2024-01-14 09:00', deadline: '09:00 today (OVERDUE)', lastAction: 'Exec alert + incident report', acknowledgedBy: null, product: 'Standard', size: 'Medium' },
-  { id: 7, waybill: 'LQ-2024-00001', customer: 'Joe Doe', phone: '+233551399333', slaType: 'Standard', terminal: 'Achimota Mall', slaHours: 24, elapsedHours: 12.0, remainingMin: 720, pctUsed: 50, severity: 'on_track', escalationLevel: 0, agent: 'Yaw Boateng', manager: null, createdAt: '2024-01-15 08:30', deadline: '08:30 tomorrow', lastAction: 'In transit — on schedule', acknowledgedBy: null, product: "Pick 'N' Go", size: 'Medium' },
-  { id: 8, waybill: 'LQ-2024-00009', customer: 'Yaw Asiedu', phone: '+233555556666', slaType: 'Standard', terminal: 'Achimota Mall', slaHours: 24, elapsedHours: 5.2, remainingMin: 1128, pctUsed: 21.7, severity: 'on_track', escalationLevel: 0, agent: 'Yaw Boateng', manager: null, createdAt: '2024-01-15 13:45', deadline: '13:45 tomorrow', lastAction: 'At dropbox — awaiting collection', acknowledgedBy: null, product: 'Dropbox Express', size: 'Small' },
-  { id: 9, waybill: 'LQ-2024-00011', customer: 'Abena Osei', phone: '+233559998877', slaType: 'Economy', terminal: 'Tema', slaHours: 72, elapsedHours: 18.0, remainingMin: 3240, pctUsed: 25, severity: 'on_track', escalationLevel: 0, agent: 'Kwesi Asante', manager: null, createdAt: '2024-01-14 20:00', deadline: '2024-01-17 20:00', lastAction: 'Processing at hub — on schedule', acknowledgedBy: null, product: 'Economy Saver', size: 'Large' },
-  { id: 10, waybill: 'LQ-2024-00012', customer: 'Kwaku Frimpong', phone: '+233541112233', slaType: 'Rush', terminal: 'Accra Mall', slaHours: 4, elapsedHours: 3.1, remainingMin: 54, pctUsed: 77.5, severity: 'warning', escalationLevel: 1, agent: 'Kofi Mensah', manager: null, createdAt: '2024-01-15 12:00', deadline: '16:00 today', lastAction: 'Agent alerted — en route to pickup', acknowledgedBy: null, product: 'Home Delivery', size: 'Small' },
-  { id: 11, waybill: 'LQ-2024-00013', customer: 'Adwoa Boateng', phone: '+233557654321', slaType: 'Express', terminal: 'West Hills', slaHours: 8, elapsedHours: 2.5, remainingMin: 330, pctUsed: 31.3, severity: 'on_track', escalationLevel: 0, agent: 'Kwame Asiedu', manager: null, createdAt: '2024-01-15 11:30', deadline: '19:30 today', lastAction: 'Package scanned at origin terminal', acknowledgedBy: null, product: 'Dropbox Express', size: 'Medium' },
-  { id: 12, waybill: 'LQ-2024-00014', customer: 'Nana Agyemang', phone: '+233543216789', slaType: 'Standard', terminal: 'Kotoka T3', slaHours: 24, elapsedHours: 22.0, remainingMin: 120, pctUsed: 91.7, severity: 'critical', escalationLevel: 2, agent: 'Yaw Boateng', manager: 'Kofi Asante', createdAt: '2024-01-14 14:00', deadline: '14:00 today', lastAction: 'Manager notified — driver dispatched urgently', acknowledgedBy: 'Kofi Asante', product: 'Airport Pickup', size: 'Large' },
-  { id: 13, waybill: 'LQ-2024-00015', customer: 'Esi Quaye', phone: '+233558887766', slaType: 'Economy', terminal: 'Junction Mall', slaHours: 72, elapsedHours: 45.0, remainingMin: 1620, pctUsed: 62.5, severity: 'on_track', escalationLevel: 0, agent: 'Kwesi Asante', manager: null, createdAt: '2024-01-13 15:00', deadline: '2024-01-16 15:00', lastAction: 'In transit between hubs', acknowledgedBy: null, product: 'Economy Saver', size: 'Small' },
-  { id: 14, waybill: 'LQ-2024-00016', customer: 'Kwabena Darko', phone: '+233549876543', slaType: 'Rush', terminal: 'Achimota Mall', slaHours: 4, elapsedHours: 4.5, remainingMin: -30, pctUsed: 112.5, severity: 'breached', escalationLevel: 3, agent: 'Yaw Boateng', manager: 'Kofi Asante', createdAt: '2024-01-15 09:00', deadline: '13:00 today (OVERDUE)', lastAction: 'Exec alert sent — compensation in progress', acknowledgedBy: null, product: "Pick 'N' Go", size: 'Medium' },
-  { id: 15, waybill: 'LQ-2024-00017', customer: 'Akua Mensah', phone: '+233556543210', slaType: 'Express', terminal: 'Tema', slaHours: 8, elapsedHours: 6.0, remainingMin: 120, pctUsed: 75, severity: 'warning', escalationLevel: 1, agent: 'Kofi Mensah', manager: null, createdAt: '2024-01-15 08:00', deadline: '16:00 today', lastAction: 'Auto-alert sent to agent and customer', acknowledgedBy: null, product: 'Standard', size: 'Large' },
-];
-
-const escalationLog = [
-  { id: 1, waybill: 'LQ-2024-00008', level: 3, severity: 'breached', action: 'Executive Alert — Ops Director notified. Incident #INC-047 auto-generated. Terminal deliveries paused.', by: 'System', role: 'Auto', timestamp: '2024-01-15 14:05', acked: false },
-  { id: 2, waybill: 'LQ-2024-00010', level: 3, severity: 'breached', action: 'Executive Alert — SLA breached by 1hr. Incident #INC-048 created. Customer compensation initiated.', by: 'System', role: 'Auto', timestamp: '2024-01-15 09:05', acked: false },
-  { id: 3, waybill: 'LQ-2024-00008', level: 2, severity: 'critical', action: 'Manager Kofi Asante acknowledged. Driver reassigned from Kofi Mensah → Kwesi Asante (closer).', by: 'Kofi Asante', role: 'Manager', timestamp: '2024-01-15 13:30', acked: true },
-  { id: 4, waybill: 'LQ-2024-00002', level: 2, severity: 'critical', action: 'Manager escalation triggered — Kofi Asante notified via SMS. Awaiting acknowledgement.', by: 'System', role: 'Auto', timestamp: '2024-01-15 15:45', acked: false },
-  { id: 5, waybill: 'LQ-2024-00004', level: 2, severity: 'critical', action: 'Manager escalation — Pending acknowledgement from Kofi Asante.', by: 'System', role: 'Auto', timestamp: '2024-01-15 15:00', acked: false },
-  { id: 6, waybill: 'LQ-2024-00007', level: 2, severity: 'critical', action: 'Manager acknowledged. Priority dispatch ordered.', by: 'Kofi Asante', role: 'Manager', timestamp: '2024-01-15 11:00', acked: true },
-  { id: 7, waybill: 'LQ-2024-00002', level: 1, severity: 'warning', action: 'Auto-alert: SMS + WhatsApp sent to customer Jane Doe and agent Kofi Mensah.', by: 'System', role: 'Auto', timestamp: '2024-01-15 14:30', acked: true },
-  { id: 8, waybill: 'LQ-2024-00006', level: 1, severity: 'warning', action: 'Auto-alert: SMS reminder sent to customer Ama Serwaa.', by: 'System', role: 'Auto', timestamp: '2024-01-15 11:30', acked: true },
-  { id: 9, waybill: 'LQ-2024-00004', level: 1, severity: 'warning', action: 'Auto-alert: WhatsApp sent to agent Kwesi Asante.', by: 'System', role: 'Auto', timestamp: '2024-01-15 13:30', acked: true },
-  { id: 10, waybill: 'LQ-2024-00016', level: 3, severity: 'breached', action: 'Executive Alert — Rush SLA breached by 30min. Incident #INC-049 created. Customer refund initiated.', by: 'System', role: 'Auto', timestamp: '2024-01-15 13:05', acked: false },
-  { id: 11, waybill: 'LQ-2024-00016', level: 2, severity: 'critical', action: 'Manager Kofi Asante notified. Attempting driver reassignment for Achimota area.', by: 'System', role: 'Auto', timestamp: '2024-01-15 12:30', acked: false },
-  { id: 12, waybill: 'LQ-2024-00014', level: 2, severity: 'critical', action: 'Manager acknowledged. Priority dispatch to Kotoka T3 ordered immediately.', by: 'Kofi Asante', role: 'Manager', timestamp: '2024-01-15 12:15', acked: true },
-  { id: 13, waybill: 'LQ-2024-00012', level: 1, severity: 'warning', action: 'Auto-alert: SMS + WhatsApp sent to customer Kwaku Frimpong and agent Kofi Mensah.', by: 'System', role: 'Auto', timestamp: '2024-01-15 15:00', acked: true },
-  { id: 14, waybill: 'LQ-2024-00017', level: 1, severity: 'warning', action: 'Auto-alert: Email + SMS sent to customer Akua Mensah. Agent Kofi Mensah flagged.', by: 'System', role: 'Auto', timestamp: '2024-01-15 14:00', acked: false },
-  { id: 15, waybill: 'LQ-2024-00014', level: 1, severity: 'warning', action: 'Auto-alert: Customer Nana Agyemang notified via WhatsApp. Pickup window closing.', by: 'System', role: 'Auto', timestamp: '2024-01-15 10:00', acked: true },
-];
-
-const slaComplianceTrend = [
-  { date: 'Mon', total: 57, onTime: 45, warning: 8, breached: 4 },
-  { date: 'Tue', total: 60, onTime: 52, warning: 6, breached: 2 },
-  { date: 'Wed', total: 64, onTime: 48, warning: 10, breached: 6 },
-  { date: 'Thu', total: 63, onTime: 55, warning: 5, breached: 3 },
-  { date: 'Fri', total: 71, onTime: 60, warning: 7, breached: 4 },
-  { date: 'Sat', total: 43, onTime: 38, warning: 4, breached: 1 },
-  { date: 'Sun', total: 25, onTime: 22, warning: 2, breached: 1 },
-];
-
-const slaComplianceMonthly = [
-  { date: 'Week 1', total: 383, onTime: 320, warning: 42, breached: 21 },
-  { date: 'Week 2', total: 405, onTime: 345, warning: 38, breached: 22 },
-  { date: 'Week 3', total: 392, onTime: 310, warning: 52, breached: 30 },
-  { date: 'Week 4', total: 383, onTime: 320, warning: 42, breached: 21 },
-];
-
-const slaBreachCauses = [
-  { cause: 'Late Driver Dispatch', count: 34, pct: 38, color: '#D48E8A' },
-  { cause: 'High Terminal Volume', count: 22, pct: 25, color: '#C49B6A' },
-  { cause: 'System Processing Delay', count: 18, pct: 20, color: '#D4AA5A' },
-  { cause: 'Customer No-Show', count: 15, pct: 17, color: '#B5A0D1' },
-];
 
 // ============ PIE CHART FOR STATUS DISTRIBUTION ============
 const StatusPieChart = ({ data, theme }) => {
@@ -741,9 +237,10 @@ function LocQarERPInner() {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-  const handleLogin = (user) => setCurrentUser(user);
-  const handleLogout = () => setCurrentUser(null);
+  const currentUser = useAuthStore((s) => s.user);
+  const setCurrentUser = useAuthStore((s) => s.setUser);
+  const logoutMutation = useLogout();
+  const handleLogout = () => logoutMutation.mutate();
   const [customRoles, setCustomRoles] = useState([
     { id: 'custom_business_owner', key: 'CUSTOM_BUSINESS_OWNER', name: 'Business Owner', level: 20, color: '#D4A0B9', permissions: ['dashboard.view', 'reports.view'], isCustom: true, createdAt: '2024-01-10T00:00:00Z' },
   ]);
@@ -893,6 +390,7 @@ function LocQarERPInner() {
       crm: { title: 'CRM Pipeline', subtitle: 'Manage leads, contacts, activities, and conversion stages.' },
       analytics: { title: 'Analytics', subtitle: 'Business trends and operational performance insights.' },
       audit: { title: 'Audit & Compliance', subtitle: 'Trace actions, risk events, and compliance history.' },
+      cloudconfig: { title: 'Cloud Config', subtitle: 'Manage locker hardware configuration across your network.' },
       settings: { title: 'Platform Settings', subtitle: 'Global system configuration and access controls.' },
     };
     return map[activeMenu] || { title: 'Admin Portal', subtitle: 'Manage end-to-end locker and business operations.' };
@@ -1416,7 +914,7 @@ function LocQarERPInner() {
 
   // ── AUTH GATE ──────────────────────────────────────────────────────────────
   if (!currentUser) {
-    return <LoginPage onLogin={handleLogin} themeName={themeName} setThemeName={setThemeName} />;
+    return <Navigate to="/login" replace />;
   }
   if (currentUser.role === 'CUSTOMER') {
     return <CustomerPortalPage currentUser={currentUser} onLogout={handleLogout} themeName={themeName} setThemeName={setThemeName} />;
@@ -1480,9 +978,9 @@ function LocQarERPInner() {
                 onClick={() => setShowProfileMenu(p => !p)}
                 className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-white/5 transition-colors"
               >
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold" style={{ backgroundColor: ROLES[currentUser.role]?.color + '30', color: ROLES[currentUser.role]?.color, border: `2px solid ${ROLES[currentUser.role]?.color}50` }}>{currentUser.name.charAt(0)}</div>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold" style={{ backgroundColor: ROLES[currentUser.role]?.color + '30', color: ROLES[currentUser.role]?.color, border: `2px solid ${ROLES[currentUser.role]?.color}50` }}>{(currentUser.name ?? currentUser.email ?? '?').charAt(0).toUpperCase()}</div>
                 <div className="text-left">
-                  <p className="text-sm font-medium leading-none" style={{ color: theme.text.primary }}>{currentUser.name}</p>
+                  <p className="text-sm font-medium leading-none" style={{ color: theme.text.primary }}>{currentUser.name ?? currentUser.email}</p>
                   <p className="text-xs leading-none mt-0.5" style={{ color: theme.text.muted }}>{ROLES[currentUser.role]?.name}</p>
                 </div>
                 <ChevronDown size={13} style={{ color: theme.icon.muted }} />
@@ -1498,10 +996,10 @@ function LocQarERPInner() {
                     <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold" style={{ backgroundColor: ROLES[currentUser.role]?.color + '20', color: ROLES[currentUser.role]?.color }}>
-                          {currentUser.name.charAt(0)}
+                          {(currentUser.name ?? currentUser.email ?? '?').charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-sm truncate" style={{ color: theme.text.primary }}>{currentUser.name}</p>
+                          <p className="font-semibold text-sm truncate" style={{ color: theme.text.primary }}>{currentUser.name ?? currentUser.email}</p>
                           <p className="text-xs truncate" style={{ color: theme.text.muted }}>{currentUser.email}</p>
                           <span className="inline-block text-xs px-2 py-0.5 rounded-full mt-1 font-medium" style={{ backgroundColor: ROLES[currentUser.role]?.color + '20', color: ROLES[currentUser.role]?.color }}>
                             {ROLES[currentUser.role]?.name}
@@ -1652,28 +1150,13 @@ function LocQarERPInner() {
             />
           )}
 
-          {/* Lockers Page */}
-          {activeMenu === 'lockers' && (
-            <LockersPage
-              currentUser={currentUser}
-              loading={loading}
-              activeSubMenu={activeSubMenu}
-              setShowExport={setShowExport}
-              lockerSearch={lockerSearch}
-              setLockerSearch={setLockerSearch}
-              lockerStatusFilter={lockerStatusFilter}
-              setLockerStatusFilter={setLockerStatusFilter}
-              lockerTerminalFilter={lockerTerminalFilter}
-              setLockerTerminalFilter={setLockerTerminalFilter}
-              lockerSizeFilter={lockerSizeFilter}
-              setLockerSizeFilter={setLockerSizeFilter}
-              lockerSort={lockerSort}
-              setLockerSort={setLockerSort}
-              filteredLockers={filteredLockers}
-              addToast={addToast}
-              onOpenLocker={handleOpenLocker}
-            />
-          )}
+          {/* Lockers Page — typed feature module (Phase 4 migration). The
+              legacy LockersPage has been retired in favor of the new terminals
+              hierarchy under src/features/lockers. */}
+          {activeMenu === 'lockers' && <LockersListPage />}
+
+          {/* Cross-cutting Activity feed — typed feature module. */}
+          {activeMenu === 'activity' && <ActivityFeedPage />}
 
 
           {/* Terminals Page */}
@@ -1896,6 +1379,13 @@ function LocQarERPInner() {
           {activeMenu === 'audit' && (
             <AuditLogPage
               setShowExport={setShowExport}
+            />
+          )}
+
+          {/* Cloud Config Page */}
+          {activeMenu === 'cloudconfig' && (
+            <CloudConfigPage
+              addToast={addToast}
             />
           )}
 
@@ -2527,13 +2017,13 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-// Wrap with ThemeProvider
-export default function LocQarERP() {
+// Legacy admin shell. ThemeProvider is now mounted by src/app/providers.tsx
+// (single source of truth for the whole app, including /login). Kept inline
+// ErrorBoundary for runtime safety.
+export default function LegacyAdminShell() {
   return (
     <ErrorBoundary>
-      <ThemeProvider>
-        <LocQarERPInner />
-      </ThemeProvider>
+      <LocQarERPInner />
     </ErrorBoundary>
   );
 }

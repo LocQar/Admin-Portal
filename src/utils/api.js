@@ -1,37 +1,26 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-
+/**
+ * Legacy API stub used by LegacyAdminShell.jsx during the migration to the
+ * typed feature modules. The original implementation hit a hardcoded
+ * `http://localhost:3000` backend that no longer exists, which spammed the
+ * console with `ERR_FAILED` on every page load.
+ *
+ * Modern feature modules use `src/shared/api/client.ts` (talks to MSW or the
+ * real `dashboard-api`). This stub returns empty payloads so the legacy
+ * shell falls through to its inline `INITIAL_*` mock data without errors.
+ * Once Phase 4 finishes converting the remaining legacy pages, delete this
+ * file along with `LegacyAdminShell.jsx`.
+ */
 export const api = {
-    async get(endpoint) {
-        const response = await fetch(`${BASE_URL}${endpoint}`);
-        if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-        return response.json();
+    async get(_endpoint) {
+        return [];
     },
-
-    async post(endpoint, data) {
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-        return response.json();
+    async post(_endpoint, _data) {
+        return { ok: true };
     },
-
-    async patch(endpoint, data) {
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-        return response.json();
+    async patch(_endpoint, _data) {
+        return { ok: true };
     },
-
-    async delete(endpoint) {
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
-            method: 'DELETE',
-        });
-        if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-        return response.json();
+    async delete(_endpoint) {
+        return { ok: true };
     },
 };

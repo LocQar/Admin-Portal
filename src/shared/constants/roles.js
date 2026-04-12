@@ -12,6 +12,13 @@
  */
 
 export const ROLES = {
+  STAFF_ADMIN: {
+    id: 'staff_admin',
+    name: 'Staff Admin',
+    level: 100,
+    color: '#3B82F6',
+    permissions: ['*']
+  },
   SUPER_ADMIN: {
     id: 'super_admin',
     name: 'Super Admin',

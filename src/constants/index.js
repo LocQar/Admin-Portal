@@ -1,6 +1,6 @@
-import { Warehouse, Inbox, Home, LayoutDashboard, Package, Users, Users2, Truck, MessageSquare, AlertOctagon, Grid3X3, Building2, UserCheck, Briefcase, Smartphone, DollarSign, Receipt, TrendingUp, History, GitBranch, Handshake, Wallet, UserPlus } from 'lucide-react';
+import { Warehouse, Inbox, Home, LayoutDashboard, Package, Users, Users2, Truck, MessageSquare, AlertOctagon, Grid3X3, Building2, UserCheck, Briefcase, Smartphone, DollarSign, Receipt, TrendingUp, History, GitBranch, Handshake, Wallet, UserPlus, Cloud, Activity } from 'lucide-react';
 
-// Re-export shared constants (inlined from @locqar/shared)
+// Re-export shared constants
 export { DOOR_SIZES, WAYBILL_API_STATUSES, COURIER_STATUSES, PACKAGE_STATUSES, ALL_STATUSES } from '../shared/constants/index.js';
 export { ROLES, resolveRole, hasPermission } from '../shared/constants/index.js';
 export { PRESET_COLORS, LOCQAR_BRAND } from '../shared/constants/index.js';
@@ -43,13 +43,15 @@ export const MENU_GROUPS = [
   {
     label: 'Overview',
     items: [
-      { icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard', permission: 'dashboard.view' }
+      { icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard', permission: 'dashboard.view' },
+      { icon: Cloud, label: 'Cloud Config', id: 'cloudconfig', permission: 'reports.view' },
     ]
   },
   {
     label: 'Operations',
     items: [
       { icon: Package, label: 'Packages', id: 'packages', permission: 'packages.view', subItems: ['All Packages', 'In Locker', 'Pending Pickup', 'Expired'] },
+      { icon: Activity, label: 'Activity', id: 'activity', permission: 'lockers.view' },
       { icon: Truck, label: 'Dispatch', id: 'dispatch', permission: 'packages.dispatch', subItems: ['Outgoing', 'Route Planning', 'Driver Assignment'] },
       { icon: MessageSquare, label: 'Notifications', id: 'notifications', permission: 'packages.view', subItems: ['Message Center', 'Templates', 'Auto-Rules', 'History', 'Settings'] },
       { icon: Truck, label: 'Fleet', id: 'fleet', permission: 'terminals.view' },
@@ -60,26 +62,11 @@ export const MENU_GROUPS = [
   {
     label: 'Management',
     items: [
-      { icon: Grid3X3, label: 'Lockers', id: 'lockers', permission: 'lockers.view', subItems: ['All Lockers', 'Maintenance', 'Configuration'] },
+      { icon: Grid3X3, label: 'Lockers', id: 'lockers', permission: 'lockers.view', subItems: ['Terminals', 'Maintenance', 'Configuration'] },
       { icon: Inbox, label: 'Dropboxes', id: 'dropboxes', permission: 'packages.view', subItems: ['Overview', 'Collections', 'Agents', 'Package Flow'] },
-      { icon: Building2, label: 'Terminals', id: 'terminals', permission: 'terminals.view' },
       { icon: Users, label: 'Customers', id: 'customers', permission: 'customers.view', subItems: ['All Customers', 'Subscribers', 'B2B Partners', 'Support Tickets'] },
       { icon: UserCheck, label: 'Staff', id: 'staff', permission: 'staff.view', subItems: ['Agents', 'Teams', 'Performance'] },
       { icon: Users2, label: 'Couriers', id: 'couriers', permission: 'staff.view' },
-      { icon: UserPlus, label: 'HRIS', id: 'hris', permission: 'staff.view', subItems: ['Onboarding', 'Offboarding', 'Alumni'] },
-    ]
-  },
-  {
-    label: 'Business',
-    items: [
-      { icon: Briefcase, label: 'Business Portal', id: 'portal', permission: 'reports.view', subItems: ['Partner Dashboard', 'Bulk Shipments', 'Invoices & Billing', 'API Management', 'Partner Analytics'] },
-      { icon: Smartphone, label: 'Partner Portal', id: 'selfservice', permission: 'dashboard.view', subItems: ['Portal Home', 'Ship Now', 'Track Packages', 'Locker Map', 'My Billing', 'API Console', 'Help Center'] },
-      { icon: DollarSign, label: 'Accounting', id: 'accounting', permission: 'reports.view', subItems: ['Transactions', 'Invoices', 'Reports'] },
-      { icon: Wallet, label: 'Payroll', id: 'payroll', permission: 'accounting.*', subItems: ['Overview', 'Payslips', 'Pay Periods'] },
-      { icon: Receipt, label: 'Pricing Engine', id: 'pricing', permission: 'reports.view', subItems: ['Rate Card', 'Delivery Methods', 'SLA Tiers', 'Surcharges', 'Volume Discounts', 'Partner Overrides'] },
-      { icon: Handshake, label: 'CRM', id: 'crm', permission: 'crm.view', subItems: ['Dashboard', 'Leads', 'Pipeline', 'Contacts', 'Activities', 'Reports'] },
-      { icon: TrendingUp, label: 'Analytics', id: 'analytics', permission: 'reports.view' },
-      { icon: History, label: 'Audit Log', id: 'audit', permission: 'reports.view' },
     ]
   },
 ];

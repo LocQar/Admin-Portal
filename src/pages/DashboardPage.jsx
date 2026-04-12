@@ -119,7 +119,7 @@ export const DashboardPage = ({
             className="text-xl md:text-2xl font-bold"
             style={{ color: theme.text.primary }}
           >
-            {greeting}, {currentUser.name.split(" ")[0]} {greetingEmoji}
+            {greeting}, {(currentUser.name ?? currentUser.email ?? 'there').split(/[\s@]/)[0]} {greetingEmoji}
           </h1>
           <p className="text-sm mt-0.5" style={{ color: theme.text.muted }}>
             Here's your network overview for today.

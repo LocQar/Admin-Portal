@@ -23,3 +23,4 @@ export * from './PayrollPage';
 export * from './HRISPage';
 export * from './LoginPage';
 export * from './CustomerPortalPage';
+export * from './CloudConfigPage';
