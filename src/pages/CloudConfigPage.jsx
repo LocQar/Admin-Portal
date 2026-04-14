@@ -13,7 +13,7 @@ import { cloudConfig } from "@/shared/config/cloud";
 
 // API points to the NestJS dashboard-api which now exposes /stations endpoints.
 const API = cloudConfig.apiUrl === "/api"
-  ? (import.meta.env.VITE_LOCKER_CLOUD_URL ?? "https://api.dev.locqar.com")
+  ? (import.meta.env.VITE_LOCKER_CLOUD_URL ?? "https://api.locqar.com")
   : cloudConfig.apiUrl;
 const AUTH_TOKEN = localStorage.getItem("token") ?? "";
 const hdrs = { "Authorization": `Bearer ${AUTH_TOKEN}`, "Content-Type": "application/json" };
