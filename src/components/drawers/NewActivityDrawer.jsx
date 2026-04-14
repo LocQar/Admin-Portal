@@ -108,7 +108,7 @@ export const NewActivityDrawer = ({ isOpen, onClose, onSave, activity = null }) 
   const ActivityIcon = activityIcons[form.type];
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-[480px] border-l shadow-2xl z-50 flex flex-col" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary }}>
+    <div className="fixed inset-y-0 right-0 w-full sm:w-[480px] border-l shadow-2xl z-50 flex flex-col" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: theme.border.primary }}>
         <div>

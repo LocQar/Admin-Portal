@@ -15,60 +15,9 @@ let nextTplId = 3;
 let nextRuleId = 2;
 let nextMsgId = 6;
 
-const templates: SmsTemplate[] = [
-  {
-    id: 'TPL-001',
-    name: 'Package Ready for Pickup',
-    channel: 'sms',
-    event: 'delivered_to_locker',
-    message:
-      'Hi {customer}, your package {waybill} is ready at {terminal}, Locker {locker}. Pickup code: {code}. Valid for 5 days.',
-    active: true,
-    sentCount: 4820,
-    deliveryRate: 98.2,
-    lastSentAt: new Date(Date.now() - 2 * 60_000).toISOString(),
-    createdAt: new Date(Date.now() - 30 * 86400_000).toISOString(),
-    updatedAt: new Date(Date.now() - 2 * 60_000).toISOString(),
-  },
-  {
-    id: 'TPL-002',
-    name: 'Package in Transit',
-    channel: 'sms',
-    event: 'in_transit',
-    message:
-      'Hi {customer}, your package {waybill} is on its way to {terminal}. ETA: {eta}. Track: {trackUrl}',
-    active: true,
-    sentCount: 3210,
-    deliveryRate: 97.8,
-    lastSentAt: new Date(Date.now() - 15 * 60_000).toISOString(),
-    createdAt: new Date(Date.now() - 28 * 86400_000).toISOString(),
-    updatedAt: new Date(Date.now() - 15 * 60_000).toISOString(),
-  },
-];
+const templates: SmsTemplate[] = [];
 
-const rules: AutoRule[] = [
-  {
-    id: 'RULE-001',
-    name: 'Locker Deposit → Pickup Notification',
-    description:
-      'Send pickup code via SMS + WhatsApp when package is deposited in locker',
-    trigger: 'delivered_to_locker',
-    channels: JSON.stringify(['sms', 'whatsapp']),
-    delay: 0,
-    active: true,
-    firedCount: 4820,
-    templates: [
-      {
-        id: 'ART-001',
-        ruleId: 'RULE-001',
-        templateId: 'TPL-001',
-        template: templates[0],
-      },
-    ],
-    createdAt: new Date(Date.now() - 30 * 86400_000).toISOString(),
-    updatedAt: new Date(Date.now() - 86400_000).toISOString(),
-  },
-];
+const rules: AutoRule[] = [];
 
 let settings: NotificationSettings = {
   id: 'settings-001',
@@ -92,103 +41,7 @@ let settings: NotificationSettings = {
   replyTo: 'support@locqar.com',
 };
 
-const messages: MessageLogEntry[] = [
-  {
-    id: 'MSG-001',
-    templateId: 'TPL-001',
-    template: { name: 'Package Ready for Pickup' },
-    channel: 'sms',
-    recipient: 'Joe Doe',
-    phone: '+233551399333',
-    waybill: 'LQ-2024-00001',
-    message:
-      'Hi Joe, your package LQ-2024-00001 is ready at Achimota Mall, Locker A-15. Pickup code: 4829. Valid for 5 days.',
-    status: 'delivered',
-    cost: 0.05,
-    providerMsgId: 'ark-msg-001',
-    errorMessage: null,
-    retryCount: 0,
-    sentAt: new Date(Date.now() - 2 * 3600_000).toISOString(),
-    deliveredAt: new Date(Date.now() - 2 * 3600_000 + 3000).toISOString(),
-    createdAt: new Date(Date.now() - 2 * 3600_000).toISOString(),
-  },
-  {
-    id: 'MSG-002',
-    templateId: 'TPL-001',
-    template: { name: 'Package Ready for Pickup' },
-    channel: 'sms',
-    recipient: 'Ama Serwaa',
-    phone: '+233244000555',
-    waybill: 'LQ-2024-00042',
-    message:
-      'Hi Ama, your package LQ-2024-00042 is ready at Accra Mall, Locker K-08. Pickup code: 7713. Valid for 5 days.',
-    status: 'delivered',
-    cost: 0.05,
-    providerMsgId: 'ark-msg-002',
-    errorMessage: null,
-    retryCount: 0,
-    sentAt: new Date(Date.now() - 5 * 3600_000).toISOString(),
-    deliveredAt: new Date(Date.now() - 5 * 3600_000 + 2500).toISOString(),
-    createdAt: new Date(Date.now() - 5 * 3600_000).toISOString(),
-  },
-  {
-    id: 'MSG-003',
-    templateId: 'TPL-002',
-    template: { name: 'Package in Transit' },
-    channel: 'sms',
-    recipient: 'Kwame Asante',
-    phone: '+233209876543',
-    waybill: 'LQ-2024-00055',
-    message:
-      'Hi Kwame, your package LQ-2024-00055 is on its way to Kotoka T3. ETA: 14:30.',
-    status: 'sent',
-    cost: 0.05,
-    providerMsgId: 'ark-msg-003',
-    errorMessage: null,
-    retryCount: 0,
-    sentAt: new Date(Date.now() - 30 * 60_000).toISOString(),
-    deliveredAt: null,
-    createdAt: new Date(Date.now() - 30 * 60_000).toISOString(),
-  },
-  {
-    id: 'MSG-004',
-    templateId: 'TPL-001',
-    template: { name: 'Package Ready for Pickup' },
-    channel: 'sms',
-    recipient: 'Efua Mensah',
-    phone: '+233501234567',
-    waybill: 'LQ-2024-00060',
-    message:
-      'Hi Efua, your package LQ-2024-00060 is ready at West Hills Mall, Locker B-03. Pickup code: 5521. Valid for 5 days.',
-    status: 'failed',
-    cost: 0,
-    providerMsgId: null,
-    errorMessage: 'Invalid phone number format',
-    retryCount: 2,
-    sentAt: null,
-    deliveredAt: null,
-    createdAt: new Date(Date.now() - 1 * 3600_000).toISOString(),
-  },
-  {
-    id: 'MSG-005',
-    templateId: 'TPL-002',
-    template: { name: 'Package in Transit' },
-    channel: 'sms',
-    recipient: 'Yaw Boateng',
-    phone: '+233271112233',
-    waybill: 'LQ-2024-00071',
-    message:
-      'Hi Yaw, your package LQ-2024-00071 is on its way to Junction Mall. ETA: 16:00.',
-    status: 'delivered',
-    cost: 0.05,
-    providerMsgId: 'ark-msg-005',
-    errorMessage: null,
-    retryCount: 0,
-    sentAt: new Date(Date.now() - 45 * 60_000).toISOString(),
-    deliveredAt: new Date(Date.now() - 44 * 60_000).toISOString(),
-    createdAt: new Date(Date.now() - 45 * 60_000).toISOString(),
-  },
-];
+const messages: MessageLogEntry[] = [];
 
 // ── Handlers ────────────────────────────────────────────────────────
 

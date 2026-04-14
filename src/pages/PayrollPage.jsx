@@ -8,6 +8,7 @@ import {
 import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
 import { MetricCard } from '../components/ui';
+import { GlassCard } from '../components/ui/Card';
 import { salaryConfig, payPeriodsData, payrollRecordsData, staffData, driversData, couriersData } from '../constants/mockData';
 
 // ============ GHANA TAX CALCULATIONS ============
@@ -104,7 +105,7 @@ function AdjustmentModal({ target, onSave, onClose, theme }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.45)' }}>
-      <div className="rounded-2xl p-6 w-96 shadow-2xl" style={{ background: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
+      <GlassCard className="w-96 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
           <h3 style={{ color: theme.text.primary, fontWeight: 700, fontSize: 15 }}>
             Adjust: {target.employeeName}
@@ -114,7 +115,7 @@ function AdjustmentModal({ target, onSave, onClose, theme }) {
 
         {/* Kind toggle */}
         <div className="flex gap-2 mb-4 p-1 rounded-xl" style={{ background: theme.bg.input }}>
-          {[{ id: 'bonus', label: 'Bonus / Allowance', color: '#10B981' }, { id: 'deduction', label: 'Deduction', color: '#EF4444' }].map(k => (
+          {[{ id: 'bonus', label: 'Bonus / Allowance', color: theme.status.success }, { id: 'deduction', label: 'Deduction', color: theme.status.error }].map(k => (
             <button
               key={k.id}
               onClick={() => setKind(k.id)}
@@ -155,7 +156,7 @@ function AdjustmentModal({ target, onSave, onClose, theme }) {
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl border text-sm"
+            className="flex-1 py-2.5 rounded-xl border text-sm btn-outline"
             style={{ borderColor: theme.border.primary, color: theme.text.secondary }}
           >
             Cancel
@@ -165,14 +166,14 @@ function AdjustmentModal({ target, onSave, onClose, theme }) {
             disabled={!desc.trim() || !amount || parseFloat(amount) <= 0}
             className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white"
             style={{
-              background: kind === 'bonus' ? '#10B981' : '#EF4444',
+              background: kind === 'bonus' ? theme.status.success : theme.status.error,
               opacity: (!desc.trim() || !amount || parseFloat(amount) <= 0) ? 0.5 : 1,
             }}
           >
             Add Adjustment
           </button>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 }
@@ -229,14 +230,14 @@ function PayslipDrawer({ record, adjustments, period, onClose, addToast, theme }
             {record.bonus > 0 && row('Performance Bonus', fmt(record.bonus))}
             {adjs.filter(a => a.kind === 'bonus').map(a => (
               <div key={a.id} className="flex justify-between items-center py-1.5">
-                <span style={{ color: '#10B981', fontSize: 13 }}>+ {a.desc}</span>
-                <span style={{ color: '#10B981', fontWeight: 500, fontSize: 13 }}>{fmt(a.amount)}</span>
+                <span style={{ color: theme.status.success, fontSize: 13 }}>+ {a.desc}</span>
+                <span style={{ color: theme.status.success, fontWeight: 500, fontSize: 13 }}>{fmt(a.amount)}</span>
               </div>
             ))}
             {adjs.filter(a => a.kind === 'deduction').map(a => (
               <div key={a.id} className="flex justify-between items-center py-1.5">
-                <span style={{ color: '#EF4444', fontSize: 13 }}>- {a.desc}</span>
-                <span style={{ color: '#EF4444', fontWeight: 500, fontSize: 13 }}>{fmt(a.amount)}</span>
+                <span style={{ color: theme.status.error, fontSize: 13 }}>- {a.desc}</span>
+                <span style={{ color: theme.status.error, fontWeight: 500, fontSize: 13 }}>{fmt(a.amount)}</span>
               </div>
             ))}
             {divider()}
@@ -268,14 +269,14 @@ function PayslipDrawer({ record, adjustments, period, onClose, addToast, theme }
         <div className="p-5 flex gap-3" style={{ borderTop: `1px solid ${theme.border.primary}` }}>
           <button
             onClick={() => addToast({ type: 'success', message: 'Payslip sent to printer' })}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium btn-primary"
             style={{ background: theme.accent?.primary ?? '#4F46E5', color: '#fff' }}
           >
             <Printer size={15} /> Print
           </button>
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 rounded-xl border text-sm"
+            className="flex-1 px-4 py-2.5 rounded-xl border text-sm btn-outline"
             style={{ borderColor: theme.border.primary, color: theme.text.secondary }}
           >
             Close
@@ -423,7 +424,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
     const step = getWorkflowStep(draftPeriod.status);
 
     return (
-      <div className="mb-6 p-5 rounded-2xl border" style={{ background: theme.bg.card, borderColor: theme.border.primary }}>
+      <GlassCard className="mb-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -432,7 +433,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
           </div>
           <div className="text-right">
             <p style={{ color: theme.text.muted, fontSize: 11 }}>Estimated Net</p>
-            <p style={{ color: '#10B981', fontWeight: 700, fontSize: 18 }}>{fmt(liveTotalNet)}</p>
+            <p style={{ color: theme.status.success, fontWeight: 700, fontSize: 18 }}>{fmt(liveTotalNet)}</p>
           </div>
         </div>
 
@@ -441,15 +442,15 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
           {WORKFLOW_STEPS.map((label, idx) => {
             const done = idx < step;
             const active = idx === step;
-            const color = done ? '#10B981' : active ? (theme.accent?.primary ?? '#4F46E5') : theme.text.muted;
+            const color = done ? theme.status.success : active ? (theme.accent?.primary ?? '#4F46E5') : theme.text.muted;
             return (
               <React.Fragment key={label}>
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                     style={{
-                      background: done ? '#10B98115' : active ? `${theme.accent?.primary ?? '#4F46E5'}18` : theme.bg.input,
-                      border: `1.5px solid ${done ? '#10B981' : active ? (theme.accent?.primary ?? '#4F46E5') : theme.border.primary}`,
+                      background: done ? `${theme.status.success}15` : active ? `${theme.accent?.primary ?? '#4F46E5'}18` : theme.bg.input,
+                      border: `1.5px solid ${done ? theme.status.success : active ? (theme.accent?.primary ?? '#4F46E5') : theme.border.primary}`,
                       color,
                     }}
                   >
@@ -458,7 +459,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
                   <div className="min-w-0 hidden sm:block">
                     <p style={{ color, fontWeight: active ? 700 : 500, fontSize: 12, whiteSpace: 'nowrap' }}>{label}</p>
                     {active && <p style={{ color: theme.text.muted, fontSize: 10 }}>In progress</p>}
-                    {done && <p style={{ color: '#10B981', fontSize: 10 }}>Complete</p>}
+                    {done && <p style={{ color: theme.status.success, fontSize: 10 }}>Complete</p>}
                   </div>
                 </div>
                 {idx < WORKFLOW_STEPS.length - 1 && (
@@ -488,14 +489,14 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
               <>
                 <button
                   onClick={() => { setSelectedPeriodId(draftPeriod.id); setActiveTab('Payslips'); }}
-                  className="px-3 py-2 rounded-xl text-xs font-medium border"
+                  className="px-3 py-2 rounded-xl text-xs font-medium border btn-outline"
                   style={{ borderColor: theme.border.primary, color: theme.text.secondary }}
                 >
                   Review Payslips
                 </button>
                 <button
                   onClick={() => setConfirmDialog({ type: 'approve', periodId: draftPeriod.id, label: draftPeriod.label })}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-white"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-white btn-primary"
                   style={{ background: theme.accent?.primary ?? '#4F46E5' }}
                 >
                   Approve <ArrowRight size={12} />
@@ -505,15 +506,15 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
             {draftPeriod.status === 'approved' && (
               <button
                 onClick={() => setConfirmDialog({ type: 'pay', periodId: draftPeriod.id, label: draftPeriod.label })}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-white"
-                style={{ background: '#10B981' }}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-white btn-primary"
+                style={{ background: theme.status.success }}
               >
                 Mark Disbursed <ArrowRight size={12} />
               </button>
             )}
           </div>
         </div>
-      </div>
+      </GlassCard>
     );
   };
 
@@ -529,7 +530,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
           const Icon = TYPE_ICONS[type];
           const c = TYPE_COLORS[type];
           return (
-            <div key={type} className="p-4 rounded-2xl border" style={{ background: theme.bg.card, borderColor: theme.border.primary }}>
+            <GlassCard key={type}>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: c.bg }}>
                   <Icon size={16} style={{ color: c.text }} />
@@ -537,9 +538,9 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
                 <p style={{ color: theme.text.secondary, fontSize: 13, fontWeight: 600, textTransform: 'capitalize' }}>{type}s</p>
               </div>
               <p style={{ color: theme.text.muted, fontSize: 11, marginBottom: 2 }}>{count} employees</p>
-              <p style={{ color: '#10B981', fontWeight: 700, fontSize: 16 }}>{fmt(net)}</p>
+              <p style={{ color: theme.status.success, fontWeight: 700, fontSize: 16 }}>{fmt(net)}</p>
               <p style={{ color: theme.text.muted, fontSize: 11 }}>Gross {fmt(gross)}</p>
-            </div>
+            </GlassCard>
           );
         })}
       </div>
@@ -547,7 +548,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
       {/* Pay periods table */}
       <div>
         <h2 style={{ color: theme.text.primary, fontWeight: 600, fontSize: 15, marginBottom: 12 }}>All Pay Periods</h2>
-        <div className="rounded-2xl overflow-hidden border" style={{ borderColor: theme.border.primary }}>
+        <GlassCard noPadding className="overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr style={{ background: theme.bg.input }}>
@@ -565,8 +566,8 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
                   </td>
                   <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{p.employeeCount}</td>
                   <td className="px-4 py-3" style={{ color: theme.text.primary }}>{fmt(p.totalGross)}</td>
-                  <td className="px-4 py-3" style={{ color: '#EF4444' }}>{fmt(p.totalDeductions)}</td>
-                  <td className="px-4 py-3" style={{ color: '#10B981', fontWeight: 600 }}>{fmt(p.totalNet)}</td>
+                  <td className="px-4 py-3" style={{ color: theme.status.error }}>{fmt(p.totalDeductions)}</td>
+                  <td className="px-4 py-3" style={{ color: theme.status.success, fontWeight: 600 }}>{fmt(p.totalNet)}</td>
                   <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
@@ -581,7 +582,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
                         <button
                           onClick={() => setConfirmDialog({ type: 'pay', periodId: p.id, label: p.label })}
                           className="px-3 py-1.5 rounded-lg text-xs font-medium"
-                          style={{ background: '#10B98118', color: '#059669' }}
+                          style={{ background: `${theme.status.success}18`, color: theme.status.success }}
                         >Mark Paid</button>
                       )}
                       <button
@@ -598,7 +599,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
               ))}
             </tbody>
           </table>
-        </div>
+        </GlassCard>
       </div>
     </div>
   );
@@ -630,7 +631,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search employees…"
-            className="w-full pl-9 pr-4 py-2 rounded-xl border text-sm outline-none"
+            className="w-full pl-9 pr-4 py-2 rounded-xl border text-sm outline-none glass-card"
             style={{ background: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
           />
         </div>
@@ -648,7 +649,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
         ))}
         <button
           onClick={handleExportCSV}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border btn-outline"
           style={{ borderColor: theme.border.primary, color: theme.text.secondary }}
         >
           <FileSpreadsheet size={13} /> Export CSV
@@ -656,7 +657,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl overflow-hidden border" style={{ borderColor: theme.border.primary }}>
+      <GlassCard noPadding className="overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr style={{ background: theme.bg.input }}>
@@ -689,9 +690,9 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
                     {r.deliveryCount > 0 ? r.deliveryCount : <span style={{ color: theme.text.muted }}>—</span>}
                   </td>
                   <td className="px-4 py-3" style={{ color: theme.text.primary, fontVariantNumeric: 'tabular-nums' }}>{fmt(r.grossPay)}</td>
-                  <td className="px-4 py-3" style={{ color: '#EF4444', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.ssnitEmployee)}</td>
-                  <td className="px-4 py-3" style={{ color: '#EF4444', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.incomeTax)}</td>
-                  <td className="px-4 py-3" style={{ color: '#10B981', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{fmt(r.netPay)}</td>
+                  <td className="px-4 py-3" style={{ color: theme.status.error, fontVariantNumeric: 'tabular-nums' }}>{fmt(r.ssnitEmployee)}</td>
+                  <td className="px-4 py-3" style={{ color: theme.status.error, fontVariantNumeric: 'tabular-nums' }}>{fmt(r.incomeTax)}</td>
+                  <td className="px-4 py-3" style={{ color: theme.status.success, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{fmt(r.netPay)}</td>
                   <td className="px-4 py-3">
                     {/* Adjustment badge + add button */}
                     <div className="flex items-center gap-1">
@@ -725,15 +726,15 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
             })}
           </tbody>
         </table>
-      </div>
+      </GlassCard>
 
       {/* Totals */}
       {displayedRecords.length > 0 && (
         <div className="flex gap-6 mt-3 px-1">
           {[
             { label: 'Total Gross', value: displayedRecords.reduce((s, r) => s + r.grossPay, 0), color: theme.text.primary },
-            { label: 'Total Deductions', value: displayedRecords.reduce((s, r) => s + r.totalDeductions, 0), color: '#EF4444' },
-            { label: 'Total Net', value: displayedRecords.reduce((s, r) => s + r.netPay, 0), color: '#10B981' },
+            { label: 'Total Deductions', value: displayedRecords.reduce((s, r) => s + r.totalDeductions, 0), color: theme.status.error },
+            { label: 'Total Net', value: displayedRecords.reduce((s, r) => s + r.netPay, 0), color: theme.status.success },
           ].map(({ label, value, color }) => (
             <div key={label}>
               <p style={{ color: theme.text.muted, fontSize: 11 }}>{label}</p>
@@ -748,7 +749,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
   // ============ PAY PERIODS TAB ============
   const renderPayPeriods = () => (
     <div className="space-y-6">
-      <div className="p-5 rounded-2xl border" style={{ background: theme.bg.card, borderColor: theme.border.primary }}>
+      <GlassCard>
         <h3 style={{ color: theme.text.primary, fontWeight: 600, marginBottom: 16, fontSize: 14 }}>Net Payroll Trend</h3>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={chartData} barSize={32}>
@@ -762,11 +763,11 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
             <Bar dataKey="net" fill={theme.accent?.primary ?? '#4F46E5'} radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </GlassCard>
 
       <div>
         <h3 style={{ color: theme.text.primary, fontWeight: 600, marginBottom: 12, fontSize: 14 }}>Pay Period History</h3>
-        <div className="rounded-2xl overflow-hidden border" style={{ borderColor: theme.border.primary }}>
+        <GlassCard noPadding className="overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr style={{ background: theme.bg.input }}>
@@ -782,7 +783,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
                   <td className="px-4 py-3" style={{ color: theme.text.muted, fontSize: 12 }}>{p.startDate} – {p.endDate}</td>
                   <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{p.employeeCount}</td>
                   <td className="px-4 py-3" style={{ color: theme.text.primary }}>{fmt(p.totalGross)}</td>
-                  <td className="px-4 py-3" style={{ color: '#10B981', fontWeight: 600 }}>{fmt(p.totalNet)}</td>
+                  <td className="px-4 py-3" style={{ color: theme.status.success, fontWeight: 600 }}>{fmt(p.totalNet)}</td>
                   <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
                   <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{p.approvedBy ?? '—'}</td>
                   <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{p.paidAt ?? '—'}</td>
@@ -793,7 +794,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
               ))}
             </tbody>
           </table>
-        </div>
+        </GlassCard>
       </div>
     </div>
   );
@@ -804,9 +805,9 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
     const isApprove = confirmDialog.type === 'approve';
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.4)' }}>
-        <div className="rounded-2xl p-6 w-96 shadow-2xl" style={{ background: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
-          <div className="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: isApprove ? '#3B82F615' : '#10B98115' }}>
-            {isApprove ? <BadgeCheck size={22} style={{ color: '#3B82F6' }} /> : <CheckCircle2 size={22} style={{ color: '#10B981' }} />}
+        <GlassCard className="w-96 shadow-2xl">
+          <div className="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: isApprove ? `${theme.accent.primary}15` : `${theme.status.success}15` }}>
+            {isApprove ? <BadgeCheck size={22} style={{ color: theme.accent.primary }} /> : <CheckCircle2 size={22} style={{ color: theme.status.success }} />}
           </div>
           <h3 style={{ color: theme.text.primary, fontWeight: 700, textAlign: 'center', fontSize: 16, marginBottom: 4 }}>
             {isApprove ? 'Approve Payroll?' : 'Mark as Paid?'}
@@ -836,16 +837,16 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
           <div className="flex gap-3">
             <button
               onClick={() => { setConfirmDialog(null); setApprovalNote(''); }}
-              className="flex-1 py-2.5 rounded-xl border text-sm"
+              className="flex-1 py-2.5 rounded-xl border text-sm btn-outline"
               style={{ borderColor: theme.border.primary, color: theme.text.secondary }}
             >Cancel</button>
             <button
               onClick={() => isApprove ? handleApprove(confirmDialog.periodId) : handleMarkPaid(confirmDialog.periodId)}
-              className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white"
-              style={{ background: isApprove ? (theme.accent?.primary ?? '#4F46E5') : '#10B981' }}
+              className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white btn-primary"
+              style={{ background: isApprove ? (theme.accent?.primary ?? '#4F46E5') : theme.status.success }}
             >Confirm</button>
           </div>
-        </div>
+        </GlassCard>
       </div>
     );
   };
@@ -860,7 +861,7 @@ export const PayrollPage = ({ activeSubMenu, loading, addToast }) => {
         </div>
         <button
           onClick={handleExportCSV}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm btn-outline"
           style={{ borderColor: theme.border.primary, color: theme.text.secondary }}
         >
           <Download size={15} /> Export

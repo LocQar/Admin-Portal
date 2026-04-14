@@ -2,19 +2,31 @@
 
 @import "tailwindcss";
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+/* Force Inter everywhere — override Tailwind preflight */
+*, button, input, select, textarea, optgroup {
+  font-family: inherit;
+}
+
+html {
+  /* Fluid base font: 14px @ 320px → 16px @ 1280px → 18px @ 1920px */
+  font-size: clamp(0.875rem, 0.8rem + 0.25vw, 1.125rem);
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #100E0C; /* overridden per-theme by ThemeContext */
+  background-color: #0A0A0A; /* overridden per-theme by ThemeContext */
   min-height: 100%;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -22,7 +34,8 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Scrollbar styling */
+/* ======== SCROLLBAR ======== */
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -32,16 +45,24 @@ body {
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+body.theme-dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.10);
   border-radius: 99px;
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.35);
+body.theme-dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
 }
 
-/* Smooth transitions default (avoid applying to all properties on all nodes) */
+body.theme-light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 99px;
+}
+body.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+/* ======== TRANSITIONS ======== */
+
 button,
 a,
 input,
@@ -51,20 +72,37 @@ textarea,
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Focus ring */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.60);
+/* ======== FOCUS RING ======== */
+
+body.theme-dark button:focus-visible,
+body.theme-dark a:focus-visible,
+body.theme-dark input:focus-visible,
+body.theme-dark select:focus-visible,
+body.theme-dark textarea:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
   outline-offset: 2px;
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
 }
 
-/* Selection */
-::selection {
+body.theme-light button:focus-visible,
+body.theme-light a:focus-visible,
+body.theme-light input:focus-visible,
+body.theme-light select:focus-visible,
+body.theme-light textarea:focus-visible {
+  outline: 2px solid rgba(17, 24, 39, 0.4);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.06);
+}
+
+/* ======== SELECTION ======== */
+
+body.theme-dark ::selection {
   background-color: rgba(255, 255, 255, 0.15);
+  color: inherit;
+}
+
+body.theme-light ::selection {
+  background-color: rgba(17, 24, 39, 0.10);
   color: inherit;
 }
 
@@ -149,11 +187,20 @@ textarea:focus-visible {
 }
 
 /* Shimmer skeleton */
-.shimmer {
+body.theme-dark .shimmer {
   background: linear-gradient(90deg,
-      rgba(255, 255, 255, 0.04) 25%,
-      rgba(255, 255, 255, 0.09) 50%,
-      rgba(255, 255, 255, 0.04) 75%);
+      rgba(255, 255, 255, 0.03) 25%,
+      rgba(255, 255, 255, 0.07) 50%,
+      rgba(255, 255, 255, 0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+body.theme-light .shimmer {
+  background: linear-gradient(90deg,
+    rgba(0, 0, 0, 0.03) 25%,
+    rgba(0, 0, 0, 0.06) 50%,
+    rgba(0, 0, 0, 0.03) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
 }
@@ -165,57 +212,145 @@ textarea:focus-visible {
 
 /* ======== LIGHT THEME OVERRIDES ======== */
 
-/* Page background */
 body.theme-light {
-  background-color: #F1F3F7;
+  background-color: #F8F9FA;
 }
 
 /* Fix hover:bg-white/* utilities — invisible on light backgrounds */
 body.theme-light .hover\:bg-white\/5:hover,
 body.theme-light .hover\:bg-white\/10:hover,
 body.theme-light .hover\:bg-white\/\[0\.05\]:hover {
-  background-color: rgba(0, 0, 0, 0.04) !important;
+  background-color: rgba(0, 0, 0, 0.03) !important;
 }
 
 /* Fix static bg-white/* overlays used as subtle backgrounds / row stripes */
 body.theme-light .bg-white\/5 {
-  background-color: rgba(0, 0, 0, 0.03) !important;
+  background-color: rgba(0, 0, 0, 0.015) !important;
 }
 body.theme-light .bg-white\/10 {
-  background-color: rgba(0, 0, 0, 0.06) !important;
+  background-color: rgba(0, 0, 0, 0.03) !important;
 }
 
-/* Scrollbar */
-body.theme-light ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.18);
-}
-body.theme-light ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.30);
+/* ======== ENTERPRISE TABLE STYLING ======== */
+
+body.theme-dark thead tr {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-/* Focus ring */
-body.theme-light button:focus-visible,
-body.theme-light a:focus-visible,
-body.theme-light input:focus-visible,
-body.theme-light select:focus-visible,
-body.theme-light textarea:focus-visible {
-  outline-color: rgba(0, 0, 0, 0.50);
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.07);
+body.theme-light thead tr {
+  background: #F8F9FA;
 }
 
-/* Selection */
-body.theme-light ::selection {
-  background-color: rgba(26, 26, 46, 0.12);
+body.theme-dark tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-/* Skeleton shimmer */
-body.theme-light .shimmer {
-  background: linear-gradient(90deg,
-    rgba(0, 0, 0, 0.04) 25%,
-    rgba(0, 0, 0, 0.09) 50%,
-    rgba(0, 0, 0, 0.04) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.6s ease-in-out infinite;
+body.theme-light tbody tr:hover {
+  background: #F8F9FA;
+}
+
+/* Tabular numbers for data-heavy tables */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ======== GLASS UTILITIES ======== */
+
+.glass-panel {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+body.theme-dark .glass-panel {
+  background: rgba(10, 10, 10, 0.80);
+}
+
+body.theme-light .glass-panel {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+.glass-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+body.theme-dark .glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02), 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+body.theme-light .glass-card {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* ======== ENTERPRISE BUTTON VARIANTS ======== */
+
+.btn-primary {
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 0.625rem;
+  padding: 0.5rem 1.125rem;
+  transition: all 0.15s ease;
+  letter-spacing: -0.01em;
+}
+
+body.theme-dark .btn-primary {
+  background: #FFFFFF;
+  color: #0A0A0A;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+body.theme-dark .btn-primary:hover {
+  background: #E4E4E7;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+body.theme-light .btn-primary {
+  background: #111827;
+  color: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .btn-primary:hover {
+  background: #1F2937;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 0.625rem;
+  padding: 0.5rem 1.125rem;
+  transition: all 0.15s ease;
+}
+
+body.theme-dark .btn-outline {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #A1A1AA;
+}
+
+body.theme-dark .btn-outline:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: #D4D4D8;
+}
+
+body.theme-light .btn-outline {
+  border: 1px solid #E9ECEF;
+  color: #374151;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+body.theme-light .btn-outline:hover {
+  border-color: #DEE2E6;
+  background: #F8F9FA;
+  color: #111827;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 /* Respect users who prefer reduced motion */

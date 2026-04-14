@@ -13,7 +13,7 @@ export const ExportModal = ({ isOpen, onClose, onExport, dataType }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-md rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+      <div className="relative w-full max-w-md rounded-2xl border p-6 shadow-2xl" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
         <h2 className="text-lg font-semibold mb-6 flex items-center gap-2" style={{ color: theme.text.primary }}><FileDown size={20} /> Export {dataType}</h2>
         <div className="space-y-4">
           <div>

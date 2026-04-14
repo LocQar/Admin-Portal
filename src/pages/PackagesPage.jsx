@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Download, Plus, Search, X, Eye, CheckCircle2, RefreshCw, MapPin, Grid3X3, ArrowUpRight, ArrowDownRight, UserCheck, User, Trash2, LayoutGrid, List, ChevronRight, SlidersHorizontal, ChevronDown } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Checkbox, EmptyState, TableSkeleton, Pagination } from '../components/ui';
+import { Checkbox, EmptyState, TableSkeleton, Pagination, GlassCard } from '../components/ui';
 import { StatusBadge, DeliveryMethodBadge } from '../components/ui/Badge';
 import { hasPermission, DELIVERY_METHODS } from '../constants';
 import { terminalsData, getTerminalAddress, getLockerAddress } from '../constants/mockData';
@@ -89,11 +89,11 @@ export const PackagesPage = ({
           <p style={{ color: theme.text.muted }}>{activeSubMenu || 'All Packages'} • {localFiltered.length}{localFiltered.length !== filteredPackages.length ? ` of ${filteredPackages.length}` : ''} packages</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => setShowExport(true)} className="btn-outline flex items-center gap-2">
             <Download size={16} /> Export
           </button>
           {hasPermission(currentUser.role, 'packages.receive') && (
-            <button onClick={() => setShowNewPackage(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={() => setShowNewPackage(true)} className="btn-primary flex items-center gap-2">
               <Plus size={18} /> Add Package
             </button>
           )}
@@ -102,31 +102,23 @@ export const PackagesPage = ({
 
       {/* Summary Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Total</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: theme.text.primary }}>{localFiltered.length}</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>In Locker</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: theme.text.primary }}>{filteredPackages.filter(p => p.status === 'delivered_to_locker').length}</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>In Transit</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: theme.text.primary }}>{filteredPackages.filter(p => p.status.startsWith('in_transit')).length}</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Pending</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: theme.text.primary }}>{filteredPackages.filter(p => ['pending', 'at_warehouse', 'at_dropbox'].includes(p.status)).length}</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <p className="text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>Total Value</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: theme.accent.primary }}>GH₵ {filteredPackages.reduce((sum, p) => sum + p.value, 0).toLocaleString()}</p>
-        </div>
+        {[
+          { label: 'Total', value: localFiltered.length, color: theme.text.primary },
+          { label: 'In Locker', value: filteredPackages.filter(p => p.status === 'delivered_to_locker').length, color: theme.text.primary },
+          { label: 'In Transit', value: filteredPackages.filter(p => p.status.startsWith('in_transit')).length, color: theme.text.primary },
+          { label: 'Pending', value: filteredPackages.filter(p => ['pending', 'at_warehouse', 'at_dropbox'].includes(p.status)).length, color: theme.text.primary },
+          { label: 'Total Value', value: `GH\u20B5 ${filteredPackages.reduce((sum, p) => sum + p.value, 0).toLocaleString()}`, color: theme.accent.primary },
+        ].map(m => (
+          <GlassCard key={m.label} className="!p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: theme.text.muted }}>{m.label}</p>
+            <p className="text-2xl font-bold mt-1 tabular-nums" style={{ color: m.color }}>{m.value}</p>
+          </GlassCard>
+        ))}
       </div>
 
       {/* Search + Filter */}
       <div className="flex gap-3">
-        <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-xl border glass-card" style={{ borderColor: theme.border.primary }}>
           <Search size={18} style={{ color: theme.icon.muted }} />
           <input
             type="text"
@@ -163,8 +155,8 @@ export const PackagesPage = ({
           {/* Filter Panel */}
           {showFilterPanel && (
             <div
-              className="absolute right-0 top-full mt-2 w-80 rounded-2xl border shadow-2xl z-40 p-4 space-y-5"
-              style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}
+              className="absolute right-0 top-full mt-2 w-80 rounded-2xl border shadow-2xl z-40 p-4 space-y-5 glass-card"
+              style={{ borderColor: theme.border.primary, backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
             >
               {/* Size */}
               <div>
@@ -238,7 +230,7 @@ export const PackagesPage = ({
                   {[['all', 'Any'], ['0', '0d'], ['1-2', '1–2d'], ['3-5', '3–5d'], ['5+', '5+d']].map(([k, l]) => (
                     <button key={k} onClick={() => setLF('daysInLocker', k)}
                       className="px-3 py-1.5 rounded-lg text-xs font-medium border transition-all"
-                      style={{ backgroundColor: localFilters.daysInLocker === k ? '#D4AA5A' : 'transparent', color: localFilters.daysInLocker === k ? '#fff' : theme.text.secondary, borderColor: localFilters.daysInLocker === k ? '#D4AA5A' : theme.border.primary }}>
+                      style={{ backgroundColor: localFilters.daysInLocker === k ? theme.status.warning : 'transparent', color: localFilters.daysInLocker === k ? '#fff' : theme.text.secondary, borderColor: localFilters.daysInLocker === k ? theme.status.warning : theme.border.primary }}>
                       {l}
                     </button>
                   ))}
@@ -247,7 +239,7 @@ export const PackagesPage = ({
 
               {/* Clear */}
               {activeFilterCount > 0 && (
-                <button onClick={clearFilters} className="w-full py-2 rounded-xl text-sm border" style={{ borderColor: '#D48E8A40', color: '#D48E8A' }}>
+                <button onClick={clearFilters} className="w-full py-2 rounded-xl text-sm border" style={{ borderColor: `${theme.status.error}40`, color: theme.status.error }}>
                   Clear {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''}
                 </button>
               )}
@@ -263,7 +255,7 @@ export const PackagesPage = ({
           {localFilters.cod !== 'all' && <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs border" style={{ backgroundColor: theme.accent.light, borderColor: theme.accent.border, color: theme.accent.primary }}>{localFilters.cod === 'cod' ? 'COD Only' : 'Non-COD'}<button onClick={() => setLF('cod', 'all')}><X size={11} /></button></span>}
           {localFilters.destination !== 'all' && <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs border" style={{ backgroundColor: theme.accent.light, borderColor: theme.accent.border, color: theme.accent.primary }}>{localFilters.destination}<button onClick={() => setLF('destination', 'all')}><X size={11} /></button></span>}
           {(localFilters.minValue !== '' || localFilters.maxValue !== '') && <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs border" style={{ backgroundColor: theme.accent.light, borderColor: theme.accent.border, color: theme.accent.primary }}>GH₵ {localFilters.minValue || '0'} – {localFilters.maxValue || '∞'}<button onClick={() => { setLF('minValue', ''); setLF('maxValue', ''); }}><X size={11} /></button></span>}
-          {localFilters.daysInLocker !== 'all' && <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs border" style={{ backgroundColor: '#D4AA5A15', borderColor: '#D4AA5A40', color: '#D4AA5A' }}>Locker: {localFilters.daysInLocker}d<button onClick={() => setLF('daysInLocker', 'all')}><X size={11} /></button></span>}
+          {localFilters.daysInLocker !== 'all' && <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs border" style={{ backgroundColor: `${theme.status.warning}15`, borderColor: `${theme.status.warning}40`, color: theme.status.warning }}>Locker: {localFilters.daysInLocker}d<button onClick={() => setLF('daysInLocker', 'all')}><X size={11} /></button></span>}
         </div>
       )}
 
@@ -297,7 +289,7 @@ export const PackagesPage = ({
       {view === 'grid' && !loading && localFiltered.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {localPaginated.map(pkg => (
-            <div key={pkg.id} onClick={() => setSelectedPackage(pkg)} className="p-4 rounded-2xl border cursor-pointer group hover:border-opacity-80 transition-all space-y-3" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <div key={pkg.id} onClick={() => setSelectedPackage(pkg)} className="p-4 rounded-2xl border cursor-pointer group transition-all space-y-3 glass-card hover:-translate-y-0.5" style={{ borderColor: theme.border.primary }}>
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-mono font-semibold text-sm" style={{ color: theme.text.primary }}>{pkg.waybill}</p>
@@ -343,15 +335,15 @@ export const PackagesPage = ({
         </div>
       )}
       {view === 'grid' && !loading && localFiltered.length === 0 && (
-        <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <EmptyState icon={Plus} title="No packages found" description="There are no packages matching your current filters." theme={theme} />
-        </div>
+        <GlassCard noPadding>
+          <EmptyState icon={Plus} title="No packages found" description="There are no packages matching your current filters." />
+        </GlassCard>
       )}
 
       {/* List/Table View */}
-      {view === 'list' && <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+      {view === 'list' && <GlassCard noPadding>
         {loading ? <TableSkeleton rows={pageSize} cols={7} theme={theme} /> : localFiltered.length === 0 ? (
-          <EmptyState icon={Plus} title="No packages found" description="There are no packages matching your current filters. Try adjusting your search criteria." action="Add New Package" theme={theme} />
+          <EmptyState icon={Plus} title="No packages found" description="There are no packages matching your current filters. Try adjusting your search criteria." action="Add New Package" />
         ) : (
           <>
             <div className="overflow-x-auto">
@@ -468,10 +460,10 @@ export const PackagesPage = ({
                 </tbody>
               </table>
             </div>
-            <Pagination currentPage={currentPage} totalPages={localTotalPages} onPageChange={setCurrentPage} pageSize={pageSize} onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }} totalItems={localFiltered.length} theme={theme} />
+            <Pagination currentPage={currentPage} totalPages={localTotalPages} onPageChange={setCurrentPage} pageSize={pageSize} onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }} totalItems={localFiltered.length} />
           </>
         )}
-      </div>}
+      </GlassCard>}
 
       {view === 'grid' && localFiltered.length > 0 && (
         <Pagination currentPage={currentPage} totalPages={localTotalPages} onPageChange={setCurrentPage} pageSize={pageSize} onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }} totalItems={localFiltered.length} theme={theme} />
@@ -481,14 +473,14 @@ export const PackagesPage = ({
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setDeleteConfirm(null)}>
           <div className="absolute inset-0 bg-black/50" />
-          <div className="relative w-full max-w-sm rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+          <div className="relative w-full max-w-sm rounded-2xl border p-6 space-y-4 shadow-2xl" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.92)' : theme.bg.card, borderColor: theme.border.primary, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Delete Package?</h3>
             <p className="text-sm" style={{ color: theme.text.muted }}>
               Remove <span className="font-mono font-semibold" style={{ color: theme.text.primary }}>{deleteConfirm.waybill}</span> permanently? This cannot be undone.
             </p>
             <div className="flex gap-3">
               <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-              <button onClick={() => { onDeletePackage(deleteConfirm); setDeleteConfirm(null); }} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: '#D48E8A', color: '#fff' }}>Delete</button>
+              <button onClick={() => { onDeletePackage(deleteConfirm); setDeleteConfirm(null); }} className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90" style={{ backgroundColor: theme.status.error, color: '#fff' }}>Delete</button>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { Download, Package, Clock, Award, Users, TrendingUp, AlertTriangle, Zap,
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
 import { MetricCard } from '../components/ui';
+import { GlassCard } from '../components/ui/Card';
 import { StatusBadge } from '../components/ui/Badge';
 import { terminalData, hourlyData, packagesData, terminalsData, pricingRevenueData, couriersData } from '../constants/mockData';
 import { PredictiveRevenueChart, ChurnRiskHeatmap } from '../components/analytics/PredictiveCharts';
@@ -14,18 +15,19 @@ const DATE_RANGES = [
   { key: '1y', label: '1 year', mult: 12 },
 ];
 
-const STATUS_COLORS = {
-  delivered_to_locker: '#81C995',
-  in_transit_to_locker: '#7EA8C9',
-  pending: '#D4AA5A',
-  at_warehouse: '#B5A0D1',
-  expired: '#D48E8A',
+const getStatusColors = (theme) => ({
+  delivered_to_locker: theme.status.success,
+  in_transit_to_locker: theme.accent.primary,
+  pending: theme.status.warning,
+  at_warehouse: theme.chart.violet,
+  expired: theme.status.error,
   delivered_to_home: '#34D399',
   in_transit_to_home: '#60A5FA',
-};
+});
 
 export const AnalyticsPage = ({ loading, setShowExport }) => {
   const { theme } = useTheme();
+  const STATUS_COLORS = getStatusColors(theme);
   const [dateRange, setDateRange] = useState('30d');
 
   const mult = DATE_RANGES.find(r => r.key === dateRange)?.mult ?? 1;
@@ -53,10 +55,10 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
   , []);
 
   const revenueByMethod = [
-    { method: 'Warehouse→Locker', revenue: 28400, color: '#7EA8C9' },
-    { method: 'Dropbox→Locker', revenue: 11200, color: '#B5A0D1' },
-    { method: 'Locker→Home', revenue: 8900, color: '#81C995' },
-    { method: 'Warehouse→Home', revenue: 5600, color: '#D4AA5A' },
+    { method: 'Warehouse→Locker', revenue: 28400, color: theme.accent.primary },
+    { method: 'Dropbox→Locker', revenue: 11200, color: theme.chart.violet },
+    { method: 'Locker→Home', revenue: 8900, color: theme.status.success },
+    { method: 'Warehouse→Home', revenue: 5600, color: theme.status.warning },
   ].map(d => ({ ...d, revenue: Math.round(d.revenue * mult) }));
 
   return (
@@ -74,7 +76,7 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               </button>
             ))}
           </div>
-          <button onClick={() => setShowExport && setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => setShowExport && setShowExport(true)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl text-sm">
             <Download size={16} />Export
           </button>
         </div>
@@ -90,7 +92,7 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
 
       {/* ── ROW 1: Revenue Forecast + Delivery Methods ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}>
@@ -104,9 +106,9 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
             </div>
           </div>
           <PredictiveRevenueChart />
-        </div>
+        </GlassCard>
 
-        <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard>
           <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Delivery Methods</h3>
           <ResponsiveContainer width="100%" height={160}>
             <PieChart>
@@ -128,12 +130,12 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
       </div>
 
       {/* ── ROW 2: Terminal Throughput + Package Status ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}>
               <BarChart2 size={18} style={{ color: theme.chart.blue }} /> Terminal Throughput
@@ -159,9 +161,9 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
 
-        <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard>
           <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
             <Activity size={18} style={{ color: theme.chart.violet }} /> Package Status Breakdown
           </h3>
@@ -182,14 +184,14 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               );
             })}
           </div>
-        </div>
+        </GlassCard>
       </div>
 
       {/* ── ROW 3: Revenue by Method + Top Couriers ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard>
           <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
-            <TrendingUp size={18} style={{ color: '#81C995' }} /> Revenue by Delivery Method
+            <TrendingUp size={18} style={{ color: theme.status.success }} /> Revenue by Delivery Method
           </h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={revenueByMethod} layout="vertical">
@@ -202,18 +204,18 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </GlassCard>
 
-        <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard noPadding>
           <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
             <h3 className="font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}>
-              <Star size={18} style={{ color: '#D4AA5A' }} /> Top Couriers
+              <Star size={18} style={{ color: theme.status.warning }} /> Top Couriers
             </h3>
           </div>
           <div className="divide-y" style={{ borderColor: theme.border.primary }}>
             {topCouriers.map((c, i) => (
               <div key={c.id} className="flex items-center gap-3 px-4 py-3">
-                <div className="w-6 text-center font-bold text-sm" style={{ color: i === 0 ? '#D4AA5A' : theme.text.muted }}>#{i + 1}</div>
+                <div className="w-6 text-center font-bold text-sm" style={{ color: i === 0 ? theme.status.warning : theme.text.muted }}>#{i + 1}</div>
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary }}>
                   {c.name.charAt(0)}
                 </div>
@@ -223,27 +225,27 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-bold" style={{ color: theme.text.primary }}>{c.totalDeliveries.toLocaleString()}</p>
-                  <p className="text-xs flex items-center justify-end gap-0.5" style={{ color: '#D4AA5A' }}>
-                    <Star size={10} fill="#D4AA5A" /> {c.rating}
+                  <p className="text-xs flex items-center justify-end gap-0.5" style={{ color: theme.status.warning }}>
+                    <Star size={10} fill={theme.status.warning} /> {c.rating}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
       </div>
 
       {/* ── ROW 4: AI Insights ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard>
           <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}>
             <AlertTriangle size={18} className="text-orange-500" /> Subscriber Churn Risk
           </h3>
           <p className="text-xs mb-4" style={{ color: theme.text.muted }}>AI analysis of user engagement vs ticket volume</p>
           <ChurnRiskHeatmap />
-        </div>
+        </GlassCard>
 
-        <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard>
           <h3 className="font-semibold mb-1 flex items-center gap-2" style={{ color: theme.text.primary }}>
             <Zap size={18} className="text-red-500" /> SLA Breach Forecast (24h)
           </h3>
@@ -267,12 +269,12 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </GlassCard>
       </div>
 
       {/* ── ROW 5: Terminal Utilization + Hourly Volume ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard noPadding className="lg:col-span-2">
           <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
             <h3 className="font-semibold" style={{ color: theme.text.primary }}>Terminal Utilization Live</h3>
           </div>
@@ -297,7 +299,7 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <div className="w-20 h-2 rounded-full" style={{ backgroundColor: theme.bg.tertiary }}>
-                          <div className="h-full rounded-full" style={{ width: `${util}%`, backgroundColor: util > 80 ? '#D48E8A' : util > 60 ? '#D4AA5A' : '#81C995' }} />
+                          <div className="h-full rounded-full" style={{ width: `${util}%`, backgroundColor: util > 80 ? theme.status.error : util > 60 ? theme.status.warning : theme.status.success }} />
                         </div>
                         <span className="text-xs font-medium" style={{ color: theme.text.secondary }}>{util}%</span>
                       </div>
@@ -308,9 +310,9 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               })}
             </tbody>
           </table>
-        </div>
+        </GlassCard>
 
-        <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard>
           <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Hourly Volume</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={hourlyData}>
@@ -321,7 +323,7 @@ export const AnalyticsPage = ({ loading, setShowExport }) => {
               <Bar dataKey="packages" fill={theme.chart.blue} radius={[4, 4, 0, 0]} name="Packages" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </GlassCard>
       </div>
     </div>
   );

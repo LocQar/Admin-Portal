@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Plus, Search, Briefcase, Users, Download, Eye, Edit, Trash2, Mail, Phone, MapPin, Package, DollarSign, Calendar, TrendingUp, Filter, X, Building2, AlertCircle, Clock, CheckCircle, Tag, GraduationCap, CreditCard, Shield, Star, BarChart3, UserCheck, MessageSquare, ChevronDown, ChevronUp, ExternalLink, LayoutGrid, List, ChevronRight } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 import { StatusBadge, TableSkeleton, MetricCard, Pagination, EmptyState } from '../components/ui';
 import { customersData, partnersData, TIERS, subscriberGrowthData, subscriberChurnData } from '../constants/mockData';
 import { hasPermission, SUBSCRIPTION_PLANS } from '../constants';
@@ -139,21 +140,21 @@ export const CustomersPage = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-            <TitleIcon size={28} style={{ color: '#7EA8C9' }} /> {titles[currentView] || 'Customers'}
+            <TitleIcon size={28} style={{ color: theme.accent.primary }} /> {titles[currentView] || 'Customers'}
           </h1>
           <p style={{ color: theme.text.muted }}>{currentView} • Customer Management</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => setShowExport(true)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <Download size={16} />Export
           </button>
           {currentView === 'All Customers' && hasPermission(currentUser?.role, 'customers.manage') && (
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={16} />Add Customer
             </button>
           )}
           {currentView === 'Subscribers' && hasPermission(currentUser?.role, 'customers.manage') && (
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={16} />Add Subscriber
             </button>
           )}
@@ -177,9 +178,9 @@ export const CustomersPage = ({
             <div className="flex flex-col md:flex-row gap-3">
               <div className="relative flex-1">
                 <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-                <input value={customerSearch} onChange={e => { setCustomerSearch(e.target.value); setPage(1); }} placeholder="Search by name, email, or phone..." className="w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+                <input value={customerSearch} onChange={e => { setCustomerSearch(e.target.value); setPage(1); }} placeholder="Search by name, email, or phone..." className="glass-card w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
-              <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+              <button onClick={() => setShowFilters(!showFilters)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
                 <Filter size={16} />Filters
               </button>
               <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -194,7 +195,7 @@ export const CustomersPage = ({
               </div>
             </div>
             {showFilters && (
-              <div className="flex flex-col md:flex-row gap-3 p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <div className="flex flex-col md:flex-row gap-3 p-4 rounded-xl border" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)' }}>
                 <div className="flex-1">
                   <label className="block text-xs mb-2" style={{ color: theme.text.muted }}>Customer Type</label>
                   <select value={customerTypeFilter} onChange={e => { setCustomerTypeFilter(e.target.value); setPage(1); }} className="w-full px-3 py-2 rounded-lg border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}>
@@ -223,21 +224,21 @@ export const CustomersPage = ({
           {/* Grid View */}
           {customerView === 'grid' && !loading && (
             paginatedCustomers.length === 0 ? (
-              <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard noPadding>
                 <EmptyState icon={Users} title="No customers found" description="No customers match your search criteria" theme={theme} />
-              </div>
+              </GlassCard>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {paginatedCustomers.map(customer => (
-                  <div key={customer.id} onClick={() => handleViewCustomer(customer)} className="p-4 rounded-2xl border cursor-pointer group hover:border-opacity-80 transition-all space-y-3" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  <GlassCard key={customer.id} hover onClick={() => handleViewCustomer(customer)} className="group space-y-3" style={{ padding: '1rem' }}>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: customer.type === 'b2b' ? '#B5A0D1' : '#7EA8C9', color: '#1C1917' }}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: customer.type === 'b2b' ? theme.chart.violet : theme.accent.primary, color: '#1C1917' }}>
                           {customer.type === 'b2b' ? <Briefcase size={16} /> : <Users size={16} />}
                         </div>
                         <div>
                           <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>{customer.name}</p>
-                          <span className="text-xs px-2 py-0.5 rounded-lg font-medium" style={{ backgroundColor: customer.type === 'b2b' ? '#B5A0D110' : '#7EA8C910', color: customer.type === 'b2b' ? '#B5A0D1' : '#7EA8C9' }}>{customer.type === 'b2b' ? 'B2B' : 'Individual'}</span>
+                          <span className="text-xs px-2 py-0.5 rounded-lg font-medium" style={{ backgroundColor: customer.type === 'b2b' ? `${theme.chart.violet}10` : `${theme.accent.primary}10`, color: customer.type === 'b2b' ? theme.chart.violet : theme.accent.primary }}>{customer.type === 'b2b' ? 'B2B' : 'Individual'}</span>
                         </div>
                       </div>
                       <StatusBadge status={customer.status} />
@@ -259,14 +260,14 @@ export const CustomersPage = ({
                         </>
                       )}
                     </div>
-                  </div>
+                  </GlassCard>
                 ))}
               </div>
             )
           )}
 
           {/* Customers Table (list view) */}
-          {customerView === 'list' && <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          {customerView === 'list' && <GlassCard noPadding style={{ overflow: 'hidden' }}>
             {loading ? <TableSkeleton rows={10} /> : paginatedCustomers.length === 0 ? (
               <EmptyState icon={Users} title="No customers found" description="No customers match your search criteria" theme={theme} />
             ) : (
@@ -288,7 +289,7 @@ export const CustomersPage = ({
                       <tr key={customer.id} className="border-b hover:bg-opacity-50" style={{ borderColor: theme.border.primary }}>
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: customer.type === 'b2b' ? '#B5A0D1' : '#7EA8C9', color: '#1C1917' }}>
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: customer.type === 'b2b' ? theme.chart.violet : theme.accent.primary, color: '#1C1917' }}>
                               {customer.type === 'b2b' ? <Briefcase size={16} /> : <Users size={16} />}
                             </div>
                             <div>
@@ -304,7 +305,7 @@ export const CustomersPage = ({
                           </div>
                         </td>
                         <td className="p-4">
-                          <span className="text-xs px-2.5 py-1 rounded-lg font-medium" style={{ backgroundColor: customer.type === 'b2b' ? '#B5A0D110' : '#7EA8C910', color: customer.type === 'b2b' ? '#B5A0D1' : '#7EA8C9' }}>
+                          <span className="text-xs px-2.5 py-1 rounded-lg font-medium" style={{ backgroundColor: customer.type === 'b2b' ? `${theme.chart.violet}10` : `${theme.accent.primary}10`, color: customer.type === 'b2b' ? theme.chart.violet : theme.accent.primary }}>
                             {customer.type === 'b2b' ? 'B2B' : 'Individual'}
                           </span>
                         </td>
@@ -317,7 +318,7 @@ export const CustomersPage = ({
                             {hasPermission(currentUser?.role, 'customers.manage') && (
                               <>
                                 <button className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Edit"><Edit size={16} style={{ color: theme.icon.primary }} /></button>
-                                <button onClick={() => handleDeleteCustomer(customer)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Delete"><Trash2 size={16} style={{ color: '#D48E8A' }} /></button>
+                                <button onClick={() => handleDeleteCustomer(customer)} className="p-2 rounded-lg hover:bg-opacity-80 transition-colors" style={{ backgroundColor: theme.bg.hover }} title="Delete"><Trash2 size={16} style={{ color: theme.status.error }} /></button>
                               </>
                             )}
                           </div>
@@ -328,7 +329,7 @@ export const CustomersPage = ({
                 </table>
               </div>
             )}
-          </div>}
+          </GlassCard>}
           {totalPages > 1 && <div className="mt-6"><Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} theme={theme} /></div>}
 
           {/* Customer Detail Drawer */}
@@ -342,7 +343,7 @@ export const CustomersPage = ({
                 </div>
                 <div className="p-6 space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl" style={{ backgroundColor: selectedCustomer.type === 'b2b' ? '#B5A0D1' : '#7EA8C9', color: '#1C1917' }}>
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl" style={{ backgroundColor: selectedCustomer.type === 'b2b' ? theme.chart.violet : theme.accent.primary, color: '#1C1917' }}>
                       {selectedCustomer.type === 'b2b' ? <Briefcase size={24} /> : <Users size={24} />}
                     </div>
                     <div className="flex-1">
@@ -351,24 +352,24 @@ export const CustomersPage = ({
                       <div className="mt-2"><StatusBadge status={selectedCustomer.status} /></div>
                     </div>
                   </div>
-                  <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
                     <h4 className="font-semibold mb-3" style={{ color: theme.text.primary }}>Contact Information</h4>
                     <div className="space-y-2">
                       <div className="flex items-center gap-3"><Mail size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{selectedCustomer.email}</span></div>
                       <div className="flex items-center gap-3"><Phone size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{selectedCustomer.phone}</span></div>
                     </div>
-                  </div>
+                  </GlassCard>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <div className="flex items-center gap-2 mb-2"><Package size={16} style={{ color: '#7EA8C9' }} /><span className="text-xs" style={{ color: theme.text.muted }}>Total Orders</span></div>
+                    <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
+                      <div className="flex items-center gap-2 mb-2"><Package size={16} style={{ color: theme.accent.primary }} /><span className="text-xs" style={{ color: theme.text.muted }}>Total Orders</span></div>
                       <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{selectedCustomer.totalOrders}</p>
-                    </div>
-                    <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-                      <div className="flex items-center gap-2 mb-2"><DollarSign size={16} style={{ color: '#81C995' }} /><span className="text-xs" style={{ color: theme.text.muted }}>Total Spent</span></div>
+                    </GlassCard>
+                    <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
+                      <div className="flex items-center gap-2 mb-2"><DollarSign size={16} style={{ color: theme.status.success }} /><span className="text-xs" style={{ color: theme.text.muted }}>Total Spent</span></div>
                       <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>GH₵ {selectedCustomer.totalSpent.toLocaleString()}</p>
-                    </div>
+                    </GlassCard>
                   </div>
-                  <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
                     <h4 className="font-semibold mb-3" style={{ color: theme.text.primary }}>Recent Orders</h4>
                     <div className="space-y-2">
                       {getCustomerOrders().map(order => (
@@ -384,7 +385,7 @@ export const CustomersPage = ({
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </GlassCard>
                 </div>
               </div>
             </div>
@@ -407,7 +408,7 @@ export const CustomersPage = ({
           <div className="flex flex-col md:flex-row gap-3 mb-6">
             <div className="relative flex-1">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-              <input value={subscriberSearch || ''} onChange={e => { setSubscriberSearch(e.target.value); setSubPage(1); }} placeholder="Search by name, email, university..." className="w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+              <input value={subscriberSearch || ''} onChange={e => { setSubscriberSearch(e.target.value); setSubPage(1); }} placeholder="Search by name, email, university..." className="glass-card w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <select value={subscriberPlanFilter || 'all'} onChange={e => { setSubscriberPlanFilter(e.target.value); setSubPage(1); }} className="px-3 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}>
               <option value="all">All Plans</option>
@@ -429,7 +430,7 @@ export const CustomersPage = ({
           <p className="text-xs mb-3" style={{ color: theme.text.muted }}>{filteredSubscribers?.length || 0} subscribers found</p>
 
           {/* Subscribers Table */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding style={{ overflow: 'hidden' }}>
             {loading ? <TableSkeleton rows={10} /> : paginatedSubscribers.length === 0 ? (
               <EmptyState icon={GraduationCap} title="No subscribers found" description="No subscribers match your search criteria" theme={theme} />
             ) : (
@@ -453,7 +454,7 @@ export const CustomersPage = ({
                         <tr key={sub.id} className="border-b hover:bg-opacity-50" style={{ borderColor: theme.border.primary }}>
                           <td className="p-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#B5A0D1', color: '#1C1917' }}>
+                              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: theme.chart.violet, color: '#1C1917' }}>
                                 <GraduationCap size={16} />
                               </div>
                               <div>
@@ -494,7 +495,7 @@ export const CustomersPage = ({
                 </table>
               </div>
             )}
-          </div>
+          </GlassCard>
           {subTotalPages > 1 && <div className="mt-6"><Pagination currentPage={subPage} totalPages={subTotalPages} onPageChange={setSubPage} theme={theme} /></div>}
 
           {/* Subscriber Detail Drawer */}
@@ -508,43 +509,43 @@ export const CustomersPage = ({
                 </div>
                 <div className="p-6 space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl" style={{ backgroundColor: '#B5A0D1', color: '#1C1917' }}><GraduationCap size={24} /></div>
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl" style={{ backgroundColor: theme.chart.violet, color: '#1C1917' }}><GraduationCap size={24} /></div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold" style={{ color: theme.text.primary }}>{subscriberDetailItem.name}</h3>
                       <p className="text-sm" style={{ color: theme.text.muted }}>{subscriberDetailItem.university} • {subscriberDetailItem.campus}</p>
                       <p className="text-xs font-mono mt-1" style={{ color: theme.text.muted }}>ID: {subscriberDetailItem.studentId}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <StatusBadge status={subscriberDetailItem.status} />
-                        {subscriberDetailItem.verified && <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(129,201,149,0.1)', color: '#81C995' }}>✓ Verified</span>}
+                        {subscriberDetailItem.verified && <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: `${theme.status.success}1A`, color: theme.status.success }}>✓ Verified</span>}
                       </div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
                       <p className="text-xs mb-1" style={{ color: theme.text.muted }}>Plan</p>
                       <p className="font-semibold" style={{ color: getPlanInfo(subscriberDetailItem.plan).color }}>{getPlanInfo(subscriberDetailItem.plan).name}</p>
                       <p className="text-xs" style={{ color: theme.text.muted }}>GH₵ {getPlanInfo(subscriberDetailItem.plan).price}/mo</p>
-                    </div>
-                    <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    </GlassCard>
+                    <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
                       <p className="text-xs mb-1" style={{ color: theme.text.muted }}>Deliveries Used</p>
                       <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{subscriberDetailItem.deliveriesUsed}</p>
-                    </div>
+                    </GlassCard>
                   </div>
-                  <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
                     <h4 className="font-semibold mb-3" style={{ color: theme.text.primary }}>Contact</h4>
                     <div className="space-y-2">
                       <div className="flex items-center gap-3"><Mail size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.email}</span></div>
                       <div className="flex items-center gap-3"><Phone size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.phone}</span></div>
                       <div className="flex items-center gap-3"><MapPin size={16} style={{ color: theme.icon.muted }} /><span className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.terminal}</span></div>
                     </div>
-                  </div>
+                  </GlassCard>
                   {subscriberDetailItem.notes && (
-                    <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
                       <h4 className="font-semibold mb-2" style={{ color: theme.text.primary }}>Notes</h4>
                       <p className="text-sm" style={{ color: theme.text.secondary }}>{subscriberDetailItem.notes}</p>
-                    </div>
+                    </GlassCard>
                   )}
-                  <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
                     <h4 className="font-semibold mb-3" style={{ color: theme.text.primary }}>Payment History</h4>
                     <div className="space-y-2">
                       {(subscriberDetailItem.paymentHistory || []).map((p, i) => (
@@ -557,8 +558,8 @@ export const CustomersPage = ({
                         </div>
                       ))}
                     </div>
-                  </div>
-                  <div className="rounded-xl border p-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  </GlassCard>
+                  <GlassCard style={{ padding: '1rem', borderRadius: '0.75rem' }}>
                     <h4 className="font-semibold mb-3" style={{ color: theme.text.primary }}>Recent Deliveries</h4>
                     <div className="space-y-2">
                       {(subscriberDetailItem.deliveryLog || []).slice(0, 5).map((d, i) => (
@@ -571,7 +572,7 @@ export const CustomersPage = ({
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </GlassCard>
                 </div>
               </div>
             </div>
@@ -594,7 +595,7 @@ export const CustomersPage = ({
           <div className="flex flex-col md:flex-row gap-3 mb-6">
             <div className="relative flex-1">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-              <input value={partnerSearch} onChange={e => setPartnerSearch(e.target.value)} placeholder="Search partners..." className="w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+              <input value={partnerSearch} onChange={e => setPartnerSearch(e.target.value)} placeholder="Search partners..." className="glass-card w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <select value={partnerTierFilter} onChange={e => setPartnerTierFilter(e.target.value)} className="px-3 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}>
               <option value="all">All Tiers</option>
@@ -610,7 +611,7 @@ export const CustomersPage = ({
               filteredPartnersLocal.map(partner => {
                 const tier = TIERS[partner.tier];
                 return (
-                  <div key={partner.id} className="rounded-2xl border p-5" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  <GlassCard key={partner.id}>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: tier?.bg || '#f3f4f6' }}>
@@ -645,11 +646,11 @@ export const CustomersPage = ({
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: theme.text.muted }}>Revenue</p>
-                        <p className="font-semibold" style={{ color: '#81C995' }}>GH₵ {partner.revenue.toLocaleString()}</p>
+                        <p className="font-semibold" style={{ color: theme.status.success }}>GH₵ {partner.revenue.toLocaleString()}</p>
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: theme.text.muted }}>Delivery Rate</p>
-                        <p className="font-semibold" style={{ color: partner.deliveryRate >= 95 ? '#81C995' : partner.deliveryRate >= 90 ? '#D4AA5A' : '#D48E8A' }}>{partner.deliveryRate}%</p>
+                        <p className="font-semibold" style={{ color: partner.deliveryRate >= 95 ? theme.status.success : partner.deliveryRate >= 90 ? theme.status.warning : theme.status.error }}>{partner.deliveryRate}%</p>
                       </div>
                       <div>
                         <p className="text-xs" style={{ color: theme.text.muted }}>API Calls</p>
@@ -657,7 +658,7 @@ export const CustomersPage = ({
                         <p className="text-xs" style={{ color: theme.text.muted }}>Last: {partner.lastApiCall}</p>
                       </div>
                     </div>
-                  </div>
+                  </GlassCard>
                 );
               })
             )}
@@ -680,7 +681,7 @@ export const CustomersPage = ({
           <div className="flex flex-col md:flex-row gap-3 mb-6">
             <div className="relative flex-1">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-              <input value={ticketSearch || ''} onChange={e => { setTicketSearch(e.target.value); setTktPage(1); }} placeholder="Search tickets by ID, customer, subject..." className="w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+              <input value={ticketSearch || ''} onChange={e => { setTicketSearch(e.target.value); setTktPage(1); }} placeholder="Search tickets by ID, customer, subject..." className="glass-card w-full pl-10 pr-4 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <select value={ticketPriorityFilter || 'all'} onChange={e => { setTicketPriorityFilter(e.target.value); setTktPage(1); }} className="px-3 py-2 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}>
               <option value="all">All Priorities</option>
@@ -700,7 +701,7 @@ export const CustomersPage = ({
           <p className="text-xs mb-3" style={{ color: theme.text.muted }}>{filteredTickets?.length || 0} tickets found</p>
 
           {/* Tickets Table */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding style={{ overflow: 'hidden' }}>
             {loading ? <TableSkeleton rows={10} /> : paginatedTickets.length === 0 ? (
               <EmptyState icon={MessageSquare} title="No tickets found" description="No tickets match your search criteria" theme={theme} />
             ) : (
@@ -753,7 +754,7 @@ export const CustomersPage = ({
                 </table>
               </div>
             )}
-          </div>
+          </GlassCard>
           {tktTotalPages > 1 && <div className="mt-6"><Pagination currentPage={tktPage} totalPages={tktTotalPages} onPageChange={setTktPage} theme={theme} /></div>}
         </>
       )}

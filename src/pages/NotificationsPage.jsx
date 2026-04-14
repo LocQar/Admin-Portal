@@ -3,6 +3,7 @@ import { Download, Send, MessageSquare, CheckCircle2, Eye, AlertTriangle, Bankno
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
 import { MetricCard, TableSkeleton, Pagination, EmptyState, StatusBadge } from '../components/ui';
+import { GlassCard } from '../components/ui/Card';
 import {
   useTemplates,
   useRules,
@@ -12,7 +13,9 @@ import {
   useToggleTemplate,
   useDuplicateTemplate,
   useDeleteTemplate,
+  useCreateRule,
   useToggleRule,
+  useDeleteRule,
   useTestRule,
   useUpdateSettings,
   useTestSms,
@@ -56,6 +59,8 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
   const toggleRuleMut = useToggleRule();
   const testRuleMut = useTestRule();
   const updateSettingsMut = useUpdateSettings();
+  const createRuleMut = useCreateRule();
+  const deleteRuleMut = useDeleteRule();
   const testSmsMut = useTestSms();
 
   // Message Center state
@@ -75,6 +80,12 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
   // Auto-Rules state
   const [ruleSearch, setRuleSearch] = React.useState('');
   const [selectedRule, setSelectedRule] = React.useState(null);
+
+  // Modal state
+  const [showDeleteTemplateModal, setShowDeleteTemplateModal] = React.useState(null); // holds template to delete
+  const [showCreateRuleModal, setShowCreateRuleModal] = React.useState(false);
+  const [showDeleteRuleModal, setShowDeleteRuleModal] = React.useState(null); // holds rule to delete
+  const [newRule, setNewRule] = React.useState({ name: '', description: '', trigger: 'package_pickup', channels: ['sms'], delay: '0m', templateId: '' });
 
   // Settings state — seeded from API, falls back to defaults
   const [notificationSettings, setNotificationSettings] = React.useState({
@@ -222,15 +233,15 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-3" style={{ color: theme.text.primary }}>
-            <MessageSquare size={28} style={{ color: '#81C995' }} /> Notifications
+            <MessageSquare size={28} style={{ color: theme.status.success }} /> Notifications
           </h1>
           <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Message Center'} • Manage customer communications</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => setShowExport(true)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <Download size={16} />Export
           </button>
-          <button onClick={() => setComposeOpen(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+          <button onClick={() => setComposeOpen(true)} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <Send size={18} />Send Message
           </button>
         </div>
@@ -249,7 +260,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           </div>
 
           {/* Message Volume Chart */}
-          <div className="rounded-2xl border p-5" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>Message Volume (Last 7 Days)</h3>
               <div className="flex gap-2 text-xs">
@@ -271,16 +282,16 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 </LineChart>
               </ResponsiveContainer>
             )}
-          </div>
+          </GlassCard>
 
           {/* Recent Messages Table */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="p-4 border-b flex flex-col md:flex-row md:items-center justify-between gap-3" style={{ borderColor: theme.border.primary }}>
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>Recent Messages</h3>
               <div className="flex gap-2">
                 <div className="relative">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-                  <input type="text" placeholder="Search messages..." value={msgSearch} onChange={(e) => setMsgSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full md:w-64 outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+                  <input type="text" placeholder="Search messages..." value={msgSearch} onChange={(e) => setMsgSearch(e.target.value)} className="glass-card pl-9 pr-3 py-2 rounded-lg text-sm w-full md:w-64 outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
                 </div>
                 <select value={msgChannelFilter} onChange={(e) => setMsgChannelFilter(e.target.value)} className="px-3 py-2 rounded-lg text-sm outline-none" style={{ backgroundColor: theme.bg.input, color: theme.text.primary }}>
                   <option value="all">All Channels</option>
@@ -324,7 +335,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                             </td>
                             <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{msg.template?.name ?? msg.template ?? '—'}</span></td>
                             <td className="p-3">
-                              <span className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full w-fit capitalize" style={{ backgroundColor: msg.channel === 'sms' ? '#81C99515' : msg.channel === 'whatsapp' ? '#B5A0D115' : '#7EA8C915', color: msg.channel === 'sms' ? '#81C995' : msg.channel === 'whatsapp' ? '#B5A0D1' : '#7EA8C9' }}>
+                              <span className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full w-fit capitalize" style={{ backgroundColor: msg.channel === 'sms' ? `${theme.status.success}15` : msg.channel === 'whatsapp' ? `${theme.chart.violet}15` : `${theme.accent.primary}15`, color: msg.channel === 'sms' ? theme.status.success : msg.channel === 'whatsapp' ? theme.chart.violet : theme.accent.primary }}>
                                 {msg.channel === 'sms' ? <Smartphone size={12} /> : msg.channel === 'whatsapp' ? <MessageSquare size={12} /> : <Mail size={12} />}
                                 {msg.channel}
                               </span>
@@ -347,7 +358,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 </div>
               </>
             )}
-          </div>
+          </GlassCard>
         </div>
       )}
 
@@ -358,7 +369,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-              <input type="text" placeholder="Search templates..." value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+              <input type="text" placeholder="Search templates..." value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} className="glass-card pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
             <select value={templateChannelFilter} onChange={(e) => setTemplateChannelFilter(e.target.value)} className="px-4 py-2 rounded-lg text-sm outline-none" style={{ backgroundColor: theme.bg.input, color: theme.text.primary }}>
               <option value="all">All Channels</option>
@@ -366,7 +377,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               <option value="whatsapp">WhatsApp</option>
               <option value="email">Email</option>
             </select>
-            <button onClick={() => setShowTemplateForm(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={() => setShowTemplateForm(true)} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={16} />New Template
             </button>
           </div>
@@ -377,12 +388,12 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           ) : (
             <div className="grid gap-4">
               {filteredTemplates.map((template) => (
-                <div key={template.id} className="rounded-2xl border p-5" style={{ backgroundColor: theme.bg.card, borderColor: template.active ? theme.accent.primary + '30' : theme.border.primary }}>
+                <GlassCard key={template.id} style={{ borderColor: template.active ? theme.accent.primary + '30' : undefined }}>
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h4 className="font-semibold" style={{ color: theme.text.primary }}>{template.name}</h4>
-                        <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: template.channel === 'sms' ? '#81C99515' : template.channel === 'whatsapp' ? '#B5A0D115' : '#7EA8C915', color: template.channel === 'sms' ? '#81C995' : template.channel === 'whatsapp' ? '#B5A0D1' : '#7EA8C9' }}>
+                        <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: template.channel === 'sms' ? `${theme.status.success}15` : template.channel === 'whatsapp' ? `${theme.chart.violet}15` : `${theme.accent.primary}15`, color: template.channel === 'sms' ? theme.status.success : template.channel === 'whatsapp' ? theme.chart.violet : theme.accent.primary }}>
                           {template.channel}
                         </span>
                         <span className={`text-xs px-2 py-1 rounded-full ${template.active ? 'bg-green-500/10 text-green-500' : 'bg-gray-500/10 text-gray-500'}`}>
@@ -397,7 +408,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       </div>
                     </div>
                     <div className="flex gap-2 ml-4">
-                      <button onClick={() => handleToggleTemplate(template.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: template.active ? '#81C995' : theme.icon.muted }} title={template.active ? 'Deactivate' : 'Activate'}>
+                      <button onClick={() => handleToggleTemplate(template.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: template.active ? theme.status.success : theme.icon.muted }} title={template.active ? 'Deactivate' : 'Activate'}>
                         {template.active ? <Power size={18} /> : <PowerOff size={18} />}
                       </button>
                       <button onClick={() => handleDuplicateTemplate(template)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.icon.primary }} title="Duplicate">
@@ -406,12 +417,12 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       <button onClick={() => setSelectedTemplate(template)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.accent.primary }} title="Edit">
                         <Edit size={18} />
                       </button>
-                      <button onClick={() => addToast({ type: 'success', message: 'Template deleted' })} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: '#D48E8A' }} title="Delete">
+                      <button onClick={() => setShowDeleteTemplateModal(template)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.status.error }} title="Delete">
                         <Trash2 size={18} />
                       </button>
                     </div>
                   </div>
-                </div>
+                </GlassCard>
               ))}
             </div>
           )}
@@ -424,19 +435,19 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-              <input type="text" placeholder="Search rules..." value={ruleSearch} onChange={(e) => setRuleSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+              <input type="text" placeholder="Search rules..." value={ruleSearch} onChange={(e) => setRuleSearch(e.target.value)} className="glass-card pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
             </div>
-            <button onClick={() => addToast({ type: 'info', message: 'New rule form opened' })} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={() => { setNewRule({ name: '', description: '', trigger: 'package_pickup', channels: ['sms'], delay: '0m', templateId: '' }); setShowCreateRuleModal(true); }} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={16} />New Rule
             </button>
           </div>
 
           {loading ? <TableSkeleton rows={3} cols={1} /> : filteredRules.length === 0 ? (
-            <EmptyState icon={Bell} title="No automation rules found" description="Create rules to automatically send notifications" action={{ label: 'Create Rule', onClick: () => addToast({ type: 'info', message: 'New rule form' }) }} />
+            <EmptyState icon={Bell} title="No automation rules found" description="Create rules to automatically send notifications" action={{ label: 'Create Rule', onClick: () => { setNewRule({ name: '', description: '', trigger: 'package_pickup', channels: ['sms'], delay: '0m', templateId: '' }); setShowCreateRuleModal(true); } }} />
           ) : (
             <div className="grid gap-4">
               {filteredRules.map((rule) => (
-                <div key={rule.id} className="rounded-2xl border p-5" style={{ backgroundColor: theme.bg.card, borderColor: rule.active ? theme.accent.primary + '30' : theme.border.primary }}>
+                <GlassCard key={rule.id} style={{ borderColor: rule.active ? theme.accent.primary + '30' : undefined }}>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
@@ -457,18 +468,18 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                       <button onClick={() => handleTestRule(rule)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.accent.primary }} title="Test Rule">
                         <Play size={18} />
                       </button>
-                      <button onClick={() => handleToggleRule(rule.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: rule.active ? '#D4AA5A' : '#81C995' }} title={rule.active ? 'Pause' : 'Activate'}>
+                      <button onClick={() => handleToggleRule(rule.id)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: rule.active ? theme.status.warning : theme.status.success }} title={rule.active ? 'Pause' : 'Activate'}>
                         {rule.active ? <Pause size={18} /> : <Play size={18} />}
                       </button>
                       <button onClick={() => setSelectedRule(rule)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.accent.primary }} title="Edit">
                         <Edit size={18} />
                       </button>
-                      <button onClick={() => addToast({ type: 'success', message: 'Rule deleted' })} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: '#D48E8A' }} title="Delete">
+                      <button onClick={() => setShowDeleteRuleModal(rule)} className="p-2 rounded-lg hover:bg-opacity-10" style={{ color: theme.status.error }} title="Delete">
                         <Trash2 size={18} />
                       </button>
                     </div>
                   </div>
-                </div>
+                </GlassCard>
               ))}
             </div>
           )}
@@ -477,13 +488,13 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
 
       {/* History */}
       {activeSubMenu === 'History' && (
-        <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard noPadding className="overflow-hidden">
           <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Full Message History</h3>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-                <input type="text" placeholder="Search by recipient, phone, or waybill..." value={msgSearch} onChange={(e) => setMsgSearch(e.target.value)} className="pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+                <input type="text" placeholder="Search by recipient, phone, or waybill..." value={msgSearch} onChange={(e) => setMsgSearch(e.target.value)} className="glass-card pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
               <select value={msgChannelFilter} onChange={(e) => setMsgChannelFilter(e.target.value)} className="px-3 py-2 rounded-lg text-sm outline-none" style={{ backgroundColor: theme.bg.input, color: theme.text.primary }}>
                 <option value="all">All Channels</option>
@@ -524,7 +535,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                         <td className="p-3"><span className="text-xs font-mono" style={{ color: theme.accent.primary }}>{msg.waybill}</span></td>
                         <td className="p-3"><span className="text-sm" style={{ color: theme.text.secondary }}>{msg.template?.name ?? msg.template ?? '—'}</span></td>
                         <td className="p-3">
-                          <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: msg.channel === 'sms' ? '#81C99515' : msg.channel === 'whatsapp' ? '#B5A0D115' : '#7EA8C915', color: msg.channel === 'sms' ? '#81C995' : msg.channel === 'whatsapp' ? '#B5A0D1' : '#7EA8C9' }}>
+                          <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: msg.channel === 'sms' ? `${theme.status.success}15` : msg.channel === 'whatsapp' ? `${theme.chart.violet}15` : `${theme.accent.primary}15`, color: msg.channel === 'sms' ? theme.status.success : msg.channel === 'whatsapp' ? theme.chart.violet : theme.accent.primary }}>
                             {msg.channel}
                           </span>
                         </td>
@@ -542,7 +553,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               </table>
             </div>
           )}
-        </div>
+        </GlassCard>
       )}
 
       {/* Settings */}
@@ -553,21 +564,21 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
             <button
               onClick={() => setSettingsTab('channels')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'channels' ? 'border-blue-500' : 'border-transparent'}`}
-              style={{ color: settingsTab === 'channels' ? '#7EA8C9' : theme.text.secondary }}
+              style={{ color: settingsTab === 'channels' ? theme.text.primary : theme.text.secondary }}
             >
               Channels & APIs
             </button>
             <button
               onClick={() => setSettingsTab('preferences')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'preferences' ? 'border-blue-500' : 'border-transparent'}`}
-              style={{ color: settingsTab === 'preferences' ? '#7EA8C9' : theme.text.secondary }}
+              style={{ color: settingsTab === 'preferences' ? theme.text.primary : theme.text.secondary }}
             >
               Preferences
             </button>
             <button
               onClick={() => setSettingsTab('advanced')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${settingsTab === 'advanced' ? 'border-blue-500' : 'border-transparent'}`}
-              style={{ color: settingsTab === 'advanced' ? '#7EA8C9' : theme.text.secondary }}
+              style={{ color: settingsTab === 'advanced' ? theme.text.primary : theme.text.secondary }}
             >
               Advanced
             </button>
@@ -576,7 +587,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
           {/* Channels & APIs Tab */}
           {settingsTab === 'channels' && (
             <div className="space-y-6">
-              <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard className="p-6">
                 <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
                   <Bell size={20} />Channel Settings
                 </h3>
@@ -621,9 +632,9 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 </button>
               </div>
             </div>
-          </div>
+          </GlassCard>
 
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <TrendingUp size={20} />Rate Limits
             </h3>
@@ -641,9 +652,9 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 <input type="number" value={notificationSettings.rateLimitEmail} onChange={(e) => setNotificationSettings(prev => ({ ...prev, rateLimitEmail: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
             </div>
-          </div>
+          </GlassCard>
 
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <Mail size={20} />Sender Configuration
             </h3>
@@ -657,10 +668,10 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 <input type="email" value={notificationSettings.replyTo} onChange={(e) => setNotificationSettings(prev => ({ ...prev, replyTo: e.target.value }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           {/* SMS Gateway Configuration */}
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <Smartphone size={20} />SMS Gateway Configuration
             </h3>
@@ -674,11 +685,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                   style={{ backgroundColor: theme.bg.tertiary, color: theme.text.primary }}
                 >
                   <option value="hubtel">Hubtel</option>
-                  <option value="africas_talking">Africa's Talking</option>
                   <option value="twilio">Twilio</option>
-                  <option value="nexmo">Nexmo (Vonage)</option>
-                  <option value="messagebird">MessageBird</option>
-                  <option value="custom">Custom Gateway</option>
                 </select>
                 <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Select your SMS gateway provider</p>
               </div>
@@ -734,15 +741,15 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
-                <CheckCircle2 size={16} style={{ color: '#81C995' }} />
-                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#81C995' }}>Connected</span></span>
+                <CheckCircle2 size={16} style={{ color: theme.status.success }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: theme.status.success }}>Connected</span></span>
                 <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           {/* WhatsApp Business API Configuration */}
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <MessageSquare size={20} />WhatsApp Business API Configuration
             </h3>
@@ -812,23 +819,23 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
-                <CheckCircle2 size={16} style={{ color: '#81C995' }} />
-                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#81C995' }}>Connected</span></span>
+                <CheckCircle2 size={16} style={{ color: theme.status.success }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: theme.status.success }}>Connected</span></span>
                 <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
               </div>
 
-              <div className="p-4 rounded-lg border-l-4" style={{ backgroundColor: theme.bg.tertiary, borderColor: '#7EA8C9' }}>
+              <div className="p-4 rounded-lg border-l-4" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.accent.primary }}>
                 <p className="text-sm font-medium mb-1" style={{ color: theme.text.primary }}>Message Templates</p>
                 <p className="text-xs" style={{ color: theme.text.muted }}>
                   WhatsApp requires pre-approved templates for business-initiated messages.
-                  <a href="#" className="ml-1" style={{ color: '#7EA8C9' }}>Manage templates →</a>
+                  <a href="#" className="ml-1" style={{ color: theme.accent.primary }}>Manage templates →</a>
                 </p>
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           {/* Email SMTP Configuration */}
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <Mail size={20} />Email SMTP Configuration
             </h3>
@@ -923,15 +930,15 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
-                <CheckCircle2 size={16} style={{ color: '#81C995' }} />
-                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: '#81C995' }}>Connected</span></span>
+                <CheckCircle2 size={16} style={{ color: theme.status.success }} />
+                <span className="text-sm" style={{ color: theme.text.secondary }}>Connection status: <span style={{ color: theme.status.success }}>Connected</span></span>
                 <button className="ml-auto px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.bg.hover, color: theme.text.primary }}>Test Connection</button>
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           <div className="flex justify-end">
-            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={handleSaveSettings} className="btn-primary px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               Save Channel Settings
             </button>
           </div>
@@ -942,7 +949,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
       {settingsTab === 'preferences' && (
         <div className="space-y-6">
           {/* Event Preferences */}
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <Package size={20} />Event Notification Preferences
             </h3>
@@ -981,10 +988,10 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 <input type="checkbox" checked={notificationSettings.notifyOnPackageExpiry} onChange={(e) => setNotificationSettings(prev => ({ ...prev, notifyOnPackageExpiry: e.target.checked }))} className="w-4 h-4" />
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           {/* Retry Policies */}
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <RefreshCw size={20} />Retry Policies
             </h3>
@@ -1011,10 +1018,10 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 </div>
               )}
             </div>
-          </div>
+          </GlassCard>
 
           {/* Quiet Hours */}
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <Clock size={20} />Quiet Hours (Do Not Disturb)
             </h3>
@@ -1041,10 +1048,10 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 </div>
               )}
             </div>
-          </div>
+          </GlassCard>
 
           {/* Priority Settings */}
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <AlertTriangle size={20} />Priority Settings
             </h3>
@@ -1059,10 +1066,10 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 <input type="checkbox" checked={notificationSettings.highPriorityPayments} onChange={(e) => setNotificationSettings(prev => ({ ...prev, highPriorityPayments: e.target.checked }))} className="w-4 h-4" />
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           {/* Batch Settings */}
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <Layers size={20} />Batch Processing
             </h3>
@@ -1091,10 +1098,10 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 </div>
               )}
             </div>
-          </div>
+          </GlassCard>
 
           <div className="flex justify-end">
-            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={handleSaveSettings} className="btn-primary px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               Save Preferences
             </button>
           </div>
@@ -1104,7 +1111,7 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
       {/* Advanced Tab */}
       {settingsTab === 'advanced' && (
         <div className="space-y-6">
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <TrendingUp size={20} />Rate Limits
             </h3>
@@ -1122,9 +1129,9 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 <input type="number" value={notificationSettings.rateLimitEmail} onChange={(e) => setNotificationSettings(prev => ({ ...prev, rateLimitEmail: Number(e.target.value) }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
             </div>
-          </div>
+          </GlassCard>
 
-          <div className="rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: theme.text.primary }}>
               <Mail size={20} />Sender Configuration
             </h3>
@@ -1138,15 +1145,250 @@ export const NotificationsPage = ({ currentUser, activeSubMenu, loading, setShow
                 <input type="email" value={notificationSettings.replyTo} onChange={(e) => setNotificationSettings(prev => ({ ...prev, replyTo: e.target.value }))} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           <div className="flex justify-end">
-            <button onClick={handleSaveSettings} className="px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={handleSaveSettings} className="btn-primary px-6 py-3 rounded-xl font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               Save Advanced Settings
             </button>
           </div>
         </div>
       )}
+        </div>
+      )}
+      {/* ── Delete Template Confirmation Modal ─────────────────────── */}
+      {showDeleteTemplateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowDeleteTemplateModal(null)}>
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative w-full max-w-md mx-4 rounded-xl border shadow-2xl" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: theme.border.primary }}>
+              <h3 className="text-lg font-semibold" style={{ color: theme.text.primary }}>Delete Template</h3>
+              <button onClick={() => setShowDeleteTemplateModal(null)} className="p-1 rounded-lg hover:bg-opacity-10" style={{ color: theme.icon.muted }}>
+                <X size={20} />
+              </button>
+            </div>
+            {/* Body */}
+            <div className="p-5">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-full" style={{ backgroundColor: `${theme.status.error}15` }}>
+                  <AlertTriangle size={20} style={{ color: theme.status.error }} />
+                </div>
+                <div>
+                  <p className="text-sm" style={{ color: theme.text.primary }}>
+                    Are you sure you want to delete the template <strong>"{showDeleteTemplateModal.name}"</strong>?
+                  </p>
+                  <p className="text-xs mt-2" style={{ color: theme.text.muted }}>
+                    This template has been sent {showDeleteTemplateModal.sentCount?.toLocaleString() ?? 0} times. This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Footer */}
+            <div className="flex justify-end gap-3 p-5 border-t" style={{ borderColor: theme.border.primary }}>
+              <button onClick={() => setShowDeleteTemplateModal(null)} className="btn-outline px-4 py-2 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  deleteTemplateMut.mutate(showDeleteTemplateModal.id, {
+                    onSuccess: () => { addToast({ type: 'success', message: `Template "${showDeleteTemplateModal.name}" deleted` }); setShowDeleteTemplateModal(null); },
+                    onError: () => addToast({ type: 'error', message: 'Failed to delete template' }),
+                  });
+                }}
+                disabled={deleteTemplateMut.isPending}
+                className="btn-primary px-4 py-2 rounded-xl text-sm"
+                style={{ backgroundColor: theme.status.error, color: '#fff', opacity: deleteTemplateMut.isPending ? 0.6 : 1 }}
+              >
+                {deleteTemplateMut.isPending ? 'Deleting...' : 'Delete Template'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Create Rule Modal ─────────────────────────────────────── */}
+      {showCreateRuleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowCreateRuleModal(false)}>
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative w-full max-w-lg mx-4 rounded-xl border shadow-2xl max-h-[90vh] overflow-y-auto" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: theme.border.primary }}>
+              <h3 className="text-lg font-semibold" style={{ color: theme.text.primary }}>Create Automation Rule</h3>
+              <button onClick={() => setShowCreateRuleModal(false)} className="p-1 rounded-lg hover:bg-opacity-10" style={{ color: theme.icon.muted }}>
+                <X size={20} />
+              </button>
+            </div>
+            {/* Body */}
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-sm mb-1.5 font-medium" style={{ color: theme.text.secondary }}>Rule Name</label>
+                <input
+                  type="text"
+                  value={newRule.name}
+                  onChange={(e) => setNewRule(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="e.g. Package Pickup Notification"
+                  className="w-full px-3 py-2 rounded-xl outline-none border"
+                  style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm mb-1.5 font-medium" style={{ color: theme.text.secondary }}>Description</label>
+                <textarea
+                  value={newRule.description}
+                  onChange={(e) => setNewRule(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="What does this rule do?"
+                  rows={2}
+                  className="w-full px-3 py-2 rounded-xl outline-none border resize-none"
+                  style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm mb-1.5 font-medium" style={{ color: theme.text.secondary }}>Trigger Event</label>
+                <select
+                  value={newRule.trigger}
+                  onChange={(e) => setNewRule(prev => ({ ...prev, trigger: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl outline-none border"
+                  style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
+                >
+                  <option value="package_pickup">Package Pickup</option>
+                  <option value="package_delivered">Package Delivered</option>
+                  <option value="package_in_transit">Package In Transit</option>
+                  <option value="delivery_delay">Delivery Delay</option>
+                  <option value="storage_full">Storage Full</option>
+                  <option value="sla_breach">SLA Breach</option>
+                  <option value="payment_due">Payment Due</option>
+                  <option value="package_expiry">Package Expiry</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm mb-1.5 font-medium" style={{ color: theme.text.secondary }}>Channels</label>
+                <div className="flex gap-3">
+                  {['sms', 'whatsapp', 'email'].map((ch) => (
+                    <label key={ch} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: theme.text.primary }}>
+                      <input
+                        type="checkbox"
+                        checked={newRule.channels.includes(ch)}
+                        onChange={(e) => {
+                          setNewRule(prev => ({
+                            ...prev,
+                            channels: e.target.checked
+                              ? [...prev.channels, ch]
+                              : prev.channels.filter(c => c !== ch),
+                          }));
+                        }}
+                        className="w-4 h-4"
+                      />
+                      <span className="capitalize">{ch}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm mb-1.5 font-medium" style={{ color: theme.text.secondary }}>Delay</label>
+                <select
+                  value={newRule.delay}
+                  onChange={(e) => setNewRule(prev => ({ ...prev, delay: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl outline-none border"
+                  style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
+                >
+                  <option value="0m">Immediate</option>
+                  <option value="5m">5 minutes</option>
+                  <option value="15m">15 minutes</option>
+                  <option value="30m">30 minutes</option>
+                  <option value="1h">1 hour</option>
+                  <option value="2h">2 hours</option>
+                  <option value="24h">24 hours</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm mb-1.5 font-medium" style={{ color: theme.text.secondary }}>Template</label>
+                <select
+                  value={newRule.templateId}
+                  onChange={(e) => setNewRule(prev => ({ ...prev, templateId: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl outline-none border"
+                  style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
+                >
+                  <option value="">Select a template...</option>
+                  {templatesData.map((t) => (
+                    <option key={t.id} value={t.id}>{t.name} ({t.channel})</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/* Footer */}
+            <div className="flex justify-end gap-3 p-5 border-t" style={{ borderColor: theme.border.primary }}>
+              <button onClick={() => setShowCreateRuleModal(false)} className="btn-outline px-4 py-2 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (!newRule.name.trim()) { addToast({ type: 'error', message: 'Rule name is required' }); return; }
+                  if (newRule.channels.length === 0) { addToast({ type: 'error', message: 'Select at least one channel' }); return; }
+                  createRuleMut.mutate(newRule, {
+                    onSuccess: () => { addToast({ type: 'success', message: `Rule "${newRule.name}" created` }); setShowCreateRuleModal(false); },
+                    onError: () => addToast({ type: 'error', message: 'Failed to create rule' }),
+                  });
+                }}
+                disabled={createRuleMut.isPending}
+                className="btn-primary px-4 py-2 rounded-xl text-sm"
+                style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast, opacity: createRuleMut.isPending ? 0.6 : 1 }}
+              >
+                {createRuleMut.isPending ? 'Creating...' : 'Create Rule'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Delete Rule Confirmation Modal ─────────────────────────── */}
+      {showDeleteRuleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowDeleteRuleModal(null)}>
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative w-full max-w-md mx-4 rounded-xl border shadow-2xl" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: theme.border.primary }}>
+              <h3 className="text-lg font-semibold" style={{ color: theme.text.primary }}>Delete Rule</h3>
+              <button onClick={() => setShowDeleteRuleModal(null)} className="p-1 rounded-lg hover:bg-opacity-10" style={{ color: theme.icon.muted }}>
+                <X size={20} />
+              </button>
+            </div>
+            {/* Body */}
+            <div className="p-5">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-full" style={{ backgroundColor: `${theme.status.error}15` }}>
+                  <AlertTriangle size={20} style={{ color: theme.status.error }} />
+                </div>
+                <div>
+                  <p className="text-sm" style={{ color: theme.text.primary }}>
+                    Are you sure you want to delete the rule <strong>"{showDeleteRuleModal.name}"</strong>?
+                  </p>
+                  <p className="text-xs mt-2" style={{ color: theme.text.muted }}>
+                    This rule has fired {(showDeleteRuleModal.firedCount ?? showDeleteRuleModal.fired ?? 0).toLocaleString()} times. This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Footer */}
+            <div className="flex justify-end gap-3 p-5 border-t" style={{ borderColor: theme.border.primary }}>
+              <button onClick={() => setShowDeleteRuleModal(null)} className="btn-outline px-4 py-2 rounded-xl text-sm border" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  deleteRuleMut.mutate(showDeleteRuleModal.id, {
+                    onSuccess: () => { addToast({ type: 'success', message: `Rule "${showDeleteRuleModal.name}" deleted` }); setShowDeleteRuleModal(null); },
+                    onError: () => addToast({ type: 'error', message: 'Failed to delete rule' }),
+                  });
+                }}
+                disabled={deleteRuleMut.isPending}
+                className="btn-primary px-4 py-2 rounded-xl text-sm"
+                style={{ backgroundColor: theme.status.error, color: '#fff', opacity: deleteRuleMut.isPending ? 0.6 : 1 }}
+              >
+                {deleteRuleMut.isPending ? 'Deleting...' : 'Delete Rule'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

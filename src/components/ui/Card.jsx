@@ -2,9 +2,50 @@ import React from 'react';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
+/**
+ * GlassCard — reusable enterprise card wrapper.
+ * Automatically applies glass-morphism in dark mode, solid white in light mode.
+ */
+export const GlassCard = ({ children, className = '', noPadding = false, hover = false, onClick, style = {} }) => {
+  const { theme } = useTheme();
+  const isDark = theme.name === 'dark';
+
+  return (
+    <div
+      className={`rounded-2xl border transition-all duration-200 ${noPadding ? '' : 'p-5'} ${hover ? 'cursor-pointer' : ''} ${className}`}
+      style={{
+        backgroundColor: theme.bg.card,
+        borderColor: theme.border.primary,
+        backdropFilter: isDark ? 'blur(12px)' : 'none',
+        WebkitBackdropFilter: isDark ? 'blur(12px)' : 'none',
+        boxShadow: isDark
+          ? '0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.2)'
+          : '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+        ...style,
+      }}
+      onClick={onClick}
+      onMouseEnter={hover ? e => {
+        e.currentTarget.style.borderColor = theme.accent.border;
+        e.currentTarget.style.transform = 'translateY(-1px)';
+        e.currentTarget.style.boxShadow = `0 0 0 1px ${theme.accent.border}, 0 12px 28px rgba(0,0,0,0.15)`;
+      } : undefined}
+      onMouseLeave={hover ? e => {
+        e.currentTarget.style.borderColor = theme.border.primary;
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = isDark
+          ? '0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.2)'
+          : '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)';
+      } : undefined}
+    >
+      {children}
+    </div>
+  );
+};
+
 export const MetricCard = ({ title, value, change, changeType, icon: Icon, subtitle, loading }) => {
   const { theme } = useTheme();
   const isUp = changeType === 'up';
+  const isDark = theme.name === 'dark';
 
   return (
     <div
@@ -12,9 +53,11 @@ export const MetricCard = ({ title, value, change, changeType, icon: Icon, subti
       style={{
         backgroundColor: theme.bg.card,
         borderColor: theme.border.primary,
-        boxShadow: theme.name === 'light'
-          ? '0 1px 3px rgba(0,0,0,0.08), 0 10px 24px rgba(0,0,0,0.06)'
-          : '0 1px 0 rgba(255,255,255,0.03), 0 10px 24px rgba(0,0,0,0.10)',
+        backdropFilter: isDark ? 'blur(12px)' : 'none',
+        WebkitBackdropFilter: isDark ? 'blur(12px)' : 'none',
+        boxShadow: isDark
+          ? '0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.2)'
+          : '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
       }}
       onMouseEnter={e => {
         e.currentTarget.style.borderColor = theme.accent.border;
@@ -23,9 +66,9 @@ export const MetricCard = ({ title, value, change, changeType, icon: Icon, subti
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = theme.border.primary;
-        e.currentTarget.style.boxShadow = theme.name === 'light'
-          ? '0 1px 3px rgba(0,0,0,0.08), 0 10px 24px rgba(0,0,0,0.06)'
-          : '0 1px 0 rgba(255,255,255,0.03), 0 10px 24px rgba(0,0,0,0.10)';
+        e.currentTarget.style.boxShadow = isDark
+          ? '0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.2)'
+          : '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)';
         e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
@@ -46,7 +89,7 @@ export const MetricCard = ({ title, value, change, changeType, icon: Icon, subti
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: theme.text.muted }}>{title}</p>
-            <p className="text-2xl font-bold leading-none" style={{ color: theme.text.primary }}>{value}</p>
+            <p className="text-2xl font-bold leading-none tabular-nums" style={{ color: theme.text.primary }}>{value}</p>
             {change && (
               <p className="text-xs mt-2 flex items-center gap-0.5 font-medium" style={{ color: isUp ? theme.status.success : theme.status.error }}>
                 {isUp ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
@@ -77,7 +120,7 @@ export const QuickAction = ({ icon: Icon, label, disabled, onClick, badge }) => 
     <button
       disabled={disabled}
       onClick={onClick}
-      className={`flex flex-col items-center gap-2 p-3 rounded-xl border relative transition-all duration-200 ${disabled
+      className={`flex flex-col items-center gap-2.5 p-3.5 rounded-xl border relative transition-all duration-200 ${disabled
         ? 'opacity-40 cursor-not-allowed'
         : 'cursor-pointer hover:-translate-y-0.5 active:translate-y-0'
         }`}
@@ -89,7 +132,7 @@ export const QuickAction = ({ icon: Icon, label, disabled, onClick, badge }) => 
         if (!disabled) {
           e.currentTarget.style.borderColor = theme.accent.border;
           e.currentTarget.style.backgroundColor = theme.accent.light;
-          e.currentTarget.style.boxShadow = `0 4px 12px rgba(0,0,0,0.12)`;
+          e.currentTarget.style.boxShadow = `0 4px 16px rgba(0,0,0,0.12)`;
         }
       }}
       onMouseLeave={e => {
@@ -109,7 +152,7 @@ export const QuickAction = ({ icon: Icon, label, disabled, onClick, badge }) => 
         </span>
       )}
       <div
-        className="p-2.5 rounded-lg"
+        className="p-2.5 rounded-xl"
         style={{
           background: `linear-gradient(135deg, ${theme.accent.primary}22, ${theme.accent.primary}0a)`,
           border: `1px solid ${theme.accent.border}`,

@@ -362,7 +362,7 @@ function LocQarERPInner() {
   const [toasts, setToasts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [metrics, setMetrics] = useState({ totalPackages: 1847, inLockers: 892, inTransit: 234, pendingPickup: 156, revenue: 48200 });
+  const [metrics, setMetrics] = useState({ totalPackages: 0, inLockers: 0, inTransit: 0, pendingPickup: 0, revenue: 0 });
   const shortcutLabel = useMemo(() => {
     if (typeof navigator === 'undefined') return 'Ctrl+K';
     return /Mac|iPhone|iPad|iPod/i.test(navigator.platform) ? 'Cmd+K' : 'Ctrl+K';
@@ -487,7 +487,7 @@ function LocQarERPInner() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setMetrics(prev => ({ ...prev, totalPackages: prev.totalPackages + Math.floor(Math.random() * 3), inTransit: Math.max(0, prev.inTransit + Math.floor(Math.random() * 3) - 1) }));
+      // Metrics will be updated from real API data
     }, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -922,7 +922,7 @@ function LocQarERPInner() {
   // ──────────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden" style={{ backgroundColor: theme.bg.primary, fontFamily: theme.font.primary }}>
+    <div className="min-h-screen flex relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${theme.bg.primary} 0%, ${theme.bg.secondary} 50%, ${theme.bg.primary} 100%)`, fontFamily: theme.font.primary }}>
       <div
         aria-hidden
         className="pointer-events-none absolute -top-20 -right-20 w-72 h-72 rounded-full blur-3xl opacity-30"
@@ -933,14 +933,14 @@ function LocQarERPInner() {
         className="pointer-events-none absolute -bottom-20 -left-20 w-80 h-80 rounded-full blur-3xl opacity-20"
         style={{ background: `radial-gradient(circle, ${theme.status.info}35 0%, transparent 70%)` }}
       />
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap'); * { font-family: 'Sora', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: ${theme.border.secondary}; border-radius: 3px; } .font-mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace !important; } @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } .animate-slide-in { animation: slide-in 0.3s ease-out; }`}</style>
+      <style>{`::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: ${theme.border.secondary}; border-radius: 3px; } .font-mono { font-family: ${theme.font.mono} !important; } @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } .animate-slide-in { animation: slide-in 0.3s ease-out; }`}</style>
 
       {(!isMobile || mobileSidebarOpen) && (
         <Sidebar isCollapsed={sidebarCollapsed} setIsCollapsed={setSidebarCollapsed} activeMenu={activeMenu} setActiveMenu={setActiveMenu} activeSubMenu={activeSubMenu} setActiveSubMenu={setActiveSubMenu} theme={theme} userRole={currentUser.role} isMobile={isMobile} onCloseMobile={() => setMobileSidebarOpen(false)} customRoles={customRoles} />
       )}
 
       <div className="flex-1 flex flex-col overflow-hidden relative z-10">
-        <header className="h-16 border-b px-4 md:px-6 flex items-center justify-between sticky top-0 z-30" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary, backdropFilter: 'blur(12px)' }}>
+        <header className="h-16 border-b px-4 md:px-6 flex items-center justify-between sticky top-0 z-30" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.75)' : 'rgba(255,255,255,0.95)', borderColor: theme.border.primary, backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
           <div className="flex items-center gap-3">
             {isMobile && <button onClick={() => setMobileSidebarOpen(true)} className="p-2 rounded-lg" style={{ color: theme.icon.primary }}><Menu size={20} /></button>}
             <button onClick={() => setShowSearch(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border w-52 md:w-[28rem] transition-all duration-150" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }} aria-label="Open global search">
@@ -2006,7 +2006,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.error) {
       return (
-        <div style={{ padding: 40, fontFamily: 'monospace', color: '#f87171', background: '#100E0C', minHeight: '100vh' }}>
+        <div style={{ padding: 40, fontFamily: 'monospace', color: '#f87171', background: '#0A0A0A', minHeight: '100vh' }}>
           <h2 style={{ color: '#fbbf24', marginBottom: 16 }}>LocQar Admin — Startup Error</h2>
           <pre style={{ whiteSpace: 'pre-wrap', fontSize: 13 }}>{String(this.state.error)}</pre>
           <pre style={{ whiteSpace: 'pre-wrap', fontSize: 11, color: '#9ca3af', marginTop: 16 }}>{this.state.error?.stack}</pre>

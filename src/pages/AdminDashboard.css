@@ -1,15 +1,10 @@
 .admin-dashboard {
   padding: 20px;
-  background: #f5f6fa;
   min-height: 100vh;
 }
 
 .dashboard-header {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -18,7 +13,6 @@
 .dashboard-header h1 {
   margin: 0;
   font-size: 28px;
-  color: #2c3e50;
 }
 
 .header-controls {
@@ -29,42 +23,20 @@
 
 .date-input {
   padding: 8px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid;
   border-radius: 6px;
   font-size: 13px;
-  color: #2c3e50;
 }
 
 .date-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.btn-export {
-  padding: 8px 16px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background 0.3s;
-}
-
-.btn-export:hover {
-  background: #5568d3;
 }
 
 .dashboard-tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
-  background: white;
   padding: 8px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow-x: auto;
 }
 
@@ -75,25 +47,17 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  color: #7f8c8d;
   transition: all 0.3s;
   white-space: nowrap;
 }
 
 .tab:hover {
-  background: #f5f6fa;
-  color: #2c3e50;
-}
-
-.tab.active {
-  background: #667eea;
-  color: white;
+  opacity: 0.85;
 }
 
 .loading {
   text-align: center;
   padding: 60px;
-  color: #95a5a6;
   font-size: 16px;
 }
 
@@ -120,19 +84,9 @@
 }
 
 .stat-card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  transition: all 0.3s;
-}
-
-.stat-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
 }
 
 .stat-card.full-width {
@@ -152,7 +106,6 @@
   margin: 0 0 4px 0;
   font-size: 13px;
   text-transform: uppercase;
-  color: #95a5a6;
   font-weight: 600;
 }
 
@@ -160,11 +113,9 @@
   margin: 0 0 4px 0;
   font-size: 28px;
   font-weight: 700;
-  color: #2c3e50;
 }
 
 .stat-content small {
-  color: #7f8c8d;
   font-size: 12px;
 }
 
@@ -184,43 +135,35 @@
 .health-item label {
   font-size: 12px;
   font-weight: 600;
-  color: #7f8c8d;
   min-width: 150px;
 }
 
 .progress-bar {
   flex: 1;
   height: 8px;
-  background: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress {
   height: 100%;
-  background: linear-gradient(90deg, #667eea, #764ba2);
   transition: width 0.3s ease;
 }
 
 .health-item span {
   font-size: 12px;
   font-weight: 600;
-  color: #2c3e50;
   min-width: 45px;
   text-align: right;
 }
 
 .data-table-container {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
 .data-table-container h2 {
   margin: 0 0 20px 0;
   font-size: 20px;
-  color: #2c3e50;
 }
 
 .data-table {
@@ -230,15 +173,14 @@
 }
 
 .data-table thead {
-  background: #f5f6fa;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid;
+  border-color: inherit;
 }
 
 .data-table th {
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  color: #7f8c8d;
   text-transform: uppercase;
   font-size: 11px;
   letter-spacing: 0.5px;
@@ -246,12 +188,12 @@
 
 .data-table td {
   padding: 12px;
-  border-bottom: 1px solid #f0f0f0;
-  color: #2c3e50;
+  border-bottom: 1px solid;
+  border-color: inherit;
 }
 
 .data-table tbody tr:hover {
-  background: #f9f9f9;
+  opacity: 0.85;
 }
 
 .data-table tbody tr:last-child td {
@@ -348,21 +290,7 @@
   display: inline-block;
 }
 
-.btn-action {
-  padding: 6px 12px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.btn-action:hover {
-  background: #5568d3;
-}
+/* btn-action replaced by btn-outline from global styles */
 
 @media (max-width: 768px) {
   .dashboard-header {

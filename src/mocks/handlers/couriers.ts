@@ -19,95 +19,9 @@ interface CourierCompanyRow extends CourierCompany {
   authorizedLockerCodes: string[];
 }
 
-export const courierCompanies: CourierCompanyRow[] = [
-  {
-    id: 1,
-    code: 'JUMIA',
-    name: 'Jumia Express',
-    logoUrl: null,
-    contactPhone: '+233244500001',
-    contactEmail: 'ops@jumia.com.gh',
-    active: true,
-    staffCount: 0,
-    authorizedLockerCount: 0,
-    authorizedLockerCodes: ['WNS-ACH-001', 'WNS-ACC-002', 'WNS-KOT-003'],
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
-  },
-  {
-    id: 2,
-    code: 'DHL',
-    name: 'DHL Ghana',
-    logoUrl: null,
-    contactPhone: '+233302213090',
-    contactEmail: 'gh.ops@dhl.com',
-    active: true,
-    staffCount: 0,
-    authorizedLockerCount: 0,
-    authorizedLockerCodes: ['WNS-KOT-003'],
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 60).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14).toISOString(),
-  },
-  {
-    id: 3,
-    code: 'GLOVO',
-    name: 'Glovo Ghana',
-    logoUrl: null,
-    contactPhone: '+233244500003',
-    contactEmail: 'partners.gh@glovo.com',
-    active: false,
-    staffCount: 0,
-    authorizedLockerCount: 0,
-    authorizedLockerCodes: [],
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 90).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 45).toISOString(),
-  },
-];
+export const courierCompanies: CourierCompanyRow[] = [];
 
-export const courierStaff: CourierStaff[] = [
-  {
-    id: 1,
-    companyId: 1,
-    companyCode: 'JUMIA',
-    companyName: 'Jumia Express',
-    nickname: 'Joe Mensah',
-    loginPhone: '+233244111001',
-    cardNumber: 'CARD-J001',
-    active: true,
-    totalDropoffs: 47,
-    lastDropoffAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 28).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-  },
-  {
-    id: 2,
-    companyId: 1,
-    companyCode: 'JUMIA',
-    companyName: 'Jumia Express',
-    nickname: 'Ama Boateng',
-    loginPhone: '+233244111002',
-    cardNumber: 'CARD-J002',
-    active: true,
-    totalDropoffs: 33,
-    lastDropoffAt: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 21).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
-  },
-  {
-    id: 3,
-    companyId: 2,
-    companyCode: 'DHL',
-    companyName: 'DHL Ghana',
-    nickname: 'Kwame Asante',
-    loginPhone: '+233244222001',
-    cardNumber: null,
-    active: true,
-    totalDropoffs: 12,
-    lastDropoffAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 45).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-  },
-];
+export const courierStaff: CourierStaff[] = [];
 
 function refreshCounts(): void {
   for (const company of courierCompanies) {

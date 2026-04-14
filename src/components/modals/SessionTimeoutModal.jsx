@@ -10,7 +10,7 @@ export const SessionTimeoutModal = ({ isOpen, onExtend, onLogout, remainingTime 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-sm rounded-2xl border p-6 text-center" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+      <div className="relative w-full max-w-sm rounded-2xl border p-6 text-center shadow-2xl" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
         <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
           <Clock size={32} className="text-amber-500" />
         </div>

@@ -10,7 +10,7 @@ export const BulkActionsBar = ({ selectedCount, onClear, onAction, actions }) =>
   return (
     <div
       className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 px-6 py-3 rounded-2xl shadow-xl border"
-      style={{ backgroundColor: theme.bg.card, borderColor: theme.accent.border }}
+      style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.85)' : theme.bg.card, borderColor: theme.accent.border, backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
     >
       <span className="text-sm" style={{ color: theme.text.primary }}>
         <span className="font-bold">{selectedCount}</span> selected

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Download, Search, Filter, Shield, ChevronDown, ChevronRight, User, Package, Settings, Lock, Truck, Eye, RefreshCw, Calendar, AlertTriangle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 import { Pagination } from '../components/ui/Pagination';
 
 const AUDIT_LOG_DATA = [
@@ -27,21 +28,27 @@ const AUDIT_LOG_DATA = [
 ];
 
 const CATEGORIES = {
-  package: { label: 'Package', color: '#7EA8C9', icon: Package },
-  locker: { label: 'Locker', color: '#81C995', icon: Lock },
-  user: { label: 'User', color: '#B5A0D1', icon: User },
-  security: { label: 'Security', color: '#D48E8A', icon: Shield },
-  system: { label: 'System', color: '#78716C', icon: Settings },
-  dispatch: { label: 'Dispatch', color: '#D4AA5A', icon: Truck },
-  config: { label: 'Config', color: '#D4AA5A', icon: Settings },
-  alert: { label: 'Alert', color: '#D48E8A', icon: AlertTriangle },
-  support: { label: 'Support', color: '#81C995', icon: User },
+  package: { label: 'Package', themeColor: 'accent.primary', icon: Package },
+  locker: { label: 'Locker', themeColor: 'status.success', icon: Lock },
+  user: { label: 'User', themeColor: 'chart.violet', icon: User },
+  security: { label: 'Security', themeColor: 'status.error', icon: Shield },
+  system: { label: 'System', themeColor: null, fallback: '#78716C', icon: Settings },
+  dispatch: { label: 'Dispatch', themeColor: 'status.warning', icon: Truck },
+  config: { label: 'Config', themeColor: 'status.warning', icon: Settings },
+  alert: { label: 'Alert', themeColor: 'status.error', icon: AlertTriangle },
+  support: { label: 'Support', themeColor: 'status.success', icon: User },
 };
 
 const SEVERITIES = {
-  info: { label: 'Info', color: '#7EA8C9', bg: 'rgba(126,168,201,0.1)' },
-  warning: { label: 'Warning', color: '#D4AA5A', bg: 'rgba(212,170,90,0.1)' },
-  critical: { label: 'Critical', color: '#D48E8A', bg: 'rgba(212,142,138,0.1)' },
+  info: { label: 'Info', themeColor: 'accent.primary' },
+  warning: { label: 'Warning', themeColor: 'status.warning' },
+  critical: { label: 'Critical', themeColor: 'status.error' },
+};
+
+const resolveColor = (theme, entry) => {
+  if (!entry.themeColor) return entry.fallback || '#78716C';
+  const parts = entry.themeColor.split('.');
+  return parts.reduce((obj, key) => obj?.[key], theme);
 };
 
 export const AuditLogPage = ({ setShowExport }) => {
@@ -86,48 +93,48 @@ export const AuditLogPage = ({ setShowExport }) => {
           <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Audit Log</h1>
           <p style={{ color: theme.text.muted }}>{AUDIT_LOG_DATA.length} total entries &bull; Track all system activities</p>
         </div>
-        <button onClick={() => setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+        <button onClick={() => setShowExport(true)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl text-sm">
           <Download size={16} />Export
         </button>
       </div>
 
       {/* Summary Metrics */}
       <div className="grid grid-cols-3 md:grid-cols-5 gap-4 mb-6">
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard className="!p-4">
           <div className="flex items-center gap-2 mb-1">
             <Eye size={16} style={{ color: theme.accent.primary }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Total Events</span>
           </div>
           <p className="text-2xl font-bold" style={{ color: theme.text.primary }}>{AUDIT_LOG_DATA.length}</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        </GlassCard>
+        <GlassCard className="!p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Shield size={16} style={{ color: '#7EA8C9' }} />
+            <Shield size={16} style={{ color: theme.accent.primary }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Info</span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: '#7EA8C9' }}>{severityCounts.info}</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <p className="text-2xl font-bold" style={{ color: theme.accent.primary }}>{severityCounts.info}</p>
+        </GlassCard>
+        <GlassCard className="!p-4">
           <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle size={16} style={{ color: '#D4AA5A' }} />
+            <AlertTriangle size={16} style={{ color: theme.status.warning }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Warnings</span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: '#D4AA5A' }}>{severityCounts.warning}</p>
-        </div>
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <p className="text-2xl font-bold" style={{ color: theme.status.warning }}>{severityCounts.warning}</p>
+        </GlassCard>
+        <GlassCard className="!p-4">
           <div className="flex items-center gap-2 mb-1">
-            <AlertTriangle size={16} style={{ color: '#D48E8A' }} />
+            <AlertTriangle size={16} style={{ color: theme.status.error }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Critical</span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: '#D48E8A' }}>{severityCounts.critical}</p>
-        </div>
-        <div className="p-4 rounded-xl border hidden md:block" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <p className="text-2xl font-bold" style={{ color: theme.status.error }}>{severityCounts.critical}</p>
+        </GlassCard>
+        <GlassCard className="!p-4 hidden md:block">
           <div className="flex items-center gap-2 mb-1">
-            <User size={16} style={{ color: '#B5A0D1' }} />
+            <User size={16} style={{ color: theme.chart.violet }} />
             <span className="text-xs" style={{ color: theme.text.muted }}>Unique Users</span>
           </div>
-          <p className="text-2xl font-bold" style={{ color: '#B5A0D1' }}>{new Set(AUDIT_LOG_DATA.map(l => l.user)).size}</p>
-        </div>
+          <p className="text-2xl font-bold" style={{ color: theme.chart.violet }}>{new Set(AUDIT_LOG_DATA.map(l => l.user)).size}</p>
+        </GlassCard>
       </div>
 
       {/* Search & Filters */}
@@ -138,7 +145,7 @@ export const AuditLogPage = ({ setShowExport }) => {
             value={search}
             onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
             placeholder="Search by user, action, or IP..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm glass-card"
             style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }}
           />
         </div>
@@ -165,7 +172,7 @@ export const AuditLogPage = ({ setShowExport }) => {
       <p className="text-xs mb-3" style={{ color: theme.text.muted }}>{filtered.length} of {AUDIT_LOG_DATA.length} entries</p>
 
       {/* Table */}
-      <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+      <GlassCard noPadding className="overflow-hidden">
         <table className="w-full">
           <thead>
             <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
@@ -182,6 +189,8 @@ export const AuditLogPage = ({ setShowExport }) => {
             {paginated.map(log => {
               const cat = CATEGORIES[log.category] || CATEGORIES.system;
               const sev = SEVERITIES[log.severity] || SEVERITIES.info;
+              const catColor = resolveColor(theme, cat);
+              const sevColor = resolveColor(theme, sev);
               const CatIcon = cat.icon;
               const isExpanded = expandedRow === log.id;
 
@@ -196,7 +205,7 @@ export const AuditLogPage = ({ setShowExport }) => {
                       {isExpanded ? <ChevronDown size={14} style={{ color: theme.icon.muted }} /> : <ChevronRight size={14} style={{ color: theme.icon.muted }} />}
                     </td>
                     <td className="p-4">
-                      <span className="px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: sev.bg, color: sev.color }}>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: `${sevColor}18`, color: sevColor }}>
                         {sev.label}
                       </span>
                     </td>
@@ -215,7 +224,7 @@ export const AuditLogPage = ({ setShowExport }) => {
                       <span className="text-sm" style={{ color: theme.text.secondary }}>{log.action}</span>
                     </td>
                     <td className="p-4 hidden md:table-cell">
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs" style={{ backgroundColor: `${cat.color}10`, color: cat.color }}>
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs" style={{ backgroundColor: `${catColor}18`, color: catColor }}>
                         <CatIcon size={12} />
                         {cat.label}
                       </span>
@@ -234,7 +243,7 @@ export const AuditLogPage = ({ setShowExport }) => {
                           <p className="text-xs font-semibold uppercase mb-2" style={{ color: theme.text.muted }}>Details</p>
                           <p className="text-sm" style={{ color: theme.text.secondary }}>{log.details}</p>
                           <div className="flex flex-wrap gap-4 mt-3 pt-3 border-t" style={{ borderColor: theme.border.primary }}>
-                            <span className="text-xs" style={{ color: theme.text.muted }}>Category: <span className="font-medium" style={{ color: cat.color }}>{cat.label}</span></span>
+                            <span className="text-xs" style={{ color: theme.text.muted }}>Category: <span className="font-medium" style={{ color: catColor }}>{cat.label}</span></span>
                             <span className="text-xs" style={{ color: theme.text.muted }}>IP: <span className="font-mono font-medium" style={{ color: theme.text.secondary }}>{log.ip}</span></span>
                             <span className="text-xs" style={{ color: theme.text.muted }}>Time: <span className="font-mono font-medium" style={{ color: theme.text.secondary }}>{log.timestamp}</span></span>
                             <span className="text-xs" style={{ color: theme.text.muted }}>Event ID: <span className="font-mono font-medium" style={{ color: theme.text.secondary }}>EVT-{String(log.id).padStart(4, '0')}</span></span>
@@ -248,7 +257,7 @@ export const AuditLogPage = ({ setShowExport }) => {
             })}
           </tbody>
         </table>
-      </div>
+      </GlassCard>
 
       {/* Pagination */}
       {totalPages > 1 && (

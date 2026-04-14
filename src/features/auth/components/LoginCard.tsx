@@ -66,7 +66,7 @@ export function LoginCard() {
       {/* Left panel — branding */}
       <div
         className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #2B2B3B 0%, #1C1C2E 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #2B2B3B 0%, #0A0A0A 100%)' }}
       >
         <div
           className="absolute inset-0 opacity-5"

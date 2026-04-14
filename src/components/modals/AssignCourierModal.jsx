@@ -37,7 +37,7 @@ export const AssignCourierModal = ({ isOpen, onClose, pkg, packages, onAssign, a
       <div className="absolute inset-0 bg-black/50" />
       <div
         className="relative w-full max-w-md rounded-2xl border p-6"
-        style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}
+        style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}

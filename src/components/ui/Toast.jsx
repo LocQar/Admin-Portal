@@ -33,8 +33,10 @@ export const Toast = ({ message, type = 'info', action, onClose }) => {
     <div
       className="flex items-center gap-3 pl-4 pr-3 py-3 rounded-xl shadow-xl border overflow-hidden relative animate-slide-in"
       style={{
-        backgroundColor: theme.bg.card,
+        backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.92)' : theme.bg.card,
         borderColor: theme.border.primary,
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
         minWidth: 260,
         maxWidth: 360,
       }}

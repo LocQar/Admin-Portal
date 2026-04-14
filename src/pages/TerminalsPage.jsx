@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Search, Grid3X3, Unlock, Package, Wrench, TrendingUp, Building2, MapPin, X, Wifi, WifiOff, AlertTriangle, DoorOpen, KeyRound, Copy, Check, Edit, Trash2, Save, LayoutGrid, List, ChevronRight } from 'lucide-react';
+import { Plus, Search, Grid3X3, Unlock, Package, Wrench, TrendingUp, Building2, MapPin, X, Wifi, WifiOff, AlertTriangle, DoorOpen, KeyRound, Copy, Check, Edit, Trash2, Save, LayoutGrid, List, ChevronRight, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 import { StatusBadge } from '../components/ui/Badge';
 import { hasPermission, DOOR_SIZES } from '../constants';
 import { terminalsData as INITIAL_TERMINALS, phonePinData, getTerminalAddress, lockersData, packagesData, terminalErrorsData } from '../constants/mockData';
@@ -57,15 +58,15 @@ function TerminalDrawer({ terminal, onSave, onClose, theme }) {
       {As === 'select' ? (
         <select value={form[field]} onChange={e => set(field, e.target.value)}
           className="w-full px-3 py-2 rounded-xl border text-sm"
-          style={{ backgroundColor: theme.bg.input, borderColor: errors[field] ? '#D48E8A' : theme.border.primary, color: theme.text.primary }}>
+          style={{ backgroundColor: theme.bg.input, borderColor: errors[field] ? theme.status.error : theme.border.primary, color: theme.text.primary }}>
           {children}
         </select>
       ) : (
         <input type={type} value={form[field]} onChange={e => set(field, e.target.value)} placeholder={placeholder}
           className="w-full px-3 py-2 rounded-xl border text-sm"
-          style={{ backgroundColor: theme.bg.input, borderColor: errors[field] ? '#D48E8A' : theme.border.primary, color: theme.text.primary }} />
+          style={{ backgroundColor: theme.bg.input, borderColor: errors[field] ? theme.status.error : theme.border.primary, color: theme.text.primary }} />
       )}
-      {errors[field] && <p className="text-xs mt-1" style={{ color: '#D48E8A' }}>{errors[field]}</p>}
+      {errors[field] && <p className="text-xs mt-1" style={{ color: theme.status.error }}>{errors[field]}</p>}
     </div>
   );
 
@@ -119,9 +120,9 @@ function TerminalDrawer({ terminal, onSave, onClose, theme }) {
 
         {/* Footer */}
         <div className="p-6 border-t flex gap-3 sticky bottom-0" style={{ backgroundColor: theme.bg.primary, borderColor: theme.border.primary }}>
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm font-medium"
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm font-medium"
             style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2"
+          <button onClick={handleSave} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2"
             style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <Save size={16} />{isEdit ? 'Save Changes' : 'Add Terminal'}
           </button>
@@ -137,20 +138,20 @@ function DeleteDialog({ terminal, onConfirm, onClose, theme }) {
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative p-6 rounded-2xl border w-full max-w-sm mx-4"
         style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#D48E8A15' }}>
-          <Trash2 size={22} style={{ color: '#D48E8A' }} />
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: `${theme.status.error}15` }}>
+          <Trash2 size={22} style={{ color: theme.status.error }} />
         </div>
         <h3 className="text-base font-semibold text-center mb-1" style={{ color: theme.text.primary }}>Delete Terminal</h3>
         <p className="text-sm text-center mb-1" style={{ color: theme.text.muted }}>Are you sure you want to delete</p>
         <p className="text-sm font-semibold text-center mb-4" style={{ color: theme.text.primary }}>{terminal.name}?</p>
-        <p className="text-xs text-center mb-5 px-2" style={{ color: '#D48E8A' }}>
+        <p className="text-xs text-center mb-5 px-2" style={{ color: theme.status.error }}>
           This will remove the terminal record. Locker and package data linked to this terminal will remain.
         </p>
         <div className="flex gap-3">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm font-medium"
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm font-medium"
             style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
           <button onClick={onConfirm} className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-            style={{ backgroundColor: '#D48E8A', color: '#fff' }}>Delete</button>
+            style={{ backgroundColor: theme.status.error, color: '#fff' }}>Delete</button>
         </div>
       </div>
     </div>
@@ -176,6 +177,12 @@ export const TerminalsPage = ({
   const [editingTerminal, setEditingTerminal] = useState(null);
   const [deletingTerminal, setDeletingTerminal] = useState(null);
   const [view, setView] = useState('grid'); // 'grid' | 'list'
+  const [sortBy, setSortBy] = useState('name');
+  const [sortDir, setSortDir] = useState('asc');
+  const toggleSort = (field) => {
+    if (sortBy === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortBy(field); setSortDir('asc'); }
+  };
 
   const canManage = hasPermission(currentUser.role, 'terminals.manage') || hasPermission(currentUser.role, 'terminals.view');
 
@@ -186,6 +193,25 @@ export const TerminalsPage = ({
       return matchSearch && matchStatus;
     });
   }, [terminals, terminalSearch, terminalStatusFilter]);
+
+  const sortedTerminals = useMemo(() => {
+    return [...filteredTerminals].sort((a, b) => {
+      let av, bv;
+      if (sortBy === 'uptime') {
+        av = a.totalLockers > 0 ? Math.round(a.occupied / a.totalLockers * 100) : 0;
+        bv = b.totalLockers > 0 ? Math.round(b.occupied / b.totalLockers * 100) : 0;
+      } else if (sortBy === 'location') {
+        av = `${a.location} ${a.region}`.toLowerCase();
+        bv = `${b.location} ${b.region}`.toLowerCase();
+      } else {
+        av = a[sortBy]; bv = b[sortBy];
+      }
+      if (typeof av === 'string') { av = av.toLowerCase(); bv = (bv || '').toLowerCase(); }
+      if (av < bv) return sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [filteredTerminals, sortBy, sortDir]);
 
   const terminalDetails = useMemo(() => {
     if (!selectedTerminal) return null;
@@ -254,10 +280,10 @@ export const TerminalsPage = ({
 
   const getDoorColor = (door) => {
     if (!door.enabled) return theme.text.muted;
-    if (door.status === 'maintenance') return '#D48E8A';
-    if (door.opened) return '#D4AA5A';
-    if (door.occupied) return '#7EA8C9';
-    return '#81C995';
+    if (door.status === 'maintenance') return theme.status.error;
+    if (door.opened) return theme.status.warning;
+    if (door.occupied) return theme.accent.primary;
+    return theme.status.success;
   };
 
   const getDoorLabel = (door) => {
@@ -277,7 +303,7 @@ export const TerminalsPage = ({
           <p style={{ color: theme.text.muted }}>{terminals.length} terminals &bull; {terminals.filter(t => t.connect === 1).length} connected</p>
         </div>
         {canManage && (
-          <button onClick={handleAdd} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
+          <button onClick={handleAdd} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
             style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <Plus size={18} />Add Terminal
           </button>
@@ -288,20 +314,20 @@ export const TerminalsPage = ({
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         {[
           ['Total Lockers', terminals.reduce((s, t) => s + t.totalLockers, 0), Grid3X3, null],
-          ['Available', terminals.reduce((s, t) => s + t.available, 0), Unlock, '#81C995'],
-          ['Occupied', terminals.reduce((s, t) => s + t.occupied, 0), Package, '#7EA8C9'],
-          ['Maintenance', terminals.reduce((s, t) => s + t.maintenance, 0), Wrench, '#D48E8A'],
+          ['Available', terminals.reduce((s, t) => s + t.available, 0), Unlock, theme.status.success],
+          ['Occupied', terminals.reduce((s, t) => s + t.occupied, 0), Package, theme.accent.primary],
+          ['Maintenance', terminals.reduce((s, t) => s + t.maintenance, 0), Wrench, theme.status.error],
           ['Utilization', terminals.reduce((s, t) => s + t.totalLockers, 0) > 0
             ? `${Math.round(terminals.reduce((s, t) => s + t.occupied, 0) / terminals.reduce((s, t) => s + t.totalLockers, 0) * 100)}%`
-            : '0%', TrendingUp, '#B5A0D1'],
+            : '0%', TrendingUp, theme.chart.violet],
         ].map(([l, v, I, c]) => (
-          <div key={l} className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard key={l} style={{ padding: '1rem' }}>
             <div className="flex items-center gap-2 mb-1">
               <I size={16} style={{ color: c || theme.accent.primary }} />
               <span className="text-xs" style={{ color: theme.text.muted }}>{l}</span>
             </div>
             <p className="text-2xl font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
-          </div>
+          </GlassCard>
         ))}
       </div>
 
@@ -310,7 +336,7 @@ export const TerminalsPage = ({
         <div className="relative flex-1 max-w-md">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
           <input value={terminalSearch} onChange={e => setTerminalSearch(e.target.value)} placeholder="Search by name or SN..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm"
+            className="glass-card w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm"
             style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
         </div>
         <div className="flex items-center gap-2">
@@ -323,6 +349,23 @@ export const TerminalsPage = ({
               </button>
             ))}
           </div>
+          {/* Sort dropdown */}
+          <select
+            value={sortBy}
+            onChange={e => { setSortBy(e.target.value); setSortDir('asc'); }}
+            className="px-3 py-1.5 rounded-xl border text-xs font-medium"
+            style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary, color: theme.text.secondary }}
+          >
+            {[['name', 'Name'], ['location', 'Location'], ['totalLockers', 'Total Lockers'], ['occupied', 'Occupied'], ['available', 'Available'], ['uptime', 'Uptime %'], ['status', 'Status']].map(([v, l]) => (
+              <option key={v} value={v}>{l}</option>
+            ))}
+          </select>
+          <button onClick={() => setSortDir(d => d === 'asc' ? 'desc' : 'asc')}
+            className="p-1.5 rounded-lg border text-xs"
+            style={{ borderColor: theme.border.primary, color: theme.text.muted }}
+            title={sortDir === 'asc' ? 'Ascending' : 'Descending'}>
+            {sortDir === 'asc' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+          </button>
           {/* View toggle */}
           <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
             {[['grid', LayoutGrid], ['list', List]].map(([v, Icon]) => (
@@ -342,13 +385,14 @@ export const TerminalsPage = ({
       {/* ── GRID VIEW ── */}
       {view === 'grid' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredTerminals.map(t => {
+          {sortedTerminals.map(t => {
             const utilPct = t.totalLockers > 0 ? Math.round(t.occupied / t.totalLockers * 100) : 0;
             return (
-              <div key={t.id}
+              <GlassCard key={t.id}
                 onClick={() => { setSelectedTerminal(t); setSelectedDoor(null); }}
-                className="p-5 rounded-2xl border cursor-pointer transition-all group"
-                style={{ backgroundColor: theme.bg.card, borderColor: selectedTerminal?.id === t.id ? theme.accent.primary : theme.border.primary }}>
+                hover
+                className="cursor-pointer transition-all group"
+                style={{ borderColor: selectedTerminal?.id === t.id ? theme.accent.primary : undefined }}>
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${theme.accent.primary}15` }}>
@@ -372,7 +416,7 @@ export const TerminalsPage = ({
                           </button>
                           <button onClick={e => handleDeleteClick(e, t)}
                             className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                            style={{ backgroundColor: '#D48E8A15', color: '#D48E8A' }} title="Delete terminal">
+                            style={{ backgroundColor: `${theme.status.error}15`, color: theme.status.error }} title="Delete terminal">
                             <Trash2 size={13} />
                           </button>
                         </div>
@@ -380,23 +424,23 @@ export const TerminalsPage = ({
                     </div>
                     <div className="flex items-center gap-1">
                       {t.connect === 1
-                        ? <><Wifi size={12} style={{ color: '#81C995' }} /><span className="text-xs" style={{ color: '#81C995' }}>Connected</span></>
-                        : <><WifiOff size={12} style={{ color: '#D48E8A' }} /><span className="text-xs" style={{ color: '#D48E8A' }}>Disconnected</span></>}
+                        ? <><Wifi size={12} style={{ color: theme.status.success }} /><span className="text-xs" style={{ color: theme.status.success }}>Connected</span></>
+                        : <><WifiOff size={12} style={{ color: theme.status.error }} /><span className="text-xs" style={{ color: theme.status.error }}>Disconnected</span></>}
                     </div>
                   </div>
                 </div>
                 <div className="mb-3">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs" style={{ color: theme.text.muted }}>Utilization</span>
-                    <span className="text-xs font-medium" style={{ color: utilPct > 80 ? '#D48E8A' : utilPct > 60 ? '#D4AA5A' : '#81C995' }}>{utilPct}%</span>
+                    <span className="text-xs font-medium" style={{ color: utilPct > 80 ? theme.status.error : utilPct > 60 ? theme.status.warning : theme.status.success }}>{utilPct}%</span>
                   </div>
                   <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
                     <div className="h-full rounded-full transition-all"
-                      style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? '#D48E8A' : utilPct > 60 ? '#D4AA5A' : '#81C995' }} />
+                      style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? theme.status.error : utilPct > 60 ? theme.status.warning : theme.status.success }} />
                   </div>
                 </div>
                 <div className="grid grid-cols-4 gap-2 text-center">
-                  {[['Total', t.totalLockers, null], ['Open', t.available, '#81C995'], ['In Use', t.occupied, '#7EA8C9'], ['Maint.', t.maintenance, '#D48E8A']].map(([l, v, c]) => (
+                  {[['Total', t.totalLockers, null], ['Open', t.available, theme.status.success], ['In Use', t.occupied, theme.accent.primary], ['Maint.', t.maintenance, theme.status.error]].map(([l, v, c]) => (
                     <div key={l} className="p-2 rounded-lg" style={{ backgroundColor: c ? `${c}10` : theme.bg.tertiary }}>
                       <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
                       <p className="text-lg font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
@@ -407,7 +451,7 @@ export const TerminalsPage = ({
                   <MapPin size={12} style={{ color: theme.text.muted }} />
                   <span className="text-xs" style={{ color: theme.text.muted }}>{t.location}, {t.region}</span>
                 </div>
-              </div>
+              </GlassCard>
             );
           })}
           {filteredTerminals.length === 0 && (
@@ -422,35 +466,45 @@ export const TerminalsPage = ({
 
       {/* ── LIST VIEW ── */}
       {view === 'list' && (
-        <div className="rounded-2xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
+        <GlassCard noPadding className="overflow-hidden">
           {/* Table header */}
           <div className="grid text-xs font-semibold uppercase px-4 py-3"
-            style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 80px', backgroundColor: theme.bg.tertiary, color: theme.text.muted, borderBottom: `1px solid ${theme.border.primary}` }}>
-            <span>Terminal</span>
-            <span>Region</span>
-            <span className="text-center">Status</span>
-            <span className="text-center">Total</span>
-            <span className="text-center">Available</span>
-            <span className="text-center">Utilization</span>
+            style={{ gridTemplateColumns: '2fr 1.2fr 1fr 0.8fr 0.8fr 1fr 0.8fr 80px', backgroundColor: theme.bg.tertiary, color: theme.text.muted, borderBottom: `1px solid ${theme.border.primary}` }}>
+            {[
+              { label: 'Name', field: 'name', align: '' },
+              { label: 'Location / Region', field: 'location', align: '' },
+              { label: 'Total Lockers', field: 'totalLockers', align: 'text-center' },
+              { label: 'Occupied', field: 'occupied', align: 'text-center' },
+              { label: 'Available', field: 'available', align: 'text-center' },
+              { label: 'Uptime %', field: 'uptime', align: 'text-center' },
+              { label: 'Status', field: 'status', align: 'text-center' },
+            ].map(col => (
+              <button key={col.field} onClick={() => toggleSort(col.field)}
+                className={`flex items-center gap-1 cursor-pointer select-none hover:opacity-80 ${col.align}`}
+                style={{ color: sortBy === col.field ? theme.accent.primary : theme.text.muted }}>
+                {col.label}
+                {sortBy === col.field && (sortDir === 'asc' ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />)}
+              </button>
+            ))}
             <span />
           </div>
 
-          {filteredTerminals.length === 0 ? (
+          {sortedTerminals.length === 0 ? (
             <div className="py-16 text-center" style={{ backgroundColor: theme.bg.card }}>
               <Building2 size={36} className="mx-auto mb-3" style={{ color: theme.text.muted }} />
               <p className="font-medium" style={{ color: theme.text.secondary }}>No terminals found</p>
               <p className="text-sm mt-1" style={{ color: theme.text.muted }}>Try adjusting your search or filters</p>
             </div>
           ) : (
-            filteredTerminals.map((t, i) => {
+            sortedTerminals.map((t, i) => {
               const utilPct = t.totalLockers > 0 ? Math.round(t.occupied / t.totalLockers * 100) : 0;
-              const isLast = i === filteredTerminals.length - 1;
+              const isLast = i === sortedTerminals.length - 1;
               return (
                 <div key={t.id}
                   onClick={() => { setSelectedTerminal(t); setSelectedDoor(null); }}
                   className="grid items-center px-4 py-3 cursor-pointer transition-colors group hover:opacity-90"
                   style={{
-                    gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 80px',
+                    gridTemplateColumns: '2fr 1.2fr 1fr 0.8fr 0.8fr 1fr 0.8fr 80px',
                     backgroundColor: selectedTerminal?.id === t.id ? `${theme.accent.primary}08` : theme.bg.card,
                     borderBottom: isLast ? 'none' : `1px solid ${theme.border.primary}`,
                   }}>
@@ -464,38 +518,41 @@ export const TerminalsPage = ({
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-mono" style={{ color: theme.text.muted }}>SN: {t.sn}</span>
                         {t.connect === 1
-                          ? <span className="flex items-center gap-1"><Wifi size={10} style={{ color: '#81C995' }} /><span className="text-xs" style={{ color: '#81C995' }}>Online</span></span>
-                          : <span className="flex items-center gap-1"><WifiOff size={10} style={{ color: '#D48E8A' }} /><span className="text-xs" style={{ color: '#D48E8A' }}>Offline</span></span>}
+                          ? <span className="flex items-center gap-1"><Wifi size={10} style={{ color: theme.status.success }} /><span className="text-xs" style={{ color: theme.status.success }}>Online</span></span>
+                          : <span className="flex items-center gap-1"><WifiOff size={10} style={{ color: theme.status.error }} /><span className="text-xs" style={{ color: theme.status.error }}>Offline</span></span>}
                       </div>
                     </div>
                   </div>
 
-                  {/* Region */}
+                  {/* Location / Region */}
                   <div>
-                    <p className="text-sm truncate" style={{ color: theme.text.secondary }}>{t.region}</p>
-                    <p className="text-xs truncate" style={{ color: theme.text.muted }}>{t.location}</p>
+                    <p className="text-sm truncate" style={{ color: theme.text.secondary }}>{t.location}</p>
+                    <p className="text-xs truncate" style={{ color: theme.text.muted }}>{t.region}</p>
+                  </div>
+
+                  {/* Total Lockers */}
+                  <p className="text-sm font-semibold text-center" style={{ color: theme.text.primary }}>{t.totalLockers}</p>
+
+                  {/* Occupied */}
+                  <p className="text-sm font-semibold text-center" style={{ color: theme.accent.primary }}>{t.occupied}</p>
+
+                  {/* Available */}
+                  <p className="text-sm font-semibold text-center" style={{ color: theme.status.success }}>{t.available}</p>
+
+                  {/* Uptime % (utilization) */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 rounded-full" style={{ backgroundColor: theme.border.primary }}>
+                      <div className="h-full rounded-full" style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? theme.status.error : utilPct > 60 ? theme.status.warning : theme.status.success }} />
+                    </div>
+                    <span className="text-xs font-mono w-8 text-right flex-shrink-0"
+                      style={{ color: utilPct > 80 ? theme.status.error : utilPct > 60 ? theme.status.warning : theme.status.success }}>
+                      {utilPct}%
+                    </span>
                   </div>
 
                   {/* Status */}
                   <div className="flex justify-center">
                     <StatusBadge status={t.status} />
-                  </div>
-
-                  {/* Total */}
-                  <p className="text-sm font-semibold text-center" style={{ color: theme.text.primary }}>{t.totalLockers}</p>
-
-                  {/* Available */}
-                  <p className="text-sm font-semibold text-center" style={{ color: '#81C995' }}>{t.available}</p>
-
-                  {/* Utilization bar */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                      <div className="h-full rounded-full" style={{ width: `${utilPct}%`, backgroundColor: utilPct > 80 ? '#D48E8A' : utilPct > 60 ? '#D4AA5A' : '#81C995' }} />
-                    </div>
-                    <span className="text-xs font-mono w-8 text-right flex-shrink-0"
-                      style={{ color: utilPct > 80 ? '#D48E8A' : utilPct > 60 ? '#D4AA5A' : '#81C995' }}>
-                      {utilPct}%
-                    </span>
                   </div>
 
                   {/* Actions */}
@@ -509,7 +566,7 @@ export const TerminalsPage = ({
                         </button>
                         <button onClick={e => handleDeleteClick(e, t)}
                           className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                          style={{ backgroundColor: '#D48E8A15', color: '#D48E8A' }} title="Delete">
+                          style={{ backgroundColor: `${theme.status.error}15`, color: theme.status.error }} title="Delete">
                           <Trash2 size={13} />
                         </button>
                       </>
@@ -520,7 +577,7 @@ export const TerminalsPage = ({
               );
             })
           )}
-        </div>
+        </GlassCard>
       )}
 
       {/* ── Add / Edit Drawer ── */}
@@ -575,14 +632,14 @@ export const TerminalsPage = ({
             </div>
 
             {/* Status & Info */}
-            <div className="p-4 rounded-xl border mb-4" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
+            <GlassCard className="mb-4" style={{ padding: '1rem' }}>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-medium" style={{ color: theme.text.primary }}>Status</span>
                 <div className="flex items-center gap-2">
                   <StatusBadge status={selectedTerminal.status} />
                   {selectedTerminal.connect === 1
-                    ? <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full" style={{ backgroundColor: '#81C99515', color: '#81C995' }}><Wifi size={12} />Connected</span>
-                    : <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full" style={{ backgroundColor: '#D48E8A15', color: '#D48E8A' }}><WifiOff size={12} />Disconnected</span>}
+                    ? <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full" style={{ backgroundColor: `${theme.status.success}15`, color: theme.status.success }}><Wifi size={12} />Connected</span>
+                    : <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full" style={{ backgroundColor: `${theme.status.error}15`, color: theme.status.error }}><WifiOff size={12} />Disconnected</span>}
                 </div>
               </div>
               <div className="space-y-2 text-sm">
@@ -600,10 +657,10 @@ export const TerminalsPage = ({
                   </div>
                 ))}
               </div>
-            </div>
+            </GlassCard>
 
             {/* Interactive Door Grid */}
-            <div className="p-4 rounded-xl border mb-4" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
+            <GlassCard className="mb-4" style={{ padding: '1rem' }}>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold" style={{ color: theme.text.primary }}>Door Grid ({terminalDetails.doors.length} doors)</h3>
                 <button onClick={handleGeneratePin} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium"
@@ -612,7 +669,7 @@ export const TerminalsPage = ({
                 </button>
               </div>
               <div className="flex flex-wrap gap-3 mb-3">
-                {[['Available', '#81C995'], ['Occupied', '#7EA8C9'], ['Open', '#D4AA5A'], ['Maintenance', '#D48E8A'], ['Disabled', theme.text.muted]].map(([l, c]) => (
+                {[['Available', theme.status.success], ['Occupied', theme.accent.primary], ['Open', theme.status.warning], ['Maintenance', theme.status.error], ['Disabled', theme.text.muted]].map(([l, c]) => (
                   <div key={l} className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded" style={{ backgroundColor: c }} />
                     <span className="text-xs" style={{ color: theme.text.muted }}>{l}</span>
@@ -648,18 +705,18 @@ export const TerminalsPage = ({
                   {selectedDoor.package && <p className="text-xs mb-3" style={{ color: theme.text.muted }}>Package: <span className="font-mono" style={{ color: theme.accent.primary }}>{selectedDoor.package}</span></p>}
                   <button onClick={() => handleRemoteOpen(selectedDoor)}
                     className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
-                    style={{ backgroundColor: '#D4AA5A20', color: '#D4AA5A' }}>
+                    style={{ backgroundColor: `${theme.status.warning}20`, color: theme.status.warning }}>
                     <DoorOpen size={16} />Remote Open Door
                   </button>
                 </div>
               )}
-            </div>
+            </GlassCard>
 
             {/* Capacity Overview */}
-            <div className="p-4 rounded-xl border mb-4" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
+            <GlassCard className="mb-4" style={{ padding: '1rem' }}>
               <h3 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Capacity Overview</h3>
               <div className="grid grid-cols-4 gap-3 text-center mb-4">
-                {[['Total', selectedTerminal.totalLockers, null], ['Available', selectedTerminal.available, '#81C995'], ['Occupied', selectedTerminal.occupied, '#7EA8C9'], ['Maint.', selectedTerminal.maintenance, '#D48E8A']].map(([l, v, c]) => (
+                {[['Total', selectedTerminal.totalLockers, null], ['Available', selectedTerminal.available, theme.status.success], ['Occupied', selectedTerminal.occupied, theme.accent.primary], ['Maint.', selectedTerminal.maintenance, theme.status.error]].map(([l, v, c]) => (
                   <div key={l} className="p-3 rounded-xl" style={{ backgroundColor: c ? `${c}10` : theme.bg.tertiary }}>
                     <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
                     <p className="text-xl font-bold" style={{ color: c || theme.text.primary }}>{v}</p>
@@ -668,7 +725,7 @@ export const TerminalsPage = ({
               </div>
               <h4 className="text-xs font-semibold uppercase mb-2" style={{ color: theme.text.muted }}>Size Distribution (estimated)</h4>
               <div className="space-y-2">
-                {[{ label: 'Small', pct: 30, color: '#81C995' }, { label: 'Medium', pct: 35, color: '#7EA8C9' }, { label: 'Large', pct: 25, color: '#B5A0D1' }, { label: 'XLarge', pct: 10, color: '#D4AA5A' }].map(s => {
+                {[{ label: 'Small', pct: 30, color: theme.status.success }, { label: 'Medium', pct: 35, color: theme.accent.primary }, { label: 'Large', pct: 25, color: theme.chart.violet }, { label: 'XLarge', pct: 10, color: theme.status.warning }].map(s => {
                   const count = Math.floor(selectedTerminal.totalLockers * s.pct / 100);
                   return (
                     <div key={s.label} className="flex items-center gap-3">
@@ -681,20 +738,20 @@ export const TerminalsPage = ({
                   );
                 })}
               </div>
-            </div>
+            </GlassCard>
 
             {/* Error Log */}
             {terminalDetails.errors.length > 0 && (
-              <div className="p-4 rounded-xl border mb-4" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
+              <GlassCard className="mb-4" style={{ padding: '1rem' }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <AlertTriangle size={16} style={{ color: '#D48E8A' }} />
+                  <AlertTriangle size={16} style={{ color: theme.status.error }} />
                   <h3 className="text-sm font-semibold" style={{ color: theme.text.primary }}>Error Log ({terminalDetails.errors.length})</h3>
                 </div>
                 <div className="space-y-2">
                   {terminalDetails.errors.map(err => (
                     <div key={err.id} className="p-3 rounded-lg" style={{ backgroundColor: theme.bg.tertiary }}>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-mono font-bold" style={{ color: '#D48E8A' }}>{err.errorCode}</span>
+                        <span className="text-xs font-mono font-bold" style={{ color: theme.status.error }}>{err.errorCode}</span>
                         <span className="text-xs" style={{ color: theme.text.muted }}>{err.createTime}</span>
                       </div>
                       <p className="text-sm" style={{ color: theme.text.primary }}>{err.describe}</p>
@@ -702,12 +759,12 @@ export const TerminalsPage = ({
                     </div>
                   ))}
                 </div>
-              </div>
+              </GlassCard>
             )}
 
             {/* Active Packages */}
             {terminalDetails.packages.length > 0 && (
-              <div className="p-4 rounded-xl border mb-4" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
+              <GlassCard className="mb-4" style={{ padding: '1rem' }}>
                 <h3 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Packages ({terminalDetails.packages.length})</h3>
                 <div className="space-y-2">
                   {terminalDetails.packages.map(p => (
@@ -720,12 +777,12 @@ export const TerminalsPage = ({
                     </div>
                   ))}
                 </div>
-              </div>
+              </GlassCard>
             )}
 
             {/* Pinned Users */}
             {terminalDetails.pinnedUsers.length > 0 && (
-              <div className="p-4 rounded-xl border" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
+              <GlassCard style={{ padding: '1rem' }}>
                 <h3 className="text-sm font-semibold mb-3" style={{ color: theme.text.primary }}>Pinned Users ({terminalDetails.pinnedUsers.length})</h3>
                 <div className="space-y-2">
                   {terminalDetails.pinnedUsers.map((u, i) => (
@@ -741,7 +798,7 @@ export const TerminalsPage = ({
                     </div>
                   ))}
                 </div>
-              </div>
+              </GlassCard>
             )}
           </div>
         </div>
@@ -762,7 +819,7 @@ export const TerminalsPage = ({
             </p>
             <div className="flex items-center justify-center gap-3 p-4 rounded-xl mb-4" style={{ backgroundColor: theme.bg.tertiary }}>
               <span className="text-4xl font-mono font-bold tracking-[0.3em]" style={{ color: theme.accent.primary }}>{generatedPin}</span>
-              <button onClick={handleCopyPin} className="p-2 rounded-lg transition-colors" style={{ color: copiedPin ? '#81C995' : theme.text.muted }}>
+              <button onClick={handleCopyPin} className="p-2 rounded-lg transition-colors" style={{ color: copiedPin ? theme.status.success : theme.text.muted }}>
                 {copiedPin ? <Check size={20} /> : <Copy size={20} />}
               </button>
             </div>

@@ -49,8 +49,8 @@ export const Dropdown = ({
 
       {isOpen && (
         <div
-          className="absolute z-50 mt-1 w-full rounded-xl border shadow-lg overflow-hidden"
-          style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}
+          className="absolute z-50 mt-1 w-full rounded-xl border shadow-2xl overflow-hidden"
+          style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : theme.bg.card, borderColor: theme.border.primary, backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
         >
           <div className="max-h-48 overflow-y-auto py-1">
             {options.map(option => (

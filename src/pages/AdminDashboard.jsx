@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { GlassCard } from '../components/ui/Card';
+import { useTheme } from '../contexts/ThemeContext';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
+  const { theme } = useTheme();
   const [stats, setStats] = useState(null);
   const [selectedTab, setSelectedTab] = useState('overview');
   const [loading, setLoading] = useState(true);
@@ -81,9 +84,9 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="admin-dashboard">
-      <div className="dashboard-header">
-        <h1>📊 Enterprise Admin Dashboard</h1>
+    <div className="admin-dashboard" style={{ backgroundColor: theme.bg.primary }}>
+      <GlassCard className="dashboard-header">
+        <h1 style={{ color: theme.text.primary }}>📊 Enterprise Admin Dashboard</h1>
         <div className="header-controls">
           <input
             type="date"
@@ -92,8 +95,9 @@ export default function AdminDashboard() {
               setDateRange({ ...dateRange, startDate: e.target.value })
             }
             className="date-input"
+            style={{ backgroundColor: 'transparent', borderColor: theme.border.primary, color: theme.text.primary }}
           />
-          <span>to</span>
+          <span style={{ color: theme.text.secondary }}>to</span>
           <input
             type="date"
             value={dateRange.endDate}
@@ -101,140 +105,147 @@ export default function AdminDashboard() {
               setDateRange({ ...dateRange, endDate: e.target.value })
             }
             className="date-input"
+            style={{ backgroundColor: 'transparent', borderColor: theme.border.primary, color: theme.text.primary }}
           />
-          <button className="btn-export" onClick={handleExportReport}>
+          <button className="btn-primary" onClick={handleExportReport}>
             📥 Export Report
           </button>
         </div>
-      </div>
+      </GlassCard>
 
-      <div className="dashboard-tabs">
+      <GlassCard noPadding className="dashboard-tabs">
         <button
           className={`tab ${selectedTab === 'overview' ? 'active' : ''}`}
           onClick={() => setSelectedTab('overview')}
+          style={selectedTab === 'overview' ? { backgroundColor: theme.accent.primary, color: theme.accent.contrast } : { color: theme.text.muted }}
         >
           📈 Overview
         </button>
         <button
           className={`tab ${selectedTab === 'users' ? 'active' : ''}`}
           onClick={() => setSelectedTab('users')}
+          style={selectedTab === 'users' ? { backgroundColor: theme.accent.primary, color: theme.accent.contrast } : { color: theme.text.muted }}
         >
           👥 Users
         </button>
         <button
           className={`tab ${selectedTab === 'packages' ? 'active' : ''}`}
           onClick={() => setSelectedTab('packages')}
+          style={selectedTab === 'packages' ? { backgroundColor: theme.accent.primary, color: theme.accent.contrast } : { color: theme.text.muted }}
         >
           📦 Packages
         </button>
         <button
           className={`tab ${selectedTab === 'audit' ? 'active' : ''}`}
           onClick={() => setSelectedTab('audit')}
+          style={selectedTab === 'audit' ? { backgroundColor: theme.accent.primary, color: theme.accent.contrast } : { color: theme.text.muted }}
         >
           🔍 Audit Logs
         </button>
-      </div>
+      </GlassCard>
 
       {loading ? (
-        <div className="loading">Loading data...</div>
+        <div className="loading" style={{ color: theme.text.muted }}>Loading data...</div>
       ) : (
         <div className="dashboard-content">
           {/* Overview Tab */}
           {selectedTab === 'overview' && stats && (
             <div className="overview-grid">
-              <div className="stat-card">
+              <GlassCard hover className="stat-card">
                 <div className="stat-icon">📦</div>
                 <div className="stat-content">
-                  <h3>Total Packages</h3>
-                  <p className="stat-number">{stats.totalPackages}</p>
-                  <small>All time</small>
+                  <h3 style={{ color: theme.text.muted }}>Total Packages</h3>
+                  <p className="stat-number" style={{ color: theme.text.primary }}>{stats.totalPackages}</p>
+                  <small style={{ color: theme.text.muted }}>All time</small>
                 </div>
-              </div>
+              </GlassCard>
 
-              <div className="stat-card">
+              <GlassCard hover className="stat-card">
                 <div className="stat-icon">✅</div>
                 <div className="stat-content">
-                  <h3>Delivered</h3>
-                  <p className="stat-number">{stats.deliveredPackages}</p>
-                  <small>{((stats.deliveryRate || 0).toFixed(1))}% delivery rate</small>
+                  <h3 style={{ color: theme.text.muted }}>Delivered</h3>
+                  <p className="stat-number" style={{ color: theme.status.success }}>{stats.deliveredPackages}</p>
+                  <small style={{ color: theme.text.muted }}>{((stats.deliveryRate || 0).toFixed(1))}% delivery rate</small>
                 </div>
-              </div>
+              </GlassCard>
 
-              <div className="stat-card">
+              <GlassCard hover className="stat-card">
                 <div className="stat-icon">⏳</div>
                 <div className="stat-content">
-                  <h3>Pending</h3>
-                  <p className="stat-number">{stats.pendingPackages}</p>
-                  <small>In transit</small>
+                  <h3 style={{ color: theme.text.muted }}>Pending</h3>
+                  <p className="stat-number" style={{ color: theme.status.warning }}>{stats.pendingPackages}</p>
+                  <small style={{ color: theme.text.muted }}>In transit</small>
                 </div>
-              </div>
+              </GlassCard>
 
-              <div className="stat-card">
+              <GlassCard hover className="stat-card">
                 <div className="stat-icon">❌</div>
                 <div className="stat-content">
-                  <h3>Failed Transactions</h3>
-                  <p className="stat-number">{stats.failedTransactions}</p>
-                  <small>Last 30 days</small>
+                  <h3 style={{ color: theme.text.muted }}>Failed Transactions</h3>
+                  <p className="stat-number" style={{ color: theme.status.error }}>{stats.failedTransactions}</p>
+                  <small style={{ color: theme.text.muted }}>Last 30 days</small>
                 </div>
-              </div>
+              </GlassCard>
 
-              <div className="stat-card">
+              <GlassCard hover className="stat-card">
                 <div className="stat-icon">🏢</div>
                 <div className="stat-content">
-                  <h3>Terminals</h3>
-                  <p className="stat-number">{stats.totalTerminals}</p>
-                  <small>{stats.activeTerminals} online</small>
+                  <h3 style={{ color: theme.text.muted }}>Terminals</h3>
+                  <p className="stat-number" style={{ color: theme.accent.primary }}>{stats.totalTerminals}</p>
+                  <small style={{ color: theme.text.muted }}>{stats.activeTerminals} online</small>
                 </div>
-              </div>
+              </GlassCard>
 
-              <div className="stat-card">
+              <GlassCard hover className="stat-card">
                 <div className="stat-icon">👤</div>
                 <div className="stat-content">
-                  <h3>Active Users</h3>
-                  <p className="stat-number">{stats.activeUsers}</p>
-                  <small>Out of {stats.totalUsers} total</small>
+                  <h3 style={{ color: theme.text.muted }}>Active Users</h3>
+                  <p className="stat-number" style={{ color: theme.chart.violet }}>{stats.activeUsers}</p>
+                  <small style={{ color: theme.text.muted }}>Out of {stats.totalUsers} total</small>
                 </div>
-              </div>
+              </GlassCard>
 
-              <div className="stat-card full-width">
+              <GlassCard className="stat-card full-width">
                 <div className="stat-icon">📊</div>
                 <div className="stat-content">
-                  <h3>System Health</h3>
+                  <h3 style={{ color: theme.text.muted }}>System Health</h3>
                   <div className="health-bars">
                     <div className="health-item">
-                      <label>Terminal Uptime</label>
-                      <div className="progress-bar">
+                      <label style={{ color: theme.text.muted }}>Terminal Uptime</label>
+                      <div className="progress-bar" style={{ backgroundColor: theme.border.primary }}>
                         <div
                           className="progress"
                           style={{
                             width: `${stats.terminalUptime || 0}%`,
+                            background: `linear-gradient(90deg, ${theme.accent.primary}, ${theme.chart.violet})`,
                           }}
                         ></div>
                       </div>
-                      <span>{((stats.terminalUptime || 0).toFixed(1))}%</span>
+                      <span style={{ color: theme.text.primary }}>{((stats.terminalUptime || 0).toFixed(1))}%</span>
                     </div>
                     <div className="health-item">
-                      <label>Delivery Success Rate</label>
-                      <div className="progress-bar">
+                      <label style={{ color: theme.text.muted }}>Delivery Success Rate</label>
+                      <div className="progress-bar" style={{ backgroundColor: theme.border.primary }}>
                         <div
                           className="progress"
                           style={{
                             width: `${stats.deliveryRate || 0}%`,
+                            background: `linear-gradient(90deg, ${theme.accent.primary}, ${theme.chart.violet})`,
                           }}
                         ></div>
                       </div>
-                      <span>{((stats.deliveryRate || 0).toFixed(1))}%</span>
+                      <span style={{ color: theme.text.primary }}>{((stats.deliveryRate || 0).toFixed(1))}%</span>
                     </div>
                   </div>
                 </div>
-              </div>
+              </GlassCard>
             </div>
           )}
 
           {/* Users Tab */}
           {selectedTab === 'users' && (
-            <div className="data-table-container">
-              <h2>User Management</h2>
+            <GlassCard noPadding className="data-table-container">
+              <h2 style={{ color: theme.text.primary, padding: '24px 24px 0' }}>User Management</h2>
               <table className="data-table">
                 <thead>
                   <tr>
@@ -275,13 +286,13 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </GlassCard>
           )}
 
           {/* Packages Tab */}
           {selectedTab === 'packages' && (
-            <div className="data-table-container">
-              <h2>Package Management</h2>
+            <GlassCard noPadding className="data-table-container">
+              <h2 style={{ color: theme.text.primary, padding: '24px 24px 0' }}>Package Management</h2>
               <table className="data-table">
                 <thead>
                   <tr>
@@ -306,19 +317,19 @@ export default function AdminDashboard() {
                       <td>{pkg.location || '-'}</td>
                       <td>{new Date(pkg.createdAt).toLocaleDateString()}</td>
                       <td>
-                        <button className="btn-action">View</button>
+                        <button className="btn-outline" style={{ padding: '6px 12px', fontSize: '11px' }}>View</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
+            </GlassCard>
           )}
 
           {/* Audit Logs Tab */}
           {selectedTab === 'audit' && (
-            <div className="data-table-container">
-              <h2>Audit Logs & Compliance</h2>
+            <GlassCard noPadding className="data-table-container">
+              <h2 style={{ color: theme.text.primary, padding: '24px 24px 0' }}>Audit Logs & Compliance</h2>
               <table className="data-table">
                 <thead>
                   <tr>
@@ -355,7 +366,7 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </GlassCard>
           )}
         </div>
       )}

@@ -39,7 +39,7 @@ export const Sidebar = ({
       {isMobile && <div className="fixed inset-0 bg-black/50 z-40" onClick={onCloseMobile} />}
       <aside
         className={`${isMobile ? 'fixed inset-y-0 left-0 z-50' : ''} ${isCollapsed && !isMobile ? 'w-20' : 'w-72'} border-r flex flex-col transition-all`}
-        style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary, backdropFilter: 'blur(12px)' }}
+        style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.65)' : '#FFFFFF', borderColor: theme.border.primary, backdropFilter: theme.name === 'dark' ? 'blur(16px)' : 'none', WebkitBackdropFilter: theme.name === 'dark' ? 'blur(16px)' : 'none' }}
       >
         <div className="h-16 flex items-center justify-between px-4 border-b" style={{ borderColor: theme.border.primary }}>
           <div className="flex items-center gap-2.5 min-w-0">
@@ -94,7 +94,7 @@ export const Sidebar = ({
                         style={{
                           backgroundColor: activeMenu === item.id ? theme.accent.light : 'transparent',
                           border: activeMenu === item.id ? `1px solid ${theme.accent.border}` : '1px solid transparent',
-                          color: activeMenu === item.id ? theme.accent.primary : theme.text.secondary,
+                          color: activeMenu === item.id ? theme.text.primary : theme.text.secondary,
                           boxShadow: activeMenu === item.id ? `0 6px 14px rgba(0,0,0,0.08)` : 'none',
                         }}
                       >
@@ -119,7 +119,7 @@ export const Sidebar = ({
                               onClick={() => handleSubMenuClick(item, sub)}
                               className="w-full text-left px-3 py-2 rounded-lg text-sm transition-colors duration-150"
                               style={{
-                                color: activeSubMenu === sub ? theme.accent.primary : theme.text.muted,
+                                color: activeSubMenu === sub ? theme.text.primary : theme.text.muted,
                                 backgroundColor: activeSubMenu === sub ? theme.accent.light : 'transparent',
                                 fontWeight: activeSubMenu === sub ? 600 : 500,
                               }}
@@ -142,7 +142,7 @@ export const Sidebar = ({
             onClick={() => { setActiveMenu('settings'); if (isMobile) onCloseMobile(); }}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl"
             style={{
-              color: activeMenu === 'settings' ? theme.accent.primary : theme.text.secondary,
+              color: activeMenu === 'settings' ? theme.text.primary : theme.text.secondary,
               backgroundColor: activeMenu === 'settings' ? theme.accent.light : 'transparent'
             }}
           >

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { FileDown, Plus, Search, X, Truck, CheckCircle2, MapPin, Route, Users, Clock, ChevronLeft, ChevronUp, ChevronDown, RefreshCw, Edit, Trash2, Star, UserPlus } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Pagination } from '../components/ui';
+import { GlassCard } from '../components/ui/Card';
 import { StatusBadge, DeliveryMethodBadge } from '../components/ui/Badge';
 import { hasPermission } from '../constants';
 import { packagesData, driversData, terminalsData, routesData, getTerminalAddress } from '../constants/mockData';
@@ -68,7 +69,7 @@ const CreateRouteDrawer = ({ onClose, onSave, drivers, theme }) => {
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full sm:w-[480px] h-full border-l shadow-2xl flex flex-col" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+      <div className="relative w-full sm:w-[480px] h-full border-l shadow-2xl flex flex-col" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', backdropFilter: 'blur(20px)', borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: theme.border.primary }}>
           <div>
             <p className="text-xs uppercase font-semibold" style={{ color: theme.text.muted }}>New Route</p>
@@ -80,11 +81,11 @@ const CreateRouteDrawer = ({ onClose, onSave, drivers, theme }) => {
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           <div>
             <label className="text-xs uppercase font-semibold block mb-1.5" style={{ color: theme.text.muted }}>Zone / Route Name *</label>
-            <input value={form.zone} onChange={e => upd('zone', e.target.value)} placeholder="e.g. Accra Central" className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ ...is, borderColor: err.zone ? '#D48E8A' : theme.border.primary }} />
+            <input value={form.zone} onChange={e => upd('zone', e.target.value)} placeholder="e.g. Accra Central" className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ ...is, borderColor: err.zone ? theme.status.error : theme.border.primary }} />
           </div>
           <div>
             <label className="text-xs uppercase font-semibold block mb-1.5" style={{ color: theme.text.muted }}>Assign Driver *</label>
-            <select value={form.driverId} onChange={e => upd('driverId', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ ...is, borderColor: err.driverId ? '#D48E8A' : theme.border.primary }}>
+            <select value={form.driverId} onChange={e => upd('driverId', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ ...is, borderColor: err.driverId ? theme.status.error : theme.border.primary }}>
               <option value="">Select driver...</option>
               {drivers.filter(d => d.status !== 'offline').map(d => (
                 <option key={d.id} value={d.id}>{d.name} — {d.zone} ({d.status})</option>
@@ -105,7 +106,7 @@ const CreateRouteDrawer = ({ onClose, onSave, drivers, theme }) => {
           <div>
             <label className="text-xs uppercase font-semibold block mb-1.5" style={{ color: theme.text.muted }}>Stops *</label>
             <div className="flex gap-2">
-              <select value={stopTerminal} onChange={e => setStopTerminal(e.target.value)} className="flex-1 px-3 py-2 rounded-xl border text-sm" style={{ ...is, borderColor: err.stops ? '#D48E8A' : theme.border.primary }}>
+              <select value={stopTerminal} onChange={e => setStopTerminal(e.target.value)} className="flex-1 px-3 py-2 rounded-xl border text-sm" style={{ ...is, borderColor: err.stops ? theme.status.error : theme.border.primary }}>
                 <option value="">Select terminal...</option>
                 {terminalsData.filter(t => !stops.find(s => s.terminal === t.name)).map(t => (
                   <option key={t.id} value={t.name}>{t.name}</option>
@@ -131,8 +132,8 @@ const CreateRouteDrawer = ({ onClose, onSave, drivers, theme }) => {
         </div>
 
         <div className="p-5 border-t flex gap-3" style={{ borderColor: theme.border.primary }}>
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={handleSave} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <Route size={15} />Create Route
           </button>
         </div>
@@ -147,7 +148,7 @@ const DriverDrawer = ({ driver, onClose, onSave, theme }) => {
   const [form, setForm] = useState(driver || { name: '', phone: '', vehicle: '', zone: '', status: 'active', deliveriesToday: 0, rating: 5.0 });
   const [err, setErr] = useState({});
   const upd = (f, v) => { setForm(p => ({ ...p, [f]: v })); setErr(p => ({ ...p, [f]: undefined })); };
-  const is = (f) => ({ backgroundColor: 'transparent', borderColor: err[f] ? '#D48E8A' : theme.border.primary, color: theme.text.primary });
+  const is = (f) => ({ backgroundColor: 'transparent', borderColor: err[f] ? theme.status.error : theme.border.primary, color: theme.text.primary });
 
   const handleSave = () => {
     const e = {};
@@ -162,7 +163,7 @@ const DriverDrawer = ({ driver, onClose, onSave, theme }) => {
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full sm:w-[420px] h-full border-l shadow-2xl flex flex-col" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+      <div className="relative w-full sm:w-[420px] h-full border-l shadow-2xl flex flex-col" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', backdropFilter: 'blur(20px)', borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: theme.border.primary }}>
           <div>
             <p className="text-xs uppercase font-semibold" style={{ color: theme.text.muted }}>{isEdit ? 'Edit Driver' : 'New Driver'}</p>
@@ -181,14 +182,14 @@ const DriverDrawer = ({ driver, onClose, onSave, theme }) => {
             <label className="text-xs uppercase font-semibold block mb-1.5" style={{ color: theme.text.muted }}>Status</label>
             <div className="flex gap-2">
               {['active', 'on_delivery', 'offline'].map(s => (
-                <button key={s} onClick={() => upd('status', s)} className="flex-1 py-2 rounded-xl border text-xs capitalize" style={{ backgroundColor: form.status === s ? (s === 'active' ? '#81C99520' : s === 'on_delivery' ? '#D4AA5A20' : '#78716C20') : theme.bg.tertiary, color: form.status === s ? (s === 'active' ? '#81C995' : s === 'on_delivery' ? '#D4AA5A' : '#78716C') : theme.text.muted, borderColor: form.status === s ? 'transparent' : theme.border.primary }}>{s.replace('_', ' ')}</button>
+                <button key={s} onClick={() => upd('status', s)} className="flex-1 py-2 rounded-xl border text-xs capitalize" style={{ backgroundColor: form.status === s ? (s === 'active' ? `${theme.status.success}20` : s === 'on_delivery' ? `${theme.status.warning}20` : '#78716C20') : theme.bg.tertiary, color: form.status === s ? (s === 'active' ? theme.status.success : s === 'on_delivery' ? theme.status.warning : '#78716C') : theme.text.muted, borderColor: form.status === s ? 'transparent' : theme.border.primary }}>{s.replace('_', ' ')}</button>
               ))}
             </div>
           </div>
         </div>
         <div className="p-5 border-t flex gap-3" style={{ borderColor: theme.border.primary }}>
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={handleSave} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             {isEdit ? 'Save Changes' : 'Add Driver'}
           </button>
         </div>
@@ -401,7 +402,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
   const delivered = packages.filter(p => p.status.startsWith('delivered')).length;
   const activeDrivers = drivers.filter(d => d.status !== 'offline').length;
 
-  const STOP_COLORS = { completed: '#81C995', in_progress: '#D4AA5A', pending: theme.border.primary };
+  const STOP_COLORS = { completed: theme.status.success, in_progress: theme.status.warning, pending: theme.border.primary };
   const TIMELINE_ICONS = { route: Route, truck: Truck, user: Users, mappin: MapPin };
 
   return (
@@ -415,14 +416,14 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
       {deleteRoute && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setDeleteRoute(null)}>
           <div className="absolute inset-0 bg-black/50" />
-          <div className="relative w-full max-w-sm rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+          <GlassCard className="relative w-full max-w-sm" onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold mb-2" style={{ color: theme.text.primary }}>Delete Route {deleteRoute.id}?</h3>
             <p className="text-sm mb-5" style={{ color: theme.text.muted }}>This action cannot be undone.</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteRoute(null)} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-              <button onClick={() => handleDeleteRoute(deleteRoute)} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: '#D48E8A', color: '#1C1917' }}>Delete</button>
+              <button onClick={() => setDeleteRoute(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => handleDeleteRoute(deleteRoute)} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.status.error, color: '#1C1917' }}>Delete</button>
             </div>
-          </div>
+          </GlassCard>
         </div>
       )}
 
@@ -430,14 +431,14 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
       {deleteDriver && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setDeleteDriver(null)}>
           <div className="absolute inset-0 bg-black/50" />
-          <div className="relative w-full max-w-sm rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+          <GlassCard className="relative w-full max-w-sm" onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold mb-2" style={{ color: theme.text.primary }}>Remove {deleteDriver.name}?</h3>
             <p className="text-sm mb-5" style={{ color: theme.text.muted }}>This will remove the driver from the system.</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteDriver(null)} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-              <button onClick={() => handleDeleteDriver(deleteDriver)} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: '#D48E8A', color: '#1C1917' }}>Remove</button>
+              <button onClick={() => setDeleteDriver(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => handleDeleteDriver(deleteDriver)} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.status.error, color: '#1C1917' }}>Remove</button>
             </div>
-          </div>
+          </GlassCard>
         </div>
       )}
 
@@ -446,16 +447,16 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
         <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Dispatch</h1>
         <div className="flex gap-2">
           {activeTab === 'Route Planning' && (
-            <button onClick={() => setShowCreateRoute(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={() => setShowCreateRoute(true)} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={16} />Create Route
             </button>
           )}
           {activeTab === 'Driver Assignment' && (
-            <button onClick={() => setDriverDrawer(false)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={() => setDriverDrawer(false)} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <UserPlus size={16} />Add Driver
             </button>
           )}
-          <button onClick={() => setShowExport && setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => setShowExport && setShowExport(true)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <FileDown size={16} />Export
           </button>
         </div>
@@ -478,17 +479,17 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
           {/* Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
             {[
-              { label: 'Ready', value: ready, color: '#D4AA5A' },
-              { label: 'Assigned', value: assignedCount, color: '#7EA8C9' },
-              { label: 'In Transit', value: inTransit, color: '#B5A0D1' },
-              { label: 'Delivered', value: delivered, color: '#81C995' },
+              { label: 'Ready', value: ready, color: theme.status.warning },
+              { label: 'Assigned', value: assignedCount, color: theme.accent.primary },
+              { label: 'In Transit', value: inTransit, color: theme.chart.violet },
+              { label: 'Delivered', value: delivered, color: theme.status.success },
               { label: 'Active Drivers', value: activeDrivers, color: theme.accent.primary },
-              { label: 'Total Value', value: `GH₵ ${packages.reduce((s, p) => s + (p.value || 0), 0).toLocaleString()}`, color: '#D4AA5A' },
+              { label: 'Total Value', value: `GH₵ ${packages.reduce((s, p) => s + (p.value || 0), 0).toLocaleString()}`, color: theme.status.warning },
             ].map(m => (
-              <div key={m.label} className="p-4 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard key={m.label} className="!p-4">
                 <p className="text-xs mb-1" style={{ color: theme.text.muted }}>{m.label}</p>
                 <p className="text-xl font-bold" style={{ color: m.color }}>{m.value}</p>
-              </div>
+              </GlassCard>
             ))}
           </div>
 
@@ -496,7 +497,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
           <div className="flex flex-col md:flex-row gap-3 mb-4">
             <div className="relative flex-1">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-              <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Search waybill, customer, destination..." className="w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+              <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Search waybill, customer, destination..." className="glass-card w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
               {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }}><X size={14} /></button>}
             </div>
             <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -509,7 +510,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
           </div>
 
           {/* Table */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <table className="w-full">
               <thead>
                 <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
@@ -546,13 +547,13 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                     <td className="p-3">
                       <div className="flex items-center gap-1 justify-end">
                         {hasPermission(currentUser?.role, 'packages.dispatch') && ['pending', 'at_warehouse', 'at_dropbox'].includes(pkg.status) && (
-                          <button onClick={() => handleDispatch(pkg)} className="p-1.5 rounded-lg hover:bg-white/5" title="Assign to Courier" style={{ color: '#7EA8C9' }}><Truck size={14} /></button>
+                          <button onClick={() => handleDispatch(pkg)} className="p-1.5 rounded-lg hover:bg-white/5" title="Assign to Courier" style={{ color: theme.accent.primary }}><Truck size={14} /></button>
                         )}
                         {hasPermission(currentUser?.role, 'packages.dispatch') && pkg.status === 'assigned' && (
-                          <button onClick={() => handlePackageRecall(pkg)} className="p-1.5 rounded-lg hover:bg-white/5" title="Recall from Courier" style={{ color: '#D48E8A' }}><RefreshCw size={14} /></button>
+                          <button onClick={() => handlePackageRecall(pkg)} className="p-1.5 rounded-lg hover:bg-white/5" title="Recall from Courier" style={{ color: theme.status.error }}><RefreshCw size={14} /></button>
                         )}
                         {hasPermission(currentUser?.role, 'packages.update') && !['delivered_to_locker', 'delivered_to_home', 'picked_up'].includes(pkg.status) && (
-                          <button onClick={() => handleMarkDelivered(pkg)} className="p-1.5 rounded-lg hover:bg-white/5" title="Mark Delivered" style={{ color: '#81C995' }}><CheckCircle2 size={14} /></button>
+                          <button onClick={() => handleMarkDelivered(pkg)} className="p-1.5 rounded-lg hover:bg-white/5" title="Mark Delivered" style={{ color: theme.status.success }}><CheckCircle2 size={14} /></button>
                         )}
                       </div>
                     </td>
@@ -563,7 +564,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                 )}
               </tbody>
             </table>
-          </div>
+          </GlassCard>
           {totalPages > 1 && (
             <div className="mt-4">
               <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} pageSize={pageSize} onPageSizeChange={s => { setPageSize(s); setPage(1); }} totalItems={filteredPackages.length} />
@@ -576,7 +577,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
               <span className="text-sm font-medium" style={{ color: theme.text.secondary }}>{selected.length} selected</span>
               <div style={{ width: 1, height: 18, backgroundColor: theme.border.primary }} />
               {hasPermission(currentUser?.role, 'packages.dispatch') && (
-                <button onClick={handleBulkDispatch} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+                <button onClick={handleBulkDispatch} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
                   <Truck size={14} /> Dispatch All
                 </button>
               )}
@@ -595,14 +596,14 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                 {[
                   { label: 'Active Routes', value: `${routes.filter(r => r.status === 'active').length} / ${routes.length}`, color: theme.accent.primary },
-                  { label: 'Total Stops', value: routes.reduce((s, r) => s + r.stops.length, 0), color: '#7EA8C9' },
-                  { label: 'Packages Out', value: routes.reduce((s, r) => s + r.stops.reduce((ss, st) => ss + st.packages.length, 0), 0), color: '#D4AA5A' },
-                  { label: 'Avg Completion', value: (() => { const t = routes.reduce((s, r) => { const pkg = r.stops.reduce((ss, st) => ss + st.packages.length, 0); const del = r.stops.reduce((ss, st) => ss + st.delivered, 0); return { pkg: s.pkg + pkg, del: s.del + del }; }, { pkg: 0, del: 0 }); return t.pkg ? `${Math.round(t.del / t.pkg * 100)}%` : '—'; })(), color: '#81C995' },
+                  { label: 'Total Stops', value: routes.reduce((s, r) => s + r.stops.length, 0), color: theme.accent.primary },
+                  { label: 'Packages Out', value: routes.reduce((s, r) => s + r.stops.reduce((ss, st) => ss + st.packages.length, 0), 0), color: theme.status.warning },
+                  { label: 'Avg Completion', value: (() => { const t = routes.reduce((s, r) => { const pkg = r.stops.reduce((ss, st) => ss + st.packages.length, 0); const del = r.stops.reduce((ss, st) => ss + st.delivered, 0); return { pkg: s.pkg + pkg, del: s.del + del }; }, { pkg: 0, del: 0 }); return t.pkg ? `${Math.round(t.del / t.pkg * 100)}%` : '—'; })(), color: theme.status.success },
                 ].map(m => (
-                  <div key={m.label} className="p-4 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                  <GlassCard key={m.label} className="!p-4">
                     <p className="text-xs mb-1" style={{ color: theme.text.muted }}>{m.label}</p>
                     <p className="text-xl font-bold" style={{ color: m.color }}>{m.value}</p>
-                  </div>
+                  </GlassCard>
                 ))}
               </div>
 
@@ -612,9 +613,9 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                   const totalPkg = route.stops.reduce((s, st) => s + st.packages.length, 0);
                   const delPkg = route.stops.reduce((s, st) => s + st.delivered, 0);
                   const pct = totalPkg ? Math.round(delPkg / totalPkg * 100) : 0;
-                  const statusColor = route.status === 'active' ? '#81C995' : route.status === 'completed' ? '#7EA8C9' : '#D4AA5A';
+                  const statusColor = route.status === 'active' ? theme.status.success : route.status === 'completed' ? theme.accent.primary : theme.status.warning;
                   return (
-                    <div key={route.id} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <GlassCard key={route.id} noPadding className="overflow-hidden">
                       <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
                         <div className="flex items-center justify-between mb-1">
                           <div>
@@ -626,10 +627,10 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                         <div className="mt-3">
                           <div className="flex justify-between text-xs mb-1" style={{ color: theme.text.muted }}>
                             <span>Delivery progress</span>
-                            <span style={{ color: pct === 100 ? '#81C995' : theme.text.secondary }}>{pct}%</span>
+                            <span style={{ color: pct === 100 ? theme.status.success : theme.text.secondary }}>{pct}%</span>
                           </div>
                           <div className="h-1.5 rounded-full" style={{ backgroundColor: theme.bg.tertiary }}>
-                            <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pct === 100 ? '#81C995' : '#D4AA5A' }} />
+                            <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pct === 100 ? theme.status.success : theme.status.warning }} />
                           </div>
                         </div>
                       </div>
@@ -653,17 +654,17 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <button onClick={() => { setSelectedRoute(route); setRouteTab('stops'); }} className="flex-1 py-2 rounded-xl text-xs border" style={{ borderColor: theme.accent.border, color: theme.accent.primary }}>View Details</button>
+                          <button onClick={() => { setSelectedRoute(route); setRouteTab('stops'); }} className="btn-outline flex-1 py-2 rounded-xl text-xs border" style={{ borderColor: theme.accent.border, color: theme.accent.primary }}>View Details</button>
                           {route.status === 'pending' && (
-                            <button onClick={() => handleStartRoute(route.id)} className="px-3 py-2 rounded-xl text-xs font-medium" style={{ backgroundColor: '#10B98118', color: '#10B981', border: '1px solid #10B98130' }} title="Start Route">▶</button>
+                            <button onClick={() => handleStartRoute(route.id)} className="px-3 py-2 rounded-xl text-xs font-medium" style={{ backgroundColor: `${theme.status.success}18`, color: theme.status.success, border: `1px solid ${theme.status.success}30` }} title="Start Route">▶</button>
                           )}
                           {route.status === 'active' && (
-                            <button onClick={() => handleCompleteRoute(route.id)} className="px-3 py-2 rounded-xl text-xs font-medium" style={{ backgroundColor: '#7EA8C918', color: '#7EA8C9', border: '1px solid #7EA8C930' }} title="Complete Route">✓</button>
+                            <button onClick={() => handleCompleteRoute(route.id)} className="px-3 py-2 rounded-xl text-xs font-medium" style={{ backgroundColor: `${theme.accent.primary}18`, color: theme.accent.primary, border: `1px solid ${theme.accent.primary}30` }} title="Complete Route">✓</button>
                           )}
-                          <button onClick={() => setDeleteRoute(route)} className="p-2 rounded-xl border" style={{ borderColor: theme.border.primary, color: '#D48E8A' }}><Trash2 size={13} /></button>
+                          <button onClick={() => setDeleteRoute(route)} className="p-2 rounded-xl border" style={{ borderColor: theme.border.primary, color: theme.status.error }}><Trash2 size={13} /></button>
                         </div>
                       </div>
-                    </div>
+                    </GlassCard>
                   );
                 })}
               </div>
@@ -676,19 +677,19 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
               </button>
 
               {/* Detail Header */}
-              <div className="p-5 rounded-2xl border mb-5" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard className="mb-5">
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
                       <h2 className="font-bold text-lg" style={{ color: theme.text.primary }}>{selectedRoute.zone}</h2>
-                      <span className="text-xs px-2 py-0.5 rounded-full capitalize" style={{ backgroundColor: selectedRoute.status === 'active' ? '#81C99520' : selectedRoute.status === 'completed' ? '#7EA8C920' : '#D4AA5A20', color: selectedRoute.status === 'active' ? '#81C995' : selectedRoute.status === 'completed' ? '#7EA8C9' : '#D4AA5A' }}>{selectedRoute.status}</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full capitalize" style={{ backgroundColor: selectedRoute.status === 'active' ? `${theme.status.success}20` : selectedRoute.status === 'completed' ? `${theme.accent.primary}20` : `${theme.status.warning}20`, color: selectedRoute.status === 'active' ? theme.status.success : selectedRoute.status === 'completed' ? theme.accent.primary : theme.status.warning }}>{selectedRoute.status}</span>
                       {selectedRoute.status === 'pending' && (
-                        <button onClick={() => handleStartRoute(selectedRoute.id)} className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: '#10B98118', color: '#10B981', border: '1px solid #10B98130' }}>
+                        <button onClick={() => handleStartRoute(selectedRoute.id)} className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: `${theme.status.success}18`, color: theme.status.success, border: `1px solid ${theme.status.success}30` }}>
                           <Truck size={11} /> Start Route
                         </button>
                       )}
                       {selectedRoute.status === 'active' && (
-                        <button onClick={() => handleCompleteRoute(selectedRoute.id)} className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: '#7EA8C918', color: '#7EA8C9', border: '1px solid #7EA8C930' }}>
+                        <button onClick={() => handleCompleteRoute(selectedRoute.id)} className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium" style={{ backgroundColor: `${theme.accent.primary}18`, color: theme.accent.primary, border: `1px solid ${theme.accent.primary}30` }}>
                           <CheckCircle2 size={11} /> Complete Route
                         </button>
                       )}
@@ -720,7 +721,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                     </div>
                   </div>
                 </div>
-              </div>
+              </GlassCard>
 
               {/* Route Tabs */}
               <div className="flex gap-1 p-1 rounded-xl mb-5 w-fit" style={{ backgroundColor: theme.bg.tertiary }}>
@@ -738,7 +739,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                     const isExpanded = expandedStops.includes(stop.id);
                     const stopColor = STOP_COLORS[stop.status];
                     return (
-                      <div key={stop.id} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      <GlassCard key={stop.id} noPadding className="overflow-hidden">
                         <div className="p-4">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ backgroundColor: `${stopColor}20`, color: stopColor }}>{i + 1}</div>
@@ -750,9 +751,9 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                               <span className="text-xs px-2 py-0.5 rounded-full capitalize" style={{ backgroundColor: `${stopColor}20`, color: stopColor }}>{stop.status.replace('_', ' ')}</span>
                               <div className="flex gap-1">
                                 {stop.status !== 'completed' && (
-                                  <button onClick={() => handleMarkStopComplete(selectedRoute.id, stop.id)} className="p-1.5 rounded-lg hover:bg-white/5" title="Mark Complete" style={{ color: '#81C995' }}><CheckCircle2 size={14} /></button>
+                                  <button onClick={() => handleMarkStopComplete(selectedRoute.id, stop.id)} className="p-1.5 rounded-lg hover:bg-white/5" title="Mark Complete" style={{ color: theme.status.success }}><CheckCircle2 size={14} /></button>
                                 )}
-                                <button onClick={() => handleRemoveStop(selectedRoute.id, stop.id)} className="p-1.5 rounded-lg hover:bg-white/5" title="Remove Stop" style={{ color: '#D48E8A' }}><Trash2 size={14} /></button>
+                                <button onClick={() => handleRemoveStop(selectedRoute.id, stop.id)} className="p-1.5 rounded-lg hover:bg-white/5" title="Remove Stop" style={{ color: theme.status.error }}><Trash2 size={14} /></button>
                                 <button onClick={() => setExpandedStops(p => isExpanded ? p.filter(x => x !== stop.id) : [...p, stop.id])} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.icon.muted }}>
                                   {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                                 </button>
@@ -761,7 +762,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                           </div>
                           <div className="flex gap-4 mt-2 text-xs" style={{ color: theme.text.muted }}>
                             <span>{stop.packages.length} packages assigned</span>
-                            <span style={{ color: '#81C995' }}>{stop.delivered} delivered</span>
+                            <span style={{ color: theme.status.success }}>{stop.delivered} delivered</span>
                           </div>
                         </div>
                         {isExpanded && stop.packages.length > 0 && (
@@ -780,7 +781,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                             })}
                           </div>
                         )}
-                      </div>
+                      </GlassCard>
                     );
                   })}
                   {/* Add Stop */}
@@ -808,14 +809,14 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                 return (
                   <div>
                     <div className="grid grid-cols-3 gap-3 mb-5">
-                      {[['Total', routePkgs.length, theme.text.primary], ['Delivered', del, '#81C995'], ['Pending', routePkgs.length - del, '#D4AA5A']].map(([l, v, c]) => (
-                        <div key={l} className="p-3 rounded-xl border text-center" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                      {[['Total', routePkgs.length, theme.text.primary], ['Delivered', del, theme.status.success], ['Pending', routePkgs.length - del, theme.status.warning]].map(([l, v, c]) => (
+                        <GlassCard key={l} className="!p-3 text-center !rounded-xl">
                           <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
                           <p className="text-xl font-bold" style={{ color: c }}>{v}</p>
-                        </div>
+                        </GlassCard>
                       ))}
                     </div>
-                    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                    <GlassCard noPadding className="overflow-hidden">
                       <table className="w-full">
                         <thead><tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
                           {['Waybill', 'Customer', 'Size', 'Status'].map(h => <th key={h} className="text-left p-3 text-xs font-semibold uppercase" style={{ color: theme.text.muted }}>{h}</th>)}
@@ -832,7 +833,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                           {routePkgs.length === 0 && <tr><td colSpan={4} className="p-6 text-center text-sm" style={{ color: theme.text.muted }}>No packages on this route</td></tr>}
                         </tbody>
                       </table>
-                    </div>
+                    </GlassCard>
                   </div>
                 );
               })()}
@@ -870,25 +871,25 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             {[
               { label: 'Total Drivers', value: drivers.length, color: theme.accent.primary },
-              { label: 'Active', value: drivers.filter(d => d.status === 'active').length, color: '#81C995' },
-              { label: 'On Delivery', value: drivers.filter(d => d.status === 'on_delivery').length, color: '#D4AA5A' },
+              { label: 'Active', value: drivers.filter(d => d.status === 'active').length, color: theme.status.success },
+              { label: 'On Delivery', value: drivers.filter(d => d.status === 'on_delivery').length, color: theme.status.warning },
               { label: 'Offline', value: drivers.filter(d => d.status === 'offline').length, color: '#78716C' },
             ].map(m => (
-              <div key={m.label} className="p-4 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard key={m.label} className="!p-4">
                 <p className="text-xs mb-1" style={{ color: theme.text.muted }}>{m.label}</p>
                 <p className="text-xl font-bold" style={{ color: m.color }}>{m.value}</p>
-              </div>
+              </GlassCard>
             ))}
           </div>
 
           {/* Search */}
           <div className="relative max-w-sm mb-4">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.icon.muted }} />
-            <input value={driverSearch} onChange={e => setDriverSearch(e.target.value)} placeholder="Search name, zone, phone..." className="w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
+            <input value={driverSearch} onChange={e => setDriverSearch(e.target.value)} placeholder="Search name, zone, phone..." className="glass-card w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
           </div>
 
           {/* Drivers Table */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <table className="w-full">
               <thead>
                 <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
@@ -899,7 +900,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
               </thead>
               <tbody>
                 {filteredDrivers.map(driver => {
-                  const statusColor = driver.status === 'active' ? '#81C995' : driver.status === 'on_delivery' ? '#D4AA5A' : '#78716C';
+                  const statusColor = driver.status === 'active' ? theme.status.success : driver.status === 'on_delivery' ? theme.status.warning : '#78716C';
                   const cap = Math.round(driver.deliveriesToday / 20 * 100);
                   return (
                     <tr key={driver.id} className="hover:bg-white/3" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
@@ -923,21 +924,21 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                       <td className="p-3">
                         <div className="flex items-center gap-2">
                           <div className="w-16 h-1.5 rounded-full" style={{ backgroundColor: theme.bg.tertiary }}>
-                            <div className="h-full rounded-full" style={{ width: `${Math.min(cap, 100)}%`, backgroundColor: cap > 80 ? '#D48E8A' : cap > 50 ? '#D4AA5A' : '#81C995' }} />
+                            <div className="h-full rounded-full" style={{ width: `${Math.min(cap, 100)}%`, backgroundColor: cap > 80 ? theme.status.error : cap > 50 ? theme.status.warning : theme.status.success }} />
                           </div>
                           <span className="text-xs" style={{ color: theme.text.secondary }}>{driver.deliveriesToday}/20</span>
                         </div>
                       </td>
                       <td className="p-3 hidden md:table-cell">
-                        <span className="text-xs flex items-center gap-1" style={{ color: '#D4AA5A' }}><Star size={10} fill="#D4AA5A" />{driver.rating}</span>
+                        <span className="text-xs flex items-center gap-1" style={{ color: theme.status.warning }}><Star size={10} fill={theme.status.warning} />{driver.rating}</span>
                       </td>
                       <td className="p-3">
                         <div className="flex items-center gap-1 justify-end">
                           <button onClick={() => setDriverDrawer(driver)} className="p-1.5 rounded-lg hover:bg-white/5" title="Edit" style={{ color: theme.icon.muted }}><Edit size={13} /></button>
                           {driver.status === 'on_delivery' && hasPermission(currentUser?.role, 'packages.dispatch') && (
-                            <button onClick={() => handleRecall(driver)} className="p-1.5 rounded-lg hover:bg-white/5" title="Recall" style={{ color: '#D4AA5A' }}><RefreshCw size={13} /></button>
+                            <button onClick={() => handleRecall(driver)} className="p-1.5 rounded-lg hover:bg-white/5" title="Recall" style={{ color: theme.status.warning }}><RefreshCw size={13} /></button>
                           )}
-                          <button onClick={() => setDeleteDriver(driver)} className="p-1.5 rounded-lg hover:bg-white/5" title="Delete" style={{ color: '#D48E8A' }}><Trash2 size={13} /></button>
+                          <button onClick={() => setDeleteDriver(driver)} className="p-1.5 rounded-lg hover:bg-white/5" title="Delete" style={{ color: theme.status.error }}><Trash2 size={13} /></button>
                         </div>
                       </td>
                     </tr>
@@ -948,7 +949,7 @@ export const DispatchPage = ({ currentUser, activeSubMenu, loading, setShowExpor
                 )}
               </tbody>
             </table>
-          </div>
+          </GlassCard>
         </>
       )}
     </div>

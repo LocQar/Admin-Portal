@@ -11,6 +11,7 @@ import {
   AreaChart, Area, PieChart, Pie, Cell
 } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 import { MetricCard, StatusBadge, TableSkeleton, Pagination, EmptyState, ConfirmDialog } from '../components/ui';
 import { NewLeadDrawer, NewContactDrawer, NewDealDrawer, NewActivityDrawer } from '../components/drawers';
 import { hasPermission } from '../constants';
@@ -102,6 +103,8 @@ export const CRMPage = ({
   const [editingDeal, setEditingDeal] = useState(null);
   const [editingActivity, setEditingActivity] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, type: null, item: null });
+  const [showRefreshModal, setShowRefreshModal] = useState(false);
+  const [refreshOptions, setRefreshOptions] = useState({ leads: true, deals: true, contacts: true, activities: true, resetToDemo: false });
 
   // ============ DRAG-AND-DROP STATE ============
   const [draggedDeal, setDraggedDeal] = useState(null);
@@ -625,10 +628,6 @@ export const CRMPage = ({
   }, [contacts]);
 
   // ============ SHARED STYLES ============
-  const cardStyle = {
-    backgroundColor: 'transparent',
-    borderColor: theme.border.primary
-  };
   const inputStyle = {
     backgroundColor: theme.bg.input,
     borderColor: theme.border.primary,
@@ -651,7 +650,7 @@ export const CRMPage = ({
   const renderDashboard = () => (
     <div className="space-y-6">
       <div className="flex justify-end">
-        <button onClick={resetToDemo} className={btnOutline} style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+        <button onClick={resetToDemo} className={`${btnOutline} btn-outline`} style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
           <RefreshCw size={16} /> Reset to Demo Data
         </button>
       </div>
@@ -666,7 +665,7 @@ export const CRMPage = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Pipeline by Stage */}
-        <div className="lg:col-span-2 p-5 rounded-2xl border" style={cardStyle}>
+        <GlassCard className="lg:col-span-2">
           <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Pipeline by Stage</h3>
           {loading ? <TableSkeleton rows={3} cols={1} theme={theme} /> : (
             <ResponsiveContainer width="100%" height={220}>
@@ -681,10 +680,10 @@ export const CRMPage = ({
               </BarChart>
             </ResponsiveContainer>
           )}
-        </div>
+        </GlassCard>
 
         {/* Activity Breakdown */}
-        <div className="p-5 rounded-2xl border" style={cardStyle}>
+        <GlassCard>
           <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Activity Breakdown</h3>
           {loading ? <TableSkeleton rows={3} cols={1} theme={theme} /> : (
             <>
@@ -709,12 +708,12 @@ export const CRMPage = ({
               </div>
             </>
           )}
-        </div>
+        </GlassCard>
       </div>
 
       {/* Deals Won/Lost Over Time + Top Deals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-5 rounded-2xl border" style={cardStyle}>
+        <GlassCard>
           <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Deals Over Time</h3>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={crmMonthlyData}>
@@ -733,9 +732,9 @@ export const CRMPage = ({
               <Area type="monotone" dataKey="new" stroke="#3B82F6" fill="transparent" strokeWidth={2} strokeDasharray="5 5" name="New Leads" />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+        </GlassCard>
 
-        <div className="p-5 rounded-2xl border" style={cardStyle}>
+        <GlassCard>
           <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Top Deals</h3>
           <div className="space-y-3">
             {deals
@@ -755,11 +754,11 @@ export const CRMPage = ({
                 </div>
               ))}
           </div>
-        </div>
+        </GlassCard>
       </div>
 
       {/* Recent Activities */}
-      <div className="p-5 rounded-2xl border" style={cardStyle}>
+      <GlassCard>
         <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Recent Activities</h3>
         <div className="space-y-3">
           {activities.slice(0, 6).map(act => (
@@ -776,15 +775,15 @@ export const CRMPage = ({
                 <p className="text-xs" style={{ color: theme.text.secondary }}>{act.contactName ? `${act.contactName} · ` : ''}{act.dueDate}</p>
               </div>
               <span className="text-xs px-2 py-0.5 rounded-full shrink-0" style={{
-                backgroundColor: act.status === 'completed' ? 'rgba(16, 185, 129, 0.15)' : act.status === 'overdue' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(59, 130, 246, 0.15)',
-                color: act.status === 'completed' ? '#10B981' : act.status === 'overdue' ? '#EF4444' : '#3B82F6',
+                backgroundColor: act.status === 'completed' ? `${theme.status.success}20` : act.status === 'overdue' ? `${theme.status.error}20` : `${theme.accent.primary}20`,
+                color: act.status === 'completed' ? theme.status.success : act.status === 'overdue' ? theme.status.error : theme.accent.primary,
               }}>
                 {act.status}
               </span>
             </div>
           ))}
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -795,7 +794,7 @@ export const CRMPage = ({
         {Object.entries(CRM_LEAD_STATUSES).map(([key, s]) => {
           const count = leads.filter(l => l.status === key).length;
           return (
-            <div key={key} className="p-4 rounded-xl border flex items-center gap-3" style={cardStyle}>
+            <GlassCard key={key} className="flex items-center gap-3" style={{ padding: '1rem' }}>
               <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${s.color}15` }}>
                 <span className="text-lg font-bold" style={{ color: s.color }}>{count}</span>
               </div>
@@ -803,7 +802,7 @@ export const CRMPage = ({
                 <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{s.label}</p>
                 <p className="text-xs" style={{ color: theme.text.secondary }}>leads</p>
               </div>
-            </div>
+            </GlassCard>
           );
         })}
       </div>
@@ -813,7 +812,7 @@ export const CRMPage = ({
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.secondary }} />
           <input
             type="text" placeholder="Search leads..." value={leadSearch} onChange={e => { setLeadSearch(e.target.value); setLeadPage(1); }}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border text-sm" style={inputStyle}
+            className="w-full pl-10 pr-4 py-2 rounded-lg border text-sm glass-card" style={inputStyle}
           />
         </div>
         <select value={leadStatusFilter} onChange={e => { setLeadStatusFilter(e.target.value); setLeadPage(1); }} className={selectClasses} style={inputStyle}>
@@ -825,12 +824,12 @@ export const CRMPage = ({
           {Object.entries(CRM_LEAD_SOURCES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
         </select>
         {hasPermission(currentUser?.role, 'crm.leads.manage') && (
-          <button onClick={() => setShowNewLeadDrawer(true)} className={btnOutline} style={{ borderColor: theme.accent.primary, color: theme.accent.primary }}>
+          <button onClick={() => setShowNewLeadDrawer(true)} className={`${btnPrimary} btn-primary`} style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <Plus size={16} /> Add Lead
           </button>
         )}
         {hasPermission(currentUser?.role, 'crm.import') && (
-          <button onClick={() => leadFileInputRef.current?.click()} className={btnOutline} style={{ borderColor: theme.border.primary, color: theme.text.primary }}>
+          <button onClick={() => leadFileInputRef.current?.click()} className={`${btnOutline} btn-outline`} style={{ borderColor: theme.border.primary, color: theme.text.primary }}>
             <Upload size={16} /> Import
           </button>
         )}
@@ -851,7 +850,7 @@ export const CRMPage = ({
               exportToCSV(exportData, 'crm_leads');
               addToast({ type: 'success', message: `Exported ${exportData.length} leads to CSV` });
             }}
-            className={btnOutline}
+            className={`${btnOutline} btn-outline`}
             style={{ borderColor: theme.border.primary, color: theme.text.primary }}
           >
             <Download size={16} /> Export
@@ -880,7 +879,7 @@ export const CRMPage = ({
         <EmptyState icon={Target} title="No leads found" description="Try adjusting your filters" theme={theme} />
       ) : (
         <>
-          <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -945,14 +944,14 @@ export const CRMPage = ({
                 </tbody>
               </table>
             </div>
-          </div>
+          </GlassCard>
           <Pagination currentPage={leadPage} totalPages={Math.ceil(filteredLeads.length / itemsPerPage)} onPageChange={setLeadPage} />
         </>
       )}
 
       {/* Lead Detail Panel */}
       {selectedLead && (
-        <div className="p-5 rounded-2xl border space-y-4" style={cardStyle}>
+        <GlassCard className="space-y-4">
           <div className="flex items-start justify-between">
             <div>
               <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>{selectedLead.name}</h3>
@@ -970,11 +969,11 @@ export const CRMPage = ({
           </div>
           <div><p className="text-sm" style={{ color: theme.text.secondary }}>Notes</p><p className="text-sm" style={{ color: theme.text.secondary }}>{selectedLead.notes}</p></div>
           <div className="flex gap-2">
-            <button onClick={() => handleConvertLeadToDeal(selectedLead)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm text-white" style={{ backgroundColor: theme.accent.primary }}>
+            <button onClick={() => handleConvertLeadToDeal(selectedLead)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm btn-primary" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <ArrowRight size={16} /> Convert to Deal
             </button>
           </div>
-        </div>
+        </GlassCard>
       )}
     </div>
   );
@@ -986,16 +985,16 @@ export const CRMPage = ({
         <div className="relative flex-1 max-w-sm">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.secondary }} />
           <input type="text" placeholder="Search deals..." value={dealSearch} onChange={e => setDealSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border text-sm" style={inputStyle} />
+            className="w-full pl-10 pr-4 py-2 rounded-lg border text-sm glass-card" style={inputStyle} />
         </div>
         <div className="flex gap-2">
           {hasPermission(currentUser?.role, 'crm.deals.manage') && (
-            <button onClick={() => setShowNewDealDrawer(true)} className={btnOutline} style={{ borderColor: theme.accent.primary, color: theme.accent.primary }}>
+            <button onClick={() => setShowNewDealDrawer(true)} className={`${btnPrimary} btn-primary`} style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={16} /> Add Deal
             </button>
           )}
           {hasPermission(currentUser?.role, 'crm.import') && (
-            <button onClick={() => dealFileInputRef.current?.click()} className={btnOutline} style={{ borderColor: theme.border.primary, color: theme.text.primary }}>
+            <button onClick={() => dealFileInputRef.current?.click()} className={`${btnOutline} btn-outline`} style={{ borderColor: theme.border.primary, color: theme.text.primary }}>
               <Upload size={16} /> Import
             </button>
           )}
@@ -1016,18 +1015,18 @@ export const CRMPage = ({
                 exportToCSV(exportData, 'crm_deals');
                 addToast({ type: 'success', message: `Exported ${exportData.length} deals to CSV` });
               }}
-              className={btnOutline}
+              className={`${btnOutline} btn-outline`}
               style={{ borderColor: theme.border.primary, color: theme.text.primary }}
             >
               <Download size={16} /> Export
             </button>
           )}
           <button onClick={() => setDealView('kanban')} className={`px-3 py-1.5 rounded-lg text-sm ${dealView === 'kanban' ? 'font-medium' : ''}`}
-            style={{ backgroundColor: dealView === 'kanban' ? theme.accent.light : 'transparent', color: dealView === 'kanban' ? theme.accent.primary : theme.text.secondary }}>
+            style={{ backgroundColor: dealView === 'kanban' ? theme.accent.light : 'transparent', color: dealView === 'kanban' ? theme.text.primary : theme.text.secondary }}>
             Board
           </button>
           <button onClick={() => setDealView('list')} className={`px-3 py-1.5 rounded-lg text-sm ${dealView === 'list' ? 'font-medium' : ''}`}
-            style={{ backgroundColor: dealView === 'list' ? theme.accent.light : 'transparent', color: dealView === 'list' ? theme.accent.primary : theme.text.secondary }}>
+            style={{ backgroundColor: dealView === 'list' ? theme.accent.light : 'transparent', color: dealView === 'list' ? theme.text.primary : theme.text.secondary }}>
             List
           </button>
         </div>
@@ -1114,7 +1113,7 @@ export const CRMPage = ({
         </div>
       ) : (
         /* List view */
-        <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
+        <GlassCard noPadding className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -1173,7 +1172,7 @@ export const CRMPage = ({
               </tbody>
             </table>
           </div>
-        </div>
+        </GlassCard>
       )}
     </div>
   );
@@ -1185,19 +1184,19 @@ export const CRMPage = ({
         <div className="relative flex-1">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.secondary }} />
           <input type="text" placeholder="Search contacts..." value={contactSearch} onChange={e => { setContactSearch(e.target.value); setContactPage(1); }}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border text-sm" style={inputStyle} />
+            className="w-full pl-10 pr-4 py-2 rounded-lg border text-sm glass-card" style={inputStyle} />
         </div>
         <select value={contactTagFilter} onChange={e => { setContactTagFilter(e.target.value); setContactPage(1); }} className={selectClasses} style={inputStyle}>
           <option value="all">All Tags</option>
           {allTags.map(tag => <option key={tag} value={tag}>{tag}</option>)}
         </select>
         {hasPermission(currentUser?.role, 'crm.contacts.manage') && (
-          <button onClick={() => setShowNewContactDrawer(true)} className={btnOutline} style={{ borderColor: theme.accent.primary, color: theme.accent.primary }}>
+          <button onClick={() => setShowNewContactDrawer(true)} className={`${btnPrimary} btn-primary`} style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <UserPlus size={16} /> Add Contact
           </button>
         )}
         {hasPermission(currentUser?.role, 'crm.import') && (
-          <button onClick={() => contactFileInputRef.current?.click()} className={btnOutline} style={{ borderColor: theme.border.primary, color: theme.text.primary }}>
+          <button onClick={() => contactFileInputRef.current?.click()} className={`${btnOutline} btn-outline`} style={{ borderColor: theme.border.primary, color: theme.text.primary }}>
             <Upload size={16} /> Import
           </button>
         )}
@@ -1218,7 +1217,7 @@ export const CRMPage = ({
               exportToCSV(exportData, 'crm_contacts');
               addToast({ type: 'success', message: `Exported ${exportData.length} contacts to CSV` });
             }}
-            className={btnOutline}
+            className={`${btnOutline} btn-outline`}
             style={{ borderColor: theme.border.primary, color: theme.text.primary }}
           >
             <Download size={16} /> Export
@@ -1247,7 +1246,7 @@ export const CRMPage = ({
         <EmptyState icon={Users} title="No contacts found" description="Try adjusting your search or filters" theme={theme} />
       ) : (
         <>
-          <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -1310,14 +1309,14 @@ export const CRMPage = ({
                 </tbody>
               </table>
             </div>
-          </div>
+          </GlassCard>
           <Pagination currentPage={contactPage} totalPages={Math.ceil(filteredContacts.length / itemsPerPage)} onPageChange={setContactPage} />
         </>
       )}
 
       {/* Contact Detail Panel */}
       {selectedContact && (
-        <div className="p-5 rounded-2xl border space-y-4" style={cardStyle}>
+        <GlassCard className="space-y-4">
           <div className="flex items-start justify-between">
             <div>
               <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>{selectedContact.name}</h3>
@@ -1356,7 +1355,7 @@ export const CRMPage = ({
               )}
             </div>
           </div>
-        </div>
+        </GlassCard>
       )}
     </div>
   );
@@ -1366,11 +1365,11 @@ export const CRMPage = ({
     <div className="space-y-6">
       <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
         {[
-          { label: 'Scheduled', count: activities.filter(a => a.status === 'scheduled').length, color: '#3B82F6' },
-          { label: 'Completed', count: activities.filter(a => a.status === 'completed').length, color: '#10B981' },
-          { label: 'Overdue', count: activities.filter(a => a.status === 'overdue').length, color: '#EF4444' },
+          { label: 'Scheduled', count: activities.filter(a => a.status === 'scheduled').length, color: theme.accent.primary },
+          { label: 'Completed', count: activities.filter(a => a.status === 'completed').length, color: theme.status.success },
+          { label: 'Overdue', count: activities.filter(a => a.status === 'overdue').length, color: theme.status.error },
         ].map(item => (
-          <div key={item.label} className="p-4 rounded-xl border flex items-center gap-3" style={cardStyle}>
+          <GlassCard key={item.label} className="flex items-center gap-3" style={{ padding: '1rem' }}>
             <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${item.color}15` }}>
               <span className="text-lg font-bold" style={{ color: item.color }}>{item.count}</span>
             </div>
@@ -1378,7 +1377,7 @@ export const CRMPage = ({
               <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{item.label}</p>
               <p className="text-xs" style={{ color: theme.text.secondary }}>activities</p>
             </div>
-          </div>
+          </GlassCard>
         ))}
       </div>
 
@@ -1386,7 +1385,7 @@ export const CRMPage = ({
         <div className="relative flex-1">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.secondary }} />
           <input type="text" placeholder="Search activities..." value={activitySearch} onChange={e => { setActivitySearch(e.target.value); setActivityPage(1); }}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border text-sm" style={inputStyle} />
+            className="w-full pl-10 pr-4 py-2 rounded-lg border text-sm glass-card" style={inputStyle} />
         </div>
         <select value={activityTypeFilter} onChange={e => { setActivityTypeFilter(e.target.value); setActivityPage(1); }} className={selectClasses} style={inputStyle}>
           <option value="all">All Types</option>
@@ -1399,12 +1398,12 @@ export const CRMPage = ({
           <option value="overdue">Overdue</option>
         </select>
         {hasPermission(currentUser?.role, 'crm.activities.manage') && (
-          <button onClick={() => setShowNewActivityDrawer(true)} className={btnOutline} style={{ borderColor: theme.accent.primary, color: theme.accent.primary }}>
+          <button onClick={() => setShowNewActivityDrawer(true)} className={`${btnPrimary} btn-primary`} style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <Plus size={16} /> Add Activity
           </button>
         )}
         {hasPermission(currentUser?.role, 'crm.import') && (
-          <button onClick={() => activityFileInputRef.current?.click()} className={btnOutline} style={{ borderColor: theme.border.primary, color: theme.text.primary }}>
+          <button onClick={() => activityFileInputRef.current?.click()} className={`${btnOutline} btn-outline`} style={{ borderColor: theme.border.primary, color: theme.text.primary }}>
             <Upload size={16} /> Import
           </button>
         )}
@@ -1423,7 +1422,7 @@ export const CRMPage = ({
               exportToCSV(exportData, 'crm_activities');
               addToast({ type: 'success', message: `Exported ${exportData.length} activities to CSV` });
             }}
-            className={btnOutline}
+            className={`${btnOutline} btn-outline`}
             style={{ borderColor: theme.border.primary, color: theme.text.primary }}
           >
             <Download size={16} /> Export
@@ -1452,7 +1451,7 @@ export const CRMPage = ({
         <EmptyState icon={Calendar} title="No activities found" description="Try adjusting your filters" theme={theme} />
       ) : (
         <>
-          <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -1467,9 +1466,9 @@ export const CRMPage = ({
                 </thead>
                 <tbody>
                   {paginatedActivities.map(act => (
-                    <tr key={act.id} className={`border-t ${act.status === 'overdue' ? '' : ''}`} style={{ borderColor: theme.border.primary, backgroundColor: act.status === 'overdue' ? `${theme.status?.error || '#EF4444'}08` : 'transparent' }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = act.status === 'overdue' ? `${theme.status?.error || '#EF4444'}12` : theme.bg.hover}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = act.status === 'overdue' ? `${theme.status?.error || '#EF4444'}08` : 'transparent'}>
+                    <tr key={act.id} className={`border-t ${act.status === 'overdue' ? '' : ''}`} style={{ borderColor: theme.border.primary, backgroundColor: act.status === 'overdue' ? `${theme.status.error}08` : 'transparent' }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = act.status === 'overdue' ? `${theme.status.error}12` : theme.bg.hover}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = act.status === 'overdue' ? `${theme.status.error}08` : 'transparent'}>
                       <td className="px-4 py-3">
                         <input type="checkbox" checked={selectedActivities.includes(act.id)} onChange={() => toggleSelect('activity', act.id)} className="cursor-pointer" />
                       </td>
@@ -1489,14 +1488,14 @@ export const CRMPage = ({
                       <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{act.contactName || '—'}</td>
                       <td className="px-4 py-3 text-xs" style={{ color: theme.text.secondary }}>{act.dealTitle || '—'}</td>
                       <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{act.assignedTo}</td>
-                      <td className="px-4 py-3 text-xs" style={{ color: act.status === 'overdue' ? '#EF4444' : theme.text.secondary }}>
+                      <td className="px-4 py-3 text-xs" style={{ color: act.status === 'overdue' ? theme.status.error : theme.text.secondary }}>
                         {act.status === 'overdue' && <AlertTriangle size={16} className="inline mr-1" />}
                         {act.dueDate}
                       </td>
                       <td className="px-4 py-3">
                         <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{
-                          backgroundColor: act.status === 'completed' ? 'rgba(16, 185, 129, 0.15)' : act.status === 'overdue' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(59, 130, 246, 0.15)',
-                          color: act.status === 'completed' ? '#10B981' : act.status === 'overdue' ? '#EF4444' : '#3B82F6',
+                          backgroundColor: act.status === 'completed' ? `${theme.status.success}20` : act.status === 'overdue' ? `${theme.status.error}20` : `${theme.accent.primary}20`,
+                          color: act.status === 'completed' ? theme.status.success : act.status === 'overdue' ? theme.status.error : theme.accent.primary,
                         }}>
                           {act.status}
                         </span>
@@ -1520,7 +1519,7 @@ export const CRMPage = ({
                 </tbody>
               </table>
             </div>
-          </div>
+          </GlassCard>
           <Pagination currentPage={activityPage} totalPages={Math.ceil(filteredActivities.length / itemsPerPage)} onPageChange={setActivityPage} />
         </>
       )}
@@ -1530,11 +1529,11 @@ export const CRMPage = ({
   // ============ REPORTS VIEW ============
   const renderReports = () => {
     const conversionFunnel = [
-      { stage: 'Leads', count: leads.length, color: '#3B82F6' },
-      { stage: 'Qualified', count: leads.filter(l => l.status === 'qualified').length, color: '#8B5CF6' },
-      { stage: 'Deals Created', count: deals.length, color: '#F59E0B' },
+      { stage: 'Leads', count: leads.length, color: theme.accent.primary },
+      { stage: 'Qualified', count: leads.filter(l => l.status === 'qualified').length, color: theme.chart?.violet || '#8B5CF6' },
+      { stage: 'Deals Created', count: deals.length, color: theme.status.warning },
       { stage: 'Proposals', count: deals.filter(d => ['proposal', 'negotiation', 'closed_won'].includes(d.stage)).length, color: '#F97316' },
-      { stage: 'Won', count: deals.filter(d => d.stage === 'closed_won').length, color: '#10B981' },
+      { stage: 'Won', count: deals.filter(d => d.stage === 'closed_won').length, color: theme.status.success },
     ];
     const maxCount = Math.max(...conversionFunnel.map(s => s.count));
 
@@ -1549,7 +1548,7 @@ export const CRMPage = ({
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Conversion Funnel */}
-          <div className="p-5 rounded-2xl border" style={cardStyle}>
+          <GlassCard>
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Conversion Funnel</h3>
             <div className="space-y-3">
               {conversionFunnel.map((item) => (
@@ -1567,10 +1566,10 @@ export const CRMPage = ({
                 </div>
               ))}
             </div>
-          </div>
+          </GlassCard>
 
           {/* Pipeline Value by Stage */}
-          <div className="p-5 rounded-2xl border" style={cardStyle}>
+          <GlassCard>
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Pipeline Value by Stage</h3>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={pipelineChartData} layout="vertical">
@@ -1583,12 +1582,12 @@ export const CRMPage = ({
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          </GlassCard>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Deals Over Time */}
-          <div className="p-5 rounded-2xl border" style={cardStyle}>
+          <GlassCard>
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Deals Won vs Lost</h3>
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={crmMonthlyData}>
@@ -1606,10 +1605,10 @@ export const CRMPage = ({
                 <Area type="monotone" dataKey="lost" stroke="#EF4444" fill="transparent" strokeWidth={2} name="Lost" />
               </AreaChart>
             </ResponsiveContainer>
-          </div>
+          </GlassCard>
 
           {/* Activity Metrics */}
-          <div className="p-5 rounded-2xl border" style={cardStyle}>
+          <GlassCard>
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Activity by Type</h3>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={activityBreakdownData}>
@@ -1622,11 +1621,11 @@ export const CRMPage = ({
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          </GlassCard>
         </div>
 
         {/* Sales Team Performance */}
-        <div className="p-5 rounded-2xl border" style={cardStyle}>
+        <GlassCard>
           <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Sales Team Performance</h3>
           <div className="rounded-xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
             <table className="w-full">
@@ -1649,7 +1648,7 @@ export const CRMPage = ({
                       <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{memberLeads}</td>
                       <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{memberDeals.length}</td>
                       <td className="px-4 py-3 font-medium" style={{ color: theme.text.primary }}>GH₵ {memberDeals.reduce((s, d) => s + d.value, 0).toLocaleString()}</td>
-                      <td className="px-4 py-3 font-medium" style={{ color: '#10B981' }}>GH₵ {memberWon.reduce((s, d) => s + d.value, 0).toLocaleString()}</td>
+                      <td className="px-4 py-3 font-medium" style={{ color: theme.status.success }}>GH₵ {memberWon.reduce((s, d) => s + d.value, 0).toLocaleString()}</td>
                       <td className="px-4 py-3" style={{ color: theme.text.secondary }}>{memberActivities}</td>
                     </tr>
                   );
@@ -1657,7 +1656,7 @@ export const CRMPage = ({
               </tbody>
             </table>
           </div>
-        </div>
+        </GlassCard>
       </div>
     );
   };
@@ -1681,10 +1680,10 @@ export const CRMPage = ({
           </p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setShowExport(true)} className={btnOutline} style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => setShowExport(true)} className={`${btnOutline} btn-outline`} style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <Download size={16} /> Export
           </button>
-          <button onClick={() => addToast({ type: 'info', message: 'Refreshing CRM data...' })} className={btnOutline} style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => { setShowRefreshModal(true); setRefreshOptions({ leads: true, deals: true, contacts: true, activities: true, resetToDemo: false }); }} className={`${btnOutline} btn-outline`} style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <RefreshCw size={16} /> Refresh
           </button>
         </div>
@@ -1734,6 +1733,63 @@ export const CRMPage = ({
         variant="danger"
         confirmLabel="Delete"
       />
+
+      {/* Refresh Data Modal */}
+      {showRefreshModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowRefreshModal(false)}>
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative w-full max-w-md rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Refresh CRM Data</h3>
+              <button onClick={() => setShowRefreshModal(false)} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
+            </div>
+            <p className="text-sm" style={{ color: theme.text.muted }}>Select which data sources to refresh. Checking "Reset to demo data" will restore sample records.</p>
+            <div className="space-y-2">
+              {[
+                { key: 'leads', label: 'Leads', count: leads.length },
+                { key: 'deals', label: 'Deals', count: deals.length },
+                { key: 'contacts', label: 'Contacts', count: contacts.length },
+                { key: 'activities', label: 'Activities', count: activities.length },
+              ].map(({ key, label, count }) => (
+                <div key={key} className="flex items-center justify-between py-2.5 px-3 rounded-xl border" style={{ borderColor: theme.border.primary, backgroundColor: refreshOptions[key] ? `${theme.accent.primary}08` : 'transparent' }}>
+                  <div className="flex items-center gap-3">
+                    <input type="checkbox" checked={refreshOptions[key]} onChange={() => setRefreshOptions(p => ({ ...p, [key]: !p[key] }))} className="rounded" style={{ accentColor: theme.accent.primary }} />
+                    <span className="text-sm" style={{ color: theme.text.primary }}>{label}</span>
+                  </div>
+                  <span className="text-xs px-2 py-0.5 rounded-lg" style={{ backgroundColor: theme.bg.tertiary, color: theme.text.muted }}>{count} records</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center justify-between py-2.5 px-3 rounded-xl border" style={{ borderColor: `${theme.status.warning}30`, backgroundColor: `${theme.status.warning}08` }}>
+              <div className="flex items-center gap-3">
+                <input type="checkbox" checked={refreshOptions.resetToDemo} onChange={() => setRefreshOptions(p => ({ ...p, resetToDemo: !p.resetToDemo }))} className="rounded" style={{ accentColor: theme.status.warning }} />
+                <div>
+                  <span className="text-sm" style={{ color: theme.text.primary }}>Reset to demo data</span>
+                  <p className="text-xs" style={{ color: theme.text.muted }}>Replaces selected sources with sample records</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button onClick={() => setShowRefreshModal(false)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => {
+                if (refreshOptions.resetToDemo) {
+                  if (refreshOptions.leads) setLeads(crmLeads);
+                  if (refreshOptions.deals) setDeals(crmDeals);
+                  if (refreshOptions.contacts) setContacts(crmContacts);
+                  if (refreshOptions.activities) setActivities(crmActivities);
+                  addToast({ type: 'success', message: 'CRM data reset to demo data' });
+                } else {
+                  const sources = ['leads', 'deals', 'contacts', 'activities'].filter(k => refreshOptions[k]);
+                  addToast({ type: 'success', message: `Refreshed ${sources.join(', ')} data` });
+                }
+                setShowRefreshModal(false);
+              }} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+                {refreshOptions.resetToDemo ? 'Reset & Refresh' : 'Refresh Data'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

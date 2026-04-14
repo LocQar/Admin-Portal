@@ -3,9 +3,10 @@ import {
     Truck, Wrench, Fuel, AlertTriangle, Search, Filter,
     MoreVertical, Calendar, CheckCircle2, AlertCircle,
     ChevronRight, MapPin, Gauge, Upload, Download,
-    LayoutGrid, List
+    LayoutGrid, List, ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 import { MetricCard, StatusBadge } from '../components/ui';
 import { NewVehicleDrawer } from '../components/drawers';
 import { vehiclesData, maintenanceLogsData, fuelLogsData } from '../constants/mockData';
@@ -17,7 +18,14 @@ export const FleetPage = ({ addToast }) => {
     const [showNewVehicle, setShowNewVehicle] = useState(false);
     const [vehicles, setVehicles] = useState(vehiclesData);
     const [view, setView] = useState('grid');
+    const [sortBy, setSortBy] = useState('plate');
+    const [sortDir, setSortDir] = useState('asc');
     const fileInputRef = React.useRef(null);
+
+    const toggleSort = (field) => {
+        if (sortBy === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+        else { setSortBy(field); setSortDir('asc'); }
+    };
 
     // CSV Export
     const exportToCSV = (data, filename) => {
@@ -93,6 +101,14 @@ export const FleetPage = ({ addToast }) => {
         v.driver.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const sortedVehicles = [...filteredVehicles].sort((a, b) => {
+        let av = a[sortBy], bv = b[sortBy];
+        if (typeof av === 'string') { av = av.toLowerCase(); bv = (bv || '').toLowerCase(); }
+        if (av < bv) return sortDir === 'asc' ? -1 : 1;
+        if (av > bv) return sortDir === 'asc' ? 1 : -1;
+        return 0;
+    });
+
     return (
         <div className="p-4 md:p-6 space-y-6">
             {/* Header */}
@@ -102,9 +118,7 @@ export const FleetPage = ({ addToast }) => {
                     <p style={{ color: theme.text.muted }}>Monitor vehicle health, maintenance, and fuel costs</p>
                 </div>
                 <div className="flex gap-2">
-                    <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm transition-colors" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}
-                        onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.bg.hover}
-                        onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <button onClick={() => fileInputRef.current?.click()} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl border text-sm transition-colors" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
                         <Upload size={16} /> Import
                     </button>
                     <button onClick={() => {
@@ -120,14 +134,12 @@ export const FleetPage = ({ addToast }) => {
                         }));
                         exportToCSV(exportData, 'fleet_vehicles');
                         addToast?.({ type: 'success', message: `Exported ${exportData.length} vehicles to CSV` });
-                    }} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm transition-colors" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}
-                        onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.bg.hover}
-                        onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    }} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl border text-sm transition-colors" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
                         <Download size={16} /> Export
                     </button>
                     <button
                         onClick={() => setShowNewVehicle(true)}
-                        className="px-4 py-2 rounded-xl font-medium hover:opacity-90 transition-opacity"
+                        className="btn-primary px-4 py-2 rounded-xl font-medium hover:opacity-90 transition-opacity"
                         style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}
                     >
                         + Add Vehicle
@@ -175,7 +187,7 @@ export const FleetPage = ({ addToast }) => {
             </div>
 
             {/* Main Content */}
-            <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <GlassCard noPadding>
                 {/* Tabs */}
                 <div className="flex border-b" style={{ borderColor: theme.border.primary }}>
                     {['Overview', 'Maintenance', 'Fuel Logs'].map(tab => (
@@ -185,7 +197,7 @@ export const FleetPage = ({ addToast }) => {
                             className="px-6 py-3 text-sm font-medium border-b-2 transition-colors"
                             style={{
                                 borderColor: activeTab === tab.toLowerCase() ? theme.accent.primary : 'transparent',
-                                color: activeTab === tab.toLowerCase() ? theme.accent.primary : theme.text.secondary
+                                color: activeTab === tab.toLowerCase() ? theme.text.primary : theme.text.secondary
                             }}
                         >
                             {tab}
@@ -206,7 +218,7 @@ export const FleetPage = ({ addToast }) => {
                                         placeholder="Search by plate or driver..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2 rounded-xl border bg-transparent"
+                                        className="glass-card w-full pl-10 pr-4 py-2 rounded-xl border bg-transparent"
                                         style={{ borderColor: theme.border.primary, color: theme.text.primary }}
                                     />
                                 </div>
@@ -228,7 +240,7 @@ export const FleetPage = ({ addToast }) => {
                             {/* Grid View */}
                             {view === 'grid' && (
                             <div className="grid gap-4">
-                                {filteredVehicles.map(vehicle => (
+                                {sortedVehicles.map(vehicle => (
                                     <div
                                         key={vehicle.id}
                                         className="p-4 rounded-xl border flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-white/5 transition-colors cursor-pointer"
@@ -254,8 +266,8 @@ export const FleetPage = ({ addToast }) => {
                                                 {vehicle.mileage.toLocaleString()} km
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Fuel size={16} style={{ color: vehicle.fuelLevel < 30 ? '#D48E8A' : theme.icon.primary }} />
-                                                <span style={{ color: vehicle.fuelLevel < 30 ? '#D48E8A' : theme.text.secondary }}>{vehicle.fuelLevel}%</span>
+                                                <Fuel size={16} style={{ color: vehicle.fuelLevel < 30 ? theme.status.error : theme.icon.primary }} />
+                                                <span style={{ color: vehicle.fuelLevel < 30 ? theme.status.error : theme.text.secondary }}>{vehicle.fuelLevel}%</span>
                                             </div>
                                             <StatusBadge status={vehicle.status} />
                                         </div>
@@ -276,18 +288,16 @@ export const FleetPage = ({ addToast }) => {
                             {view === 'list' && (
                             <div className="rounded-2xl border overflow-hidden" style={{ borderColor: theme.border.primary }}>
                                 <div className="grid text-xs font-semibold uppercase px-4 py-3"
-                                    style={{ gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr 1fr auto', backgroundColor: theme.bg.tertiary, color: theme.text.muted, borderBottom: `1px solid ${theme.border.primary}` }}>
-                                    <span>Plate / Model</span>
-                                    <span>Type</span>
-                                    <span>Driver</span>
-                                    <span>Status</span>
-                                    <span>Mileage</span>
-                                    <span>Fuel</span>
-                                    <span>Next Service</span>
+                                    style={{ gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr 1fr auto', backgroundColor: theme.bg.tertiary, borderBottom: `1px solid ${theme.border.primary}` }}>
+                                    {[['plate', 'Plate'], ['type', 'Type'], ['driver', 'Driver'], ['status', 'Status'], ['health', 'Health %'], ['location', 'Location'], ['lastMaintenance', 'Last Maintenance']].map(([field, label]) => (
+                                        <span key={field} className="cursor-pointer select-none flex items-center gap-1" style={{ color: sortBy === field ? theme.accent.primary : theme.text.muted }} onClick={() => toggleSort(field)}>
+                                            {label}{sortBy === field && (sortDir === 'asc' ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />)}
+                                        </span>
+                                    ))}
                                 </div>
-                                {filteredVehicles.map((vehicle, i) => (
+                                {sortedVehicles.map((vehicle, i) => (
                                     <div key={vehicle.id} className="grid items-center px-4 py-3 cursor-pointer group hover:bg-white/5 transition-colors"
-                                        style={{ gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr 1fr auto', backgroundColor: theme.bg.card, borderBottom: i < filteredVehicles.length - 1 ? `1px solid ${theme.border.primary}` : 'none' }}>
+                                        style={{ gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr 1fr auto', backgroundColor: theme.bg.card, borderBottom: i < sortedVehicles.length - 1 ? `1px solid ${theme.border.primary}` : 'none' }}>
                                         <div>
                                             <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>{vehicle.plate}</p>
                                             <p className="text-xs" style={{ color: theme.text.muted }}>{vehicle.model}</p>
@@ -296,20 +306,22 @@ export const FleetPage = ({ addToast }) => {
                                         <span className="text-sm" style={{ color: theme.text.secondary }}>{vehicle.driver || '—'}</span>
                                         <StatusBadge status={vehicle.status} />
                                         <div className="flex items-center gap-1.5">
-                                            <Gauge size={13} style={{ color: theme.text.muted }} />
-                                            <span className="text-sm font-mono" style={{ color: theme.text.secondary }}>{vehicle.mileage.toLocaleString()}</span>
+                                            <div className="w-16 h-1.5 rounded-full" style={{ backgroundColor: theme.border.primary }}>
+                                                <div className="h-full rounded-full" style={{ width: `${vehicle.health}%`, backgroundColor: vehicle.health >= 80 ? theme.status.success : vehicle.health >= 50 ? theme.status.warning : theme.status.error }} />
+                                            </div>
+                                            <span className="text-sm font-mono" style={{ color: vehicle.health >= 80 ? theme.status.success : vehicle.health >= 50 ? theme.status.warning : theme.status.error }}>{vehicle.health}%</span>
                                         </div>
                                         <div className="flex items-center gap-1.5">
-                                            <Fuel size={13} style={{ color: vehicle.fuelLevel < 30 ? '#D48E8A' : theme.text.muted }} />
-                                            <span className="text-sm" style={{ color: vehicle.fuelLevel < 30 ? '#D48E8A' : theme.text.secondary }}>{vehicle.fuelLevel}%</span>
+                                            <MapPin size={13} style={{ color: theme.text.muted }} />
+                                            <span className="text-sm truncate" style={{ color: theme.text.secondary }}>{vehicle.location || '—'}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs" style={{ color: theme.text.muted }}>{vehicle.nextService}</span>
+                                            <span className="text-xs" style={{ color: theme.text.muted }}>{vehicle.lastMaintenance || '—'}</span>
                                             <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: theme.text.muted }} />
                                         </div>
                                     </div>
                                 ))}
-                                {filteredVehicles.length === 0 && (
+                                {sortedVehicles.length === 0 && (
                                     <p className="p-8 text-center text-sm" style={{ color: theme.text.muted }}>No vehicles found</p>
                                 )}
                             </div>
@@ -354,15 +366,15 @@ export const FleetPage = ({ addToast }) => {
                                 </div>
                                 <div className="p-4 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                                     <p className="text-xs" style={{ color: theme.text.muted }}>Total Gallons</p>
-                                    <p className="text-xl font-bold" style={{ color: '#7EA8C9' }}>{fuelLogsData.reduce((s, f) => s + f.gallons, 0)}</p>
+                                    <p className="text-xl font-bold" style={{ color: theme.accent.primary }}>{fuelLogsData.reduce((s, f) => s + f.gallons, 0)}</p>
                                 </div>
                                 <div className="p-4 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                                     <p className="text-xs" style={{ color: theme.text.muted }}>Avg Cost/Gallon</p>
-                                    <p className="text-xl font-bold" style={{ color: '#D4AA5A' }}>GH₵ {(fuelLogsData.reduce((s, f) => s + f.cost, 0) / fuelLogsData.reduce((s, f) => s + f.gallons, 0)).toFixed(0)}</p>
+                                    <p className="text-xl font-bold" style={{ color: theme.status.warning }}>GH₵ {(fuelLogsData.reduce((s, f) => s + f.cost, 0) / fuelLogsData.reduce((s, f) => s + f.gallons, 0)).toFixed(0)}</p>
                                 </div>
                                 <div className="p-4 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
                                     <p className="text-xs" style={{ color: theme.text.muted }}>Entries</p>
-                                    <p className="text-xl font-bold" style={{ color: '#81C995' }}>{fuelLogsData.length}</p>
+                                    <p className="text-xl font-bold" style={{ color: theme.status.success }}>{fuelLogsData.length}</p>
                                 </div>
                             </div>
 
@@ -390,7 +402,7 @@ export const FleetPage = ({ addToast }) => {
                                                 </td>
                                                 <td className="p-3" style={{ color: theme.text.secondary }}>{log.date}</td>
                                                 <td className="p-3">
-                                                    <span className="font-medium" style={{ color: '#7EA8C9' }}>{log.gallons} gal</span>
+                                                    <span className="font-medium" style={{ color: theme.accent.primary }}>{log.gallons} gal</span>
                                                 </td>
                                                 <td className="p-3">
                                                     <span className="font-medium" style={{ color: theme.accent.primary }}>GH₵ {log.cost}</span>
@@ -421,7 +433,7 @@ export const FleetPage = ({ addToast }) => {
                                             <div key={vehicle.id} className="flex items-center gap-3">
                                                 <span className="text-sm w-28 shrink-0 truncate" style={{ color: theme.text.primary }}>{vehicle.plate}</span>
                                                 <div className="flex-1 h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                                                    <div className="h-full rounded-full" style={{ width: `${maxCost > 0 ? (totalCost / maxCost) * 100 : 0}%`, backgroundColor: '#D4AA5A' }} />
+                                                    <div className="h-full rounded-full" style={{ width: `${maxCost > 0 ? (totalCost / maxCost) * 100 : 0}%`, backgroundColor: theme.status.warning }} />
                                                 </div>
                                                 <span className="text-sm font-mono w-24 text-right" style={{ color: theme.text.secondary }}>GH₵ {totalCost.toLocaleString()}</span>
                                                 <span className="text-xs w-16 text-right" style={{ color: theme.text.muted }}>{totalGallons} gal</span>
@@ -433,7 +445,7 @@ export const FleetPage = ({ addToast }) => {
                         </div>
                     )}
                 </div>
-            </div>
+            </GlassCard>
 
             <NewVehicleDrawer isOpen={showNewVehicle} onClose={() => setShowNewVehicle(false)} />
         </div>

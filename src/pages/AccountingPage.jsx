@@ -3,6 +3,7 @@ import { Download, Search, Plus, ArrowUpRight, ArrowDownRight, DollarSign, Bankn
 import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, LineChart, Line } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
 import { MetricCard } from '../components/ui';
+import { GlassCard } from '../components/ui/Card';
 import { StatusBadge } from '../components/ui/Badge';
 import { transactionsData, invoicesData, pricingRevenueData, terminalData } from '../constants/mockData';
 
@@ -24,13 +25,13 @@ const NewTransactionModal = ({ onClose, onSave, theme }) => {
     return Object.keys(e).length === 0;
   };
 
-  const inputStyle = (f) => ({ backgroundColor: 'transparent', borderColor: errors[f] ? '#D48E8A' : theme.border.primary, color: theme.text.primary });
+  const inputStyle = (f) => ({ backgroundColor: 'transparent', borderColor: errors[f] ? theme.status.error : theme.border.primary, color: theme.text.primary });
   const lbl = "text-xs font-semibold uppercase block mb-1.5";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-md rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+      <div className="relative w-full max-w-md rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Record Transaction</h3>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
@@ -39,18 +40,18 @@ const NewTransactionModal = ({ onClose, onSave, theme }) => {
           <div>
             <label className={lbl} style={{ color: theme.text.muted }}>Description *</label>
             <input value={form.description} onChange={e => update('description', e.target.value)} placeholder="Package delivery - LQ-2024-..." className="w-full px-3 py-2.5 rounded-xl border text-sm" style={inputStyle('description')} />
-            {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
+            {errors.description && <p className="text-xs mt-1" style={{ color: theme.status.error }}>{errors.description}</p>}
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={lbl} style={{ color: theme.text.muted }}>Customer *</label>
               <input value={form.customer} onChange={e => update('customer', e.target.value)} placeholder="Customer name" className="w-full px-3 py-2.5 rounded-xl border text-sm" style={inputStyle('customer')} />
-              {errors.customer && <p className="text-xs text-red-500 mt-1">{errors.customer}</p>}
+              {errors.customer && <p className="text-xs mt-1" style={{ color: theme.status.error }}>{errors.customer}</p>}
             </div>
             <div>
               <label className={lbl} style={{ color: theme.text.muted }}>Amount (GH₵) *</label>
               <input type="number" value={form.amount} onChange={e => update('amount', e.target.value)} placeholder="0.00" className="w-full px-3 py-2.5 rounded-xl border text-sm" style={inputStyle('amount')} />
-              {errors.amount && <p className="text-xs text-red-500 mt-1">{errors.amount}</p>}
+              {errors.amount && <p className="text-xs mt-1" style={{ color: theme.status.error }}>{errors.amount}</p>}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -58,7 +59,7 @@ const NewTransactionModal = ({ onClose, onSave, theme }) => {
               <label className={lbl} style={{ color: theme.text.muted }}>Type</label>
               <div className="flex gap-2">
                 {TXN_TYPES.map(t => (
-                  <button key={t} onClick={() => update('type', t)} className="flex-1 py-2 rounded-xl text-sm capitalize" style={{ backgroundColor: form.type === t ? (t === 'credit' ? '#81C99520' : '#D48E8A20') : theme.bg.tertiary, color: form.type === t ? (t === 'credit' ? '#81C995' : '#D48E8A') : theme.text.muted, border: `1px solid ${form.type === t ? (t === 'credit' ? '#81C99540' : '#D48E8A40') : theme.border.primary}` }}>{t}</button>
+                  <button key={t} onClick={() => update('type', t)} className="flex-1 py-2 rounded-xl text-sm capitalize" style={{ backgroundColor: form.type === t ? (t === 'credit' ? `${theme.status.success}20` : `${theme.status.error}20`) : theme.bg.tertiary, color: form.type === t ? (t === 'credit' ? theme.status.success : theme.status.error) : theme.text.muted, border: `1px solid ${form.type === t ? (t === 'credit' ? `${theme.status.success}40` : `${theme.status.error}40`) : theme.border.primary}` }}>{t}</button>
                 ))}
               </div>
             </div>
@@ -75,8 +76,8 @@ const NewTransactionModal = ({ onClose, onSave, theme }) => {
           </div>
         </div>
         <div className="flex gap-3 pt-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={() => { if (validate()) onSave(form); }} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>Record Transaction</button>
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={() => { if (validate()) onSave(form); }} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>Record Transaction</button>
         </div>
       </div>
     </div>
@@ -98,13 +99,13 @@ const InvoiceDrawer = ({ invoice, onClose, onSave, theme }) => {
     return Object.keys(e).length === 0;
   };
 
-  const inputStyle = (f) => ({ backgroundColor: 'transparent', borderColor: errors[f] ? '#D48E8A' : theme.border.primary, color: theme.text.primary });
+  const inputStyle = (f) => ({ backgroundColor: 'transparent', borderColor: errors[f] ? theme.status.error : theme.border.primary, color: theme.text.primary });
   const lbl = "text-xs font-semibold uppercase block mb-1.5";
 
   return (
     <div className="fixed inset-0 z-50 flex">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="absolute inset-y-0 right-0 w-full sm:w-[440px] border-l shadow-2xl flex flex-col" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary }}>
+      <div className="absolute inset-y-0 right-0 w-full sm:w-[440px] border-l shadow-2xl flex flex-col" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)' }}>
         <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: theme.border.primary }}>
           <div>
             <p className="text-xs" style={{ color: theme.text.muted }}>{isEdit ? 'EDIT INVOICE' : 'NEW INVOICE'}</p>
@@ -116,7 +117,7 @@ const InvoiceDrawer = ({ invoice, onClose, onSave, theme }) => {
           <div>
             <label className={lbl} style={{ color: theme.text.muted }}>Customer / Company *</label>
             <input value={form.customer} onChange={e => update('customer', e.target.value)} placeholder="Jumia Ghana" className="w-full px-3 py-2.5 rounded-xl border text-sm" style={inputStyle('customer')} />
-            {errors.customer && <p className="text-xs text-red-500 mt-1">{errors.customer}</p>}
+            {errors.customer && <p className="text-xs mt-1" style={{ color: theme.status.error }}>{errors.customer}</p>}
           </div>
           <div>
             <label className={lbl} style={{ color: theme.text.muted }}>Description</label>
@@ -125,7 +126,7 @@ const InvoiceDrawer = ({ invoice, onClose, onSave, theme }) => {
           <div>
             <label className={lbl} style={{ color: theme.text.muted }}>Amount (GH₵) *</label>
             <input type="number" value={form.amount} onChange={e => update('amount', e.target.value)} placeholder="0.00" className="w-full px-3 py-2.5 rounded-xl border text-sm" style={inputStyle('amount')} />
-            {errors.amount && <p className="text-xs text-red-500 mt-1">{errors.amount}</p>}
+            {errors.amount && <p className="text-xs mt-1" style={{ color: theme.status.error }}>{errors.amount}</p>}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -135,21 +136,21 @@ const InvoiceDrawer = ({ invoice, onClose, onSave, theme }) => {
             <div>
               <label className={lbl} style={{ color: theme.text.muted }}>Due Date *</label>
               <input type="date" value={form.dueDate} onChange={e => update('dueDate', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={inputStyle('dueDate')} />
-              {errors.dueDate && <p className="text-xs text-red-500 mt-1">{errors.dueDate}</p>}
+              {errors.dueDate && <p className="text-xs mt-1" style={{ color: theme.status.error }}>{errors.dueDate}</p>}
             </div>
           </div>
           <div>
             <label className={lbl} style={{ color: theme.text.muted }}>Status</label>
             <div className="flex gap-2">
-              {[['pending', '#D4AA5A'], ['paid', '#81C995'], ['overdue', '#D48E8A']].map(([s, c]) => (
+              {[['pending', theme.status.warning], ['paid', theme.status.success], ['overdue', theme.status.error]].map(([s, c]) => (
                 <button key={s} onClick={() => update('status', s)} className="flex-1 py-2.5 rounded-xl text-sm capitalize" style={{ backgroundColor: form.status === s ? `${c}15` : theme.bg.tertiary, color: form.status === s ? c : theme.text.muted, border: `1px solid ${form.status === s ? `${c}40` : theme.border.primary}` }}>{s}</button>
               ))}
             </div>
           </div>
         </div>
         <div className="p-4 border-t flex gap-3" style={{ borderColor: theme.border.primary }}>
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={() => { if (validate()) onSave(form); }} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={() => { if (validate()) onSave(form); }} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             {isEdit ? 'Save Changes' : 'Create Invoice'}
           </button>
         </div>
@@ -182,6 +183,8 @@ export const AccountingPage = ({
   const [showInvDrawer, setShowInvDrawer] = useState(false);
   const [editInvoice, setEditInvoice] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [reportModal, setReportModal] = useState(null);
+  const [reportForm, setReportForm] = useState({ dateFrom: '', dateTo: '', format: 'pdf', includeCharts: true });
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter(t => {
@@ -258,7 +261,7 @@ export const AccountingPage = ({
           <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Accounting</h1>
           <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Transactions'}</p>
         </div>
-        <button onClick={() => setShowExport?.(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+        <button onClick={() => setShowExport?.(true)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
           <Download size={16} /> Export
         </button>
       </div>
@@ -274,7 +277,7 @@ export const AccountingPage = ({
 
           {/* Header + New Txn */}
           <div className="flex flex-col md:flex-row gap-3">
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border flex-1" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <div className="glass-card flex items-center gap-3 px-4 py-3 rounded-xl border flex-1" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <Search size={16} style={{ color: theme.icon.muted }} />
               <input value={txnSearch} onChange={e => setTxnSearch(e.target.value)} placeholder="Search transactions..." className="flex-1 bg-transparent outline-none text-sm" style={{ color: theme.text.primary }} />
               {txnSearch && <button onClick={() => setTxnSearch('')} style={{ color: theme.text.muted }}><X size={16} /></button>}
@@ -284,14 +287,14 @@ export const AccountingPage = ({
                 <button key={v} onClick={() => setTxnStatusFilter(v)} className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ backgroundColor: txnStatusFilter === v ? theme.accent.primary : 'transparent', color: txnStatusFilter === v ? theme.accent.contrast : theme.text.muted }}>{l}</button>
               ))}
             </div>
-            <button onClick={() => setShowNewTxn(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={() => setShowNewTxn(true)} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={16} /> Record
             </button>
           </div>
 
           <p className="text-xs" style={{ color: theme.text.muted }}>{filteredTransactions.length} of {transactions.length} transactions</p>
 
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -313,7 +316,7 @@ export const AccountingPage = ({
                       <td className="p-4 hidden lg:table-cell"><span className="text-sm" style={{ color: theme.text.secondary }}>{t.description}</span></td>
                       <td className="p-4"><span style={{ color: theme.text.primary }}>{t.customer}</span></td>
                       <td className="p-4">
-                        <span className={`font-medium ${t.amount < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                        <span className="font-medium" style={{ color: t.amount < 0 ? theme.status.error : theme.status.success }}>
                           {t.amount < 0 ? '-' : '+'}GH₵ {Math.abs(t.amount).toLocaleString()}
                         </span>
                       </td>
@@ -321,7 +324,7 @@ export const AccountingPage = ({
                       <td className="p-4 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button onClick={() => setEditTxn(t)} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.accent.primary }} title="Edit"><Edit size={14} /></button>
-                          <button onClick={() => setDeleteConfirm({ type: 'txn', item: t })} className="p-1.5 rounded-lg hover:bg-white/5 text-red-400" title="Delete"><Trash2 size={14} /></button>
+                          <button onClick={() => setDeleteConfirm({ type: 'txn', item: t })} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.status.error }} title="Delete"><Trash2 size={14} /></button>
                         </div>
                       </td>
                     </tr>
@@ -330,14 +333,14 @@ export const AccountingPage = ({
                 </tbody>
               </table>
             </div>
-          </div>
+          </GlassCard>
         </>
       )}
 
       {activeSubMenu === 'Invoices' && (
         <>
           <div className="flex flex-col md:flex-row gap-3">
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border flex-1" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <div className="glass-card flex items-center gap-3 px-4 py-3 rounded-xl border flex-1" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <Search size={16} style={{ color: theme.icon.muted }} />
               <input value={invSearch} onChange={e => setInvSearch(e.target.value)} placeholder="Search invoices..." className="flex-1 bg-transparent outline-none text-sm" style={{ color: theme.text.primary }} />
               {invSearch && <button onClick={() => setInvSearch('')} style={{ color: theme.text.muted }}><X size={16} /></button>}
@@ -347,14 +350,14 @@ export const AccountingPage = ({
                 <button key={v} onClick={() => setInvStatusFilter(v)} className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ backgroundColor: invStatusFilter === v ? theme.accent.primary : 'transparent', color: invStatusFilter === v ? theme.accent.contrast : theme.text.muted }}>{l}</button>
               ))}
             </div>
-            <button onClick={() => { setEditInvoice(null); setShowInvDrawer(true); }} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+            <button onClick={() => { setEditInvoice(null); setShowInvDrawer(true); }} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
               <Plus size={16} /> Create Invoice
             </button>
           </div>
 
           <p className="text-xs" style={{ color: theme.text.muted }}>{filteredInvoices.length} of {invoices.length} invoices</p>
 
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <table className="w-full">
               <thead>
                 <tr style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
@@ -374,17 +377,17 @@ export const AccountingPage = ({
                     <td className="p-4"><span style={{ color: theme.text.primary }}>{inv.customer}</span></td>
                     <td className="p-4 hidden md:table-cell"><span className="text-sm" style={{ color: theme.text.muted }}>{inv.date}</span></td>
                     <td className="p-4 hidden md:table-cell">
-                      <span className={`text-sm ${inv.status === 'overdue' ? 'text-red-400 font-medium' : ''}`} style={{ color: inv.status !== 'overdue' ? theme.text.muted : undefined }}>{inv.dueDate}</span>
+                      <span className={`text-sm ${inv.status === 'overdue' ? 'font-medium' : ''}`} style={{ color: inv.status === 'overdue' ? theme.status.error : theme.text.muted }}>{inv.dueDate}</span>
                     </td>
                     <td className="p-4"><span className="font-medium" style={{ color: theme.text.primary }}>GH₵ {inv.amount.toLocaleString()}</span></td>
                     <td className="p-4"><StatusBadge status={inv.status} /></td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         {inv.status !== 'paid' && (
-                          <button onClick={() => markInvoicePaid(inv)} className="p-1.5 rounded-lg hover:bg-white/5 text-emerald-400" title="Mark Paid"><CheckCircle size={14} /></button>
+                          <button onClick={() => markInvoicePaid(inv)} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.status.success }} title="Mark Paid"><CheckCircle size={14} /></button>
                         )}
                         <button onClick={() => { setEditInvoice(inv); setShowInvDrawer(true); }} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.accent.primary }} title="Edit"><Edit size={14} /></button>
-                        <button onClick={() => setDeleteConfirm({ type: 'inv', item: inv })} className="p-1.5 rounded-lg hover:bg-white/5 text-red-400" title="Delete"><Trash2 size={14} /></button>
+                        <button onClick={() => setDeleteConfirm({ type: 'inv', item: inv })} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.status.error }} title="Delete"><Trash2 size={14} /></button>
                       </div>
                     </td>
                   </tr>
@@ -392,14 +395,14 @@ export const AccountingPage = ({
                 {filteredInvoices.length === 0 && <tr><td colSpan={7} className="p-8 text-center text-sm" style={{ color: theme.text.muted }}>No invoices found</td></tr>}
               </tbody>
             </table>
-          </div>
+          </GlassCard>
         </>
       )}
 
       {activeSubMenu === 'Reports' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <GlassCard>
               <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Revenue by SLA Tier</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={pricingRevenueData}>
@@ -407,14 +410,14 @@ export const AccountingPage = ({
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} labelStyle={{ color: theme.text.primary }} formatter={v => `GH₵ ${v.toLocaleString()}`} />
-                  <Bar dataKey="standard" stackId="a" fill={theme.chart?.stone || '#78716C'} name="Standard" />
-                  <Bar dataKey="express" stackId="a" fill={theme.chart?.amber || '#D4AA5A'} name="Express" />
-                  <Bar dataKey="rush" stackId="a" fill={theme.chart?.coral || '#D48E8A'} name="Rush" />
-                  <Bar dataKey="economy" stackId="a" fill={theme.chart?.green || '#81C995'} radius={[4, 4, 0, 0]} name="Economy" />
+                  <Bar dataKey="standard" stackId="a" fill={theme.chart?.stone || theme.text.muted} name="Standard" />
+                  <Bar dataKey="express" stackId="a" fill={theme.chart?.amber || theme.status.warning} name="Express" />
+                  <Bar dataKey="rush" stackId="a" fill={theme.chart?.coral || theme.status.error} name="Rush" />
+                  <Bar dataKey="economy" stackId="a" fill={theme.chart?.green || theme.status.success} radius={[4, 4, 0, 0]} name="Economy" />
                 </BarChart>
               </ResponsiveContainer>
-            </div>
-            <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            </GlassCard>
+            <GlassCard>
               <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Revenue by Terminal</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={terminalData}>
@@ -422,26 +425,26 @@ export const AccountingPage = ({
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: theme.text.muted, fontSize: 12 }} />
                   <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12 }} labelStyle={{ color: theme.text.primary }} />
-                  <Line type="monotone" dataKey="accra" stroke={theme.chart?.blue || '#7EA8C9'} strokeWidth={2} name="Accra Mall" />
-                  <Line type="monotone" dataKey="achimota" stroke={theme.chart?.green || '#81C995'} strokeWidth={2} name="Achimota Mall" />
-                  <Line type="monotone" dataKey="kotoka" stroke={theme.chart?.amber || '#D4AA5A'} strokeWidth={2} name="Kotoka T3" />
+                  <Line type="monotone" dataKey="accra" stroke={theme.chart?.blue || theme.accent.primary} strokeWidth={2} name="Accra Mall" />
+                  <Line type="monotone" dataKey="achimota" stroke={theme.chart?.green || theme.status.success} strokeWidth={2} name="Achimota Mall" />
+                  <Line type="monotone" dataKey="kotoka" stroke={theme.chart?.amber || theme.status.warning} strokeWidth={2} name="Kotoka T3" />
                 </LineChart>
               </ResponsiveContainer>
-            </div>
+            </GlassCard>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <GlassCard>
               <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Invoice Aging</h3>
               <div className="space-y-3">
-                {[['Paid', invoices.filter(i => i.status === 'paid').length, '#81C995'], ['Pending', invoices.filter(i => i.status === 'pending').length, '#D4AA5A'], ['Overdue', invoices.filter(i => i.status === 'overdue').length, '#D48E8A']].map(([label, count, color]) => (
+                {[['Paid', invoices.filter(i => i.status === 'paid').length, theme.status.success], ['Pending', invoices.filter(i => i.status === 'pending').length, theme.status.warning], ['Overdue', invoices.filter(i => i.status === 'overdue').length, theme.status.error]].map(([label, count, color]) => (
                   <div key={label} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: `${color}10` }}>
                     <span className="text-sm" style={{ color: theme.text.primary }}>{label}</span>
                     <span className="font-bold" style={{ color }}>{count}</span>
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="lg:col-span-2 p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            </GlassCard>
+            <GlassCard className="lg:col-span-2">
               <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Quick Reports</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {[['Daily Revenue Report', Calendar, "Today's revenue summary"], ['Monthly Summary', FileText, 'Full month financial overview'], ['COD Collection Report', Banknote, 'Cash on delivery reconciliation'], ['Partner Billing', Briefcase, 'Partner invoice generation'], ['Tax Report', Receipt, 'VAT and tax breakdown'], ['Expense Report', CreditCard, 'Operational expenses']].map(([name, Icon, desc]) => (
@@ -451,11 +454,11 @@ export const AccountingPage = ({
                       <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{name}</p>
                       <p className="text-xs" style={{ color: theme.text.muted }}>{desc}</p>
                     </div>
-                    <button onClick={() => addToast?.({ type: 'success', message: `Generating ${name}...` })} className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary }}>Generate</button>
+                    <button onClick={() => { setReportModal(name); setReportForm({ dateFrom: '', dateTo: '', format: 'pdf', includeCharts: true }); }} className="px-3 py-1 rounded-lg text-xs" style={{ backgroundColor: theme.accent.light, color: theme.accent.primary }}>Generate</button>
                   </div>
                 ))}
               </div>
-            </div>
+            </GlassCard>
           </div>
         </div>
       )}
@@ -479,12 +482,64 @@ export const AccountingPage = ({
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setDeleteConfirm(null)}>
           <div className="absolute inset-0 bg-black/50" />
-          <div className="relative w-full max-w-sm rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+          <div className="relative w-full max-w-sm rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold" style={{ color: theme.text.primary }}>Delete {deleteConfirm.type === 'txn' ? 'Transaction' : 'Invoice'}?</h3>
             <p className="text-sm" style={{ color: theme.text.muted }}>Remove <span className="font-mono font-semibold" style={{ color: theme.text.primary }}>{deleteConfirm.item.id}</span> permanently?</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-              <button onClick={handleDelete} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: '#D48E8A', color: '#fff' }}>Delete</button>
+              <button onClick={() => setDeleteConfirm(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={handleDelete} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.status.error, color: '#fff' }}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Generation Modal */}
+      {reportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setReportModal(null)}>
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative w-full max-w-md rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Generate Report</h3>
+              <button onClick={() => setReportModal(null)} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
+            </div>
+            <div className="p-3 rounded-xl border" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.tertiary }}>
+              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: theme.text.muted }}>Report Type</span>
+              <p className="text-sm font-medium mt-0.5" style={{ color: theme.accent.primary }}>{reportModal}</p>
+            </div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Date From</label>
+                  <input type="date" value={reportForm.dateFrom} onChange={e => setReportForm(p => ({ ...p, dateFrom: e.target.value }))} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: 'transparent', borderColor: theme.border.primary, color: theme.text.primary }} />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Date To</label>
+                  <input type="date" value={reportForm.dateTo} onChange={e => setReportForm(p => ({ ...p, dateTo: e.target.value }))} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: 'transparent', borderColor: theme.border.primary, color: theme.text.primary }} />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted }}>Export Format</label>
+                <div className="flex gap-2">
+                  {['pdf', 'csv', 'xlsx'].map(fmt => (
+                    <button key={fmt} onClick={() => setReportForm(p => ({ ...p, format: fmt }))} className="flex-1 py-2 rounded-xl text-sm uppercase" style={{ backgroundColor: reportForm.format === fmt ? `${theme.accent.primary}15` : theme.bg.tertiary, color: reportForm.format === fmt ? theme.accent.primary : theme.text.muted, border: `1px solid ${reportForm.format === fmt ? `${theme.accent.primary}40` : theme.border.primary}` }}>
+                      {fmt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center justify-between py-2">
+                <div>
+                  <span className="text-sm" style={{ color: theme.text.primary }}>Include Charts</span>
+                  <p className="text-xs" style={{ color: theme.text.muted }}>Embed visual charts in the report</p>
+                </div>
+                <button onClick={() => setReportForm(p => ({ ...p, includeCharts: !p.includeCharts }))} className="relative rounded-full transition-colors" style={{ width: 40, height: 22, backgroundColor: reportForm.includeCharts ? theme.status.success : theme.bg.tertiary, border: `1px solid ${reportForm.includeCharts ? theme.status.success : theme.border.secondary}` }}>
+                  <div className="absolute top-0.5 rounded-full transition-transform" style={{ width: 16, height: 16, backgroundColor: reportForm.includeCharts ? '#fff' : theme.text.muted, transform: reportForm.includeCharts ? 'translateX(20px)' : 'translateX(3px)' }} />
+                </button>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button onClick={() => setReportModal(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => { addToast?.({ type: 'success', message: `Generating ${reportModal} (${reportForm.format.toUpperCase()})...` }); setReportModal(null); }} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>Generate Report</button>
             </div>
           </div>
         </div>

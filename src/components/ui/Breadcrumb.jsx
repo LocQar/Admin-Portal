@@ -27,7 +27,7 @@ export const Breadcrumb = ({ activeMenu, activeSubMenu, onNavigate }) => {
   return (
     <div
       className="flex items-center gap-1.5 px-4 md:px-6 py-2.5 border-b text-sm sticky top-16 z-20"
-      style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.primary, backdropFilter: 'blur(10px)' }}
+      style={{ borderColor: theme.border.primary, backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.85)' : 'rgba(255,255,255,0.95)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
     >
       <LayoutDashboard size={14} style={{ color: theme.icon.muted }} />
       {segments.map((seg, i) => {

@@ -14,111 +14,9 @@ const apiUrl = cloudConfig.apiUrl;
 
 // In-memory state the handlers mutate so updates (status change, door open)
 // are visible on subsequent reads during the session.
-const stations: Station[] = [
-  {
-    id: 'TRM-001',
-    sn: 'WNS-ACH-001',
-    name: 'Achimota Mall',
-    location: 'Achimota',
-    region: 'Greater Accra',
-    city: 'Achimota',
-    totalLockers: 120,
-    available: 45,
-    occupied: 68,
-    maintenance: 7,
-    status: 'online',
-    connect: 1,
-    lat: 5.6145,
-    lng: -0.227,
-    helpPhoneNumber: '+233302000111',
-    lastSyncedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-  },
-  {
-    id: 'TRM-002',
-    sn: 'WNS-ACC-002',
-    name: 'Accra Mall',
-    location: 'Tetteh Quarshie',
-    region: 'Greater Accra',
-    city: 'Accra',
-    totalLockers: 85,
-    available: 32,
-    occupied: 50,
-    maintenance: 3,
-    status: 'online',
-    connect: 1,
-    lat: 5.628,
-    lng: -0.175,
-    helpPhoneNumber: '+233302000222',
-    lastSyncedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-  },
-  {
-    id: 'TRM-003',
-    sn: 'WNS-KOT-003',
-    name: 'Kotoka T3',
-    location: 'Airport',
-    region: 'Greater Accra',
-    city: 'Airport',
-    totalLockers: 70,
-    available: 28,
-    occupied: 40,
-    maintenance: 2,
-    status: 'online',
-    connect: 1,
-    lat: 5.6052,
-    lng: -0.1668,
-    helpPhoneNumber: '+233302000333',
-    lastSyncedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-  },
-  {
-    id: 'TRM-004',
-    sn: 'WNS-WHM-004',
-    name: 'West Hills Mall',
-    location: 'Weija',
-    region: 'Greater Accra',
-    city: 'Weija',
-    totalLockers: 60,
-    available: 20,
-    occupied: 35,
-    maintenance: 5,
-    status: 'maintenance',
-    connect: 0,
-    lat: 5.558,
-    lng: -0.315,
-    helpPhoneNumber: null,
-    lastSyncedAt: null,
-  },
-  {
-    id: 'TRM-005',
-    sn: 'WNS-JUN-005',
-    name: 'Junction Mall',
-    location: 'Nungua',
-    region: 'Greater Accra',
-    city: 'Nungua',
-    totalLockers: 50,
-    available: 18,
-    occupied: 30,
-    maintenance: 2,
-    status: 'online',
-    connect: 1,
-    lat: 5.592,
-    lng: -0.078,
-    helpPhoneNumber: '+233302000555',
-    lastSyncedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
-  },
-];
+const stations: Station[] = [];
 
-const lockers: Locker[] = [
-  { id: 'A-01', stationSn: 'WNS-ACH-001', stationName: 'Achimota Mall', doorNo: 1, size: 2, sizeLabel: 'Small', status: 'available', enabled: 1, occupied: 0, opened: 0, temp: 24, battery: 95 },
-  { id: 'A-03', stationSn: 'WNS-ACH-001', stationName: 'Achimota Mall', doorNo: 3, size: 4, sizeLabel: 'XLarge', status: 'occupied', enabled: 1, occupied: 1, opened: 0, temp: 24, battery: 88, packageId: 'LQ-2024-00005' },
-  { id: 'A-15', stationSn: 'WNS-ACH-001', stationName: 'Achimota Mall', doorNo: 15, size: 1, sizeLabel: 'Medium', status: 'occupied', enabled: 1, occupied: 1, opened: 0, temp: 25, battery: 91, packageId: 'LQ-2024-00001' },
-  { id: 'A-20', stationSn: 'WNS-ACH-001', stationName: 'Achimota Mall', doorNo: 20, size: 0, sizeLabel: 'Large', status: 'maintenance', enabled: 0, occupied: 0, opened: 0, temp: null, battery: 15 },
-  { id: 'B-01', stationSn: 'WNS-ACC-002', stationName: 'Accra Mall', doorNo: 1, size: 2, sizeLabel: 'Small', status: 'available', enabled: 1, occupied: 0, opened: 0, temp: 23, battery: 98 },
-  { id: 'B-08', stationSn: 'WNS-ACC-002', stationName: 'Accra Mall', doorNo: 8, size: 0, sizeLabel: 'Large', status: 'reserved', enabled: 1, occupied: 1, opened: 0, temp: 24, battery: 85 },
-  { id: 'K-22', stationSn: 'WNS-KOT-003', stationName: 'Kotoka T3', doorNo: 22, size: 1, sizeLabel: 'Medium', status: 'occupied', enabled: 1, occupied: 1, opened: 0, temp: 22, battery: 90, packageId: 'LQ-2024-00004' },
-  { id: 'J-05', stationSn: 'WNS-JUN-005', stationName: 'Junction Mall', doorNo: 5, size: 1, sizeLabel: 'Medium', status: 'occupied', enabled: 1, occupied: 1, opened: 0, temp: 23, battery: 92, packageId: 'LQ-2024-00010' },
-  { id: 'J-12', stationSn: 'WNS-JUN-005', stationName: 'Junction Mall', doorNo: 12, size: 2, sizeLabel: 'Small', status: 'available', enabled: 1, occupied: 0, opened: 0, temp: 24, battery: 87 },
-  { id: 'W-02', stationSn: 'WNS-WHM-004', stationName: 'West Hills Mall', doorNo: 2, size: 4, sizeLabel: 'XLarge', status: 'offline', enabled: 0, occupied: 0, opened: 0, temp: null, battery: 0 },
-];
+const lockers: Locker[] = [];
 
 /**
  * The "physical" door state as reported by the kiosk hardware. In reality this
@@ -145,9 +43,6 @@ function seedPhysicalState() {
       enabled: l.enabled,
     });
   }
-  // Inject divergences for the demo:
-  physicalDoorState.set('A-15', { occupied: 0, opened: 0, enabled: 1 });
-  physicalDoorState.set('K-22', { occupied: 1, opened: 1, enabled: 1 });
 }
 seedPhysicalState();
 
@@ -185,42 +80,7 @@ function pushDoorAudit(
 }
 
 function seedDoorAudit() {
-  // A-15 — admin opened it remotely an hour ago to inspect a stuck package
-  doorAuditLog.push({
-    id: `door-${nextDoorEventId++}`,
-    lockerId: 'A-15',
-    stationSn: 'WNS-ACH-001',
-    doorNo: 15,
-    kind: 'DOOR_COMMAND',
-    action: 'open',
-    label: 'Door open',
-    actor: 'ADMIN:1:admin@locqar.com',
-    reason: 'Customer reported jammed door — manual inspection',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-  });
-  doorAuditLog.push({
-    id: `door-${nextDoorEventId++}`,
-    lockerId: 'A-15',
-    stationSn: 'WNS-ACH-001',
-    doorNo: 15,
-    kind: 'DOOR_COMMAND',
-    action: 'close',
-    label: 'Door close',
-    actor: 'ADMIN:1:admin@locqar.com',
-    createdAt: new Date(Date.now() - 1000 * 60 * 59).toISOString(),
-  });
-  // K-22 — agent unlocked it for a package drop-off
-  doorAuditLog.push({
-    id: `door-${nextDoorEventId++}`,
-    lockerId: 'K-22',
-    stationSn: 'WNS-KOT-003',
-    doorNo: 22,
-    kind: 'DOOR_COMMAND',
-    action: 'unlock',
-    label: 'Door unlock',
-    actor: 'AGENT:1',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-  });
+  // No seed data — start with an empty audit log.
 }
 seedDoorAudit();
 

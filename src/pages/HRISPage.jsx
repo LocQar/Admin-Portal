@@ -5,7 +5,7 @@ import {
   ChevronDown, Download, RotateCcw,
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { MetricCard } from '../components/ui';
+import { MetricCard, GlassCard } from '../components/ui';
 import { onboardingData, offboardingData, alumniData, staffData } from '../constants/mockDataPart2';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -43,10 +43,11 @@ const EXIT_REASON_LABELS = {
 
 // ── Progress bar ─────────────────────────────────────────────────────────────
 function ProgressPill({ pct }) {
-  const color = pct >= 80 ? '#10B981' : pct >= 40 ? '#F59E0B' : '#EF4444';
+  const { theme } = useTheme();
+  const color = pct >= 80 ? theme.status.success : pct >= 40 ? theme.status.warning : theme.status.error;
   return (
     <div className="flex items-center gap-2">
-      <div className="w-20 h-1.5 rounded-full overflow-hidden" style={{ background: '#00000015' }}>
+      <div className="w-20 h-1.5 rounded-full overflow-hidden" style={{ background: `${theme.border.primary}40` }}>
         <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 4 }} />
       </div>
       <span style={{ color, fontSize: 12, fontWeight: 600 }}>{pct}%</span>
@@ -120,7 +121,7 @@ function RoleSelect({ value, onChange, customRoles = [], onAddCustomRole, style 
           className="flex-1 px-3 py-2 rounded-xl border text-sm outline-none"
           style={{ ...style, textTransform: 'uppercase' }}
         />
-        <button onClick={confirm} className="px-3 py-2 rounded-xl text-sm font-medium text-white" style={{ background: '#4F46E5' }}>Add</button>
+        <button onClick={confirm} className="px-3 py-2 rounded-xl text-sm font-medium text-white btn-primary" style={{ background: theme.accent.primary }}>Add</button>
         <button onClick={() => { setAdding(false); setNewRole(''); }} className="px-3 py-2 rounded-xl text-sm" style={{ color: theme.text.muted }}>✕</button>
       </div>
     );
@@ -177,7 +178,7 @@ function OnboardingDrawer({ record, onClose, onUpdate, addToast, customRoles = [
       {/* Employee header */}
       <div className="p-5" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style={{ background: '#4F46E5' }}>{emp.avatar}</div>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style={{ background: theme.accent.primary }}>{emp.avatar}</div>
           <div>
             <p style={{ color: theme.text.primary, fontWeight: 600 }}>{emp.name}</p>
             <p style={{ color: theme.text.muted, fontSize: 12 }}>{emp.email} · {emp.phone}</p>
@@ -196,11 +197,11 @@ function OnboardingDrawer({ record, onClose, onUpdate, addToast, customRoles = [
         {drawerTab === 'Checklist' && Object.entries(emp.checklist).map(([key, done]) => (
           <button key={key} onClick={() => toggleCheck(key)}
             className="w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left"
-            style={{ background: done ? '#10B98108' : theme.bg.input, border: `1.5px solid ${done ? '#10B98130' : theme.border.primary}` }}>
+            style={{ background: done ? `${theme.status.success}08` : theme.bg.input, border: `1.5px solid ${done ? `${theme.status.success}30` : theme.border.primary}` }}>
             {done
-              ? <CheckCircle2 size={18} style={{ color: '#10B981', flexShrink: 0 }} />
+              ? <CheckCircle2 size={18} style={{ color: theme.status.success, flexShrink: 0 }} />
               : <Circle size={18} style={{ color: theme.text.muted, flexShrink: 0 }} />}
-            <span style={{ color: done ? '#10B981' : theme.text.secondary, fontWeight: 500, fontSize: 13 }}>{CHECKLIST_LABELS[key]}</span>
+            <span style={{ color: done ? theme.status.success : theme.text.secondary, fontWeight: 500, fontSize: 13 }}>{CHECKLIST_LABELS[key]}</span>
           </button>
         ))}
 
@@ -212,7 +213,7 @@ function OnboardingDrawer({ record, onClose, onUpdate, addToast, customRoles = [
             </div>
             <div className="flex items-center gap-2">
               {doc.status === 'submitted'
-                ? <span className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: '#10B98115', color: '#10B981' }}><CheckCircle2 size={10} /> Submitted</span>
+                ? <span className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: `${theme.status.success}15`, color: theme.status.success }}><CheckCircle2 size={10} /> Submitted</span>
                 : <button onClick={() => markDoc(i)} className="text-xs px-2.5 py-1 rounded-lg font-medium" style={{ background: `${theme.accent?.primary ?? '#4F46E5'}18`, color: theme.accent?.primary ?? '#4F46E5' }}>Mark Submitted</button>}
               {doc.uploadedAt && <span style={{ color: theme.text.muted, fontSize: 11 }}>{doc.uploadedAt}</span>}
             </div>
@@ -256,11 +257,11 @@ function OnboardingDrawer({ record, onClose, onUpdate, addToast, customRoles = [
               </div>
               <button onClick={() => setEmp({ ...emp, access: { ...emp.access, systemAccess: !emp.access.systemAccess } })}
                 className="w-11 h-6 rounded-full transition-all relative"
-                style={{ background: emp.access.systemAccess ? '#10B981' : theme.border.primary }}>
+                style={{ background: emp.access.systemAccess ? theme.status.success : theme.border.primary }}>
                 <div className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all" style={{ left: emp.access.systemAccess ? 22 : 2 }} />
               </button>
             </div>
-            <button onClick={saveAccess} className="w-full py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: theme.accent?.primary ?? '#4F46E5' }}>
+            <button onClick={saveAccess} className="w-full py-2.5 rounded-xl text-sm font-medium text-white btn-primary" style={{ background: theme.accent?.primary ?? theme.accent.primary }}>
               Save Access Setup
             </button>
           </div>
@@ -343,7 +344,7 @@ function OffboardingDrawer({ record, onClose, onUpdate, onComplete, addToast }) 
             </div>
           </div>
           <div className="text-right">
-            <p style={{ color: days < 7 ? '#EF4444' : theme.text.muted, fontSize: 12, fontWeight: 600 }}>
+            <p style={{ color: days < 7 ? theme.status.error : theme.text.muted, fontSize: 12, fontWeight: 600 }}>
               {days > 0 ? `${days} days left` : 'Today'}
             </p>
             <p style={{ color: theme.text.muted, fontSize: 11 }}>{emp.exitDate}</p>
@@ -351,8 +352,8 @@ function OffboardingDrawer({ record, onClose, onUpdate, onComplete, addToast }) 
         </div>
         <div className="flex items-center gap-2 mt-3">
           <span style={{ color: theme.text.muted, fontSize: 12 }}>{done}/{total} tasks complete</span>
-          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: '#00000015' }}>
-            <div style={{ width: `${Math.round(done / total * 100)}%`, height: '100%', background: done === total ? '#10B981' : '#F59E0B', borderRadius: 4 }} />
+          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: `${theme.border.primary}40` }}>
+            <div style={{ width: `${Math.round(done / total * 100)}%`, height: '100%', background: done === total ? theme.status.success : theme.status.warning, borderRadius: 4 }} />
           </div>
         </div>
       </div>
@@ -367,11 +368,11 @@ function OffboardingDrawer({ record, onClose, onUpdate, onComplete, addToast }) 
         {drawerTab === 'Checklist' && Object.entries(emp.checklist).map(([key, done]) => (
           <button key={key} onClick={() => toggleCheck(key)}
             className="w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left"
-            style={{ background: done ? '#10B98108' : theme.bg.input, border: `1.5px solid ${done ? '#10B98130' : theme.border.primary}` }}>
+            style={{ background: done ? `${theme.status.success}08` : theme.bg.input, border: `1.5px solid ${done ? `${theme.status.success}30` : theme.border.primary}` }}>
             {done
-              ? <CheckCircle2 size={18} style={{ color: '#10B981', flexShrink: 0 }} />
+              ? <CheckCircle2 size={18} style={{ color: theme.status.success, flexShrink: 0 }} />
               : <Circle size={18} style={{ color: theme.text.muted, flexShrink: 0 }} />}
-            <span style={{ color: done ? '#10B981' : theme.text.secondary, fontWeight: 500, fontSize: 13 }}>{OFB_CHECKLIST_LABELS[key]}</span>
+            <span style={{ color: done ? theme.status.success : theme.text.secondary, fontWeight: 500, fontSize: 13 }}>{OFB_CHECKLIST_LABELS[key]}</span>
           </button>
         ))}
 
@@ -397,7 +398,7 @@ function OffboardingDrawer({ record, onClose, onUpdate, onComplete, addToast }) 
             <div>
               <p style={{ color: theme.text.secondary, fontSize: 12, fontWeight: 600, marginBottom: 8 }}>Rehire Eligible?</p>
               <div className="flex gap-3">
-                {[{ v: true, label: 'Yes', c: '#10B981' }, { v: false, label: 'No', c: '#EF4444' }].map(({ v, label, c }) => (
+                {[{ v: true, label: 'Yes', c: theme.status.success }, { v: false, label: 'No', c: theme.status.error }].map(({ v, label, c }) => (
                   <button key={label} onClick={() => setEmp({ ...emp, exitInterview: { ...emp.exitInterview, rehireEligible: v } })}
                     className="flex-1 py-2 rounded-xl border text-sm font-medium transition-all"
                     style={{
@@ -408,7 +409,7 @@ function OffboardingDrawer({ record, onClose, onUpdate, onComplete, addToast }) 
                 ))}
               </div>
             </div>
-            <button onClick={saveInterview} className="w-full py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: theme.accent?.primary ?? '#4F46E5' }}>
+            <button onClick={saveInterview} className="w-full py-2.5 rounded-xl text-sm font-medium text-white btn-primary" style={{ background: theme.accent?.primary ?? theme.accent.primary }}>
               Save Interview
             </button>
           </div>
@@ -416,7 +417,7 @@ function OffboardingDrawer({ record, onClose, onUpdate, onComplete, addToast }) 
 
         {drawerTab === 'Settlement' && (() => {
           const s = emp.settlement;
-          const statusColor = { pending: '#F59E0B', processing: '#3B82F6', paid: '#10B981' }[s.status] ?? '#6B7280';
+          const statusColor = { pending: theme.status.warning, processing: theme.accent.primary, paid: theme.status.success }[s.status] ?? theme.text.muted;
           return (
             <div className="space-y-4">
               {[
@@ -436,17 +437,17 @@ function OffboardingDrawer({ record, onClose, onUpdate, onComplete, addToast }) 
                 <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium capitalize" style={{ background: `${statusColor}18`, color: statusColor }}>{s.status}</span>
               </div>
               {s.status === 'pending' && (
-                <button onClick={markSettlementProcessed} className="w-full py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: '#F59E0B' }}>
+                <button onClick={markSettlementProcessed} className="w-full py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: theme.status.warning }}>
                   Mark as Processing
                 </button>
               )}
               {s.status === 'processing' && (
-                <button onClick={markSettlementPaid} className="w-full py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: '#10B981' }}>
+                <button onClick={markSettlementPaid} className="w-full py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: theme.status.success }}>
                   Mark as Paid
                 </button>
               )}
               {allChecklistDone && s.status === 'paid' && (
-                <button onClick={() => onComplete(emp)} className="w-full py-2.5 rounded-xl text-sm font-medium text-white mt-2" style={{ background: '#4F46E5' }}>
+                <button onClick={() => onComplete(emp)} className="w-full py-2.5 rounded-xl text-sm font-medium text-white mt-2 btn-primary" style={{ background: theme.accent.primary }}>
                   Complete Offboarding → Move to Alumni
                 </button>
               )}
@@ -471,21 +472,21 @@ function AlumniDrawer({ record, onClose, onRehire, onUpdateNotes, theme }) {
     <Drawer width={420} onClose={onClose} title={record.name} subtitle={`${record.role} · ${record.team}`}
       footer={
         <div className="p-5 flex gap-3">
-          <button onClick={() => onRehire(record)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: '#4F46E5' }}>
+          <button onClick={() => onRehire(record)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white btn-primary" style={{ background: theme.accent.primary }}>
             <RotateCcw size={14} /> Re-hire
           </button>
           {notesDirty && (
-            <button onClick={() => { onUpdateNotes(record.id, notes); setNotesDirty(false); }} className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: '#10B981' }}>
+            <button onClick={() => { onUpdateNotes(record.id, notes); setNotesDirty(false); }} className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: theme.status.success }}>
               Save Notes
             </button>
           )}
-          <button onClick={onClose} className={notesDirty ? 'py-2.5 px-4 rounded-xl border text-sm' : 'flex-1 py-2.5 rounded-xl border text-sm'} style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
+          <button onClick={onClose} className={notesDirty ? 'py-2.5 px-4 rounded-xl border text-sm btn-outline' : 'flex-1 py-2.5 rounded-xl border text-sm btn-outline'} style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Close</button>
         </div>
       }>
       <div className="p-5 space-y-4">
         {/* Avatar + info */}
         <div className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: theme.bg.input }}>
-          <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white text-lg" style={{ background: '#6B7280' }}>{record.name[0]}</div>
+          <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white text-lg" style={{ background: theme.text.muted }}>{record.name[0]}</div>
           <div>
             <p style={{ color: theme.text.primary, fontWeight: 600, fontSize: 15 }}>{record.name}</p>
             <p style={{ color: theme.text.muted, fontSize: 12 }}>{record.role} · {record.terminal}</p>
@@ -512,7 +513,7 @@ function AlumniDrawer({ record, onClose, onRehire, onUpdateNotes, theme }) {
         </div>
         <div className="flex justify-between py-2" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
           <span style={{ color: theme.text.muted, fontSize: 13 }}>Rehire Eligible</span>
-          <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: record.rehireEligible ? '#10B98115' : '#EF444415', color: record.rehireEligible ? '#10B981' : '#EF4444' }}>
+          <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: record.rehireEligible ? `${theme.status.success}15` : `${theme.status.error}15`, color: record.rehireEligible ? theme.status.success : theme.status.error }}>
             {record.rehireEligible ? 'Eligible' : 'Not Eligible'}
           </span>
         </div>
@@ -570,10 +571,10 @@ function InitiateExitModal({ onClose, onConfirm, staffData, theme }) {
           </div>
         </div>
         <div className="flex gap-3 mt-5">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm btn-outline" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
           <button onClick={() => selected && onConfirm(selected, form)} disabled={!form.employeeId || !form.exitDate}
             className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white disabled:opacity-40"
-            style={{ background: '#EF4444' }}>Confirm</button>
+            style={{ background: theme.status.error }}>Confirm</button>
         </div>
       </div>
     </div>
@@ -586,7 +587,7 @@ function NewHireDrawer({ onClose, onSave, customRoles = [], onAddCustomRole }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', role: 'AGENT', team: 'Field', terminal: 'West Hills Mall', startDate: '' });
   const [err, setErr] = useState({});
   const upd = (f, v) => { setForm(p => ({ ...p, [f]: v })); setErr(p => ({ ...p, [f]: false })); };
-  const is = (f) => ({ background: theme.bg.input, borderColor: err[f] ? '#EF4444' : theme.border.primary, color: theme.text.primary, outline: 'none' });
+  const is = (f) => ({ background: theme.bg.input, borderColor: err[f] ? theme.status.error : theme.border.primary, color: theme.text.primary, outline: 'none' });
 
   const handleSave = () => {
     const e = {};
@@ -624,8 +625,8 @@ function NewHireDrawer({ onClose, onSave, customRoles = [], onAddCustomRole }) {
     <Drawer width={460} onClose={onClose} title="Add New Hire" subtitle="Create an onboarding record"
       footer={
         <div className="p-5 flex gap-3">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-1.5 text-white" style={{ background: '#4F46E5' }}>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm btn-outline" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-1.5 text-white btn-primary" style={{ background: theme.accent.primary }}>
             <UserPlus size={14} /> Add to Onboarding
           </button>
         </div>
@@ -637,7 +638,7 @@ function NewHireDrawer({ onClose, onSave, customRoles = [], onAddCustomRole }) {
               <p style={{ color: theme.text.secondary, fontSize: 12, fontWeight: 600, marginBottom: 6 }}>{label}</p>
               <input type={type} value={form[key]} onChange={e => upd(key, e.target.value)} placeholder={ph}
                 className="w-full px-3 py-2.5 rounded-xl border text-sm" style={is(key)} />
-              {err[key] && <p className="text-xs mt-1" style={{ color: '#EF4444' }}>Required</p>}
+              {err[key] && <p className="text-xs mt-1" style={{ color: theme.status.error }}>Required</p>}
             </div>
           ))}
         </div>
@@ -789,11 +790,11 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 style={{ color: theme.text.primary, fontWeight: 600, fontSize: 15 }}>New Hires ({onboarding.length})</h2>
-        <button onClick={() => setShowNewHire(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ background: '#4F46E5' }}>
+        <button onClick={() => setShowNewHire(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white btn-primary" style={{ background: theme.accent.primary }}>
           <UserPlus size={14} /> Add New Hire
         </button>
       </div>
-      <div className="rounded-2xl overflow-hidden border" style={{ borderColor: theme.border.primary }}>
+      <GlassCard noPadding>
         <table className="w-full text-sm">
           <thead>{tableHeader(['Employee', 'Role', 'Terminal', 'Start Date', 'Progress', 'Documents', ''])}</thead>
           <tbody>
@@ -804,21 +805,21 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
                 <tr key={emp.id} style={rowBg(i)}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: '#4F46E5' }}>{emp.avatar}</div>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: theme.accent.primary }}>{emp.avatar}</div>
                       <div>
                         <p style={{ color: theme.text.primary, fontWeight: 500 }}>{emp.name}</p>
                         <p style={{ color: theme.text.muted, fontSize: 11 }}>{emp.email}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3"><span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: '#3B82F615', color: '#2563EB' }}>{emp.role}</span></td>
+                  <td className="px-4 py-3"><span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: `${theme.accent.primary}15`, color: theme.accent.primary }}>{emp.role}</span></td>
                   <td className="px-4 py-3" style={{ color: theme.text.secondary, fontSize: 13 }}>{emp.terminal}</td>
                   <td className="px-4 py-3" style={{ color: theme.text.secondary, fontSize: 13 }}>
                     <div className="flex items-center gap-1"><CalendarDays size={11} style={{ color: theme.text.muted }} />{emp.startDate}</div>
                   </td>
                   <td className="px-4 py-3"><ProgressPill pct={pct} /></td>
                   <td className="px-4 py-3">
-                    <span className="text-xs font-medium" style={{ color: docs === emp.documents.length ? '#10B981' : theme.text.muted }}>{docs}/{emp.documents.length} submitted</span>
+                    <span className="text-xs font-medium" style={{ color: docs === emp.documents.length ? theme.status.success : theme.text.muted }}>{docs}/{emp.documents.length} submitted</span>
                   </td>
                   <td className="px-4 py-3">
                     <button onClick={() => setSelectedOnboard(emp)} className="p-1.5 rounded-lg" style={{ color: theme.text.muted, background: theme.bg.input }} title="View"><Eye size={14} /></button>
@@ -828,7 +829,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
             })}
           </tbody>
         </table>
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -837,11 +838,11 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 style={{ color: theme.text.primary, fontWeight: 600, fontSize: 15 }}>Exit Pipeline ({offboarding.length})</h2>
-        <button onClick={() => setShowInitiateExit(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ background: '#EF444418', color: '#DC2626', border: '1px solid #EF444430' }}>
+        <button onClick={() => setShowInitiateExit(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ background: `${theme.status.error}18`, color: theme.status.error, border: `1px solid ${theme.status.error}30` }}>
           <UserMinus size={14} /> Initiate Offboarding
         </button>
       </div>
-      <div className="rounded-2xl overflow-hidden border" style={{ borderColor: theme.border.primary }}>
+      <GlassCard noPadding>
         <table className="w-full text-sm">
           <thead>{tableHeader(['Employee', 'Role', 'Exit Date', 'Type', 'Checklist', 'Interview', 'Settlement', ''])}</thead>
           <tbody>
@@ -850,7 +851,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
               const total = Object.keys(emp.checklist).length;
               const days = daysUntil(emp.exitDate);
               const exitC = EXIT_TYPE_COLORS[emp.exitType] ?? EXIT_TYPE_COLORS.resignation;
-              const settColor = { pending: '#F59E0B', processing: '#3B82F6', paid: '#10B981' }[emp.settlement.status] ?? '#6B7280';
+              const settColor = { pending: theme.status.warning, processing: theme.accent.primary, paid: theme.status.success }[emp.settlement.status] ?? theme.text.muted;
               return (
                 <tr key={emp.id} style={rowBg(i)}>
                   <td className="px-4 py-3">
@@ -865,17 +866,17 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
                   <td className="px-4 py-3" style={{ color: theme.text.secondary, fontSize: 13 }}>{emp.role}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      <CalendarDays size={11} style={{ color: days < 7 ? '#EF4444' : theme.text.muted }} />
-                      <span style={{ color: days < 7 ? '#EF4444' : theme.text.secondary, fontSize: 13 }}>{emp.exitDate}</span>
+                      <CalendarDays size={11} style={{ color: days < 7 ? theme.status.error : theme.text.muted }} />
+                      <span style={{ color: days < 7 ? theme.status.error : theme.text.secondary, fontSize: 13 }}>{emp.exitDate}</span>
                     </div>
                     <p style={{ color: theme.text.muted, fontSize: 11 }}>{days > 0 ? `${days}d left` : 'Today'}</p>
                   </td>
                   <td className="px-4 py-3"><span className="px-2 py-0.5 rounded-full text-xs font-medium capitalize" style={{ background: exitC.bg, color: exitC.text }}>{emp.exitType.replace('_', ' ')}</span></td>
-                  <td className="px-4 py-3"><span style={{ color: done === total ? '#10B981' : theme.text.muted, fontSize: 13 }}>{done}/{total}</span></td>
+                  <td className="px-4 py-3"><span style={{ color: done === total ? theme.status.success : theme.text.muted, fontSize: 13 }}>{done}/{total}</span></td>
                   <td className="px-4 py-3">
                     {emp.exitInterview.conductedBy
-                      ? <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: '#10B98115', color: '#10B981' }}>Done</span>
-                      : <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: '#F59E0B15', color: '#D97706' }}>Pending</span>}
+                      ? <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: `${theme.status.success}15`, color: theme.status.success }}>Done</span>
+                      : <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: `${theme.status.warning}15`, color: theme.status.warning }}>Pending</span>}
                   </td>
                   <td className="px-4 py-3"><span className="px-2 py-0.5 rounded-full text-xs font-medium capitalize" style={{ background: `${settColor}15`, color: settColor }}>{emp.settlement.status}</span></td>
                   <td className="px-4 py-3">
@@ -886,7 +887,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
             })}
           </tbody>
         </table>
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -905,7 +906,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
         <div className="relative flex-1 min-w-48">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.text.muted }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search alumni…"
-            className="w-full pl-9 pr-4 py-2 rounded-xl border text-sm outline-none"
+            className="w-full pl-9 pr-4 py-2 rounded-xl border text-sm outline-none glass-card"
             style={{ background: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary }} />
         </div>
         {[{ v: 'all', l: 'All' }, { v: 'eligible', l: 'Rehire Eligible' }, { v: 'not_eligible', l: 'Not Eligible' }].map(({ v, l }) => (
@@ -916,7 +917,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
           </button>
         ))}
       </div>
-      <div className="rounded-2xl overflow-hidden border" style={{ borderColor: theme.border.primary }}>
+      <GlassCard noPadding>
         <table className="w-full text-sm">
           <thead>{tableHeader(['Name', 'Role', 'Team', 'Joined', 'Left', 'Exit Type', 'Rehire', ''])}</thead>
           <tbody>
@@ -926,7 +927,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
                 <tr key={alum.id} style={rowBg(i)}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: '#6B7280' }}>{alum.name[0]}</div>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: theme.text.muted }}>{alum.name[0]}</div>
                       <span style={{ color: theme.text.primary, fontWeight: 500 }}>{alum.name}</span>
                     </div>
                   </td>
@@ -936,7 +937,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
                   <td className="px-4 py-3" style={{ color: theme.text.muted, fontSize: 13 }}>{alum.exitDate}</td>
                   <td className="px-4 py-3"><span className="px-2 py-0.5 rounded-full text-xs font-medium capitalize" style={{ background: exitC.bg, color: exitC.text }}>{alum.exitType.replace('_', ' ')}</span></td>
                   <td className="px-4 py-3">
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: alum.rehireEligible ? '#10B98115' : '#EF444415', color: alum.rehireEligible ? '#10B981' : '#EF4444' }}>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: alum.rehireEligible ? `${theme.status.success}15` : `${theme.status.error}15`, color: alum.rehireEligible ? theme.status.success : theme.status.error }}>
                       {alum.rehireEligible ? 'Eligible' : 'Not Eligible'}
                     </span>
                   </td>
@@ -955,7 +956,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
             })}
           </tbody>
         </table>
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -968,7 +969,7 @@ export const HRISPage = ({ activeSubMenu, loading, addToast }) => {
           <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>HRIS</h1>
           <p style={{ color: theme.text.muted, fontSize: 13 }}>Human Resources — Onboarding & Offboarding</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+        <button className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm btn-outline" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
           <Download size={15} /> Export
         </button>
       </div>

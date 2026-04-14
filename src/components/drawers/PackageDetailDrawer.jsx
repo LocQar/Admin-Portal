@@ -184,7 +184,7 @@ export const PackageDetailDrawer = ({ pkg, onClose, userRole, addToast, onReassi
   ) : null;
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-[500px] border-l shadow-2xl z-50 flex flex-col" style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary }}>
+    <div className="fixed inset-y-0 right-0 w-full sm:w-[500px] border-l shadow-2xl z-50 flex flex-col" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: theme.border.primary }}>
@@ -265,7 +265,7 @@ export const PackageDetailDrawer = ({ pkg, onClose, userRole, addToast, onReassi
               className="px-4 py-2 rounded-t-xl text-sm capitalize border-b-2 transition-all"
               style={{
                 borderBottomColor: activeTab === tab ? theme.accent.primary : 'transparent',
-                color: activeTab === tab ? theme.accent.primary : theme.text.muted,
+                color: activeTab === tab ? theme.text.primary : theme.text.muted,
                 fontWeight: activeTab === tab ? 600 : 400,
               }}
             >

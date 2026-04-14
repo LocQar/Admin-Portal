@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 import { StatusBadge } from '../components/ui/Badge';
 import { packagesData } from '../constants/mockData';
 
@@ -197,13 +198,13 @@ export const IndividualCustomerRedirect = ({ currentUser, onLogout }) => {
           <h1 className="text-2xl font-black" style={{ color: theme.text.primary }}>LocQar</h1>
           <p className="text-sm mt-1" style={{ color: theme.text.muted }}>Hi {currentUser?.name?.split(' ')[0]}! Your portal is on the LocQar mobile app.</p>
         </div>
-        <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: '#D4AA5A20' }}>
-            <Globe size={22} style={{ color: '#D4AA5A' }} />
+        <GlassCard>
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: `${theme.status.warning}20` }}>
+            <Globe size={22} style={{ color: theme.status.warning }} />
           </div>
           <p className="font-semibold" style={{ color: theme.text.primary }}>Use the LocQar App</p>
           <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Track packages, manage your locker address, and view your delivery history from the mobile app.</p>
-        </div>
+        </GlassCard>
         <button onClick={onLogout} className="text-sm flex items-center gap-1.5 mx-auto" style={{ color: theme.text.muted }}>
           <LogOut size={13} /> Sign out
         </button>
@@ -324,15 +325,15 @@ function ImportShipmentsModal({ theme, onClose, onImport }) {
             onClick={() => document.getElementById('csv-file-input').click()}
             className="flex flex-col items-center justify-center gap-2 p-8 rounded-2xl border-2 border-dashed cursor-pointer transition-all"
             style={{
-              borderColor: dragging ? '#4F46E5' : file ? '#10B981' : theme.border.primary,
-              background: dragging ? '#4F46E508' : file ? '#10B98108' : theme.bg.input,
+              borderColor: dragging ? '#4F46E5' : file ? theme.status.success : theme.border.primary,
+              background: dragging ? '#4F46E508' : file ? `${theme.status.success}08` : theme.bg.input,
             }}
           >
             <input id="csv-file-input" type="file" accept=".csv" className="hidden" onChange={e => processFile(e.target.files[0])} />
             {file ? (
               <>
-                <FileSpreadsheet size={28} style={{ color: '#10B981' }} />
-                <p style={{ color: '#10B981', fontWeight: 600, fontSize: 13 }}>{file.name}</p>
+                <FileSpreadsheet size={28} style={{ color: theme.status.success }} />
+                <p style={{ color: theme.status.success, fontWeight: 600, fontSize: 13 }}>{file.name}</p>
                 <p style={{ color: theme.text.muted, fontSize: 11 }}>Click to replace</p>
               </>
             ) : (
@@ -348,20 +349,20 @@ function ImportShipmentsModal({ theme, onClose, onImport }) {
           {parsed && (
             <div>
               {parsed.errors.length > 0 ? (
-                <div className="rounded-xl p-3 space-y-1.5" style={{ background: '#EF444410', border: '1px solid #EF444430' }}>
+                <div className="rounded-xl p-3 space-y-1.5" style={{ background: `${theme.status.error}10`, border: `1px solid ${theme.status.error}30` }}>
                   <div className="flex items-center gap-2 mb-1">
-                    <AlertCircle size={14} style={{ color: '#EF4444' }} />
-                    <p style={{ color: '#EF4444', fontSize: 12, fontWeight: 600 }}>{parsed.errors.length} error{parsed.errors.length > 1 ? 's' : ''} found</p>
+                    <AlertCircle size={14} style={{ color: theme.status.error }} />
+                    <p style={{ color: theme.status.error, fontSize: 12, fontWeight: 600 }}>{parsed.errors.length} error{parsed.errors.length > 1 ? 's' : ''} found</p>
                   </div>
                   {parsed.errors.slice(0, 5).map((e, i) => (
-                    <p key={i} style={{ color: '#EF4444', fontSize: 11 }}>• {e}</p>
+                    <p key={i} style={{ color: theme.status.error, fontSize: 11 }}>• {e}</p>
                   ))}
-                  {parsed.errors.length > 5 && <p style={{ color: '#EF4444', fontSize: 11 }}>…and {parsed.errors.length - 5} more</p>}
+                  {parsed.errors.length > 5 && <p style={{ color: theme.status.error, fontSize: 11 }}>…and {parsed.errors.length - 5} more</p>}
                 </div>
               ) : (
-                <div className="rounded-xl p-3 flex items-center gap-2" style={{ background: '#10B98110', border: '1px solid #10B98130' }}>
-                  <CheckCircle2 size={14} style={{ color: '#10B981' }} />
-                  <p style={{ color: '#10B981', fontSize: 13, fontWeight: 500 }}>
+                <div className="rounded-xl p-3 flex items-center gap-2" style={{ background: `${theme.status.success}10`, border: `1px solid ${theme.status.success}30` }}>
+                  <CheckCircle2 size={14} style={{ color: theme.status.success }} />
+                  <p style={{ color: theme.status.success, fontSize: 13, fontWeight: 500 }}>
                     {parsed.rows.length} shipment{parsed.rows.length !== 1 ? 's' : ''} ready to import
                   </p>
                 </div>
@@ -412,7 +413,7 @@ function ImportShipmentsModal({ theme, onClose, onImport }) {
             onClick={handleImport}
             disabled={!canImport}
             className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white"
-            style={{ background: canImport ? '#10B981' : theme.bg.input, color: canImport ? '#fff' : theme.text.muted, cursor: canImport ? 'pointer' : 'not-allowed' }}
+            style={{ background: canImport ? theme.status.success : theme.bg.input, color: canImport ? '#fff' : theme.text.muted, cursor: canImport ? 'pointer' : 'not-allowed' }}
           >
             Import {parsed?.rows.length > 0 ? `${parsed.rows.length} Shipments` : ''}
           </button>
@@ -492,7 +493,7 @@ function KeyFormDrawer({ theme, onClose, onSave }) {
           </div>
         </div>
         <div className="p-5 border-t flex gap-3" style={{ borderColor: theme.border.primary }}>
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm"
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm"
             style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
           <button disabled={!valid} onClick={() => onSave(form)}
             className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white"
@@ -568,7 +569,7 @@ function WebhookFormDrawer({ webhook: initial, theme, onClose, onSave }) {
           </div>
         </div>
         <div className="p-5 border-t flex gap-3" style={{ borderColor: theme.border.primary }}>
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm"
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm"
             style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
           <button disabled={!valid} onClick={() => onSave(form)}
             className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white"
@@ -623,11 +624,11 @@ function DispatchFormDrawer({ dispatch: initial, theme, onClose, onSave }) {
 
   const inp = (f) => ({
     className: 'w-full px-3 py-2.5 rounded-xl border text-sm outline-none',
-    style: { background: theme.bg.input, borderColor: errors[f] ? '#EF4444' : theme.border.primary, color: theme.text.primary },
+    style: { background: theme.bg.input, borderColor: errors[f] ? theme.status.error : theme.border.primary, color: theme.text.primary },
   });
   const lbl = (t, req) => (
     <label style={{ color: theme.text.muted, fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 4 }}>
-      {t}{req && <span style={{ color: '#EF4444' }}> *</span>}
+      {t}{req && <span style={{ color: theme.status.error }}> *</span>}
     </label>
   );
 
@@ -657,12 +658,12 @@ function DispatchFormDrawer({ dispatch: initial, theme, onClose, onSave }) {
             <div>
               {lbl('Courier Name', true)}
               <input value={form.courier} onChange={e => up('courier', e.target.value)} placeholder="Kwesi Asante" {...inp('courier')} />
-              {errors.courier && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.courier}</p>}
+              {errors.courier && <p style={{ color: theme.status.error, fontSize: 11, marginTop: 3 }}>{errors.courier}</p>}
             </div>
             <div>
               {lbl('Phone', true)}
               <input value={form.phone} onChange={e => up('phone', e.target.value)} placeholder="+233…" {...inp('phone')} />
-              {errors.phone && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.phone}</p>}
+              {errors.phone && <p style={{ color: theme.status.error, fontSize: 11, marginTop: 3 }}>{errors.phone}</p>}
             </div>
           </div>
 
@@ -801,12 +802,12 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
 
   const inp = (f) => ({
     className: `w-full px-3 py-2.5 rounded-xl border text-sm outline-none`,
-    style: { background: theme.bg.input, borderColor: errors[f] ? '#EF4444' : theme.border.primary, color: theme.text.primary },
+    style: { background: theme.bg.input, borderColor: errors[f] ? theme.status.error : theme.border.primary, color: theme.text.primary },
   });
 
   const lbl = (text, req) => (
     <label style={{ color: theme.text.muted, fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 4 }}>
-      {text}{req && <span style={{ color: '#EF4444' }}> *</span>}
+      {text}{req && <span style={{ color: theme.status.error }}> *</span>}
     </label>
   );
 
@@ -827,8 +828,8 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
         {/* Success screen */}
         {success ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ background: '#10B98115', border: '2px solid #10B981' }}>
-              <BadgeCheck size={32} style={{ color: '#10B981' }} />
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ background: `${theme.status.success}15`, border: `2px solid ${theme.status.success}` }}>
+              <BadgeCheck size={32} style={{ color: theme.status.success }} />
             </div>
             <h3 style={{ color: theme.text.primary, fontWeight: 700, fontSize: 18, marginBottom: 8 }}>Order Created!</h3>
             <p style={{ color: theme.text.muted, fontSize: 13, marginBottom: 20 }}>Your shipment has been registered and is awaiting processing.</p>
@@ -849,15 +850,15 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                       style={{
-                        background: idx < step ? '#10B981' : idx === step ? '#4F46E5' : theme.bg.input,
+                        background: idx < step ? theme.status.success : idx === step ? '#4F46E5' : theme.bg.input,
                         color: idx <= step ? '#fff' : theme.text.muted,
-                        border: `1.5px solid ${idx < step ? '#10B981' : idx === step ? '#4F46E5' : theme.border.primary}`,
+                        border: `1.5px solid ${idx < step ? theme.status.success : idx === step ? '#4F46E5' : theme.border.primary}`,
                       }}>
                       {idx < step ? <Check size={11} /> : idx + 1}
                     </div>
                     <span style={{ color: idx === step ? theme.text.primary : theme.text.muted, fontSize: 12, fontWeight: idx === step ? 600 : 400 }}>{s}</span>
                   </div>
-                  {idx < STEPS.length - 1 && <div className="flex-1 mx-2 h-px" style={{ background: idx < step ? '#10B981' : theme.border.primary }} />}
+                  {idx < STEPS.length - 1 && <div className="flex-1 mx-2 h-px" style={{ background: idx < step ? theme.status.success : theme.border.primary }} />}
                 </React.Fragment>
               ))}
             </div>
@@ -880,12 +881,12 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
                   <div>
                     {lbl('Full Name', true)}
                     <input value={form.recipientName} onChange={e => up('recipientName', e.target.value)} placeholder="e.g. Kofi Mensah" {...inp('recipientName')} />
-                    {errors.recipientName && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.recipientName}</p>}
+                    {errors.recipientName && <p style={{ color: theme.status.error, fontSize: 11, marginTop: 3 }}>{errors.recipientName}</p>}
                   </div>
                   <div>
                     {lbl('Phone Number', true)}
                     <input value={form.recipientPhone} onChange={e => up('recipientPhone', e.target.value)} placeholder="+233..." {...inp('recipientPhone')} />
-                    {errors.recipientPhone && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.recipientPhone}</p>}
+                    {errors.recipientPhone && <p style={{ color: theme.status.error, fontSize: 11, marginTop: 3 }}>{errors.recipientPhone}</p>}
                   </div>
                   <div>
                     {lbl('Email (optional)')}
@@ -909,12 +910,12 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
                   <div>
                     {lbl('Package Description', true)}
                     <input value={form.description} onChange={e => up('description', e.target.value)} placeholder="e.g. Clothing, Electronics, Documents…" {...inp('description')} />
-                    {errors.description && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.description}</p>}
+                    {errors.description && <p style={{ color: theme.status.error, fontSize: 11, marginTop: 3 }}>{errors.description}</p>}
                   </div>
                   <div>
                     {lbl('Declared Value (GH₵)', true)}
                     <input type="number" value={form.value} onChange={e => up('value', e.target.value)} placeholder="0.00" min="0" {...inp('value')} />
-                    {errors.value && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.value}</p>}
+                    {errors.value && <p style={{ color: theme.status.error, fontSize: 11, marginTop: 3 }}>{errors.value}</p>}
                   </div>
 
                   {/* Parcel size */}
@@ -943,26 +944,26 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
                   <div className="flex gap-3">
                     <button onClick={() => up('fragile', !form.fragile)}
                       className="flex-1 flex items-center gap-2 p-3 rounded-xl border"
-                      style={{ background: form.fragile ? '#EF444410' : theme.bg.input, borderColor: form.fragile ? '#EF4444' : theme.border.primary }}>
-                      <div className={`w-4 h-4 rounded flex items-center justify-center`} style={{ background: form.fragile ? '#EF4444' : 'transparent', border: `1.5px solid ${form.fragile ? '#EF4444' : theme.border.primary}` }}>
+                      style={{ background: form.fragile ? `${theme.status.error}10` : theme.bg.input, borderColor: form.fragile ? theme.status.error : theme.border.primary }}>
+                      <div className={`w-4 h-4 rounded flex items-center justify-center`} style={{ background: form.fragile ? theme.status.error : 'transparent', border: `1.5px solid ${form.fragile ? theme.status.error : theme.border.primary}` }}>
                         {form.fragile && <Check size={10} color="#fff" />}
                       </div>
-                      <span style={{ color: form.fragile ? '#EF4444' : theme.text.secondary, fontSize: 13 }}>Fragile</span>
+                      <span style={{ color: form.fragile ? theme.status.error : theme.text.secondary, fontSize: 13 }}>Fragile</span>
                     </button>
                     <button onClick={() => up('cod', !form.cod)}
                       className="flex-1 flex items-center gap-2 p-3 rounded-xl border"
-                      style={{ background: form.cod ? '#10B98110' : theme.bg.input, borderColor: form.cod ? '#10B981' : theme.border.primary }}>
-                      <div className="w-4 h-4 rounded flex items-center justify-center" style={{ background: form.cod ? '#10B981' : 'transparent', border: `1.5px solid ${form.cod ? '#10B981' : theme.border.primary}` }}>
+                      style={{ background: form.cod ? `${theme.status.success}10` : theme.bg.input, borderColor: form.cod ? theme.status.success : theme.border.primary }}>
+                      <div className="w-4 h-4 rounded flex items-center justify-center" style={{ background: form.cod ? theme.status.success : 'transparent', border: `1.5px solid ${form.cod ? theme.status.success : theme.border.primary}` }}>
                         {form.cod && <Check size={10} color="#fff" />}
                       </div>
-                      <span style={{ color: form.cod ? '#10B981' : theme.text.secondary, fontSize: 13 }}>Cash on Delivery</span>
+                      <span style={{ color: form.cod ? theme.status.success : theme.text.secondary, fontSize: 13 }}>Cash on Delivery</span>
                     </button>
                   </div>
                   {form.cod && (
                     <div>
                       {lbl('COD Amount (GH₵)', true)}
                       <input type="number" value={form.codAmount} onChange={e => up('codAmount', e.target.value)} placeholder="Amount to collect from recipient" {...inp('codAmount')} />
-                      {errors.codAmount && <p style={{ color: '#EF4444', fontSize: 11, marginTop: 3 }}>{errors.codAmount}</p>}
+                      {errors.codAmount && <p style={{ color: theme.status.error, fontSize: 11, marginTop: 3 }}>{errors.codAmount}</p>}
                     </div>
                   )}
                 </>
@@ -972,8 +973,8 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
               {step === 2 && (
                 <>
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#10B98115' }}>
-                      <Truck size={18} style={{ color: '#10B981' }} />
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${theme.status.success}15` }}>
+                      <Truck size={18} style={{ color: theme.status.success }} />
                     </div>
                     <div>
                       <p style={{ color: theme.text.primary, fontWeight: 600 }}>Delivery Options</p>
@@ -1083,7 +1084,7 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
             {/* Footer */}
             <div className="px-6 py-4 flex gap-3" style={{ borderTop: `1px solid ${theme.border.primary}` }}>
               {step > 0 && (
-                <button onClick={back} className="px-5 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+                <button onClick={back} className="btn-outline px-5 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
                   Back
                 </button>
               )}
@@ -1092,7 +1093,7 @@ function NewShipmentDrawer({ accountTerminals = [], onClose, onSubmit, theme }) 
                   Continue <ArrowRight size={14} />
                 </button>
               ) : (
-                <button onClick={handleSubmit} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: '#10B981' }}>
+                <button onClick={handleSubmit} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-white" style={{ background: theme.status.success }}>
                   <BadgeCheck size={15} /> Submit Order
                 </button>
               )}
@@ -1199,6 +1200,16 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
   // Returns initiate
   const [initiateReturn, setInitiateReturn] = useState(false);
   const [returnInitForm, setReturnInitForm] = useState({ waybill: '', reason: 'wrong_item', notes: '' });
+  // Export / Download / Webhook Test / 2FA modals
+  const [showExportInvoices, setShowExportInvoices] = useState(false);
+  const [exportForm, setExportForm] = useState({ dateFrom: '2025-01-01', dateTo: '2026-03-31', format: 'csv', includeStatus: 'all' });
+  const [downloadInvoice, setDownloadInvoice] = useState(null); // invoice object
+  const [downloadFormat, setDownloadFormat] = useState('pdf');
+  const [webhookTestTarget, setWebhookTestTarget] = useState(null); // webhook object
+  const [webhookTestEvent, setWebhookTestEvent] = useState('');
+  const [webhookTestSending, setWebhookTestSending] = useState(false);
+  const [show2FASetup, setShow2FASetup] = useState(false);
+  const [twoFACode, setTwoFACode] = useState('');
 
   const allShipments = useMemo(() => {
     const matched = packagesData.filter(p =>
@@ -1312,7 +1323,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                       style={{
                         backgroundColor: isActive ? theme.accent.light : 'transparent',
                         border: isActive ? `1px solid ${theme.accent.border}` : '1px solid transparent',
-                        color: isActive ? theme.accent.primary : theme.text.secondary,
+                        color: isActive ? theme.text.primary : theme.text.secondary,
                       }}
                     >
                       <div className="relative flex-shrink-0">
@@ -1336,7 +1347,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                             onClick={() => nav(item.id, sub)}
                             className="w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all"
                             style={{
-                              color: activeSubMenu === sub && activeMenu === item.id ? theme.accent.primary : theme.text.muted,
+                              color: activeSubMenu === sub && activeMenu === item.id ? theme.text.primary : theme.text.muted,
                               backgroundColor: activeSubMenu === sub && activeMenu === item.id ? theme.accent.light : 'transparent',
                             }}
                           >
@@ -1361,7 +1372,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           style={{
             backgroundColor: activeMenu === 'account' ? theme.accent.light : 'transparent',
             border: activeMenu === 'account' ? `1px solid ${theme.accent.border}` : '1px solid transparent',
-            color: activeMenu === 'account' ? theme.accent.primary : theme.text.secondary,
+            color: activeMenu === 'account' ? theme.text.primary : theme.text.secondary,
           }}
         >
           <Settings size={18} />
@@ -1385,7 +1396,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           <Menu size={20} />
         </button>
         {/* Search bar */}
-        <div className="flex items-center gap-2 px-3 py-2 rounded-xl border w-44 md:w-72" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
+        <div className="glass-card flex items-center gap-2 px-3 py-2 rounded-xl border w-44 md:w-72" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
           <Search size={14} style={{ color: theme.icon.muted }} />
           <input
             value={search}
@@ -1430,7 +1441,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 {/* Filter pills */}
                 <div className="flex gap-1 p-2 border-b" style={{ borderColor: theme.border.primary }}>
                   {['all','package','sla','billing','system'].map(f => (
-                    <button key={f} onClick={() => setNotifFilter(f)} className="px-2.5 py-1 rounded-lg text-xs font-medium capitalize" style={{ backgroundColor: notifFilter === f ? theme.accent.light : 'transparent', color: notifFilter === f ? theme.accent.primary : theme.text.muted }}>
+                    <button key={f} onClick={() => setNotifFilter(f)} className="px-2.5 py-1 rounded-lg text-xs font-medium capitalize" style={{ backgroundColor: notifFilter === f ? theme.accent.light : 'transparent', color: notifFilter === f ? theme.text.primary : theme.text.muted }}>
                       {f === 'all' ? 'All' : f}
                     </button>
                   ))}
@@ -1503,8 +1514,8 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </div>
                 <div className="p-1.5 border-t" style={{ borderColor: theme.border.primary }}>
                   <button onClick={onLogout} className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-red-500/5 text-left">
-                    <LogOut size={15} style={{ color: '#D48E8A' }} />
-                    <span className="text-sm" style={{ color: '#D48E8A' }}>Sign out</span>
+                    <LogOut size={15} style={{ color: theme.status.error }} />
+                    <span className="text-sm" style={{ color: theme.status.error }}>Sign out</span>
                   </button>
                 </div>
               </div>
@@ -1529,7 +1540,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           <p className="text-sm mt-0.5" style={{ color: theme.text.muted }}>{account.plan} · {account.accountId}</p>
         </div>
         {pendingInv > 0 && (
-          <button onClick={() => nav('invoices')} className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm" style={{ backgroundColor: '#D4AA5A10', border: '1px solid #D4AA5A40', color: '#D4AA5A' }}>
+          <button onClick={() => nav('invoices')} className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm" style={{ backgroundColor: `${theme.status.warning}10`, border: `1px solid ${theme.status.warning}40`, color: theme.status.warning }}>
             <CreditCard size={14} /> Invoice due: <strong>GH₵ {pendingInv.toLocaleString()}</strong>
           </button>
         )}
@@ -1539,9 +1550,9 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { label: 'Total Shipments', value: kpis.total,                              color: '#818CF8', icon: Package,     sub: 'All time',        onClick: () => nav('shipments', 'All') },
-          { label: 'Active',          value: kpis.active,                             color: '#7EA8C9', icon: Truck,       sub: 'In transit',      onClick: () => nav('shipments', 'In Transit') },
-          { label: 'In Lockers',      value: kpis.inLocker,                           color: '#81C995', icon: Grid3X3,    sub: 'Awaiting pickup', onClick: () => nav('shipments', 'In Lockers') },
-          { label: 'Total Value',     value: `GH₵ ${kpis.value.toLocaleString()}`,   color: '#D4AA5A', icon: DollarSign, sub: 'Shipment value',  onClick: () => nav('invoices') },
+          { label: 'Active',          value: kpis.active,                             color: theme.accent.primary, icon: Truck,       sub: 'In transit',      onClick: () => nav('shipments', 'In Transit') },
+          { label: 'In Lockers',      value: kpis.inLocker,                           color: theme.status.success, icon: Grid3X3,    sub: 'Awaiting pickup', onClick: () => nav('shipments', 'In Lockers') },
+          { label: 'Total Value',     value: `GH₵ ${kpis.value.toLocaleString()}`,   color: theme.status.warning, icon: DollarSign, sub: 'Shipment value',  onClick: () => nav('invoices') },
         ].map(({ label, value, color, icon: Icon, sub, onClick }) => (
           <button key={label} onClick={onClick} className="p-4 rounded-2xl border text-left transition-all hover:shadow-md" style={card}>
             <div className="flex items-start justify-between mb-3">
@@ -1559,10 +1570,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
       {/* Charts row */}
       <div className="grid md:grid-cols-2 gap-4">
         {/* Monthly trend */}
-        <div className="p-5 rounded-2xl border" style={card}>
+        <GlassCard>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Shipment Volume</h3>
-            <span className="text-xs font-semibold" style={{ color: '#81C995' }}>Last 8 months</span>
+            <span className="text-xs font-semibold" style={{ color: theme.status.success }}>Last 8 months</span>
           </div>
           <ResponsiveContainer width="100%" height={140}>
             <BarChart data={MONTHLY_DATA} barCategoryGap="30%">
@@ -1571,17 +1582,17 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               <YAxis tick={{ fontSize: 11, fill: theme.text.muted }} axisLine={false} tickLine={false} width={30} />
               <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12, color: theme.text.primary, fontSize: 12 }} />
               <Bar dataKey="shipments" fill="#818CF8" radius={[4,4,0,0]} name="Shipments" />
-              <Bar dataKey="completed" fill="#81C995" radius={[4,4,0,0]} name="Completed" />
+              <Bar dataKey="completed" fill={theme.status.success} radius={[4,4,0,0]} name="Completed" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </GlassCard>
 
         {/* Performance */}
-        <div className="p-5 rounded-2xl border space-y-3.5" style={card}>
+        <GlassCard className="space-y-3.5">
           <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Account Performance</h3>
           {[
-            { label: 'On-time delivery',   value: '94.2%', bar: 94, color: '#81C995' },
-            { label: 'Pickup rate',        value: '88.7%', bar: 89, color: '#7EA8C9' },
+            { label: 'On-time delivery',   value: '94.2%', bar: 94, color: theme.status.success },
+            { label: 'Pickup rate',        value: '88.7%', bar: 89, color: theme.accent.primary },
             { label: 'Locker utilization', value: '71.3%', bar: 71, color: '#818CF8' },
           ].map(({ label, value, bar, color }) => (
             <div key={label}>
@@ -1598,11 +1609,11 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             <div><p className="text-xs" style={{ color: theme.text.muted }}>Avg delivery time</p><p className="text-sm font-bold mt-0.5" style={{ color: theme.text.primary }}>1.8 days</p></div>
             <div><p className="text-xs" style={{ color: theme.text.muted }}>Active terminals</p><p className="text-sm font-bold mt-0.5" style={{ color: theme.text.primary }}>{account.terminals.length}</p></div>
           </div>
-        </div>
+        </GlassCard>
       </div>
 
       {/* Recent shipments */}
-      <div className="rounded-2xl border overflow-hidden" style={card}>
+      <GlassCard noPadding className="overflow-hidden">
         <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
           <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Recent Shipments</h3>
           <button onClick={() => nav('shipments', 'All')} className="text-xs flex items-center gap-1" style={{ color: theme.accent.primary }}>View all <ChevronRight size={12} /></button>
@@ -1629,7 +1640,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             </tbody>
           </table>
         </div>
-      </div>
+      </GlassCard>
 
       {/* Quick Actions */}
       <div className="flex items-center gap-3 flex-wrap">
@@ -1652,24 +1663,24 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
       </div>
 
       {/* Terminals */}
-      <div className="rounded-2xl border overflow-hidden" style={card}>
+      <GlassCard noPadding className="overflow-hidden">
         <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
           <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Contracted Terminals</h3>
         </div>
         <div className="grid md:grid-cols-3">
           {account.terminals.map((t, i) => (
             <div key={t} className="flex items-center gap-3 p-4" style={{ borderRight: i < account.terminals.length - 1 ? `1px solid ${theme.border.primary}` : 'none' }}>
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#81C99520' }}>
-                <MapPin size={14} style={{ color: '#81C995' }} />
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${theme.status.success}20` }}>
+                <MapPin size={14} style={{ color: theme.status.success }} />
               </div>
               <div>
                 <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{t}</p>
-                <p className="text-xs" style={{ color: '#81C995' }}>Active</p>
+                <p className="text-xs" style={{ color: theme.status.success }}>Active</p>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -1704,7 +1715,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
 
       {/* Filters */}
       <div className="flex gap-2 flex-wrap">
-        <div className="flex-1 min-w-48 flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <div className="glass-card flex-1 min-w-48 flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
           <Search size={14} style={{ color: theme.icon.muted }} />
           <input value={shipSearch} onChange={e => setShipSearch(e.target.value)} placeholder="Waybill, recipient, destination…" className="flex-1 bg-transparent text-sm outline-none" style={{ color: theme.text.primary }} />
           {shipSearch && <button onClick={() => setShipSearch('')} style={{ color: theme.text.muted }}><X size={13} /></button>}
@@ -1720,7 +1731,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
         </select>
       </div>
 
-      <div className="rounded-2xl border overflow-hidden" style={card}>
+      <GlassCard noPadding className="overflow-hidden">
         {filteredShipments.length === 0 ? (
           <div className="text-center py-12">
             <Package size={36} className="mx-auto mb-2" style={{ color: theme.text.muted }} />
@@ -1743,9 +1754,9 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-xs font-bold" style={{ color: theme.text.primary }}>{pkg.waybill}</span>
                         <button onClick={() => copyWaybill(pkg.waybill)} style={{ color: theme.icon.muted }}>
-                          {copiedWaybill === pkg.waybill ? <Check size={11} style={{ color: '#81C995' }} /> : <Copy size={11} />}
+                          {copiedWaybill === pkg.waybill ? <Check size={11} style={{ color: theme.status.success }} /> : <Copy size={11} />}
                         </button>
-                        {pkg.cod && <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ backgroundColor: '#D4AA5A15', color: '#D4AA5A' }}>COD</span>}
+                        {pkg.cod && <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ backgroundColor: `${theme.status.warning}15`, color: theme.status.warning }}>COD</span>}
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -1765,7 +1776,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             </table>
           </div>
         )}
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -1802,10 +1813,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
         <div className="grid grid-cols-3 gap-3">
           {[
             { label: 'In Transit',      value: dispatches.filter(d => d.status === 'in_transit').length,   color: '#818CF8', icon: Truck },
-            { label: 'Pkgs Dispatched', value: dispatches.reduce((s, d) => s + (d.packages || 0), 0),      color: '#7EA8C9', icon: Package },
-            { label: 'Arrived Today',   value: dispatches.filter(d => d.status === 'arrived').length,      color: '#81C995', icon: CheckCircle2 },
+            { label: 'Pkgs Dispatched', value: dispatches.reduce((s, d) => s + (d.packages || 0), 0),      color: theme.accent.primary, icon: Package },
+            { label: 'Arrived Today',   value: dispatches.filter(d => d.status === 'arrived').length,      color: theme.status.success, icon: CheckCircle2 },
           ].map(({ label, value, color, icon: Icon }) => (
-            <div key={label} className="p-4 rounded-2xl border" style={card}>
+            <GlassCard key={label} className="!p-4">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${color}20` }}>
                   <Icon size={16} style={{ color }} />
@@ -1815,13 +1826,13 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                   <p className="text-xl font-bold mt-0.5" style={{ color: theme.text.primary }}>{value}</p>
                 </div>
               </div>
-            </div>
+            </GlassCard>
           ))}
         </div>
 
         {/* Dispatch cards */}
         {dispatches.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 rounded-2xl border" style={card}>
+          <GlassCard className="flex flex-col items-center justify-center py-16">
             <Truck size={32} className="mb-3" style={{ color: theme.text.muted }} />
             <p style={{ color: theme.text.secondary, fontWeight: 500 }}>No dispatches yet</p>
             <p style={{ color: theme.text.muted, fontSize: 13, marginTop: 4 }}>Create a new dispatch to track courier deliveries</p>
@@ -1829,13 +1840,13 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
               <Plus size={13} /> New Dispatch
             </button>
-          </div>
+          </GlassCard>
         ) : (
           <div className="space-y-3">
             {dispatches.map(d => {
               const si = statusInfo(d.status);
               return (
-                <div key={d.id} className="p-4 rounded-2xl border" style={card}>
+                <GlassCard key={d.id} className="!p-4">
                   {/* Card header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
@@ -1871,7 +1882,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                       {/* Delete */}
                       <button onClick={() => setDeleteDispatch(d)}
                         className="p-1.5 rounded-lg"
-                        style={{ color: '#EF4444', background: '#EF444410' }}
+                        style={{ color: theme.status.error, background: `${theme.status.error}10` }}
                         title="Delete">
                         <X size={13} />
                       </button>
@@ -1897,7 +1908,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                       ))}
                     </div>
                   )}
-                </div>
+                </GlassCard>
               );
             })}
           </div>
@@ -1907,19 +1918,19 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
         {deleteDispatch && (
           <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.45)' }}>
             <div className="rounded-2xl p-6 w-80 shadow-2xl" style={{ background: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
-              <div className="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: '#EF444415' }}>
-                <AlertTriangle size={20} style={{ color: '#EF4444' }} />
+              <div className="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: `${theme.status.error}15` }}>
+                <AlertTriangle size={20} style={{ color: theme.status.error }} />
               </div>
               <h3 style={{ color: theme.text.primary, fontWeight: 700, textAlign: 'center', fontSize: 15, marginBottom: 6 }}>Delete Dispatch?</h3>
               <p style={{ color: theme.text.muted, textAlign: 'center', fontSize: 13, marginBottom: 20 }}>
                 Remove dispatch <strong style={{ color: theme.text.primary }}>{deleteDispatch.id}</strong> for {deleteDispatch.courier}? This cannot be undone.
               </p>
               <div className="flex gap-3">
-                <button onClick={() => setDeleteDispatch(null)} className="flex-1 py-2.5 rounded-xl border text-sm"
+                <button onClick={() => setDeleteDispatch(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm"
                   style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
                 <button onClick={() => handleDeleteDispatch(deleteDispatch.id)}
                   className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white"
-                  style={{ background: '#EF4444' }}>Delete</button>
+                  style={{ background: theme.status.error }}>Delete</button>
               </div>
             </div>
           </div>
@@ -1949,7 +1960,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </div>
               </div>
               <div className="px-5 py-4 flex gap-3 border-t" style={{ borderColor: theme.border.primary }}>
-                <button onClick={() => setReassignTarget(null)} className="flex-1 py-2.5 rounded-xl border text-sm"
+                <button onClick={() => setReassignTarget(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm"
                   style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
                 <button
                   onClick={() => {
@@ -1995,7 +2006,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           <button key={f.id} onClick={() => setNotifFilter(f.id)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium border transition-all" style={{
             backgroundColor: notifFilter === f.id ? theme.accent.light : theme.bg.card,
             borderColor: notifFilter === f.id ? theme.accent.border : theme.border.primary,
-            color: notifFilter === f.id ? theme.accent.primary : theme.text.secondary,
+            color: notifFilter === f.id ? theme.text.primary : theme.text.secondary,
           }}>
             {f.label}
             <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ backgroundColor: notifFilter === f.id ? theme.accent.primary : theme.bg.tertiary, color: notifFilter === f.id ? '#fff' : theme.text.muted }}>
@@ -2005,7 +2016,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
         ))}
       </div>
 
-      <div className="rounded-2xl border overflow-hidden" style={card}>
+      <GlassCard noPadding className="overflow-hidden">
         {notifs.filter(n => notifFilter === 'all' || n.type === notifFilter).map((n, i, arr) => (
           <button
             key={n.id}
@@ -2029,7 +2040,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             {!n.read && <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: n.color }} />}
           </button>
         ))}
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -2044,7 +2055,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
       {/* Contract vs Actual */}
       <div className="grid md:grid-cols-2 gap-4">
         {/* Contracted terms */}
-        <div className="p-5 rounded-2xl border" style={card}>
+        <GlassCard>
           <div className="flex items-center gap-2 mb-4">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#818CF820' }}>
               <Shield size={14} style={{ color: '#818CF8' }} />
@@ -2064,20 +2075,20 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
 
         {/* Actual metrics */}
-        <div className="p-5 rounded-2xl border space-y-3" style={card}>
+        <GlassCard className="space-y-3">
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#81C99520' }}>
-              <Activity size={14} style={{ color: '#81C995' }} />
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${theme.status.success}20` }}>
+              <Activity size={14} style={{ color: theme.status.success }} />
             </div>
             <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Actual Performance</h3>
           </div>
           {[
-            { label: 'On-time delivery',   value: `${SLA_ACTUAL.onTime}%`,      bar: SLA_ACTUAL.onTime,      target: 95,  color: SLA_ACTUAL.onTime >= 95 ? '#81C995' : '#D4AA5A' },
-            { label: 'Pickup rate',        value: `${SLA_ACTUAL.pickupRate}%`,  bar: SLA_ACTUAL.pickupRate,  target: 90,  color: SLA_ACTUAL.pickupRate >= 90 ? '#81C995' : '#D4AA5A' },
-            { label: 'Platform uptime',    value: `${SLA_ACTUAL.uptime}%`,      bar: SLA_ACTUAL.uptime,      target: 99.5,color: '#81C995' },
+            { label: 'On-time delivery',   value: `${SLA_ACTUAL.onTime}%`,      bar: SLA_ACTUAL.onTime,      target: 95,  color: SLA_ACTUAL.onTime >= 95 ? theme.status.success : theme.status.warning },
+            { label: 'Pickup rate',        value: `${SLA_ACTUAL.pickupRate}%`,  bar: SLA_ACTUAL.pickupRate,  target: 90,  color: SLA_ACTUAL.pickupRate >= 90 ? theme.status.success : theme.status.warning },
+            { label: 'Platform uptime',    value: `${SLA_ACTUAL.uptime}%`,      bar: SLA_ACTUAL.uptime,      target: 99.5,color: theme.status.success },
           ].map(({ label, value, bar, color }) => (
             <div key={label}>
               <div className="flex items-center justify-between text-xs mb-1.5">
@@ -2091,46 +2102,46 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           ))}
           <div className="pt-2 border-t" style={{ borderColor: theme.border.primary }}>
             <p className="text-xs" style={{ color: theme.text.muted }}>Avg delivery time</p>
-            <p className="text-base font-bold mt-0.5" style={{ color: theme.text.primary }}>{SLA_ACTUAL.avgHours}h <span className="text-xs font-normal" style={{ color: '#81C995' }}>vs 24h target ✓</span></p>
+            <p className="text-base font-bold mt-0.5" style={{ color: theme.text.primary }}>{SLA_ACTUAL.avgHours}h <span className="text-xs font-normal" style={{ color: theme.status.success }}>vs 24h target ✓</span></p>
           </div>
-        </div>
+        </GlassCard>
       </div>
 
       {/* SLA Breaches */}
-      <div className="rounded-2xl border overflow-hidden" style={card}>
+      <GlassCard noPadding className="overflow-hidden">
         <div className="p-4 border-b flex items-center gap-2" style={{ borderColor: theme.border.primary }}>
-          <AlertTriangle size={16} style={{ color: '#D4AA5A' }} />
+          <AlertTriangle size={16} style={{ color: theme.status.warning }} />
           <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Active Breaches</h3>
-          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: '#D4AA5A20', color: '#D4AA5A' }}>{SLA_BREACHES.length}</span>
+          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: `${theme.status.warning}20`, color: theme.status.warning }}>{SLA_BREACHES.length}</span>
         </div>
         {SLA_BREACHES.length === 0 ? (
           <div className="text-center py-8">
-            <CheckCircle2 size={32} className="mx-auto mb-2" style={{ color: '#81C995' }} />
-            <p className="text-sm font-medium" style={{ color: '#81C995' }}>No active SLA breaches</p>
+            <CheckCircle2 size={32} className="mx-auto mb-2" style={{ color: theme.status.success }} />
+            <p className="text-sm font-medium" style={{ color: theme.status.success }}>No active SLA breaches</p>
           </div>
         ) : SLA_BREACHES.map((b, i) => (
           <div key={b.waybill} className="flex items-center gap-4 p-4" style={{ borderTop: i > 0 ? `1px solid ${theme.border.primary}` : 'none' }}>
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#D4AA5A20' }}>
-              <Clock size={15} style={{ color: '#D4AA5A' }} />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${theme.status.warning}20` }}>
+              <Clock size={15} style={{ color: theme.status.warning }} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-mono font-bold" style={{ color: theme.text.primary }}>{b.waybill}</p>
               <p className="text-xs" style={{ color: theme.text.muted }}>{b.issue} · {b.terminal}</p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs px-2 py-1 rounded-lg font-medium" style={{ backgroundColor: '#D48E8A20', color: '#D48E8A' }}>+{b.days}d overdue</span>
+              <span className="text-xs px-2 py-1 rounded-lg font-medium" style={{ backgroundColor: `${theme.status.error}20`, color: theme.status.error }}>+{b.days}d overdue</span>
               <button onClick={() => { setActiveMenu('support'); setTicketForm({ subject: `SLA Breach — ${b.waybill}`, category: 'delivery', priority: 'high', message: `Package ${b.waybill} at ${b.terminal} is ${b.days} day(s) overdue. Issue: ${b.issue}` }); }}
                 className="text-xs px-2.5 py-1 rounded-lg font-semibold"
-                style={{ backgroundColor: '#EF444415', color: '#EF4444' }}>
+                style={{ backgroundColor: `${theme.status.error}15`, color: theme.status.error }}>
                 Escalate
               </button>
             </div>
           </div>
         ))}
-      </div>
+      </GlassCard>
 
       {/* Historical Breach Log */}
-      <div className="rounded-2xl border overflow-hidden" style={card}>
+      <GlassCard noPadding className="overflow-hidden">
         <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
           <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Historical Breach Log</h3>
         </div>
@@ -2140,18 +2151,18 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           { waybill: 'LQ-2024-00014', issue: 'Pickup overdue', terminal: 'West Hills Mall', days: 5, resolvedAt: '2026-01-28', resolution: 'Customer collected after reminder SMS' },
         ].map((b, i) => (
           <div key={b.waybill} className="flex items-center gap-4 p-4 border-b last:border-0" style={{ borderColor: theme.border.primary }}>
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#81C99520' }}>
-              <CheckCircle2 size={15} style={{ color: '#81C995' }} />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${theme.status.success}20` }}>
+              <CheckCircle2 size={15} style={{ color: theme.status.success }} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-mono font-bold" style={{ color: theme.text.primary }}>{b.waybill}</p>
               <p className="text-xs" style={{ color: theme.text.muted }}>{b.issue} · {b.terminal} · +{b.days}d overdue</p>
-              <p className="text-xs mt-0.5" style={{ color: '#81C995' }}>{b.resolution}</p>
+              <p className="text-xs mt-0.5" style={{ color: theme.status.success }}>{b.resolution}</p>
             </div>
             <span className="text-xs flex-shrink-0" style={{ color: theme.text.muted }}>Resolved {b.resolvedAt}</span>
           </div>
         ))}
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -2161,7 +2172,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
     const isMomo = pf.type === 'momo';
     const MOMO_PROVIDERS = [
       { id: 'MTN MoMo', label: 'MTN MoMo', color: '#D97706', bg: '#D9770615' },
-      { id: 'Telecel Cash', label: 'Telecel Cash', color: '#EF4444', bg: '#EF444415' },
+      { id: 'Telecel Cash', label: 'Telecel Cash', color: theme.status.error, bg: `${theme.status.error}15` },
       { id: 'AirtelTigo Money', label: 'AirtelTigo Money', color: '#3B82F6', bg: '#3B82F615' },
     ];
     const activeMomo = MOMO_PROVIDERS.find(m => m.id === pf.momoProvider) || MOMO_PROVIDERS[0];
@@ -2190,34 +2201,34 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
         {/* Summary cards */}
         <div className="grid md:grid-cols-3 gap-3">
           {[
-            { label: 'Outstanding', value: `GH₵ ${invoiceList.filter(i => i.status === 'pending').reduce((s, i) => s + i.amount, 0).toLocaleString()}`, color: '#D4AA5A', sub: `${invoiceList.filter(i => i.status === 'pending').length} invoice(s) pending` },
-            { label: 'Paid (YTD)', value: `GH₵ ${invoiceList.filter(i => i.status === 'paid').reduce((s, i) => s + i.amount, 0).toLocaleString()}`, color: '#81C995', sub: `${invoiceList.filter(i => i.status === 'paid').length} invoices paid` },
+            { label: 'Outstanding', value: `GH₵ ${invoiceList.filter(i => i.status === 'pending').reduce((s, i) => s + i.amount, 0).toLocaleString()}`, color: theme.status.warning, sub: `${invoiceList.filter(i => i.status === 'pending').length} invoice(s) pending` },
+            { label: 'Paid (YTD)', value: `GH₵ ${invoiceList.filter(i => i.status === 'paid').reduce((s, i) => s + i.amount, 0).toLocaleString()}`, color: theme.status.success, sub: `${invoiceList.filter(i => i.status === 'paid').length} invoices paid` },
             { label: 'Rate / Shipment', value: `GH₵ ${account.ratePerShipment}`, color: '#818CF8', sub: account.plan },
           ].map(({ label, value, color, sub }) => (
-            <div key={label} className="p-4 rounded-2xl border" style={card}>
+            <GlassCard key={label} className="!p-4">
               <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: theme.text.muted }}>{label}</p>
               <p className="text-2xl font-black mt-2" style={{ color }}>{value}</p>
               <p className="text-xs mt-1" style={{ color: theme.text.muted }}>{sub}</p>
-            </div>
+            </GlassCard>
           ))}
         </div>
 
         {/* Invoice list */}
-        <div className="rounded-2xl border overflow-hidden" style={card}>
+        <GlassCard noPadding className="overflow-hidden">
           <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
             <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Invoice History</h3>
           </div>
           {invoiceList.map((inv, i) => (
             <div key={inv.id} className="flex items-center gap-4 p-4 border-b last:border-0" style={{ borderColor: theme.border.primary }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: inv.status === 'paid' ? '#81C99520' : '#D4AA5A20' }}>
-                <FileText size={16} style={{ color: inv.status === 'paid' ? '#81C995' : '#D4AA5A' }} />
+                style={{ backgroundColor: inv.status === 'paid' ? `${theme.status.success}20` : `${theme.status.warning}20` }}>
+                <FileText size={16} style={{ color: inv.status === 'paid' ? theme.status.success : theme.status.warning }} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-semibold font-mono" style={{ color: theme.text.primary }}>{inv.id}</p>
                   <span className="text-xs px-2 py-0.5 rounded-full font-medium capitalize"
-                    style={{ backgroundColor: inv.status === 'paid' ? '#81C99520' : '#D4AA5A20', color: inv.status === 'paid' ? '#81C995' : '#D4AA5A' }}>
+                    style={{ backgroundColor: inv.status === 'paid' ? `${theme.status.success}20` : `${theme.status.warning}20`, color: inv.status === 'paid' ? theme.status.success : theme.status.warning }}>
                     {inv.status}
                   </span>
                 </div>
@@ -2229,7 +2240,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               <div className="flex items-center gap-2">
                 {inv.status === 'pending' ? (
                   <button onClick={() => { setPayingInvoice(inv); setPayRef(''); }}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+                    className="btn-primary flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
                     style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)', color: '#fff' }}>
                     Pay Now
                   </button>
@@ -2245,7 +2256,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               </div>
             </div>
           ))}
-        </div>
+        </GlassCard>
 
         {/* Pay Now Modal */}
         {payingInvoice && (
@@ -2301,7 +2312,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </div>
               </div>
               <div className="px-6 py-4 flex gap-3 border-t" style={{ borderColor: theme.border.primary }}>
-                <button onClick={() => setPayingInvoice(null)} className="flex-1 py-2.5 rounded-xl border text-sm"
+                <button onClick={() => setPayingInvoice(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm"
                   style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
                 <button
                   disabled={!payRef.trim()}
@@ -2352,12 +2363,12 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               onChange={e => setTrackQuery(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
               placeholder="e.g. LQ-2024-00002"
-              className="w-full pl-10 pr-4 py-3 rounded-2xl border text-sm outline-none font-mono"
+              className="glass-card w-full pl-10 pr-4 py-3 rounded-2xl border text-sm outline-none font-mono"
               style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary, color: theme.text.primary }}
             />
           </div>
           <button onClick={handleSearch}
-            className="px-6 py-3 rounded-2xl text-sm font-semibold"
+            className="btn-primary px-6 py-3 rounded-2xl text-sm font-semibold"
             style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)', color: '#fff' }}>
             Track
           </button>
@@ -2365,17 +2376,17 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
 
         {/* Result */}
         {trackSearched && !trackResult && (
-          <div className="p-8 rounded-2xl border text-center" style={card}>
+          <GlassCard className="p-8 text-center">
             <PackageX size={36} className="mx-auto mb-3" style={{ color: theme.text.muted }} />
             <p className="font-semibold" style={{ color: theme.text.primary }}>No shipment found</p>
             <p className="text-sm mt-1" style={{ color: theme.text.muted }}>Check the waybill number and try again</p>
-          </div>
+          </GlassCard>
         )}
 
         {trackResult && (
           <div className="space-y-4">
             {/* Package card */}
-            <div className="p-5 rounded-2xl border" style={card}>
+            <GlassCard>
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: theme.text.muted }}>Waybill</p>
@@ -2399,10 +2410,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </GlassCard>
 
             {/* Progress bar */}
-            <div className="p-5 rounded-2xl border" style={card}>
+            <GlassCard>
               <h3 className="font-semibold text-sm mb-5" style={{ color: theme.text.primary }}>Delivery Progress</h3>
               <div className="relative">
                 {/* Line */}
@@ -2425,7 +2436,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                   ))}
                 </div>
               </div>
-            </div>
+            </GlassCard>
           </div>
         )}
       </div>
@@ -2434,7 +2445,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
 
   // ── Page: Support ─────────────────────────────────────────────────────────
   const renderSupport = () => {
-    const PRIORITIES = { high: { label: 'High', color: '#EF4444', bg: '#EF444415' }, medium: { label: 'Medium', color: '#D97706', bg: '#D9770615' }, low: { label: 'Low', color: '#6B7280', bg: '#6B728015' } };
+    const PRIORITIES = { high: { label: 'High', color: theme.status.error, bg: `${theme.status.error}15` }, medium: { label: 'Medium', color: '#D97706', bg: '#D9770615' }, low: { label: 'Low', color: '#6B7280', bg: '#6B728015' } };
     const CATEGORIES = ['delivery', 'billing', 'technical', 'account', 'other'];
 
     const handleNewTicket = () => {
@@ -2469,7 +2480,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             <p className="text-sm mt-0.5" style={{ color: theme.text.muted }}>Raise tickets, chat with your account manager</p>
           </div>
           <button onClick={() => setTicketForm({ subject: '', category: 'delivery', priority: 'medium', message: '' })}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
+            className="btn-primary flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
             style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)', color: '#fff' }}>
             <Plus size={15} /> New Ticket
           </button>
@@ -2477,7 +2488,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
 
         {/* Quick contact cards */}
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="p-5 rounded-2xl border" style={card}>
+          <GlassCard>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#818CF815' }}>
                 <User size={17} style={{ color: '#818CF8' }} />
@@ -2492,25 +2503,25 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               style={{ backgroundColor: '#818CF815', color: '#818CF8' }}>
               <Mail size={14} /> {account.amEmail}
             </a>
-          </div>
-          <div className="p-5 rounded-2xl border" style={card}>
+          </GlassCard>
+          <GlassCard>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#81C99520' }}>
-                <MessageSquare size={17} style={{ color: '#81C995' }} />
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${theme.status.success}20` }}>
+                <MessageSquare size={17} style={{ color: theme.status.success }} />
               </div>
               <div>
                 <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>24/7 Support</p>
                 <p className="text-xs" style={{ color: theme.text.muted }}>Average response: 2 hours</p>
               </div>
             </div>
-            <div className="text-sm px-4 py-2 rounded-xl text-center font-medium" style={{ backgroundColor: '#81C99520', color: '#81C995' }}>
+            <div className="text-sm px-4 py-2 rounded-xl text-center font-medium" style={{ backgroundColor: `${theme.status.success}20`, color: theme.status.success }}>
               +233 30 200 0000
             </div>
-          </div>
+          </GlassCard>
         </div>
 
         {/* Tickets list */}
-        <div className="rounded-2xl border overflow-hidden" style={card}>
+        <GlassCard noPadding className="overflow-hidden">
           <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
             <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Support Tickets</h3>
           </div>
@@ -2532,7 +2543,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-semibold font-mono" style={{ color: theme.text.primary }}>{t.id}</p>
                   <span className="text-xs px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: t.status === 'open' ? '#818CF815' : '#81C99515', color: t.status === 'open' ? '#818CF8' : '#81C995' }}>
+                    style={{ backgroundColor: t.status === 'open' ? '#818CF815' : `${theme.status.success}15`, color: t.status === 'open' ? '#818CF8' : theme.status.success }}>
                     {t.status}
                   </span>
                   <span className="text-xs px-2 py-0.5 rounded-full"
@@ -2546,7 +2557,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               <ChevronRight size={16} style={{ color: theme.text.muted }} />
             </button>
           ))}
-        </div>
+        </GlassCard>
 
         {/* New Ticket Modal */}
         {ticketForm !== null && (
@@ -2592,7 +2603,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </div>
               </div>
               <div className="px-6 py-4 flex gap-3 border-t" style={{ borderColor: theme.border.primary }}>
-                <button onClick={() => setTicketForm(null)} className="flex-1 py-2.5 rounded-xl border text-sm"
+                <button onClick={() => setTicketForm(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm"
                   style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
                 <button onClick={handleNewTicket}
                   disabled={!ticketForm.subject.trim()}
@@ -2638,7 +2649,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     className="flex-1 px-3 py-2.5 rounded-xl border text-sm outline-none"
                     style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary, color: theme.text.primary }} />
                   <button onClick={() => handleReply(viewTicket)}
-                    className="px-4 py-2.5 rounded-xl font-semibold text-sm"
+                    className="btn-primary px-4 py-2.5 rounded-xl font-semibold text-sm"
                     style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)', color: '#fff' }}>
                     <Send size={15} />
                   </button>
@@ -2660,7 +2671,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           {['3m','6m','1y'].map(p => (
             <button key={p} onClick={() => setAnalyticsPeriod(p)}
               className="px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
-              style={{ backgroundColor: analyticsPeriod === p ? theme.accent.primary : theme.bg.card, borderColor: analyticsPeriod === p ? theme.accent.primary : theme.border.primary, color: analyticsPeriod === p ? '#fff' : theme.text.secondary }}>
+              style={{ backgroundColor: analyticsPeriod === p ? theme.accent.primary : theme.bg.card, borderColor: analyticsPeriod === p ? theme.accent.primary : theme.border.primary, color: analyticsPeriod === p ? theme.text.primary : theme.text.secondary }}>
               {p === '3m' ? '3 Months' : p === '6m' ? '6 Months' : '1 Year'}
             </button>
           ))}
@@ -2671,24 +2682,24 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: 'Avg / Month',   value: Math.round(MONTHLY_DATA.reduce((s, d) => s + d.shipments, 0) / MONTHLY_DATA.length), color: '#818CF8', suffix: ' shipments' },
-          { label: 'Completion Rate',value: `${Math.round(MONTHLY_DATA.reduce((s, d) => s + d.completed, 0) / MONTHLY_DATA.reduce((s, d) => s + d.shipments, 0) * 100)}%`, color: '#81C995', suffix: '' },
-          { label: 'YTD Shipments', value: MONTHLY_DATA.slice(5).reduce((s, d) => s + d.shipments, 0), color: '#7EA8C9', suffix: ' total' },
-          { label: 'YTD Revenue',   value: `GH₵ ${(MONTHLY_DATA.slice(5).reduce((s, d) => s + d.shipments, 0) * account.ratePerShipment).toLocaleString()}`, color: '#D4AA5A', suffix: '' },
+          { label: 'Completion Rate',value: `${Math.round(MONTHLY_DATA.reduce((s, d) => s + d.completed, 0) / MONTHLY_DATA.reduce((s, d) => s + d.shipments, 0) * 100)}%`, color: theme.status.success, suffix: '' },
+          { label: 'YTD Shipments', value: MONTHLY_DATA.slice(5).reduce((s, d) => s + d.shipments, 0), color: theme.accent.primary, suffix: ' total' },
+          { label: 'YTD Revenue',   value: `GH₵ ${(MONTHLY_DATA.slice(5).reduce((s, d) => s + d.shipments, 0) * account.ratePerShipment).toLocaleString()}`, color: theme.status.warning, suffix: '' },
         ].map(({ label, value, color, suffix }) => (
-          <div key={label} className="p-4 rounded-2xl border" style={card}>
+          <GlassCard key={label} className="!p-4">
             <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: theme.text.muted }}>{label}</p>
             <p className="text-xl font-bold mt-2" style={{ color }}>{value}{suffix && <span className="text-xs font-normal ml-1" style={{ color: theme.text.muted }}>{suffix}</span>}</p>
-          </div>
+          </GlassCard>
         ))}
       </div>
 
       {/* Monthly volume */}
-      <div className="p-5 rounded-2xl border" style={card}>
+      <GlassCard>
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Monthly Shipment Volume</h3>
           <div className="flex items-center gap-4 text-xs">
             <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#818CF8' }} /> Total</span>
-            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: '#81C995' }} /> Completed</span>
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded" style={{ backgroundColor: theme.status.success }} /> Completed</span>
           </div>
         </div>
         <ResponsiveContainer width="100%" height={180}>
@@ -2698,15 +2709,15 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             <YAxis tick={{ fontSize: 12, fill: theme.text.muted }} axisLine={false} tickLine={false} width={30} />
             <Tooltip contentStyle={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}`, borderRadius: 12, color: theme.text.primary, fontSize: 12 }} />
             <Bar dataKey="shipments" fill="#818CF8" radius={[5,5,0,0]} name="Total Shipments" />
-            <Bar dataKey="completed" fill="#81C995" radius={[5,5,0,0]} name="Completed" />
+            <Bar dataKey="completed" fill={theme.status.success} radius={[5,5,0,0]} name="Completed" />
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </GlassCard>
 
       {/* Method + terminal split */}
       <div className="grid md:grid-cols-2 gap-4">
         {/* Delivery method */}
-        <div className="p-5 rounded-2xl border" style={card}>
+        <GlassCard>
           <h3 className="font-semibold text-sm mb-4" style={{ color: theme.text.primary }}>Delivery Methods</h3>
           <div className="space-y-3">
             {METHOD_DATA.map(m => (
@@ -2721,10 +2732,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
 
         {/* Terminal utilization */}
-        <div className="p-5 rounded-2xl border" style={card}>
+        <GlassCard>
           <h3 className="font-semibold text-sm mb-4" style={{ color: theme.text.primary }}>Terminal Utilization</h3>
           <div className="space-y-3">
             {account.terminals.map((t, i) => {
@@ -2736,7 +2747,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     <span className="font-semibold" style={{ color: theme.text.primary }}>{utilization}%</span>
                   </div>
                   <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: theme.bg.tertiary }}>
-                    <div className="h-full rounded-full" style={{ width: `${utilization}%`, backgroundColor: ['#818CF8','#7EA8C9','#81C995'][i] || '#B5A0D1' }} />
+                    <div className="h-full rounded-full" style={{ width: `${utilization}%`, backgroundColor: ['#818CF8',theme.accent.primary,theme.status.success][i] || theme.chart.violet }} />
                   </div>
                 </div>
               );
@@ -2744,15 +2755,15 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           </div>
           <div className="pt-3 mt-2 border-t text-xs" style={{ borderColor: theme.border.primary }}>
             <div className="flex items-center gap-2" style={{ color: theme.text.muted }}>
-              <Zap size={12} style={{ color: '#81C995' }} />
+              <Zap size={12} style={{ color: theme.status.success }} />
               <span>Busiest terminal: <strong style={{ color: theme.text.primary }}>{account.terminals[0]}</strong></span>
             </div>
           </div>
-        </div>
+        </GlassCard>
       </div>
 
       {/* Exceptions breakdown */}
-      <div className="p-5 rounded-2xl border" style={card}>
+      <GlassCard>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-sm" style={{ color: theme.text.primary }}>Exception Breakdown</h3>
           <button
@@ -2769,10 +2780,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
         </div>
         <div className="space-y-3">
           {[
-            { label: 'Expired in Locker',   count: 3, color: '#EF4444' },
+            { label: 'Expired in Locker',   count: 3, color: theme.status.error },
             { label: 'Failed Delivery',      count: 1, color: '#D97706' },
             { label: 'Overdue Pickup',       count: 2, color: '#8B5CF6' },
-            { label: 'Damaged in Transit',   count: 1, color: '#D48E8A' },
+            { label: 'Damaged in Transit',   count: 1, color: theme.status.error },
           ].map(e => (
             <div key={e.label} className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
@@ -2783,7 +2794,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             </div>
           ))}
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -2826,7 +2837,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
     const metrics = [
       { label: 'Pending Review', count: returns.filter(r => r.status === 'pending').length,    color: '#D97706', bg: '#D9770615', icon: PackageX },
       { label: 'In Progress',    count: returns.filter(r => ['approved','in_transit'].includes(r.status)).length, color: '#818CF8', bg: '#818CF815', icon: RotateCcw },
-      { label: 'Received',       count: returns.filter(r => r.status === 'received').length,   color: '#81C995', bg: '#81C99515', icon: ClipboardCheck },
+      { label: 'Received',       count: returns.filter(r => r.status === 'received').length,   color: theme.status.success, bg: `${theme.status.success}15`, icon: ClipboardCheck },
       { label: 'Total Value',    count: `GH₵ ${returns.reduce((s,r)=>s+r.value,0).toLocaleString()}`, color: '#8B5CF6', bg: '#8B5CF615', icon: DollarSign, isValue: true },
     ];
 
@@ -2850,7 +2861,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           <div className="flex items-center gap-3">
             <button onClick={() => setInitiateReturn(true)}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
-              style={{ backgroundColor: '#EF444415', color: '#EF4444', border: '1px solid #EF444430' }}>
+              style={{ backgroundColor: `${theme.status.error}15`, color: theme.status.error, border: `1px solid ${theme.status.error}30` }}>
               <RotateCcw size={15} /> Initiate Return
             </button>
             <div className="flex items-center gap-2 text-xs px-3.5 py-2 rounded-xl" style={{ backgroundColor: '#818CF808', border: '1px solid #818CF820' }}>
@@ -2863,7 +2874,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
         {/* Metrics */}
         <div className="grid grid-cols-4 gap-4">
           {metrics.map(({ label, count, color, bg, icon: Icon, isValue }) => (
-            <div key={label} className="p-4 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <GlassCard key={label} className="!p-4">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-xs font-semibold" style={{ color: theme.text.muted }}>{label}</p>
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: bg }}>
@@ -2871,7 +2882,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </div>
               </div>
               <p className="text-2xl font-black" style={{ color: isValue ? color : theme.text.primary }}>{count}</p>
-            </div>
+            </GlassCard>
           ))}
         </div>
 
@@ -2904,7 +2915,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             <p className="text-sm mt-1" style={{ color: theme.text.muted }}>Returns initiated by customers will appear here</p>
           </div>
         ) : (
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ backgroundColor: theme.bg.secondary }}>
@@ -2946,12 +2957,12 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                             <>
                               <button onClick={() => handleApprove(ret)}
                                 className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg font-medium"
-                                style={{ backgroundColor: '#81C99515', color: '#81C995', border: '1px solid #81C99530' }}>
+                                style={{ backgroundColor: `${theme.status.success}15`, color: theme.status.success, border: `1px solid ${theme.status.success}30` }}>
                                 <ThumbsUp size={11} /> Approve
                               </button>
                               <button onClick={() => { setRejectTarget(ret); setRejectNote(''); }}
                                 className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg font-medium"
-                                style={{ backgroundColor: '#EF444415', color: '#EF4444', border: '1px solid #EF444430' }}>
+                                style={{ backgroundColor: `${theme.status.error}15`, color: theme.status.error, border: `1px solid ${theme.status.error}30` }}>
                                 <ThumbsDown size={11} /> Reject
                               </button>
                             </>
@@ -2959,7 +2970,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                           {ret.status === 'in_transit' && (
                             <button onClick={() => handleMarkReceived(ret)}
                               className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg font-medium"
-                              style={{ backgroundColor: '#81C99515', color: '#81C995', border: '1px solid #81C99530' }}>
+                              style={{ backgroundColor: `${theme.status.success}15`, color: theme.status.success, border: `1px solid ${theme.status.success}30` }}>
                               <ClipboardCheck size={11} /> Mark Received
                             </button>
                           )}
@@ -2970,7 +2981,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 })}
               </tbody>
             </table>
-          </div>
+          </GlassCard>
         )}
 
         {/* Return Policy info */}
@@ -3029,10 +3040,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
 
                   {/* Return waybill */}
                   {ret.returnWaybill && (
-                    <div className="flex items-center gap-3 p-3.5 rounded-xl border" style={{ backgroundColor: '#81C99508', borderColor: '#81C99530' }}>
-                      <RotateCcw size={14} style={{ color: '#81C995', flexShrink: 0 }} />
+                    <div className="flex items-center gap-3 p-3.5 rounded-xl border" style={{ backgroundColor: `${theme.status.success}08`, borderColor: `${theme.status.success}30` }}>
+                      <RotateCcw size={14} style={{ color: theme.status.success, flexShrink: 0 }} />
                       <div>
-                        <p className="text-xs font-semibold" style={{ color: '#81C995' }}>Return Waybill Issued</p>
+                        <p className="text-xs font-semibold" style={{ color: theme.status.success }}>Return Waybill Issued</p>
                         <p className="text-sm font-mono font-bold mt-0.5" style={{ color: theme.text.primary }}>{ret.returnWaybill}</p>
                       </div>
                     </div>
@@ -3069,19 +3080,19 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     <>
                       <button onClick={() => handleApprove(ret)}
                         className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
-                        style={{ background: 'linear-gradient(135deg,#10B981,#34D399)', color: '#fff' }}>
+                        style={{ background: `linear-gradient(135deg,${theme.status.success},#34D399)`, color: '#fff' }}>
                         <ThumbsUp size={14} /> Approve Return
                       </button>
                       <button onClick={() => { setRejectTarget(ret); setRejectNote(''); setViewReturn(null); }}
                         className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 border"
-                        style={{ borderColor: '#EF444440', color: '#EF4444', backgroundColor: '#EF444408' }}>
+                        style={{ borderColor: `${theme.status.error}40`, color: theme.status.error, backgroundColor: `${theme.status.error}08` }}>
                         <ThumbsDown size={14} /> Reject
                       </button>
                     </>
                   )}
                   {ret.status === 'in_transit' && (
                     <button onClick={() => handleMarkReceived(ret)}
-                      className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+                      className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
                       style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
                       <ClipboardCheck size={14} /> Mark as Received
                     </button>
@@ -3104,8 +3115,8 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
             <div className="w-full max-w-sm rounded-2xl p-6 space-y-4" style={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#EF444415' }}>
-                  <ThumbsDown size={18} style={{ color: '#EF4444' }} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${theme.status.error}15` }}>
+                  <ThumbsDown size={18} style={{ color: theme.status.error }} />
                 </div>
                 <div>
                   <p className="font-bold" style={{ color: theme.text.primary }}>Reject Return</p>
@@ -3121,11 +3132,11 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               </div>
               <div className="flex gap-3">
                 <button onClick={() => setRejectTarget(null)}
-                  className="flex-1 py-2.5 rounded-xl border text-sm"
+                  className="btn-outline flex-1 py-2.5 rounded-xl border text-sm"
                   style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
                 <button onClick={handleReject}
                   className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white"
-                  style={{ background: '#EF4444' }}>Confirm Reject</button>
+                  style={{ background: theme.status.error }}>Confirm Reject</button>
               </div>
             </div>
           </div>
@@ -3168,7 +3179,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </div>
               </div>
               <div className="px-6 py-4 flex gap-3 border-t" style={{ borderColor: theme.border.primary }}>
-                <button onClick={() => setInitiateReturn(false)} className="flex-1 py-2.5 rounded-xl border text-sm"
+                <button onClick={() => setInitiateReturn(false)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm"
                   style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
                 <button
                   disabled={!returnInitForm.waybill.trim()}
@@ -3193,7 +3204,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     setReturnInitForm({ waybill: '', reason: 'wrong_item', notes: '' });
                   }}
                   className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
-                  style={{ background: returnInitForm.waybill.trim() ? 'linear-gradient(135deg,#EF4444,#DC2626)' : theme.border.primary, color: returnInitForm.waybill.trim() ? '#fff' : theme.text.muted }}>
+                  style={{ background: returnInitForm.waybill.trim() ? `linear-gradient(135deg,${theme.status.error},#DC2626)` : theme.border.primary, color: returnInitForm.waybill.trim() ? '#fff' : theme.text.muted }}>
                   Submit Return
                 </button>
               </div>
@@ -3257,7 +3268,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
     const renderProfile = () => (
       <div className="space-y-4">
         {/* Company header card */}
-        <div className="p-5 rounded-2xl border" style={card}>
+        <GlassCard>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0"
@@ -3268,7 +3279,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 <h3 className="font-bold text-base" style={{ color: theme.text.primary }}>{profileForm.name || account.company}</h3>
                 <p className="text-sm" style={{ color: theme.text.muted }}>{account.accountId} · {account.plan}</p>
                 <span className="inline-flex items-center gap-1 text-xs mt-1 px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: '#81C99515', color: '#81C995' }}>
+                  style={{ backgroundColor: `${theme.status.success}15`, color: theme.status.success }}>
                   <Shield size={10} /> Verified
                 </span>
               </div>
@@ -3310,7 +3321,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               </div>
               <button
                 onClick={() => { setEditingProfile(false); addToast('Profile updated', 'success'); }}
-                className="mt-4 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white"
+                className="btn-primary mt-4 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white"
                 style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}
               >
                 <Check size={14} /> Save Changes
@@ -3338,7 +3349,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               ))}
             </div>
           )}
-        </div>
+        </GlassCard>
       </div>
     );
 
@@ -3352,14 +3363,14 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           </div>
           <button
             onClick={() => setContactForm({})}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-white"
+            className="btn-primary flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-white"
             style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}
           >
             <Plus size={13} /> Add Member
           </button>
         </div>
 
-        <div className="rounded-2xl border overflow-hidden" style={card}>
+        <GlassCard noPadding className="overflow-hidden">
           {teamContacts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Users size={28} style={{ color: theme.text.muted, marginBottom: 10 }} />
@@ -3402,7 +3413,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                   <button
                     onClick={() => setTeamContacts(prev => prev.filter(c => c.id !== contact.id))}
                     className="p-2 rounded-xl border"
-                    style={{ borderColor: '#EF444430', color: '#EF4444' }}
+                    style={{ borderColor: `${theme.status.error}30`, color: theme.status.error }}
                   >
                     <X size={13} />
                   </button>
@@ -3410,7 +3421,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               </div>
             ))
           )}
-        </div>
+        </GlassCard>
 
         {/* Contact form modal */}
         {contactForm !== null && (
@@ -3454,7 +3465,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                   </select>
                 </div>
                 <div className="flex gap-3 pt-1">
-                  <button onClick={() => setContactForm(null)} className="flex-1 py-2.5 rounded-xl border text-sm font-medium"
+                  <button onClick={() => setContactForm(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm font-medium"
                     style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
                   <button
                     onClick={() => {
@@ -3511,7 +3522,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
       return (
         <div className="space-y-4">
           {sections.map(section => (
-            <div key={section.title} className="rounded-2xl border overflow-hidden" style={card}>
+            <GlassCard key={section.title} noPadding className="overflow-hidden">
               <div className="px-5 py-3.5 border-b" style={{ borderColor: theme.border.primary }}>
                 <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>{section.title}</p>
               </div>
@@ -3529,11 +3540,11 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </GlassCard>
           ))}
 
           {/* Notification emails */}
-          <div className="rounded-2xl border overflow-hidden" style={card}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="px-5 py-3.5 border-b" style={{ borderColor: theme.border.primary }}>
               <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Notification Emails</p>
               <p className="text-xs mt-0.5" style={{ color: theme.text.muted }}>Send event notifications to these email addresses</p>
@@ -3580,7 +3591,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </button>
               </div>
             </div>
-          </div>
+          </GlassCard>
         </div>
       );
     };
@@ -3595,7 +3606,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
       const BANKS = ['GCB Bank', 'Ecobank Ghana', 'Stanbic Bank', 'Absa Bank', 'Zenith Bank', 'Fidelity Bank'];
       const MOMO_PROVIDERS = [
         { id: 'MTN MoMo',        color: '#F59E0B', bg: '#F59E0B15', border: '#F59E0B30' },
-        { id: 'Telecel Cash',    color: '#EF4444', bg: '#EF444415', border: '#EF444430' },
+        { id: 'Telecel Cash',    color: theme.status.error, bg: `${theme.status.error}15`, border: `${theme.status.error}30` },
         { id: 'AirtelTigo Money',color: '#3B82F6', bg: '#3B82F615', border: '#3B82F630' },
       ];
       const pf = paymentForm;
@@ -3608,11 +3619,11 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           {/* ── Summary metrics ── */}
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: 'Outstanding Balance', value: `GH₵ ${outstanding.toLocaleString()}`, sub: outstanding > 0 ? `${invoiceList.filter(i=>i.status==='pending').length} invoice(s) due` : 'All paid', color: outstanding > 0 ? '#D97706' : '#81C995', bg: outstanding > 0 ? '#D9770610' : '#81C99510', icon: AlertTriangle },
-              { label: 'Paid This Year',       value: `GH₵ ${paidYTD.toLocaleString()}`,    sub: `${invoiceList.filter(i=>i.status==='paid'&&i.id.startsWith('INV-2026')).length} invoices settled`, color: '#81C995', bg: '#81C99510', icon: Check },
+              { label: 'Outstanding Balance', value: `GH₵ ${outstanding.toLocaleString()}`, sub: outstanding > 0 ? `${invoiceList.filter(i=>i.status==='pending').length} invoice(s) due` : 'All paid', color: outstanding > 0 ? '#D97706' : theme.status.success, bg: outstanding > 0 ? '#D9770610' : `${theme.status.success}10`, icon: AlertTriangle },
+              { label: 'Paid This Year',       value: `GH₵ ${paidYTD.toLocaleString()}`,    sub: `${invoiceList.filter(i=>i.status==='paid'&&i.id.startsWith('INV-2026')).length} invoices settled`, color: theme.status.success, bg: `${theme.status.success}10`, icon: Check },
               { label: 'Avg Monthly Spend',    value: `GH₵ ${avgMonthly.toLocaleString()}`,  sub: `GH₵ ${account.ratePerShipment}/shipment`, color: '#818CF8', bg: '#818CF810', icon: TrendingUp },
             ].map(({ label, value, sub, color, bg, icon: Icon }) => (
-              <div key={label} className="p-4 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard key={label} className="!p-4">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-xs font-semibold" style={{ color: theme.text.muted }}>{label}</p>
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: bg }}>
@@ -3621,12 +3632,12 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </div>
                 <p className="text-xl font-black" style={{ color: theme.text.primary }}>{value}</p>
                 <p className="text-xs mt-1" style={{ color: theme.text.muted }}>{sub}</p>
-              </div>
+              </GlassCard>
             ))}
           </div>
 
           {/* ── Monthly Spend Chart ── */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="px-5 py-3.5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <div>
                 <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Monthly Spend</p>
@@ -3649,13 +3660,13 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
+          </GlassCard>
 
           {/* ── Invoice History ── */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="px-5 py-3.5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Invoice History</p>
-              <button onClick={() => addToast('All invoices exported', 'success')}
+              <button onClick={() => setShowExportInvoices(true)}
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl border"
                 style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
                 <Download size={12} /> Export All
@@ -3675,8 +3686,8 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: inv.status === 'paid' ? '#81C99515' : '#D9770615' }}>
-                          <FileText size={12} style={{ color: inv.status === 'paid' ? '#81C995' : '#D97706' }} />
+                          style={{ backgroundColor: inv.status === 'paid' ? `${theme.status.success}15` : '#D9770615' }}>
+                          <FileText size={12} style={{ color: inv.status === 'paid' ? theme.status.success : '#D97706' }} />
                         </div>
                         <span className="font-medium text-xs" style={{ color: theme.text.primary }}>{inv.id}</span>
                       </div>
@@ -3686,7 +3697,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     <td className="px-4 py-3.5 font-bold text-sm" style={{ color: theme.text.primary }}>GH₵ {inv.amount.toLocaleString()}</td>
                     <td className="px-4 py-3.5">
                       <span className="text-xs px-2.5 py-1 rounded-full font-medium"
-                        style={{ backgroundColor: inv.status === 'paid' ? '#81C99515' : '#D9770615', color: inv.status === 'paid' ? '#81C995' : '#D97706' }}>
+                        style={{ backgroundColor: inv.status === 'paid' ? `${theme.status.success}15` : '#D9770615', color: inv.status === 'paid' ? theme.status.success : '#D97706' }}>
                         {inv.status === 'paid' ? 'Paid' : 'Pending'}
                       </span>
                     </td>
@@ -3695,13 +3706,13 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     </td>
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-2 justify-end">
-                        <button onClick={() => addToast(`${inv.id} downloaded`, 'info')}
+                        <button onClick={() => { setDownloadInvoice(inv); setDownloadFormat('pdf'); }}
                           className="p-1.5 rounded-lg border" style={{ borderColor: theme.border.primary, color: theme.icon.muted }}>
                           <Download size={12} />
                         </button>
                         {inv.status === 'pending' && (
                           <button onClick={() => { setPayingInvoice(inv); setPayRef(''); }}
-                            className="text-xs px-3 py-1.5 rounded-lg font-semibold text-white"
+                            className="btn-primary text-xs px-3 py-1.5 rounded-lg font-semibold text-white"
                             style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
                             Pay Now
                           </button>
@@ -3712,10 +3723,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 ))}
               </tbody>
             </table>
-          </div>
+          </GlassCard>
 
           {/* ── Payment Method ── */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="px-5 py-3.5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <div>
                 <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Payment Method</p>
@@ -3823,7 +3834,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 )}
 
                 <button onClick={() => { setEditingPayment(false); addToast('Payment method updated', 'success'); }}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+                  className="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
                   style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
                   Save Payment Method
                 </button>
@@ -3847,7 +3858,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                           {pf.momoNumber ? pf.momoNumber.slice(0, 4) + '•'.repeat(4) + pf.momoNumber.slice(-3) : 'No number set'} · {pf.momoName || account.company}
                         </p>
                       </div>
-                      <span className="ml-auto text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: '#81C99515', color: '#81C995' }}>Active</span>
+                      <span className="ml-auto text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: `${theme.status.success}15`, color: theme.status.success }}>Active</span>
                     </div>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-2 pt-4 border-t" style={{ borderColor: theme.border.primary }}>
                       {[
@@ -3879,7 +3890,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                           {pf.accountNo.slice(0,3)}{'•'.repeat(5)}{pf.accountNo.slice(-2)} · {pf.branch}
                         </p>
                       </div>
-                      <span className="ml-auto text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: '#81C99515', color: '#81C995' }}>Active</span>
+                      <span className="ml-auto text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: `${theme.status.success}15`, color: theme.status.success }}>Active</span>
                     </div>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-2 pt-4 border-t" style={{ borderColor: theme.border.primary }}>
                       {[
@@ -3900,10 +3911,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 )}
               </div>
             )}
-          </div>
+          </GlassCard>
 
           {/* ── Contract Details ── */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="px-5 py-3.5 border-b" style={{ borderColor: theme.border.primary }}>
               <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Contract Details</p>
             </div>
@@ -3932,10 +3943,10 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </p>
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           {/* ── Billing Contacts ── */}
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="px-5 py-3.5 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <div>
                 <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Billing Contacts</p>
@@ -3970,7 +3981,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </div>
               ))
             )}
-          </div>
+          </GlassCard>
 
           {/* ── Pay Now Modal ── */}
           {payingInvoice && (
@@ -4102,7 +4113,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               <Shield size={14} style={{ color: '#818CF8', marginTop: 1, flexShrink: 0 }} />
               <p style={{ color: theme.text.muted }}>Keep API keys secret. Store them in environment variables — never commit to version control. Revoke any key that may be compromised.</p>
             </div>
-            <div className="rounded-2xl border overflow-hidden" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
+            <GlassCard noPadding className="overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
                   <tr style={{ backgroundColor: theme.bg.secondary }}>
@@ -4124,8 +4135,8 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                           {k.status === 'active' && (
                             <button onClick={() => copyIntKey(k.id, k.full)} className="p-1.5 rounded-lg transition-all"
                               style={{
-                                backgroundColor: copiedIntKey === k.id ? '#81C99510' : theme.bg.tertiary,
-                                color: copiedIntKey === k.id ? '#81C995' : theme.icon.muted,
+                                backgroundColor: copiedIntKey === k.id ? `${theme.status.success}10` : theme.bg.tertiary,
+                                color: copiedIntKey === k.id ? theme.status.success : theme.icon.muted,
                               }}>
                               {copiedIntKey === k.id ? <Check size={11} /> : <Copy size={11} />}
                             </button>
@@ -4145,8 +4156,8 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                       <td className="px-4 py-3">
                         <span className="text-xs px-2.5 py-1 rounded-full font-medium"
                           style={{
-                            backgroundColor: k.status === 'active' ? '#81C99515' : '#EF444415',
-                            color: k.status === 'active' ? '#81C995' : '#EF4444',
+                            backgroundColor: k.status === 'active' ? `${theme.status.success}15` : `${theme.status.error}15`,
+                            color: k.status === 'active' ? theme.status.success : theme.status.error,
                           }}>
                           {k.status === 'active' ? 'Active' : 'Revoked'}
                         </span>
@@ -4156,7 +4167,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                           <button
                             onClick={() => setApiKeys(prev => prev.map(x => x.id === k.id ? { ...x, status: 'revoked' } : x))}
                             className="text-xs px-2.5 py-1.5 rounded-lg border"
-                            style={{ borderColor: '#EF444430', color: '#EF4444' }}>
+                            style={{ borderColor: `${theme.status.error}30`, color: theme.status.error }}>
                             Revoke
                           </button>
                         )}
@@ -4165,7 +4176,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </GlassCard>
           </div>
         )}
 
@@ -4194,7 +4205,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 <Zap size={30} style={{ color: theme.text.muted, marginBottom: 10 }} />
                 <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>No webhook endpoints</p>
                 <p className="text-sm mt-1 mb-4" style={{ color: theme.text.muted }}>Receive real-time events in your platform</p>
-                <button onClick={() => setWebhookForm({})} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white"
+                <button onClick={() => setWebhookForm({})} className="btn-primary flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white"
                   style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
                   <Plus size={14} /> Add First Endpoint
                 </button>
@@ -4202,7 +4213,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
             ) : (
               <div className="space-y-3">
                 {webhooks.map(w => (
-                  <div key={w.id} className="p-4 rounded-2xl border" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}>
+                  <GlassCard key={w.id} className="!p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -4214,7 +4225,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                           <p className="text-xs mt-0.5" style={{ color: theme.text.muted }}>
                             Last delivery: {w.lastDelivery}
                             {w.successRate !== undefined && w.lastDelivery !== '—' && (
-                              <> · <span style={{ color: w.successRate >= 95 ? '#81C995' : '#D97706' }}>{w.successRate}% success</span></>
+                              <> · <span style={{ color: w.successRate >= 95 ? theme.status.success : '#D97706' }}>{w.successRate}% success</span></>
                             )}
                           </p>
                         </div>
@@ -4222,8 +4233,8 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-xs px-2.5 py-1 rounded-full font-medium"
                           style={{
-                            backgroundColor: w.status === 'active' ? '#81C99515' : '#D9770615',
-                            color: w.status === 'active' ? '#81C995' : '#D97706',
+                            backgroundColor: w.status === 'active' ? `${theme.status.success}15` : '#D9770615',
+                            color: w.status === 'active' ? theme.status.success : '#D97706',
                           }}>
                           {w.status === 'active' ? 'Active' : 'Paused'}
                         </span>
@@ -4232,7 +4243,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                           <FileText size={13} />
                         </button>
                         <button onClick={() => setWebhooks(prev => prev.filter(x => x.id !== w.id))}
-                          className="p-2 rounded-xl border" style={{ borderColor: '#EF444430', color: '#EF4444' }}>
+                          className="p-2 rounded-xl border" style={{ borderColor: `${theme.status.error}30`, color: theme.status.error }}>
                           <X size={13} />
                         </button>
                       </div>
@@ -4256,13 +4267,13 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                         <Power size={11} /> {w.status === 'active' ? 'Pause' : 'Resume'}
                       </button>
                       <button
-                        onClick={() => addToast(`Test event sent to ${w.url.replace(/https?:\/\//, '').slice(0, 40)}`, 'info')}
+                        onClick={() => { setWebhookTestTarget(w); setWebhookTestEvent(w.events[0] || ''); setWebhookTestSending(false); }}
                         className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border"
                         style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
                         <Send size={11} /> Send Test
                       </button>
                     </div>
-                  </div>
+                  </GlassCard>
                 ))}
               </div>
             )}
@@ -4275,15 +4286,15 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
     const renderSecurity = () => (
       <div className="space-y-4">
         {/* Two-factor authentication */}
-        <div className="rounded-2xl border overflow-hidden" style={card}>
+        <GlassCard noPadding className="overflow-hidden">
           <div className="px-5 py-3.5 border-b" style={{ borderColor: theme.border.primary }}>
             <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Two-Factor Authentication</p>
           </div>
           <div className="p-5 flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: twoFA ? '#81C99515' : theme.bg.secondary }}>
-                <Shield size={20} style={{ color: twoFA ? '#81C995' : theme.icon.muted }} />
+                style={{ backgroundColor: twoFA ? `${theme.status.success}15` : theme.bg.secondary }}>
+                <Shield size={20} style={{ color: twoFA ? theme.status.success : theme.icon.muted }} />
               </div>
               <div>
                 <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Authenticator App</p>
@@ -4291,21 +4302,26 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               </div>
               <span className="text-xs px-2.5 py-1 rounded-full font-medium"
                 style={{
-                  backgroundColor: twoFA ? '#81C99515' : theme.bg.secondary,
-                  color: twoFA ? '#81C995' : theme.text.muted,
+                  backgroundColor: twoFA ? `${theme.status.success}15` : theme.bg.secondary,
+                  color: twoFA ? theme.status.success : theme.text.muted,
                 }}>
                 {twoFA ? 'Enabled' : 'Disabled'}
               </span>
             </div>
             <Toggle isOn={twoFA} onToggle={() => {
-              setTwoFA(v => !v);
-              addToast(twoFA ? '2FA disabled' : '2FA enabled', twoFA ? 'info' : 'success');
+              if (twoFA) {
+                setTwoFA(false);
+                addToast('2FA disabled', 'info');
+              } else {
+                setShow2FASetup(true);
+                setTwoFACode('');
+              }
             }} />
           </div>
-        </div>
+        </GlassCard>
 
         {/* Active sessions */}
-        <div className="rounded-2xl border overflow-hidden" style={card}>
+        <GlassCard noPadding className="overflow-hidden">
           <div className="px-5 py-3.5 border-b" style={{ borderColor: theme.border.primary }}>
             <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Active Sessions</p>
             <p className="text-xs mt-0.5" style={{ color: theme.text.muted }}>Devices currently signed into your account</p>
@@ -4322,7 +4338,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{session.device}</p>
                     {session.current && (
                       <span className="text-xs px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: '#81C99515', color: '#81C995' }}>Current</span>
+                        style={{ backgroundColor: `${theme.status.success}15`, color: theme.status.success }}>Current</span>
                     )}
                   </div>
                   <p className="text-xs mt-0.5" style={{ color: theme.text.muted }}>
@@ -4336,17 +4352,17 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                       addToast('Session terminated', 'success');
                     }}
                     className="text-xs px-2.5 py-1.5 rounded-lg border"
-                    style={{ borderColor: '#EF444430', color: '#EF4444' }}>
+                    style={{ borderColor: `${theme.status.error}30`, color: theme.status.error }}>
                     Terminate
                   </button>
                 )}
               </div>
             ))}
           </div>
-        </div>
+        </GlassCard>
 
           {/* IP Allowlist */}
-          <div className="rounded-2xl border overflow-hidden" style={card}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="px-5 py-3.5 border-b" style={{ borderColor: theme.border.primary }}>
               <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>IP Allowlist</p>
               <p className="text-xs mt-0.5" style={{ color: theme.text.muted }}>Restrict API access to trusted IP ranges (CIDR notation)</p>
@@ -4392,7 +4408,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 </button>
               </div>
             </div>
-          </div>
+          </GlassCard>
         </div>
     );
 
@@ -4407,7 +4423,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
         {/* Two-column layout */}
         <div className="flex gap-6 items-start">
           {/* Left nav */}
-          <div className="flex flex-col rounded-2xl border overflow-hidden flex-shrink-0" style={{ width: 200, ...card }}>
+          <GlassCard noPadding className="flex flex-col overflow-hidden flex-shrink-0" style={{ width: 200 }}>
             <div className="p-2 space-y-0.5">
               {SETTINGS_TABS.map(({ id, label, icon: Icon }) => {
                 const isActive = settingsTab === id;
@@ -4418,7 +4434,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
                     style={{
                       backgroundColor: isActive ? theme.accent.light : 'transparent',
-                      color: isActive ? theme.accent.primary : theme.text.secondary,
+                      color: isActive ? theme.text.primary : theme.text.secondary,
                       border: isActive ? `1px solid ${theme.accent.border}` : '1px solid transparent',
                     }}
                   >
@@ -4432,12 +4448,12 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
               <button
                 onClick={onLogout}
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
-                style={{ color: '#EF4444', backgroundColor: 'transparent' }}
+                style={{ color: theme.status.error, backgroundColor: 'transparent' }}
               >
                 <LogOut size={15} /> Sign Out
               </button>
             </div>
-          </div>
+          </GlassCard>
 
           {/* Right content */}
           <div className="flex-1 min-w-0">
@@ -4461,18 +4477,18 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
             <div className="w-full max-w-md rounded-2xl p-6 space-y-4" style={{ backgroundColor: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#81C99515' }}>
-                  <Key size={18} style={{ color: '#81C995' }} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${theme.status.success}15` }}>
+                  <Key size={18} style={{ color: theme.status.success }} />
                 </div>
                 <div>
                   <h3 className="font-bold" style={{ color: theme.text.primary }}>Key Created: {newKeyRevealed.name}</h3>
                   <p className="text-xs" style={{ color: theme.text.muted }}>Copy it now — this is the only time you'll see the full key</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 p-3 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: '#81C99530' }}>
+              <div className="flex items-center gap-2 p-3 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: `${theme.status.success}30` }}>
                 <code className="flex-1 text-xs font-mono break-all" style={{ color: theme.text.primary }}>{newKeyRevealed.key}</code>
                 <button onClick={() => { navigator.clipboard.writeText(newKeyRevealed.key).catch(() => {}); }}
-                  className="p-2 rounded-lg flex-shrink-0" style={{ backgroundColor: '#81C99515', color: '#81C995' }}>
+                  className="p-2 rounded-lg flex-shrink-0" style={{ backgroundColor: `${theme.status.success}15`, color: theme.status.success }}>
                   <Copy size={13} />
                 </button>
               </div>
@@ -4481,7 +4497,7 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
                 <p className="text-xs" style={{ color: '#D97706' }}>This key will not be shown again. Store it in a secure environment variable.</p>
               </div>
               <button onClick={() => setNewKeyRevealed(null)}
-                className="w-full py-2.5 rounded-xl text-sm font-semibold text-white"
+                className="btn-primary w-full py-2.5 rounded-xl text-sm font-semibold text-white"
                 style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
                 I've saved my key
               </button>
@@ -4596,6 +4612,253 @@ function EnterprisePortal({ currentUser, onLogout, themeName, setThemeName }) {
           onClose={() => setDispatchForm(null)}
           onSave={handleSaveDispatch}
         />
+      )}
+
+      {/* ── Export All Invoices Modal ── */}
+      {showExportInvoices && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowExportInvoices(false)} style={{ background: 'rgba(0,0,0,0.5)' }}>
+          <div className="rounded-2xl shadow-2xl w-full max-w-md mx-4" onClick={e => e.stopPropagation()} style={{ background: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+              <div>
+                <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Export Invoices</p>
+                <p className="text-xs mt-0.5" style={{ color: theme.text.muted }}>Choose date range and format</p>
+              </div>
+              <button onClick={() => setShowExportInvoices(false)} style={{ color: theme.text.muted }}><X size={16} /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium mb-1.5" style={{ color: theme.text.secondary }}>From</label>
+                  <input type="date" value={exportForm.dateFrom} onChange={e => setExportForm(f => ({ ...f, dateFrom: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-xl border text-sm outline-none"
+                    style={{ backgroundColor: theme.bg.input || theme.bg.secondary, borderColor: theme.border.primary, color: theme.text.primary }} />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1.5" style={{ color: theme.text.secondary }}>To</label>
+                  <input type="date" value={exportForm.dateTo} onChange={e => setExportForm(f => ({ ...f, dateTo: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-xl border text-sm outline-none"
+                    style={{ backgroundColor: theme.bg.input || theme.bg.secondary, borderColor: theme.border.primary, color: theme.text.primary }} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: theme.text.secondary }}>Format</label>
+                <select value={exportForm.format} onChange={e => setExportForm(f => ({ ...f, format: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl border text-sm outline-none"
+                  style={{ backgroundColor: theme.bg.input || theme.bg.secondary, borderColor: theme.border.primary, color: theme.text.primary }}>
+                  <option value="csv">CSV</option>
+                  <option value="pdf">PDF</option>
+                  <option value="xlsx">Excel (.xlsx)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: theme.text.secondary }}>Status Filter</label>
+                <select value={exportForm.includeStatus} onChange={e => setExportForm(f => ({ ...f, includeStatus: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl border text-sm outline-none"
+                  style={{ backgroundColor: theme.bg.input || theme.bg.secondary, borderColor: theme.border.primary, color: theme.text.primary }}>
+                  <option value="all">All Invoices</option>
+                  <option value="paid">Paid Only</option>
+                  <option value="pending">Pending Only</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-3 px-6 py-4" style={{ borderTop: `1px solid ${theme.border.primary}` }}>
+              <button onClick={() => setShowExportInvoices(false)}
+                className="btn-outline px-4 py-2 rounded-xl text-sm border"
+                style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => {
+                setShowExportInvoices(false);
+                addToast(`Invoices exported as ${exportForm.format.toUpperCase()} (${exportForm.dateFrom} to ${exportForm.dateTo})`, 'success');
+              }}
+                className="btn-primary px-5 py-2 rounded-xl text-sm font-semibold text-white"
+                style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
+                <span className="flex items-center gap-2"><Download size={14} /> Export</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Download Single Invoice Modal ── */}
+      {downloadInvoice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setDownloadInvoice(null)} style={{ background: 'rgba(0,0,0,0.5)' }}>
+          <div className="rounded-2xl shadow-2xl w-full max-w-sm mx-4" onClick={e => e.stopPropagation()} style={{ background: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+              <div>
+                <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Download {downloadInvoice.id}</p>
+                <p className="text-xs mt-0.5" style={{ color: theme.text.muted }}>{downloadInvoice.period} &middot; GH&#8373; {downloadInvoice.amount.toLocaleString()}</p>
+              </div>
+              <button onClick={() => setDownloadInvoice(null)} style={{ color: theme.text.muted }}><X size={16} /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: theme.text.secondary }}>File Format</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['pdf', 'csv', 'xlsx'].map(fmt => (
+                    <button key={fmt} onClick={() => setDownloadFormat(fmt)}
+                      className="px-3 py-2 rounded-xl border text-sm font-medium text-center"
+                      style={{
+                        borderColor: downloadFormat === fmt ? '#818CF8' : theme.border.primary,
+                        backgroundColor: downloadFormat === fmt ? '#818CF815' : theme.bg.input || theme.bg.secondary,
+                        color: downloadFormat === fmt ? '#818CF8' : theme.text.secondary,
+                      }}>
+                      {fmt.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="p-3 rounded-xl" style={{ backgroundColor: theme.bg.secondary }}>
+                <div className="flex justify-between text-xs" style={{ color: theme.text.muted }}>
+                  <span>Shipments</span><span style={{ color: theme.text.primary, fontWeight: 600 }}>{downloadInvoice.shipments}</span>
+                </div>
+                <div className="flex justify-between text-xs mt-1.5" style={{ color: theme.text.muted }}>
+                  <span>Status</span>
+                  <span style={{ color: downloadInvoice.status === 'paid' ? '#81C995' : '#D97706', fontWeight: 600 }}>
+                    {downloadInvoice.status === 'paid' ? 'Paid' : 'Pending'}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-3 px-6 py-4" style={{ borderTop: `1px solid ${theme.border.primary}` }}>
+              <button onClick={() => setDownloadInvoice(null)}
+                className="btn-outline px-4 py-2 rounded-xl text-sm border"
+                style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => {
+                addToast(`${downloadInvoice.id} downloading as ${downloadFormat.toUpperCase()}`, 'info');
+                setDownloadInvoice(null);
+              }}
+                className="btn-primary px-5 py-2 rounded-xl text-sm font-semibold text-white"
+                style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
+                <span className="flex items-center gap-2"><Download size={14} /> Download</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Webhook Send Test Modal ── */}
+      {webhookTestTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setWebhookTestTarget(null)} style={{ background: 'rgba(0,0,0,0.5)' }}>
+          <div className="rounded-2xl shadow-2xl w-full max-w-md mx-4" onClick={e => e.stopPropagation()} style={{ background: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+              <div>
+                <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Send Test Event</p>
+                <p className="text-xs mt-0.5 truncate max-w-[280px]" style={{ color: theme.text.muted }}>{webhookTestTarget.url}</p>
+              </div>
+              <button onClick={() => setWebhookTestTarget(null)} style={{ color: theme.text.muted }}><X size={16} /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: theme.text.secondary }}>Endpoint URL</label>
+                <input type="text" readOnly value={webhookTestTarget.url}
+                  className="w-full px-3 py-2 rounded-xl border text-sm outline-none"
+                  style={{ backgroundColor: theme.bg.secondary, borderColor: theme.border.primary, color: theme.text.muted }} />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: theme.text.secondary }}>Event Type</label>
+                <select value={webhookTestEvent} onChange={e => setWebhookTestEvent(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border text-sm outline-none"
+                  style={{ backgroundColor: theme.bg.input || theme.bg.secondary, borderColor: theme.border.primary, color: theme.text.primary }}>
+                  {WEBHOOK_EVENTS.map(ev => (
+                    <option key={ev.id} value={ev.id}>{ev.label} — {ev.desc}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="p-3 rounded-xl space-y-1.5" style={{ backgroundColor: theme.bg.secondary }}>
+                <p className="text-xs font-medium" style={{ color: theme.text.secondary }}>Test payload preview</p>
+                <pre className="text-[11px] leading-relaxed overflow-x-auto" style={{ color: theme.text.muted }}>
+{`{
+  "event": "${webhookTestEvent}",
+  "timestamp": "${new Date().toISOString()}",
+  "data": {
+    "id": "test_${Date.now().toString(36)}",
+    "status": "test"
+  }
+}`}
+                </pre>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-3 px-6 py-4" style={{ borderTop: `1px solid ${theme.border.primary}` }}>
+              <button onClick={() => setWebhookTestTarget(null)}
+                className="btn-outline px-4 py-2 rounded-xl text-sm border"
+                style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button
+                disabled={webhookTestSending}
+                onClick={() => {
+                  setWebhookTestSending(true);
+                  setTimeout(() => {
+                    addToast(`Test "${webhookTestEvent}" event sent to ${webhookTestTarget.url.replace(/https?:\/\//, '').slice(0, 40)}`, 'success');
+                    setWebhookTestSending(false);
+                    setWebhookTestTarget(null);
+                  }, 1200);
+                }}
+                className="btn-primary px-5 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
+                <span className="flex items-center gap-2"><Send size={14} /> {webhookTestSending ? 'Sending...' : 'Send Test'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── 2FA Setup Modal ── */}
+      {show2FASetup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShow2FASetup(false)} style={{ background: 'rgba(0,0,0,0.5)' }}>
+          <div className="rounded-2xl shadow-2xl w-full max-w-sm mx-4" onClick={e => e.stopPropagation()} style={{ background: theme.bg.card, border: `1px solid ${theme.border.primary}` }}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
+              <div>
+                <p className="font-semibold text-sm" style={{ color: theme.text.primary }}>Enable Two-Factor Authentication</p>
+                <p className="text-xs mt-0.5" style={{ color: theme.text.muted }}>Scan the QR code with your authenticator app</p>
+              </div>
+              <button onClick={() => setShow2FASetup(false)} style={{ color: theme.text.muted }}><X size={16} /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              {/* QR placeholder */}
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-40 h-40 rounded-xl flex items-center justify-center"
+                  style={{ backgroundColor: theme.bg.secondary, border: `1px solid ${theme.border.primary}` }}>
+                  <div className="text-center">
+                    <Shield size={32} style={{ color: '#818CF8', margin: '0 auto 8px' }} />
+                    <p className="text-[10px]" style={{ color: theme.text.muted }}>QR Code</p>
+                    <p className="text-[10px]" style={{ color: theme.text.muted }}>Placeholder</p>
+                  </div>
+                </div>
+                <div className="w-full">
+                  <label className="block text-xs font-medium mb-1" style={{ color: theme.text.secondary }}>Manual entry key</label>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl" style={{ backgroundColor: theme.bg.secondary, border: `1px solid ${theme.border.primary}` }}>
+                    <code className="text-xs flex-1 tracking-widest" style={{ color: theme.text.primary }}>JBSW Y3DP EHPK 3PXP</code>
+                    <button onClick={() => { navigator.clipboard.writeText('JBSWY3DPEHPK3PXP'); addToast('Key copied', 'info'); }}
+                      className="p-1 rounded-lg" style={{ color: theme.text.muted }}>
+                      <Copy size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: theme.text.secondary }}>Verification Code</label>
+                <input type="text" value={twoFACode} onChange={e => setTwoFACode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="Enter 6-digit code"
+                  className="w-full px-3 py-2 rounded-xl border text-sm outline-none text-center tracking-[0.3em] font-mono"
+                  style={{ backgroundColor: theme.bg.input || theme.bg.secondary, borderColor: theme.border.primary, color: theme.text.primary }} />
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-3 px-6 py-4" style={{ borderTop: `1px solid ${theme.border.primary}` }}>
+              <button onClick={() => setShow2FASetup(false)}
+                className="btn-outline px-4 py-2 rounded-xl text-sm border"
+                style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button
+                disabled={twoFACode.length !== 6}
+                onClick={() => {
+                  setTwoFA(true);
+                  setShow2FASetup(false);
+                  addToast('2FA enabled successfully', 'success');
+                }}
+                className="btn-primary px-5 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg,#6366F1,#818CF8)' }}>
+                <span className="flex items-center gap-2"><Shield size={14} /> Verify &amp; Enable</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -70,45 +70,51 @@ export interface Theme extends ThemeColors {
 
 export type ThemeName = 'dark' | 'light';
 
+// ============ SHARED ============
+const FONTS = {
+  primary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace",
+} as const;
+
 // ============ THEMES ============
 export const themes: Record<ThemeName, Theme> = {
+  /* ──────────────────────────────────────────────
+   * DARK — dark + white text, white accent
+   * ────────────────────────────────────────────── */
   dark: {
     name: 'dark',
     bg: {
-      primary: '#100E0C',
-      secondary: '#191613',
-      tertiary: '#252119',
-      card: '#1E1A17',
-      hover: '#2E2925',
-      input: '#252119',
+      primary: '#0A0A0A',
+      secondary: '#141414',
+      tertiary: '#1C1C1C',
+      card: 'rgba(255,255,255,0.04)',
+      hover: 'rgba(255,255,255,0.07)',
+      input: '#1C1C1C',
     },
     border: {
-      primary: 'rgba(255,255,255,0.10)',
-      secondary: 'rgba(255,255,255,0.16)',
-      focus: 'rgba(255,255,255,0.65)',
+      primary: 'rgba(255,255,255,0.08)',
+      secondary: 'rgba(255,255,255,0.14)',
+      focus: 'rgba(255,255,255,0.6)',
     },
     text: {
-      primary: '#F0EBE5',
-      secondary: '#C4BDB8',
-      muted: '#918A84',
+      primary: '#FFFFFF',
+      secondary: '#A1A1AA',
+      muted: '#71717A',
     },
     accent: {
-      primary: '#F0EBE5',
-      secondary: '#C4BDB8',
-      light: 'rgba(240,235,229,0.10)',
-      border: 'rgba(240,235,229,0.22)',
-      contrast: '#100E0C',
+      primary: '#FFFFFF',
+      secondary: '#E4E4E7',
+      light: 'rgba(255,255,255,0.08)',
+      border: 'rgba(255,255,255,0.20)',
+      contrast: '#0A0A0A',
     },
-    font: {
-      primary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace",
-    },
+    font: FONTS,
     icon: {
-      primary: '#C4BDB8',
-      muted: '#918A84',
+      primary: '#D4D4D8',
+      muted: '#71717A',
     },
     status: {
-      success: '#4ADE80',
+      success: '#34D399',
       warning: '#FBBF24',
       error: '#F87171',
       info: '#60A5FA',
@@ -117,47 +123,48 @@ export const themes: Record<ThemeName, Theme> = {
       green: '#34D399',
       blue: '#60A5FA',
       amber: '#FBBF24',
-      coral: '#F87171',
+      coral: '#FB7185',
       violet: '#A78BFA',
       teal: '#2DD4BF',
-      stone: '#9CA3AF',
-      series: ['#60A5FA', '#34D399', '#FBBF24', '#F87171', '#A78BFA', '#2DD4BF', '#9CA3AF'],
+      stone: '#A1A1AA',
+      series: ['#FFFFFF', '#34D399', '#60A5FA', '#FBBF24', '#A78BFA', '#2DD4BF', '#A1A1AA'],
     },
   },
+
+  /* ──────────────────────────────────────────────
+   * LIGHT — clean white + black text, black accent
+   * ────────────────────────────────────────────── */
   light: {
     name: 'light',
     bg: {
-      primary: '#F0F2F7',
+      primary: '#F8F9FA',
       secondary: '#FFFFFF',
-      tertiary: '#E6E9F2',
+      tertiary: '#F1F3F5',
       card: '#FFFFFF',
-      hover: '#E0E4EE',
-      input: '#ECEEF5',
+      hover: '#F1F3F5',
+      input: '#F1F3F5',
     },
     border: {
-      primary: 'rgba(0,0,0,0.08)',
-      secondary: 'rgba(0,0,0,0.14)',
-      focus: '#4F46E5',
+      primary: '#E9ECEF',
+      secondary: '#DEE2E6',
+      focus: '#0A0A0A',
     },
     text: {
-      primary: '#18181B',
-      secondary: '#3F3F46',
-      muted: '#71717A',
+      primary: '#111827',
+      secondary: '#374151',
+      muted: '#6B7280',
     },
     accent: {
-      primary: '#18181B',
-      secondary: '#27272A',
-      light: 'rgba(24,24,27,0.07)',
-      border: 'rgba(24,24,27,0.20)',
+      primary: '#111827',
+      secondary: '#1F2937',
+      light: 'rgba(17,24,39,0.05)',
+      border: 'rgba(17,24,39,0.12)',
       contrast: '#FFFFFF',
     },
-    font: {
-      primary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      mono: "'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace",
-    },
+    font: FONTS,
     icon: {
-      primary: '#18181B',
-      muted: '#52525B',
+      primary: '#374151',
+      muted: '#9CA3AF',
     },
     status: {
       success: '#059669',
@@ -171,9 +178,9 @@ export const themes: Record<ThemeName, Theme> = {
       amber: '#F59E0B',
       coral: '#EF4444',
       violet: '#8B5CF6',
-      teal: '#06B6D4',
-      stone: '#94A3B8',
-      series: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#94A3B8'],
+      teal: '#0891B2',
+      stone: '#6B7280',
+      series: ['#111827', '#10B981', '#3B82F6', '#F59E0B', '#8B5CF6', '#0891B2', '#6B7280'],
     },
   },
 };

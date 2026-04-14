@@ -5,9 +5,10 @@ import {
   Thermometer, Battery, DoorOpen, Users, Lock, Unlock, Eye, EyeOff,
   Monitor, Printer, Camera, QrCode, Fingerprint, Radio, Globe,
   CheckCircle2, XCircle, AlertTriangle, Info, ChevronDown, ChevronUp,
-  Loader2, Trash2, Settings,
+  Loader2, Trash2, Settings, X,
 } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import { GlassCard } from "../components/ui/Card";
 import { cloudConfig } from "@/shared/config/cloud";
 
 // API points to the NestJS dashboard-api which now exposes /stations endpoints.
@@ -94,7 +95,7 @@ const Badge = ({ children, color, theme }) => (
 const SectionCard = ({ title, icon: Icon, badge, children, theme, defaultOpen = true }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+    <GlassCard noPadding className="overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-5 py-3.5 text-left"
@@ -110,7 +111,7 @@ const SectionCard = ({ title, icon: Icon, badge, children, theme, defaultOpen = 
         </div>
       </button>
       {open && <div className="px-5 py-4 space-y-4">{children}</div>}
-    </div>
+    </GlassCard>
   );
 };
 
@@ -224,7 +225,7 @@ const CreateLockerModal = ({ onClose, onCreated, theme }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: "rgba(0,0,0,0.6)" }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="w-full max-w-lg rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+      <GlassCard noPadding className="w-full max-w-lg overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
           <span className="text-sm font-semibold" style={{ color: theme.text.primary, fontFamily: theme.font.mono }}>REGISTER NEW LOCKER</span>
           <button onClick={onClose} className="text-lg" style={{ color: theme.text.muted }}>&times;</button>
@@ -255,13 +256,13 @@ const CreateLockerModal = ({ onClose, onCreated, theme }) => {
           </div>
         </div>
         <div className="flex justify-end gap-3 px-5 py-4" style={{ borderTop: `1px solid ${theme.border.primary}` }}>
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={handleCreate} disabled={saving} className="px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+          <button onClick={onClose} className="btn-outline px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={handleCreate} disabled={saving} className="btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             {saving && <Loader2 size={14} className="animate-spin" />}
             {saving ? "Creating..." : "Create Locker"}
           </button>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 };
@@ -284,7 +285,7 @@ const DeactivateModal = ({ locker, onClose, onDone, theme }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: "rgba(0,0,0,0.6)" }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="w-full max-w-md rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+      <GlassCard noPadding className="w-full max-w-md overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: `1px solid ${theme.border.primary}` }}>
           <span className="text-sm font-semibold" style={{ color: theme.status.error, fontFamily: theme.font.mono }}>DEACTIVATE LOCKER</span>
           <button onClick={onClose} className="text-lg" style={{ color: theme.text.muted }}>&times;</button>
@@ -299,13 +300,13 @@ const DeactivateModal = ({ locker, onClose, onDone, theme }) => {
           </div>
         </div>
         <div className="flex justify-end gap-3 px-5 py-4" style={{ borderTop: `1px solid ${theme.border.primary}` }}>
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={onClose} className="btn-outline px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
           <button onClick={handle} disabled={saving} className="px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2" style={{ backgroundColor: `${theme.status.error}18`, color: theme.status.error, border: `1px solid ${theme.status.error}40` }}>
             {saving && <Loader2 size={14} className="animate-spin" />}
             {saving ? "Processing..." : "Deactivate"}
           </button>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 };
@@ -335,6 +336,7 @@ export const CloudConfigPage = ({ addToast }) => {
   const [saving, setSaving] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDeactivate, setShowDeactivate] = useState(false);
+  const [showFirmwareUpdate, setShowFirmwareUpdate] = useState(false);
   const [lastSync, setLastSync] = useState(null);
   const fileRef = useRef(null);
 
@@ -536,16 +538,16 @@ export const CloudConfigPage = ({ addToast }) => {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <button onClick={() => fetchLockers(true)} className="flex items-center gap-2 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => fetchLockers(true)} className="btn-outline flex items-center gap-2 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <RefreshCw size={14} /> Refresh
           </button>
-          <button onClick={handleExport} className="flex items-center gap-2 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={handleExport} className="btn-outline flex items-center gap-2 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <Download size={14} /> Export
           </button>
-          <button onClick={() => fileRef.current?.click()} className="flex items-center gap-2 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+          <button onClick={() => fileRef.current?.click()} className="btn-outline flex items-center gap-2 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
             <Upload size={14} /> Import
           </button>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+          <button onClick={() => setShowCreate(true)} className="btn-primary flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <Plus size={14} /> New Locker
           </button>
         </div>
@@ -557,7 +559,7 @@ export const CloudConfigPage = ({ addToast }) => {
         {/* Left sidebar - locker list + nav */}
         <div className="w-56 flex-shrink-0 space-y-4">
           {/* Locker chips */}
-          <div className="rounded-2xl border p-4 space-y-3" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider" style={{ color: theme.text.muted, fontFamily: theme.font.mono }}>
                 Units ({lockers.length})
@@ -597,10 +599,10 @@ export const CloudConfigPage = ({ addToast }) => {
                 </div>
               </div>
             )}
-          </div>
+          </GlassCard>
 
           {/* Section nav */}
-          <div className="rounded-2xl border p-2 space-y-0.5" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard className="space-y-0.5" style={{ padding: '0.5rem' }}>
             {NAV.map(n => (
               <button
                 key={n.id}
@@ -615,7 +617,7 @@ export const CloudConfigPage = ({ addToast }) => {
                 {n.label}
               </button>
             ))}
-          </div>
+          </GlassCard>
         </div>
 
         {/* Right - config panels */}
@@ -629,7 +631,7 @@ export const CloudConfigPage = ({ addToast }) => {
                 <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Real-time overview for {cfg.lockerCode}</p>
               </div>
               {selectedLocker && (
-                <button onClick={() => setShowDeactivate(true)} className="flex items-center gap-2 px-3 py-2 rounded-xl border text-xs" style={{ borderColor: `${theme.status.error}40`, color: theme.status.error }}>
+                <button onClick={() => setShowDeactivate(true)} className="btn-outline flex items-center gap-2 px-3 py-2 rounded-xl border text-xs" style={{ borderColor: `${theme.status.error}40`, color: theme.status.error }}>
                   <Power size={13} /> Deactivate
                 </button>
               )}
@@ -874,7 +876,7 @@ export const CloudConfigPage = ({ addToast }) => {
                 <Field label="Latest Available" theme={theme}><Input theme={theme} value="2.5.0" readOnly style={{ color: theme.status.success }} /></Field>
               </div>
               <ToggleRow label="Auto-Update Firmware" desc="Install updates automatically during maintenance window" on={cfg.firmwareAuto} onToggle={() => set("firmwareAuto", !cfg.firmwareAuto)} theme={theme} />
-              <button onClick={() => addToast?.({ type: "info", message: "Firmware update queued" })} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm w-fit" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+              <button onClick={() => setShowFirmwareUpdate(true)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl border text-sm w-fit" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
                 Push Update Now <ChevronRight size={14} />
               </button>
             </SectionCard>
@@ -889,26 +891,77 @@ export const CloudConfigPage = ({ addToast }) => {
           </>)}
 
           {/* ── Footer save bar ──────────────────────────────────────── */}
-          <div className="flex items-center justify-between p-4 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: dirty ? `${theme.status.warning}40` : theme.border.primary }}>
+          <GlassCard className="flex items-center justify-between" style={{ borderColor: dirty ? `${theme.status.warning}40` : undefined }}>
             <span className="text-xs" style={{ color: theme.text.muted, fontFamily: theme.font.mono }}>
               {saving ? "Saving..." : dirty ? <span>Editing <strong style={{ color: theme.accent.primary }}>{cfg.lockerCode}</strong> — unsaved changes</span> : <span>Viewing <strong style={{ color: theme.accent.primary }}>{cfg.lockerCode}</strong></span>}
             </span>
             <div className="flex gap-3">
-              <button disabled={saving} onClick={() => { setDirty(false); selectedLocker && loadCfg(selectedLocker); }} className="px-3 py-2 rounded-xl border text-xs" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Reset</button>
-              <button disabled={saving || lockers.length < 2} onClick={handleApplyAll} className="px-3 py-2 rounded-xl border text-xs" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Apply to All</button>
-              <button disabled={saving || !dirty} onClick={handleSave} className="px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-2" style={{ backgroundColor: dirty ? theme.accent.primary : theme.bg.tertiary, color: dirty ? theme.accent.contrast : theme.text.muted }}>
+              <button disabled={saving} onClick={() => { setDirty(false); selectedLocker && loadCfg(selectedLocker); }} className="btn-outline px-3 py-2 rounded-xl border text-xs" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Reset</button>
+              <button disabled={saving || lockers.length < 2} onClick={handleApplyAll} className="btn-outline px-3 py-2 rounded-xl border text-xs" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Apply to All</button>
+              <button disabled={saving || !dirty} onClick={handleSave} className={`px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-2 ${dirty ? 'btn-primary' : ''}`} style={{ backgroundColor: dirty ? theme.accent.primary : theme.bg.tertiary, color: dirty ? theme.accent.contrast : theme.text.muted }}>
                 {saving ? <><Loader2 size={12} className="animate-spin" /> Saving...</> : <>
                   <Save size={12} /> Save Config
                 </>}
               </button>
             </div>
-          </div>
+          </GlassCard>
         </div>
       </div>
 
       {/* Modals */}
       {showCreate && <CreateLockerModal onClose={() => setShowCreate(false)} onCreated={(r) => { addToast?.({ type: "success", message: `Locker ${r.code} created` }); setShowCreate(false); fetchLockers(false).then(() => setLoading(false)); }} theme={theme} />}
       {showDeactivate && selectedLocker && <DeactivateModal locker={selectedLocker} onClose={() => setShowDeactivate(false)} onDone={(code) => { addToast?.({ type: "info", message: `Locker ${code} deactivated` }); setShowDeactivate(false); fetchLockers(false).then(() => setLoading(false)); }} theme={theme} />}
+
+      {/* Firmware Update Modal */}
+      {showFirmwareUpdate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowFirmwareUpdate(false)}>
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative w-full max-w-md rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-lg" style={{ color: theme.text.primary }}>Push Firmware Update</h3>
+              <button onClick={() => setShowFirmwareUpdate(false)} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.text.muted }}><X size={18} /></button>
+            </div>
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl border" style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.secondary }}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium uppercase tracking-wider" style={{ color: theme.text.muted, fontFamily: theme.font.mono }}>Target Locker</span>
+                  <span className="text-sm font-semibold" style={{ color: theme.accent.primary, fontFamily: theme.font.mono }}>{cfg.lockerCode || 'All Units'}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium uppercase tracking-wider" style={{ color: theme.text.muted, fontFamily: theme.font.mono }}>Current Version</span>
+                  <span className="text-sm font-mono" style={{ color: theme.text.primary }}>{cfg.firmwareVersion}</span>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted, fontFamily: theme.font.mono }}>Target Version</label>
+                <select className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none appearance-none" style={{ backgroundColor: theme.bg.input, borderColor: theme.border.primary, color: theme.text.primary, fontFamily: theme.font.mono }}>
+                  <option value="2.5.0">v2.5.0 (Latest Stable)</option>
+                  <option value="2.5.1-beta">v2.5.1-beta (Pre-release)</option>
+                  <option value="2.4.2">v2.4.2 (Previous Stable)</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold uppercase block mb-1.5" style={{ color: theme.text.muted, fontFamily: theme.font.mono }}>Schedule</label>
+                <div className="flex gap-2">
+                  {['Now', 'Next Maintenance Window', 'Custom Time'].map(opt => (
+                    <button key={opt} className="flex-1 py-2 rounded-xl text-xs border" style={{ backgroundColor: opt === 'Now' ? `${theme.accent.primary}15` : theme.bg.tertiary, color: opt === 'Now' ? theme.accent.primary : theme.text.muted, borderColor: opt === 'Now' ? `${theme.accent.primary}40` : theme.border.primary }}>
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="p-3 rounded-xl border flex items-start gap-2" style={{ borderColor: `${theme.status.warning}30`, backgroundColor: `${theme.status.warning}08` }}>
+                <AlertTriangle size={14} style={{ color: theme.status.warning, marginTop: 2, flexShrink: 0 }} />
+                <span className="text-xs" style={{ color: theme.text.muted }}>Firmware update will briefly restart the locker controller. Active sessions will be preserved.</span>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button onClick={() => setShowFirmwareUpdate(false)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => { addToast?.({ type: 'info', message: `Firmware update to v2.5.0 queued for ${cfg.lockerCode || 'all units'}` }); setShowFirmwareUpdate(false); }} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>Push Update</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

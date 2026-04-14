@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 import {
   Package, Truck, ArrowRight, ArrowDown, Box, Phone, CreditCard,
   QrCode, Scan, DoorOpen, Bell, RefreshCw, Globe, Users, ShoppingCart,
@@ -192,12 +193,12 @@ const buildWorkflowData = (theme) => ({
 // ============ NODE COLOR HELPERS ============
 const getNodeColors = (type, theme) => {
   const map = {
-    start:        { bg: 'rgba(129,201,149,0.12)', border: 'rgba(129,201,149,0.4)', text: theme.text.primary, icon: '#81C995' },
-    end:          { bg: 'rgba(129,201,149,0.12)', border: 'rgba(129,201,149,0.4)', text: theme.text.primary, icon: '#81C995' },
-    process:      { bg: 'rgba(126,168,201,0.12)', border: 'rgba(126,168,201,0.4)', text: theme.text.primary, icon: '#7EA8C9' },
-    action:       { bg: 'rgba(181,160,209,0.12)', border: 'rgba(181,160,209,0.4)', text: theme.text.primary, icon: '#B5A0D1' },
-    decision:     { bg: 'rgba(212,170,90,0.12)',  border: 'rgba(212,170,90,0.4)',  text: theme.text.primary, icon: '#D4AA5A' },
-    notification: { bg: 'rgba(212,142,138,0.12)', border: 'rgba(212,142,138,0.4)', text: theme.text.primary, icon: '#D48E8A' },
+    start:        { bg: `${theme.status.success}1F`, border: `${theme.status.success}66`, text: theme.text.primary, icon: theme.status.success },
+    end:          { bg: `${theme.status.success}1F`, border: `${theme.status.success}66`, text: theme.text.primary, icon: theme.status.success },
+    process:      { bg: `${theme.accent.primary}1F`, border: `${theme.accent.primary}66`, text: theme.text.primary, icon: theme.accent.primary },
+    action:       { bg: `${theme.chart.violet}1F`, border: `${theme.chart.violet}66`, text: theme.text.primary, icon: theme.chart.violet },
+    decision:     { bg: `${theme.status.warning}1F`, border: `${theme.status.warning}66`, text: theme.text.primary, icon: theme.status.warning },
+    notification: { bg: `${theme.status.error}1F`, border: `${theme.status.error}66`, text: theme.text.primary, icon: theme.status.error },
     api:          { bg: theme.accent.light,        border: theme.accent.border,      text: theme.text.primary, icon: theme.accent.primary },
   };
   return map[type] || map.process;
@@ -304,10 +305,7 @@ const NodeDetail = ({ node, theme, onClose }) => {
   const colors = getNodeColors(node.type, theme);
 
   return (
-    <div style={{
-      background: theme.bg.card, border: `1px solid ${theme.border.primary}`,
-      borderRadius: 12, padding: 20, marginTop: 20,
-    }}>
+    <GlassCard style={{ marginTop: 20 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{
@@ -346,7 +344,7 @@ const NodeDetail = ({ node, theme, onClose }) => {
           </div>
         </div>
       )}
-    </div>
+    </GlassCard>
   );
 };
 
@@ -516,7 +514,7 @@ export const WorkflowsPage = ({ addToast }) => {
       </div>
 
       {/* Workflow Tabs */}
-      <div style={{
+      <div className="glass-card" style={{
         display: 'flex', gap: 4, marginBottom: 24, overflowX: 'auto',
         padding: '4px', borderRadius: 12,
         background: theme.bg.secondary, border: `1px solid ${theme.border.primary}`,
@@ -545,10 +543,7 @@ export const WorkflowsPage = ({ addToast }) => {
       </div>
 
       {/* Workflow Content */}
-      <div style={{
-        background: theme.bg.card, borderRadius: 14,
-        border: `1px solid ${theme.border.primary}`, padding: 24,
-      }}>
+      <GlassCard>
         {/* Workflow Title & Description */}
         <div style={{ marginBottom: 20 }}>
           <h2 style={{ fontSize: 17, fontWeight: 600, color: theme.text.primary, margin: 0 }}>
@@ -561,7 +556,7 @@ export const WorkflowsPage = ({ addToast }) => {
 
         {/* Flow Renderer */}
         <FlowRenderer workflow={currentWorkflow} theme={theme} />
-      </div>
+      </GlassCard>
     </div>
   );
 };

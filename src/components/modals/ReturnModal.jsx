@@ -40,7 +40,7 @@ export const ReturnModal = ({ isOpen, onClose, pkg, addToast }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-lg rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+      <div className="relative w-full max-w-lg rounded-2xl border p-6 shadow-2xl" style={{ backgroundColor: theme.name === 'dark' ? 'rgba(10,10,10,0.95)' : '#fff', borderColor: theme.border.primary, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: theme.text.primary }}><PackageX size={20} className="text-red-500" /> Return Package</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.icon.muted }}><X size={18} /></button>

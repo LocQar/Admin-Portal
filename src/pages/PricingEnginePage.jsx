@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Download, Warehouse, Inbox, Home, Truck, Edit2, X, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { pricingRevenueData } from '../constants/mockData';
 
@@ -94,17 +95,17 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
   const SmModal = ({ title, onClose, onSave, children }) => (
     <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-sm rounded-2xl border p-6" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+      <GlassCard className="relative w-full max-w-sm" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-semibold" style={{ color: theme.text.primary }}>{title}</h3>
           <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/5" style={{ color: theme.icon.muted }}><X size={18} /></button>
         </div>
         <div className="space-y-3">{children}</div>
         <div className="flex gap-3 mt-5">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={onSave} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>Save</button>
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl text-sm">Cancel</button>
+          <button onClick={onSave} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium">Save</button>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 
@@ -148,7 +149,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
           <F label="Description"><input type="text" value={editSC.description} onChange={e => setEditSC({ ...editSC, description: e.target.value })} className={IC} style={is()} /></F>
           <div className="flex items-center justify-between py-1">
             <span className="text-sm" style={{ color: theme.text.secondary }}>Active</span>
-            <button onClick={() => setEditSC({ ...editSC, active: !editSC.active })} style={{ color: editSC.active ? '#81C995' : theme.icon.muted }}>
+            <button onClick={() => setEditSC({ ...editSC, active: !editSC.active })} style={{ color: editSC.active ? theme.status.success : theme.icon.muted }}>
               {editSC.active ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
             </button>
           </div>
@@ -170,7 +171,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
       {editPartner && (
         <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setEditPartner(null)}>
           <div className="absolute inset-0 bg-black/50" />
-          <div className="relative w-full max-w-lg h-full overflow-y-auto border-l flex flex-col" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+          <GlassCard noPadding className="relative w-full max-w-lg h-full overflow-y-auto border-l flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="p-6 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{editPartner.logo}</span>
@@ -216,7 +217,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium" style={{ color: theme.text.primary }}>Custom Rate Card</p>
-                  <button onClick={() => setEditPartner({ ...editPartner, customRates: editPartner.customRates ? null : { Small: 10, Medium: 15, Large: 21, XLarge: 32 } })} style={{ color: editPartner.customRates ? '#81C995' : theme.icon.muted }}>
+                  <button onClick={() => setEditPartner({ ...editPartner, customRates: editPartner.customRates ? null : { Small: 10, Medium: 15, Large: 21, XLarge: 32 } })} style={{ color: editPartner.customRates ? theme.status.success : theme.icon.muted }}>
                     {editPartner.customRates ? <ToggleRight size={26} /> : <ToggleLeft size={26} />}
                   </button>
                 </div>
@@ -234,7 +235,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
 
               <div className="flex items-center justify-between py-1 border-t" style={{ borderColor: theme.border.primary }}>
                 <span className="text-sm" style={{ color: theme.text.secondary }}>Contract Rate</span>
-                <button onClick={() => setEditPartner({ ...editPartner, contractRate: !editPartner.contractRate })} style={{ color: editPartner.contractRate ? '#81C995' : theme.icon.muted }}>
+                <button onClick={() => setEditPartner({ ...editPartner, contractRate: !editPartner.contractRate })} style={{ color: editPartner.contractRate ? theme.status.success : theme.icon.muted }}>
                   {editPartner.contractRate ? <ToggleRight size={26} /> : <ToggleLeft size={26} />}
                 </button>
               </div>
@@ -245,10 +246,10 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
             </div>
 
             <div className="p-6 border-t flex gap-3" style={{ borderColor: theme.border.primary }}>
-              <button onClick={() => setEditPartner(null)} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-              <button onClick={() => { setPartners(p => p.map(x => x.partnerId === editPartner.partnerId ? editPartner : x)); setEditPartner(null); toast(`${editPartner.partnerName} override saved`); }} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>Save Override</button>
+              <button onClick={() => setEditPartner(null)} className="btn-outline flex-1 py-2.5 rounded-xl text-sm">Cancel</button>
+              <button onClick={() => { setPartners(p => p.map(x => x.partnerId === editPartner.partnerId ? editPartner : x)); setEditPartner(null); toast(`${editPartner.partnerName} override saved`); }} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium">Save Override</button>
             </div>
-          </div>
+          </GlassCard>
         </div>
       )}
 
@@ -258,7 +259,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
           <h1 className="text-xl md:text-2xl font-bold" style={{ color: theme.text.primary }}>Pricing Engine</h1>
           <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Rate Card'}</p>
         </div>
-        <button onClick={() => setShowExport && setShowExport(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+        <button onClick={() => setShowExport && setShowExport(true)} className="btn-outline flex items-center gap-2 px-4 py-2 rounded-xl text-sm">
           <Download size={16} />Export
         </button>
       </div>
@@ -268,7 +269,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
         <div className="space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {rateCard.map(r => (
-              <div key={r.id} className="p-5 rounded-2xl border relative group" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard key={r.id} className="relative group">
                 <button onClick={() => setEditRate({ ...r })} className="absolute top-3 right-3 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-opacity" style={{ color: theme.icon.muted }}>
                   <Edit2 size={14} />
                 </button>
@@ -277,11 +278,11 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                 <p className="text-xs mb-2" style={{ color: theme.text.muted }}>{r.dimensions}</p>
                 <p className="text-3xl font-bold" style={{ color: theme.accent.primary }}>GH₵ {r.basePrice}</p>
                 <p className="text-xs mt-1" style={{ color: theme.text.muted }}>Max {r.maxWeight} kg</p>
-              </div>
+              </GlassCard>
             ))}
           </div>
 
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard noPadding className="overflow-hidden">
             <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
               <h3 className="font-semibold" style={{ color: theme.text.primary }}>Base Rate Comparison</h3>
             </div>
@@ -300,8 +301,8 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                     <td className="p-3 text-sm" style={{ color: theme.text.secondary }}>{r.dimensions}</td>
                     <td className="p-3 text-sm" style={{ color: theme.text.secondary }}>{r.maxWeight} kg</td>
                     <td className="p-3 font-medium text-sm" style={{ color: theme.accent.primary }}>GH₵ {r.basePrice.toFixed(2)}</td>
-                    <td className="p-3 text-sm hidden md:table-cell" style={{ color: '#D4AA5A' }}>GH₵ {(r.basePrice * 1.5).toFixed(2)}</td>
-                    <td className="p-3 text-sm hidden md:table-cell" style={{ color: '#D48E8A' }}>GH₵ {(r.basePrice * 2.2).toFixed(2)}</td>
+                    <td className="p-3 text-sm hidden md:table-cell" style={{ color: theme.status.warning }}>GH₵ {(r.basePrice * 1.5).toFixed(2)}</td>
+                    <td className="p-3 text-sm hidden md:table-cell" style={{ color: theme.status.error }}>GH₵ {(r.basePrice * 2.2).toFixed(2)}</td>
                     <td className="p-3">
                       <button onClick={() => setEditRate({ ...r })} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: theme.icon.muted }}><Edit2 size={14} /></button>
                     </td>
@@ -309,7 +310,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                 ))}
               </tbody>
             </table>
-          </div>
+          </GlassCard>
         </div>
       )}
 
@@ -317,7 +318,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
       {activeSubMenu === 'Delivery Methods' && (
         <div className="space-y-4">
           {deliveryMethods.map(dm => (
-            <div key={dm.id} className="p-5 rounded-2xl border flex flex-col md:flex-row md:items-center gap-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <GlassCard key={dm.id} className="flex flex-col md:flex-row md:items-center gap-4">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${dm.color}15` }}>
                 <dm.icon size={24} style={{ color: dm.color }} />
               </div>
@@ -327,12 +328,12 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="text-2xl font-bold" style={{ color: dm.baseMarkup > 0 ? dm.color : '#81C995' }}>+{dm.baseMarkup}%</p>
+                  <p className="text-2xl font-bold" style={{ color: dm.baseMarkup > 0 ? dm.color : theme.status.success }}>+{dm.baseMarkup}%</p>
                   <p className="text-xs" style={{ color: theme.text.muted }}>markup on base</p>
                 </div>
                 <button onClick={() => setEditDM({ ...dm })} className="p-2 rounded-xl hover:bg-white/5" style={{ color: theme.icon.muted }}><Edit2 size={16} /></button>
               </div>
-            </div>
+            </GlassCard>
           ))}
         </div>
       )}
@@ -342,7 +343,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
         <div className="space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {slaTiers.map(sla => (
-              <div key={sla.id} className="p-5 rounded-2xl border relative group" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard key={sla.id} className="relative group">
                 <button onClick={() => setEditSla({ ...sla })} className="absolute top-3 right-3 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-opacity" style={{ color: theme.icon.muted }}>
                   <Edit2 size={14} />
                 </button>
@@ -354,10 +355,10 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                   <span className="text-sm mb-1" style={{ color: theme.text.muted }}>hrs</span>
                 </div>
                 <p className="text-sm mt-2" style={{ color: sla.color }}>{sla.multiplier}× multiplier</p>
-              </div>
+              </GlassCard>
             ))}
           </div>
-          <div className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard>
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Revenue by SLA Tier</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={pricingRevenueData}>
@@ -371,17 +372,17 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                 <Bar dataKey="economy" fill={theme.chart.green} name="Economy" />
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          </GlassCard>
         </div>
       )}
 
       {/* ══════════════ SURCHARGES ══════════════ */}
       {activeSubMenu === 'Surcharges' && (
-        <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard noPadding className="overflow-hidden">
           <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
             <h3 className="font-semibold" style={{ color: theme.text.primary }}>Surcharges & Fees</h3>
             <div className="flex gap-3 text-xs" style={{ color: theme.text.muted }}>
-              <span style={{ color: '#81C995' }}>{surcharges.filter(s => s.active).length} active</span>
+              <span style={{ color: theme.status.success }}>{surcharges.filter(s => s.active).length} active</span>
               <span>· {surcharges.filter(s => !s.active).length} inactive</span>
             </div>
           </div>
@@ -411,7 +412,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                     <button
                       onClick={() => { setSurcharges(p => p.map(s => s.id === sc.id ? { ...s, active: !s.active } : s)); toast(`${sc.name} ${sc.active ? 'deactivated' : 'activated'}`); }}
                       title={sc.active ? 'Click to deactivate' : 'Click to activate'}
-                      style={{ color: sc.active ? '#81C995' : theme.icon.muted }}
+                      style={{ color: sc.active ? theme.status.success : theme.icon.muted }}
                     >
                       {sc.active ? <ToggleRight size={24} /> : <ToggleLeft size={24} />}
                     </button>
@@ -423,7 +424,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
               ))}
             </tbody>
           </table>
-        </div>
+        </GlassCard>
       )}
 
       {/* ══════════════ VOLUME DISCOUNTS ══════════════ */}
@@ -431,18 +432,18 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {volumeTiers.map((vt, i) => (
-              <div key={vt.label} className="p-5 rounded-2xl border relative group" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+              <GlassCard key={vt.label} className="relative group">
                 <button onClick={() => setEditVT({ ...vt })} className="absolute top-3 right-3 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-opacity" style={{ color: theme.icon.muted }}>
                   <Edit2 size={14} />
                 </button>
                 <p className="font-semibold" style={{ color: theme.text.primary }}>{vt.label}</p>
                 <p className="text-xs mb-2" style={{ color: theme.text.muted }}>{vt.min}–{vt.max === Infinity ? '∞' : vt.max} pkgs/mo</p>
-                <p className="text-3xl font-bold" style={{ color: i === 0 ? theme.text.muted : '#81C995' }}>{vt.discount}%</p>
+                <p className="text-3xl font-bold" style={{ color: i === 0 ? theme.text.muted : theme.status.success }}>{vt.discount}%</p>
                 <p className="text-xs" style={{ color: theme.text.muted }}>discount</p>
-              </div>
+              </GlassCard>
             ))}
           </div>
-          <div className="rounded-2xl border p-5" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          <GlassCard>
             <h3 className="font-semibold mb-4" style={{ color: theme.text.primary }}>Free Storage Days by Tier</h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {Object.entries(STORAGE_FREE_DAYS).map(([tier, days]) => (
@@ -453,7 +454,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                 </div>
               ))}
             </div>
-          </div>
+          </GlassCard>
         </div>
       )}
 
@@ -461,7 +462,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
       {activeSubMenu === 'Partner Overrides' && (
         <div className="space-y-4">
           {partners.map(pp => (
-            <div key={pp.partnerId} className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <GlassCard key={pp.partnerId} noPadding className="overflow-hidden">
               <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.border.primary }}>
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{pp.logo}</span>
@@ -473,9 +474,9 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <p className="text-xs" style={{ color: theme.text.muted }}>Volume Discount</p>
-                    <p className="text-xl font-bold" style={{ color: '#81C995' }}>{pp.volumeDiscount}%</p>
+                    <p className="text-xl font-bold" style={{ color: theme.status.success }}>{pp.volumeDiscount}%</p>
                   </div>
-                  <button onClick={() => setEditPartner({ ...pp, customRates: pp.customRates ? { ...pp.customRates } : null })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>
+                  <button onClick={() => setEditPartner({ ...pp, customRates: pp.customRates ? { ...pp.customRates } : null })} className="btn-outline flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs">
                     <Edit2 size={12} />Edit Override
                   </button>
                 </div>
@@ -505,7 +506,7 @@ export const PricingEnginePage = ({ activeSubMenu, setShowExport, addToast }) =>
                 </div>
                 {pp.notes && <p className="text-xs mt-3 italic" style={{ color: theme.text.muted }}>{pp.notes}</p>}
               </div>
-            </div>
+            </GlassCard>
           ))}
         </div>
       )}

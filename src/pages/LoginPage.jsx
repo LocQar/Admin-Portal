@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Lock, Mail, ChevronRight, Sun, Moon, Shield, Users, Truck, Headphones, BarChart2, UserCircle, Building2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { GlassCard } from '../components/ui/Card';
 
 // Demo users for each role
 export const MOCK_USERS = [
@@ -15,14 +16,14 @@ export const MOCK_USERS = [
   { id: 9, name: 'Melcom Ltd',      email: 'shipping@melcom.com',        password: 'melcom123',   role: 'CUSTOMER',    type: 'b2b',        avatar: 'M', phone: '+233302654321' },
 ];
 
-const ROLE_META = {
-  SUPER_ADMIN: { label: 'Super Admin',     color: '#7EA8C9', icon: Shield,      desc: 'Full system access' },
-  MANAGER:     { label: 'Branch Manager',  color: '#81C995', icon: BarChart2,   desc: 'Operations & reports' },
-  AGENT:       { label: 'Field Agent',     color: '#B5A0D1', icon: Truck,       desc: 'Dispatch & scanning' },
-  SUPPORT:     { label: 'Support',         color: '#D48E8A', icon: Headphones,  desc: 'Customer tickets' },
-  CUSTOMER:    { label: 'Customer',        color: '#D4AA5A', icon: UserCircle,  desc: 'Self-service portal' },
-  B2B:         { label: 'B2B Customer',    color: '#818CF8', icon: Building2,   desc: 'Business shipments' },
-};
+const getRoleMeta = (theme) => ({
+  SUPER_ADMIN: { label: 'Super Admin',     color: theme.accent.primary, icon: Shield,      desc: 'Full system access' },
+  MANAGER:     { label: 'Branch Manager',  color: theme.status.success, icon: BarChart2,   desc: 'Operations & reports' },
+  AGENT:       { label: 'Field Agent',     color: theme.chart.violet,   icon: Truck,       desc: 'Dispatch & scanning' },
+  SUPPORT:     { label: 'Support',         color: theme.status.error,   icon: Headphones,  desc: 'Customer tickets' },
+  CUSTOMER:    { label: 'Customer',        color: theme.status.warning, icon: UserCircle,  desc: 'Self-service portal' },
+  B2B:         { label: 'B2B Customer',    color: '#818CF8',            icon: Building2,   desc: 'Business shipments' },
+});
 
 const QUICK_LOGINS = [
   MOCK_USERS[0], // Super Admin
@@ -35,6 +36,8 @@ const QUICK_LOGINS = [
 
 export const LoginPage = ({ onLogin, themeName, setThemeName }) => {
   const { theme } = useTheme();
+  const ROLE_META = getRoleMeta(theme);
+  const isDark = theme.name === 'dark';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
@@ -63,14 +66,14 @@ export const LoginPage = ({ onLogin, themeName, setThemeName }) => {
 
   const is = {
     background: 'transparent',
-    borderColor: error ? '#D48E8A' : theme.border.primary,
+    borderColor: error ? theme.status.error : theme.border.primary,
     color: theme.text.primary,
   };
 
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: theme.bg.primary, fontFamily: theme.font?.primary || 'inherit' }}>
       {/* Left panel — branding */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden" style={{ background: `linear-gradient(135deg, #2B2B3B 0%, #1C1C2E 100%)` }}>
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden" style={{ background: `linear-gradient(135deg, #2B2B3B 0%, #0A0A0A 100%)` }}>
         {/* Background grid pattern */}
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
@@ -126,7 +129,15 @@ export const LoginPage = ({ onLogin, themeName, setThemeName }) => {
           <span className="text-xl font-black" style={{ color: theme.text.primary }}>LocQar</span>
         </div>
 
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md rounded-2xl p-6" style={{
+          backgroundColor: isDark ? 'rgba(10,10,10,0.85)' : theme.bg.card,
+          backdropFilter: isDark ? 'blur(20px)' : 'none',
+          WebkitBackdropFilter: isDark ? 'blur(20px)' : 'none',
+          border: `1px solid ${theme.border.primary}`,
+          boxShadow: isDark
+            ? '0 1px 0 rgba(255,255,255,0.03), 0 8px 24px rgba(0,0,0,0.12)'
+            : '0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04)',
+        }}>
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-2xl font-bold" style={{ color: theme.text.primary }}>Sign in</h2>
@@ -134,7 +145,7 @@ export const LoginPage = ({ onLogin, themeName, setThemeName }) => {
             </div>
             <button
               onClick={() => setThemeName(t => t === 'dark' ? 'light' : 'dark')}
-              className="p-2.5 rounded-xl border"
+              className="p-2.5 rounded-xl border btn-outline"
               style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}
             >
               {themeName === 'dark' ? <Sun size={16} style={{ color: theme.icon.primary }} /> : <Moon size={16} style={{ color: theme.icon.primary }} />}
@@ -178,16 +189,16 @@ export const LoginPage = ({ onLogin, themeName, setThemeName }) => {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 p-3 rounded-xl" style={{ backgroundColor: '#D48E8A15', border: '1px solid #D48E8A40' }}>
-                <span className="text-sm" style={{ color: '#D48E8A' }}>{error}</span>
+              <div className="flex items-center gap-2 p-3 rounded-xl" style={{ backgroundColor: `${theme.status.error}15`, border: `1px solid ${theme.status.error}40` }}>
+                <span className="text-sm" style={{ color: theme.status.error }}>{error}</span>
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-12 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
-              style={{ background: loading ? theme.bg.tertiary : 'linear-gradient(135deg, #7EA8C9, #818CF8)', color: loading ? theme.text.muted : '#fff', cursor: loading ? 'not-allowed' : 'pointer' }}
+              className={`w-full h-12 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 ${loading ? '' : 'btn-primary'}`}
+              style={{ background: loading ? theme.bg.tertiary : `linear-gradient(135deg, ${theme.accent.primary}, #818CF8)`, color: loading ? theme.text.muted : '#fff', cursor: loading ? 'not-allowed' : 'pointer' }}
             >
               {loading ? 'Signing in…' : <><span>Sign in</span><ChevronRight size={16} /></>}
             </button>
@@ -207,25 +218,27 @@ export const LoginPage = ({ onLogin, themeName, setThemeName }) => {
               const meta = isB2B ? ROLE_META.B2B : ROLE_META[user.role];
               const Icon = meta?.icon || UserCircle;
               return (
-                <button
+                <GlassCard
                   key={user.id}
-                  onClick={() => quickLogin(user)}
-                  disabled={loading}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl border text-left hover:bg-white/5 transition-colors"
-                  style={{ borderColor: theme.border.primary, backgroundColor: theme.bg.card }}
+                  noPadding
+                  hover
+                  onClick={loading ? undefined : () => quickLogin(user)}
+                  className="btn-outline"
                 >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${meta?.color}20` }}>
-                    <Icon size={15} style={{ color: meta?.color }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{user.name}</p>
-                      {isB2B && <span className="text-xs px-1.5 py-0.5 rounded font-semibold" style={{ backgroundColor: '#818CF820', color: '#818CF8' }}>B2B</span>}
+                  <div className="w-full flex items-center gap-3 p-3 text-left">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${meta?.color}20` }}>
+                      <Icon size={15} style={{ color: meta?.color }} />
                     </div>
-                    <p className="text-xs" style={{ color: theme.text.muted }}>{meta?.label} · {user.email}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-sm font-medium" style={{ color: theme.text.primary }}>{user.name}</p>
+                        {isB2B && <span className="text-xs px-1.5 py-0.5 rounded font-semibold" style={{ backgroundColor: '#818CF820', color: '#818CF8' }}>B2B</span>}
+                      </div>
+                      <p className="text-xs" style={{ color: theme.text.muted }}>{meta?.label} · {user.email}</p>
+                    </div>
+                    <ChevronRight size={14} style={{ color: theme.text.muted }} />
                   </div>
-                  <ChevronRight size={14} style={{ color: theme.text.muted }} />
-                </button>
+                </GlassCard>
               );
             })}
           </div>

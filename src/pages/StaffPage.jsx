@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { UserPlus, Search, ArrowUpRight, ArrowDownRight, Edit, Key, Trash2, Users2, X, Eye, Phone, Mail, Star, CheckCircle, XCircle, LayoutGrid, List, ChevronRight } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { RoleBadge, StatusBadge } from '../components/ui/Badge';
+import { GlassCard } from '../components/ui';
 import { hasPermission, ROLES } from '../constants';
 import { staffData, teamsData, terminalsData } from '../constants/mockData';
 
@@ -25,7 +26,7 @@ const StaffDrawer = ({ staff, onClose, onSave, theme }) => {
     return Object.keys(e).length === 0;
   };
 
-  const inputStyle = (f) => ({ backgroundColor: 'transparent', borderColor: errors[f] ? '#D48E8A' : theme.border.primary, color: theme.text.primary });
+  const inputStyle = (f) => ({ backgroundColor: 'transparent', borderColor: errors[f] ? theme.status.error : theme.border.primary, color: theme.text.primary });
   const lbl = "text-xs font-semibold uppercase block mb-1.5";
 
   return (
@@ -70,7 +71,7 @@ const StaffDrawer = ({ staff, onClose, onSave, theme }) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={lbl} style={{ color: theme.text.muted }}>Role *</label>
-              <select value={form.role} onChange={e => update('role', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: errors.role ? '#D48E8A' : theme.border.primary, color: theme.text.primary }}>
+              <select value={form.role} onChange={e => update('role', e.target.value)} className="w-full px-3 py-2.5 rounded-xl border text-sm" style={{ backgroundColor: theme.bg.tertiary, borderColor: errors.role ? theme.status.error : theme.border.primary, color: theme.text.primary }}>
                 {Object.entries(ROLES).map(([k, v]) => <option key={k} value={k.toUpperCase()}>{v.name}</option>)}
               </select>
             </div>
@@ -99,7 +100,7 @@ const StaffDrawer = ({ staff, onClose, onSave, theme }) => {
           <div>
             <label className={lbl} style={{ color: theme.text.muted }}>Status</label>
             <div className="flex gap-2">
-              {[['active', 'Active', '#81C995'], ['inactive', 'Inactive', '#A8A29E']].map(([v, l, c]) => (
+              {[['active', 'Active', theme.status.success], ['inactive', 'Inactive', '#A8A29E']].map(([v, l, c]) => (
                 <button key={v} onClick={() => update('status', v)} className="flex-1 py-2.5 rounded-xl text-sm" style={{ backgroundColor: form.status === v ? `${c}15` : theme.bg.tertiary, color: form.status === v ? c : theme.text.secondary, border: `1px solid ${form.status === v ? `${c}40` : theme.border.primary}` }}>{l}</button>
               ))}
             </div>
@@ -107,8 +108,8 @@ const StaffDrawer = ({ staff, onClose, onSave, theme }) => {
         </div>
 
         <div className="p-4 border-t flex gap-3" style={{ borderColor: theme.border.primary }}>
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-          <button onClick={() => { if (validate()) onSave(form); }} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+          <button onClick={onClose} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+          <button onClick={() => { if (validate()) onSave(form); }} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             {isEdit ? 'Save Changes' : 'Add Staff Member'}
           </button>
         </div>
@@ -134,12 +135,14 @@ export const StaffPage = ({
   const [viewStaff, setViewStaff] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [view, setView] = useState('list');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const filteredStaff = useMemo(() => {
     let list = staff.filter(s => {
       const matchSearch = !search || s.name.toLowerCase().includes(search.toLowerCase()) || s.email.toLowerCase().includes(search.toLowerCase()) || (s.phone || '').includes(search);
       const matchRole = roleFilter === 'all' || s.role === roleFilter.toUpperCase();
-      return matchSearch && matchRole;
+      const matchStatus = statusFilter === 'all' || s.status === statusFilter;
+      return matchSearch && matchRole && matchStatus;
     });
     list = [...list].sort((a, b) => {
       const av = a[sort.field] ?? '';
@@ -147,7 +150,7 @@ export const StaffPage = ({
       return sort.dir === 'asc' ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
     });
     return list;
-  }, [staff, search, roleFilter, sort]);
+  }, [staff, search, roleFilter, statusFilter, sort]);
 
   const handleSave = (form) => {
     if (form.id) {
@@ -183,7 +186,7 @@ export const StaffPage = ({
           <p style={{ color: theme.text.muted }}>{activeSubMenu || 'Agents'}</p>
         </div>
         {hasPermission(currentUser?.role, 'staff.manage') && (!activeSubMenu || activeSubMenu === 'Agents') && (
-          <button onClick={() => setDrawer({})} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
+          <button onClick={() => setDrawer({})} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.accent.primary, color: theme.accent.contrast }}>
             <UserPlus size={18} /> Add Staff
           </button>
         )}
@@ -208,15 +211,14 @@ export const StaffPage = ({
 
           {/* Search & Filter */}
           <div className="flex flex-col md:flex-row gap-3">
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border flex-1" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <div className="glass-card flex items-center gap-3 px-4 py-3 rounded-xl border flex-1" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
               <Search size={16} style={{ color: theme.icon.muted }} />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, email, phone..." className="flex-1 bg-transparent outline-none text-sm" style={{ color: theme.text.primary }} />
               {search && <button onClick={() => setSearch('')} style={{ color: theme.text.muted }}><X size={16} /></button>}
             </div>
             <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: theme.bg.tertiary }}>
               {[['all', 'All'], ['active', 'Active'], ['inactive', 'Inactive']].map(([v, l]) => (
-                <button key={v} onClick={() => { if (v === 'all') setRoleFilter('all'); }} className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ backgroundColor: theme.bg.card + '00', color: theme.text.muted }}>
-                  {/* status filter placeholder - role filter handled by cards above */}
+                <button key={v} onClick={() => setStatusFilter(v)} className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ backgroundColor: statusFilter === v ? theme.accent.primary : 'transparent', color: statusFilter === v ? theme.accent.contrast : theme.text.muted }}>
                   {l}
                 </button>
               ))}
@@ -239,7 +241,7 @@ export const StaffPage = ({
           {view === 'grid' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredStaff.map(s => (
-                <div key={s.id} onClick={() => setViewStaff(s)} className="p-4 rounded-2xl border cursor-pointer group hover:border-opacity-80 transition-all space-y-3" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+                <GlassCard key={s.id} onClick={() => setViewStaff(s)} className="p-4 cursor-pointer group hover:border-opacity-80 transition-all space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full flex items-center justify-center text-base font-bold flex-shrink-0" style={{ backgroundColor: ROLES[s.role.toLowerCase()]?.color ? `${ROLES[s.role.toLowerCase()]?.color}20` : theme.bg.tertiary, color: ROLES[s.role.toLowerCase()]?.color || theme.accent.primary }}>{s.name.charAt(0)}</div>
@@ -259,7 +261,7 @@ export const StaffPage = ({
                     <RoleBadge role={s.role} />
                     <div className="flex items-center gap-1.5">
                       <div className="w-12 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: theme.border.primary }}>
-                        <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? '#81C995' : s.performance > 75 ? '#D4AA5A' : '#D48E8A' }} />
+                        <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? theme.status.success : s.performance > 75 ? theme.status.warning : theme.status.error }} />
                       </div>
                       <span className="text-xs" style={{ color: theme.text.muted }}>{s.performance}%</span>
                     </div>
@@ -274,14 +276,14 @@ export const StaffPage = ({
                       </>
                     )}
                   </div>
-                </div>
+                </GlassCard>
               ))}
               {filteredStaff.length === 0 && <p className="col-span-full text-center py-10 text-sm" style={{ color: theme.text.muted }}>No staff found</p>}
             </div>
           )}
 
           {/* List/Table View */}
-          {view === 'list' && <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+          {view === 'list' && <GlassCard noPadding className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -318,7 +320,7 @@ export const StaffPage = ({
                       <td className="p-4 hidden lg:table-cell">
                         <div className="flex items-center gap-2">
                           <div className="w-20 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: theme.border.primary }}>
-                            <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? '#81C995' : s.performance > 75 ? '#D4AA5A' : '#D48E8A' }} />
+                            <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? theme.status.success : s.performance > 75 ? theme.status.warning : theme.status.error }} />
                           </div>
                           <span className="text-xs" style={{ color: theme.text.muted }}>{s.performance}%</span>
                         </div>
@@ -344,14 +346,14 @@ export const StaffPage = ({
                 </tbody>
               </table>
             </div>
-          </div>}
+          </GlassCard>}
         </>
       )}
 
       {activeSubMenu === 'Teams' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {teamsData.map(t => (
-            <div key={t.id} className="p-5 rounded-2xl border" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+            <GlassCard key={t.id} className="p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${t.color}15` }}>
@@ -381,13 +383,13 @@ export const StaffPage = ({
                   <p className="text-sm font-semibold text-right mt-0.5" style={{ color: theme.text.primary }}>{t.activeProjects}</p>
                 </div>
               </div>
-            </div>
+            </GlassCard>
           ))}
         </div>
       )}
 
       {activeSubMenu === 'Performance' && (
-        <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }}>
+        <GlassCard noPadding className="overflow-hidden">
           <div className="p-4 border-b" style={{ borderColor: theme.border.primary }}>
             <h3 className="font-semibold" style={{ color: theme.text.primary }}>Performance Overview</h3>
           </div>
@@ -418,9 +420,9 @@ export const StaffPage = ({
                   <td className="p-4">
                     <div className="flex items-center gap-2">
                       <div className="w-20 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: theme.border.primary }}>
-                        <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? '#81C995' : s.performance > 75 ? '#D4AA5A' : '#D48E8A' }} />
+                        <div className="h-full rounded-full" style={{ width: `${s.performance}%`, backgroundColor: s.performance > 90 ? theme.status.success : s.performance > 75 ? theme.status.warning : theme.status.error }} />
                       </div>
-                      <span className="text-sm font-semibold" style={{ color: s.performance > 90 ? '#81C995' : s.performance > 75 ? '#D4AA5A' : '#D48E8A' }}>{s.performance}%</span>
+                      <span className="text-sm font-semibold" style={{ color: s.performance > 90 ? theme.status.success : s.performance > 75 ? theme.status.warning : theme.status.error }}>{s.performance}%</span>
                     </div>
                   </td>
                   <td className="p-4 hidden lg:table-cell"><span className="text-sm" style={{ color: theme.text.muted }}>{s.avgResponseTime}</span></td>
@@ -429,7 +431,7 @@ export const StaffPage = ({
               ))}
             </tbody>
           </table>
-        </div>
+        </GlassCard>
       )}
 
 
@@ -457,7 +459,7 @@ export const StaffPage = ({
               </div>
               {/* Stats */}
               <div className="grid grid-cols-3 gap-3">
-                {[['Packages', viewStaff.packagesHandled?.toLocaleString(), theme.accent.primary], ['Tasks', viewStaff.tasksCompleted, '#81C995'], ['Tickets', viewStaff.ticketsResolved, '#B5A0D1']].map(([l, v, c]) => (
+                {[['Packages', viewStaff.packagesHandled?.toLocaleString(), theme.accent.primary], ['Tasks', viewStaff.tasksCompleted, theme.status.success], ['Tickets', viewStaff.ticketsResolved, theme.chart.violet]].map(([l, v, c]) => (
                   <div key={l} className="p-3 rounded-xl border text-center" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
                     <p className="text-xs" style={{ color: theme.text.muted }}>{l}</p>
                     <p className="text-lg font-bold mt-0.5" style={{ color: c }}>{v}</p>
@@ -477,17 +479,17 @@ export const StaffPage = ({
               <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.bg.tertiary, borderColor: theme.border.primary }}>
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-xs font-semibold" style={{ color: theme.text.muted }}>Performance</p>
-                  <p className="text-sm font-bold" style={{ color: viewStaff.performance > 90 ? '#81C995' : viewStaff.performance > 75 ? '#D4AA5A' : '#D48E8A' }}>{viewStaff.performance}%</p>
+                  <p className="text-sm font-bold" style={{ color: viewStaff.performance > 90 ? theme.status.success : viewStaff.performance > 75 ? theme.status.warning : theme.status.error }}>{viewStaff.performance}%</p>
                 </div>
                 <div className="w-full h-2 rounded-full" style={{ backgroundColor: theme.border.primary }}>
-                  <div className="h-full rounded-full" style={{ width: `${viewStaff.performance}%`, backgroundColor: viewStaff.performance > 90 ? '#81C995' : viewStaff.performance > 75 ? '#D4AA5A' : '#D48E8A' }} />
+                  <div className="h-full rounded-full" style={{ width: `${viewStaff.performance}%`, backgroundColor: viewStaff.performance > 90 ? theme.status.success : viewStaff.performance > 75 ? theme.status.warning : theme.status.error }} />
                 </div>
               </div>
             </div>
             <div className="p-4 border-t flex gap-3" style={{ borderColor: theme.border.primary }}>
-              <button onClick={() => { handleResetPassword(viewStaff); }} className="flex-1 py-2.5 rounded-xl border text-xs" style={{ borderColor: theme.border.primary, color: '#D4AA5A' }}><Key size={14} className="inline mr-1" />Reset Password</button>
+              <button onClick={() => { handleResetPassword(viewStaff); }} className="btn-outline flex-1 py-2.5 rounded-xl border text-xs" style={{ borderColor: theme.border.primary, color: theme.status.warning }}><Key size={14} className="inline mr-1" />Reset Password</button>
               {hasPermission(currentUser?.role, 'staff.manage') && (
-                <button onClick={() => { setDeleteConfirm(viewStaff); setViewStaff(null); }} className="py-2.5 px-4 rounded-xl border text-sm text-red-400" style={{ borderColor: '#D48E8A40' }}><Trash2 size={15} /></button>
+                <button onClick={() => { setDeleteConfirm(viewStaff); setViewStaff(null); }} className="py-2.5 px-4 rounded-xl border text-sm text-red-400" style={{ borderColor: `${theme.status.error}40` }}><Trash2 size={15} /></button>
               )}
             </div>
           </div>
@@ -498,14 +500,14 @@ export const StaffPage = ({
       {deleteConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center" onClick={() => setDeleteConfirm(null)}>
           <div className="absolute inset-0 bg-black/50" />
-          <div className="relative w-full max-w-sm rounded-2xl border p-6 space-y-4" style={{ backgroundColor: theme.bg.card, borderColor: theme.border.primary }} onClick={e => e.stopPropagation()}>
+          <GlassCard className="relative w-full max-w-sm p-6 space-y-4" onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold" style={{ color: theme.text.primary }}>Remove Staff Member?</h3>
             <p className="text-sm" style={{ color: theme.text.muted }}>Permanently remove <span className="font-semibold" style={{ color: theme.text.primary }}>{deleteConfirm.name}</span>? This cannot be undone.</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
-              <button onClick={() => handleDelete(deleteConfirm)} className="flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: '#D48E8A', color: '#fff' }}>Remove</button>
+              <button onClick={() => setDeleteConfirm(null)} className="btn-outline flex-1 py-2.5 rounded-xl border text-sm" style={{ borderColor: theme.border.primary, color: theme.text.secondary }}>Cancel</button>
+              <button onClick={() => handleDelete(deleteConfirm)} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-medium" style={{ backgroundColor: theme.status.error, color: '#fff' }}>Remove</button>
             </div>
-          </div>
+          </GlassCard>
         </div>
       )}
 
